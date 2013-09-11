@@ -1,0 +1,3203 @@
+[
+	{
+		"model": "website.RoleType",
+		"pk":1,
+		"fields":{
+			"name": "Administrator",
+			"description": "Administrator of an organization."
+		}
+	},
+	{
+		"model": "website.RoleType",
+		"pk":2,
+		"fields":{
+			"name": "Member",
+			"description": "Member of an organization."
+		}
+	},
+	{
+		"model": "website.RoleType",
+		"pk":3,
+		"fields":{
+			"name": "Not Used",
+			"description": "Not Used."
+		}
+	},
+	{
+		"model": "website.OrganizationCategory",
+		"pk":1,
+		"fields":{
+			"name": "Company",
+			"description": "Organization that is a company."
+		}
+	},
+	{
+		"model": "website.OrganizationCategory",
+		"pk":2,
+		"fields":{
+			"name": "Jurisdiction",
+			"description": "Organization that is a jurisdiction."
+		}
+	},
+	{
+		"model": "website.OrganizationCategory",
+		"pk":3,
+		"fields":{
+			"name": "Site",
+			"description": "A site of an organization that is a location."
+		}
+	},
+	{
+		"model": "website.OrganizationCategory",
+		"pk":4,
+		"fields":{
+			"name": "Department",
+			"description": "A department within an organization."
+		}
+	},
+	{
+		"model": "website.OrganizationCategory",
+		"pk":5,
+		"fields":{
+			"name": "Group",
+			"description": "A group within an organization."
+		}
+	},
+	{
+		"model": "website.RatingCategory",
+		"pk":1,
+		"fields":{
+			"name": "Points",
+			"description": "Number of points",
+			"rating_type": "N"
+		}
+	},
+	{
+		"model": "website.ActionCategory",
+		"pk":1,
+		"fields":{
+			"name": "UpdateCallout",
+			"description": "Suggest Update to Callout",
+			"rating_category": 1,
+			"points": 10
+		}
+	},
+	{
+		"model": "website.ActionCategory",
+		"pk":2,
+		"fields":{
+			"name": "AddCallout",
+			"description": "Suggest New Callout",
+			"rating_category": 1,
+			"points": 10
+		}
+	},
+	{
+		"model": "website.ActionCategory",
+		"pk":3,
+		"fields":{
+			"name": "UpdateRequirement",
+			"description": "Suggest Update to Requirement",
+			"rating_category": 1,
+			"points": 10
+		}
+	},
+	{
+		"model": "website.ActionCategory",
+		"pk":4,
+		"fields":{
+			"name": "AddRequirement",
+			"description": "Suggest New Requirement",
+			"rating_category": 1,
+			"points": 10
+		}
+	},
+	{
+		"model": "website.ActionCategory",
+		"pk":5,
+		"fields":{
+			"name": "VoteRequirement",
+			"description": "Vote on Requirement",
+			"rating_category": 1,
+			"points": 2
+		}
+	},
+	{
+		"model": "website.ActionCategory",
+		"pk":6,
+		"fields":{
+			"name": "CommentRequirement",
+			"description": "Comment on Requirement",
+			"rating_category": 1,
+			"points": 1
+		}
+	},
+	{
+		"model": "website.ActionCategory",
+		"pk":7,
+		"fields":{
+			"name": "FlagRequirement",
+			"description": "Flagged Requirements",
+			"rating_category": 1,
+			"points": 0
+		}
+	},
+	{
+		"model": "website.ActionCategory",
+		"pk":8,
+		"fields":{
+			"name": "FlagComment",
+			"description": "Flagged Comment",
+			"rating_category": 1,
+			"points": 0
+		}
+	},
+	{
+		"model": "website.ActionCategory",
+		"pk":9,
+		"fields":{
+			"name": "CommentComment",
+			"description": "Comment on Comment",
+			"rating_category": 1,
+			"points": 1
+		}
+	},
+	{
+		"model": "website.ActionCategory",
+		"pk":10,
+		"fields":{
+			"name": "VoteComment",
+			"description": "Vote on Comment",
+			"rating_category": 1,
+			"points": 2
+		}
+	},         
+	{
+		"model": "website.ActionCategory",
+		"pk":11,
+		"fields":{
+			"name": "CommentCallout",
+			"description": "Comment on Callout",
+			"rating_category": 1,
+			"points": 1
+		}
+	},
+	{
+		"model": "website.ActionCategory",
+		"pk":12,
+		"fields":{
+			"name": "VoteCallout",
+			"description": "Vote on Callout",
+			"rating_category": 1,
+			"points": 2
+		}
+	},
+	{
+		"model": "website.ActionCategory",
+		"pk":14,
+		"fields":{
+			"name": "AddInfo",
+			"description": "Suggest New General Information",
+			"rating_category": 1,
+			"points": 10
+		}
+	},
+	{
+		"model": "website.ActionCategory",
+		"pk":15,
+		"fields":{
+			"name": "UpdateInfo",
+			"description": "Suggest Update to General Information",
+			"rating_category": 1,
+			"points": 10
+		}
+	},
+	{
+		"model": "website.ActionCategory",
+		"pk":16,
+		"fields":{
+			"name": "CommentInfo",
+			"description": "Comment on General Information",
+			"rating_category": 1,
+			"points": 1
+		}
+	},
+	{
+		"model": "website.ActionCategory",
+		"pk":17,
+		"fields":{
+			"name": "VoteInfo",
+			"description": "Vote on General Information",
+			"rating_category": 1,
+			"points": 2
+		}
+	},
+	{
+		"model": "website.ActionCategory",
+		"pk":18,
+		"fields":{
+			"name": "ValidateRequirement",
+			"description": "Validate Requirement",
+			"rating_category": 1,
+			"points": 2
+		}
+	},	
+	{
+		"model": "website.ReactionCategory",
+		"pk":1,
+		"fields":{
+			"name": "CalloutConfirmed",
+			"description": "Callout has been confirmed by enough voters",
+			"rating_category": 1,
+			"points": 10
+		}
+	},
+	{
+		"model": "website.ReactionCategory",
+		"pk":2,
+		"fields":{
+			"name": "CalloutDisputed",
+			"description": "Callout has been voted down",
+			"rating_category": 1,
+			"points": 0
+		}
+	},
+	{
+		"model": "website.ReactionCategory",
+		"pk":3,
+		"fields":{
+			"name": "CalloutRemoved",
+			"description": "Callout has been removed by admin",
+			"rating_category": 1,
+			"points": -20
+		}
+	},
+	{
+		"model": "website.ReactionCategory",
+		"pk":4,
+		"fields":{
+			"name": "RequirementConfirmed",
+			"description": "Requirement has been confirmed by enough voters",
+			"rating_category": 1,
+			"points": 10
+		}
+	},
+	{
+		"model": "website.ReactionCategory",
+		"pk":5,
+		"fields":{
+			"name": "RequirementDisputed",
+			"description": "Requirement has been voted down",
+			"rating_category": 1,
+			"points": 0
+		}
+	},
+	{
+		"model": "website.ReactionCategory",
+		"pk":6,
+		"fields":{
+			"name": "RequirementRemoved",
+			"description": "Requirement has been removed by admin",
+			"rating_category": 1,
+			"points": -20
+		}
+	},
+	{
+		"model": "website.ReactionCategory",
+		"pk":7,
+		"fields":{
+			"name": "InfoConfirmed",
+			"description": "General information has been confirmed by enough voters",
+			"rating_category": 1,
+			"points": 10
+		}
+	},
+	{
+		"model": "website.ReactionCategory",
+		"pk":8,
+		"fields":{
+			"name": "InfoDisputed",
+			"description": "General information has been voted down",
+			"rating_category": 1,
+			"points": 0
+		}
+	},
+	{
+		"model": "website.ReactionCategory",
+		"pk":9,
+		"fields":{
+			"name": "InfoRemoved",
+			"description": "General information has been removed by admin",
+			"rating_category": 1,
+			"points": -20
+		}
+	},
+	{
+		"model": "website.AnswerChoiceGroup",
+		"pk":1,
+		"fields":{
+			"name": "Radio: Yes No",
+			"description": "Radio: Yes No"
+		}
+	},
+	{
+		"model": "website.AnswerChoice",
+		"pk":1,
+		"fields":{
+            "answer_choice_group": "1",
+			"label": "Yes",
+			"value": "Yes",
+            "display_order": "1"
+		}
+	},    
+ 	{
+		"model": "website.AnswerChoice",
+		"pk":2,
+		"fields":{
+            "answer_choice_group": "1",
+			"label": "No",
+			"value": "No",
+            "display_order": "2"
+		}
+	},    
+	{
+		"model": "website.AnswerChoiceGroup",
+		"pk":2,
+		"fields":{
+			"name": "Radio: Yes No NA",
+			"description": "Radio: Yes No NA"
+		}
+	},   
+	{
+		"model": "website.AnswerChoice",
+		"pk":3,
+		"fields":{
+            "answer_choice_group": "2",
+			"label": "Yes",
+			"value": "Yes",
+            "display_order": "1"
+		}
+	},    
+ 	{
+		"model": "website.AnswerChoice",
+		"pk":4,
+		"fields":{
+            "answer_choice_group": "2",
+			"label": "No",
+			"value": "No",
+            "display_order": "2"
+		}
+	}, 
+ 	{
+		"model": "website.AnswerChoice",
+		"pk":5,
+		"fields":{
+            "answer_choice_group": "2",
+			"label": "NA",
+			"value": "NA",
+            "display_order": "3"
+		}
+	},           
+	{
+		"model": "website.QuestionCategory",
+		"pk":1,
+		"fields":{
+			"name": "General",
+			"description": "General",
+			"accepted": "1"
+		}
+	},
+	{
+		"model": "website.QuestionCategory",
+		"pk":2,
+		"fields":{
+			"name": "Callouts",
+			"description": "Callouts"
+		}
+	},
+	{
+		"model": "website.QuestionCategory",
+		"pk":3,
+		"fields":{
+			"name": "Building",
+			"description": "Building",
+			"accepted": "1"
+		}
+	},
+	{
+		"model": "website.QuestionCategory",
+		"pk":4,
+		"fields":{
+			"name": "Clerical",
+			"description": "Clerical",
+			"accepted": "1"
+		}
+	},    
+	{
+		"model": "website.QuestionCategory",
+		"pk":5,
+		"fields":{
+			"name": "Electrical",
+			"description": "Electrical",
+			"accepted": "1"
+		}
+	},
+	{
+		"model": "website.QuestionCategory",
+		"pk":6,
+		"fields":{
+			"name": "Fire",
+			"description": "Fire",
+			"accepted": "1"
+		}
+	},   
+	{
+		"model": "website.QuestionCategory",
+		"pk":7,
+		"fields":{
+			"name": "inspection_process",
+			"description": "Inspection Process",
+			"accepted": "1"
+		}
+	},     
+	{
+		"model": "website.QuestionCategory",
+		"pk":8,
+		"fields":{
+			"name": "Utility",
+			"description": "Utility",
+			"accepted": "1"
+		}
+	},    
+	{
+		"model": "website.QuestionCategory",
+		"pk":9,
+		"fields":{
+			"name": "Zoning",
+			"description": "Zoning",
+			"accepted": "1"
+		}
+	}, 
+	{
+		"model": "website.QuestionCategory",
+		"pk":10,
+		"fields":{
+			"name": "Other",
+			"description": "Other"
+		}
+	},
+	{
+		"model": "website.QuestionCategory",
+		"pk":11,
+		"fields":{
+			"name": "inspection_requirements",
+			"description": "Inspection Requirements",
+			"accepted": "1"
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":1,
+		"fields":{
+			"form_type": "T",
+			"display_order": "1",
+			"default_value": "{\"value\":\"\"}",
+			"category": "5",
+			"accepted": "1",
+			"question": "NEC Code version",
+			"label": "NEC Code version",
+			"instruction": "",
+			"validation_class": "required",
+			"field_attributes" : "maxLength='64'",
+			"terminology": "version",	
+			"qtemplate": "2"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":1,
+		"fields":{
+			"template": 2,
+			"question": 1
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":2,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "20",
+			"default_value": "{\"phone\": \"\", \"ext\": \"\"}",
+			"category": "1",
+			"accepted": "1",
+			"instruction": "What is the primary phone number to contact this jurisdiction regarding solar permits?",
+			"question": "Primary phone number",
+			"label": "Primary phone number",
+			"template": "phone.html",
+			"display_template": "phone_display.html",
+			"terminology": "phone number",	
+            "qtemplate": "2",
+            "migration_type": "phone"
+		}
+	},
+	{
+		"model": "website.TemplateQuestion",
+		"pk":2,
+		"fields":{
+			"template": 2,
+			"question": 2
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":3,
+		"fields":{
+			"form_type": "T",
+			"display_order": "15",
+			"default_value": "{\"value\":\"\"}",
+			"category": "1",
+			"accepted": "1",
+			"instruction": "Please enter a valid URL. For example: http://www.solarpermit.org",				
+			"question": "Department website",
+			"label": "Department website",
+			"validation_class" : "required",
+			"field_attributes" : "maxLength='200' size='35'",
+			"terminology": "link",	
+			"js": "department_website.js",	
+			"display_template": "url.html",				
+            "qtemplate": "2"
+		}
+	},
+	{
+		"model": "website.TemplateQuestion",
+		"pk":3,
+		"fields":{
+			"template": 2,
+			"question": 3
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":4,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "10",
+			"default_value": "{\"city\": \"\", \"state\": \"\", \"zip_code\": \"\", \"address2\": \"\", \"address1\": \"\", \"county\": \"\" }",
+			"category": "1",
+			"accepted": "1",			
+			"instruction": "What is the mailing address of this jurisdiction's building department?",
+			"question": "Department address",
+			"label": "Department address",
+			"template": "address.html",
+			"display_template": "address_display.html",			
+			"terminology": "address",	
+            "qtemplate": "2",
+            "migration_type": "address"
+		}
+	},
+	{
+		"model": "website.TemplateQuestion",
+		"pk":4,
+		"fields":{
+			"template": 2,
+			"question": 4
+		}
+	},	         
+	{
+		"model": "website.Question",
+		"pk":5,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "23",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"dead_load_calculations\": \"No\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "3",
+			"accepted": "1",
+			"question": "Submit PE stamped structural letter",
+			"label": "Submit PE stamped structural letter",
+			"template": "radio_submit_PE_stamped_structural_letter_with_exception.html",	
+			"js": "radio_submit_PE_stamped_structural_letter_with_exception.js",		
+			"display_template": "radio_submit_PE_stamped_structural_letter_with_exception_display.html",						
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_dead_load"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":5,
+		"fields":{
+			"template": 2,
+			"question": 5
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":6,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "1",
+			"default_value": "{\"link_1\": \"\", \"name_1\": \"\"}",
+			"category": "8",
+			"accepted": "1",
+			"question": "Utilities serving the AHJ",
+			"label": "Utilities serving [AHJ name]",
+			"template": "utilities.html",
+			"display_template": "url.html",
+			"terminology": "utility company",
+            "has_multivalues": "1",				
+			"qtemplate": "2",
+			"migration_type": "utilities"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":6,
+		"fields":{
+			"template": 2,
+			"question": 6
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":8,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "25",
+			"default_value": "{\"to_min\": \"00\", \"to_hour\": \"5\", \"from_am_pm\": \"am\", \"to_am_pm\": \"pm\", \"from_min\": \"00\", \"from_hour\": \"9\"}",
+			"category": "1",
+			"accepted": "1",		
+			"instruction": "What are the hours of operations for this jurisdiction",	
+			"question": "Department Hours",
+			"label": "Department Hours",
+			"template": "department_hours.html",
+			"display_template": "hours_display.html",			
+			"terminology": "time range",	
+            "qtemplate": "2",
+            "migration_type": "time_range"
+		}
+	},    
+	{
+		"model": "website.TemplateQuestion",
+		"pk":8,
+		"fields":{
+			"template": 2,
+			"question": 8
+		}
+	},	    
+	{
+		"model": "website.Question",
+		"pk":9,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "60",
+			"default_value": "{\"note\": \"\", \"time_unit\": \"hour(s)\", \"time_qty\": \"1\"}",
+			"category": "1",
+			"accepted": "1",	
+			"instruction": "How long does it take this jurisdiction to \"turn around\" a permit for a ground mounted pv system?",					
+			"question": "How long does it take this jurisdiction to \"turn around\" a permit for a ground mounted pv system?",
+			"label": "Average ground-mounted permit turnaround time",                                                              
+			"template": "ave_ground_mounted_permit_turn_around_time.html",
+			"display_template": "turn_around_time_display.html",				
+			"terminology": "turnaround time",	
+            "qtemplate": "2",
+            "migration_type": "time_quantity"
+		}
+	},
+	{
+		"model": "website.TemplateQuestion",
+		"pk":9,
+		"fields":{
+			"template": 2,
+			"question": 9
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":10,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "55",
+			"default_value":  "{\"note\": \"\", \"time_unit\": \"hour(s)\", \"time_qty\": \"1\"}",
+			"category": "1",
+			"accepted": "1",
+			"instruction": "How long does it take this jurisdiction to \"turn around\" a permit for a roof mounted pv system?",			
+			"question": "How long does it take this jurisdiction to \"turn around\" a permit for a roof mounted pv system?",
+			"label": "Average roof-mounted permit turnaround time",
+			"template": "ave_roof_mounted_permit_turn_around_time.html",
+			"display_template": "turn_around_time_display.html",			
+			"terminology": "turnaround time",	
+            "qtemplate": "2",
+            "migration_type": "time_quantity"
+		}
+	}, 
+	{
+		"model": "website.TemplateQuestion",
+		"pk":10,
+		"fields":{
+			"template": 2,
+			"question": 10
+		}
+	},	 	
+	{
+		"model": "website.Question",
+		"pk":11,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "1",
+			"default_value": "{\"phone\": \"\", \"ext\": \"\"}",
+			"category": "7",
+			"accepted": "1",
+			"instruction": "",
+			"question": "Inspection hotline",
+			"label": "Inspection hotline",
+			"template": "phone.html",		
+			"display_template": "phone_display.html",					
+			"terminology": "phone number",						
+			"qtemplate": "2",
+            "migration_type": "phone"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":11,
+		"fields":{
+			"template": 2,
+			"question": 11
+		}
+	},		
+	{
+		"model": "website.Question",
+		"pk":12,
+		"fields":{
+			"form_type": "T",
+			"display_order": "21",
+			"default_value": "{\"value\":\"\"}",
+			"category": "3",
+			"accepted": "1",
+			"question": "Wind speed for structural calculations",
+			"label": "Wind speed for structural calculations",								
+			"terminology": "wind speed",
+			"validation_class": "required number",	
+			"field_suffix": "mph",					
+			"qtemplate": "2"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":12,
+		"fields":{
+			"template": 2,
+			"question": 12
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":13,
+		"fields":{
+			"form_type": "T",
+			"display_order": "22",
+			"default_value": "{\"value\":\"\"}",
+			"category": "3",
+			"accepted": "1",
+			"question": "Snow load for structural calculations",
+			"label": "Snow load for structural calculations",								
+			"terminology": "snow load",
+			"validation_class": "required number",			
+			"field_suffix": "lbs per sq ft",			
+			"qtemplate": "2"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":13,
+		"fields":{
+			"template": 2,
+			"question": 13
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":14,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "30",
+			"default_value": "{\"available\":\"no\", \"url\":\"\"}",
+			"category": "1",
+			"accepted": "1",
+			"instruction": "Does this jurisdiction have an online system to actually accept permit applications over the internet?",
+			"question": "Online permit processing",
+			"label": "Online permit processing",
+			"template": "available_url.html",	
+			"js": "available_url.js",	
+			"display_template": "available_url_display.html",		
+			"terminology": "answer",	
+            "qtemplate": "2",
+            "migration_type": "available_url"
+		}
+	},
+	{
+		"model": "website.TemplateQuestion",
+		"pk":14,
+		"fields":{
+			"template": 2,
+			"question": 14
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":15,
+		"fields":{
+			"form_type": "MF",
+			"answer_choice_group": "1",
+			"display_order": "75",
+			"default_value": "{\"value\":\"no\"}",
+			"category": "1",
+			"accepted": "1",
+			"instruction": "Has this AHJ adopted an expedited permit process (e.g. Solar ABC's)?",			
+			"question": "Solar ABCs expedited permit process",
+			"label": "Expedited permit process",
+			"template": "radio_no_yes.html",				
+			"terminology": "answer",	
+            "qtemplate": "2"
+		}
+	},
+	{
+		"model": "website.TemplateQuestion",
+		"pk":15,
+		"fields":{
+			"template": 2,
+			"question": 15
+		}
+	},		
+	{
+		"model": "website.Question",
+		"pk":16,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "40",
+			"default_value": "{\"fee_type_1\": \"fee type\", \"fee_item_1_1\": \"fee item\", \"fee_formula_1_1\": \"flat_rate\", \"fee_other_1_1\": \"\", \"fee_percentage_of_total_system_cost_cap_1_1\": \"\", \"fee_per_inverter_1_1\": \"0\", \"fee_flat_rate_1_1\": \"\", \"fee_per_major_components_1_1\": \"0\", \"fee_jurisdiction_cost_recovery_notes_1_1\": \"\", \"fee_percentage_of_total_system_cost_1_1\": \"\", \"fee_percentage_of_total_system_cost_cap_amt_1_1\": \"\", \"fee_per_component_cap_1_1\": \"\", \"fee_per_component_cap_cap_amt_1_1\": \"\", \"fee_per_module_1_1\": \"0\"}",			
+			"category": "1",
+			"accepted": "1",
+			"instruction": "What is the fee structure for solar permits in this jurisdiction?",
+			"question": "Permit Cost",
+			"label": "Permit fee",
+            "js": "permit_cost.js", 
+			"template": "permit_cost.html",
+			"display_template": "permit_cost_display.html",			
+			"terminology": "fee structure",	
+            "qtemplate": "2"                                                
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":16,
+		"fields":{
+			"template": 2,
+			"question": 16
+		}
+	},		    	
+	{
+		"model": "website.Question",
+		"pk":17,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "1",
+			"default_value": "{\"required\": \"no\", \"size\": \"\", \"width\": \"\", \"height\": \"\"  }",
+			"category": "4",
+			"accepted": "1",
+			"question": "Page size requirements for submittals",
+			"label": "Page size requirements for submittals",								
+			"terminology": "page size",
+			"template": "radio_required_for_page_sizes.html",	
+			"js": "radio_required_for_page_sizes.js",	
+			"display_template": "radio_required_for_page_sizes_display.html",												
+			"qtemplate": "2",
+            "migration_type": "page_size"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":17,
+		"fields":{
+			"template": 2,
+			"question": 17
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":18,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "2",
+			"default_value": "{\"scale\": \"any\", \"scale_factor\": \"1:1\", \"scale_factor_1\": \"\", \"scale_factor_2\": \"\"  }",
+			"category": "4",
+			"accepted": "1",
+			"question": "Accepted drawing scales",
+			"label": "Accepted drawing scales",								
+			"terminology": "answer",
+			"template": "radio_required_for_scales.html",	
+			"js": "radio_required_for_scales.js",				
+			"display_template": "radio_required_for_scales_display.html",									
+			"qtemplate": "2",
+            "migration_type": "drawing_scales"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":18,
+		"fields":{
+			"template": 2,
+			"question": 18
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":19,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "18",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "3",
+			"accepted": "1",
+			"question": "Include property boundaries for flush mounted systems",
+			"label": "Include property boundaries for flush mounted systems",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",			
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":19,
+		"fields":{
+			"template": 2,
+			"question": 19
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":20,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "19",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "3",
+			"accepted": "1",
+			"question": "Include property boundaries for tilt mounted systems",
+			"label": "Include property boundaries for tilt mounted systems",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",				
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":20,
+		"fields":{
+			"template": 2,
+			"question": 20
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":21,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "20",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "3",
+			"accepted": "1",
+			"question": "Include property setbacks on all drawings",
+			"label": "Include property setbacks on all drawings",
+			"template": "radio_with_exception.html",	
+			"display_template": "radio_with_exception_display.html",			
+			"js": "radio_with_exception.js",				
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":21,
+		"fields":{
+			"template": 2,
+			"question": 21
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":22,
+		"fields":{
+			"form_type": "MF",
+			"answer_choice_group": "32",
+			"display_order": "3",
+			"default_value": "{\"value\":\"Not required\"}",
+			"category": "4",
+			"accepted": "1",
+			"question": "Architectural dimensions",
+			"label": "Architectural dimensions",	
+			"template": "radio_required.html",	
+			"display_template": "radio_required_display.html",											
+			"terminology": "answer",								
+			"qtemplate": "2"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":22,
+		"fields":{
+			"template": 2,
+			"question": 22
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":23,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "7",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "3",
+			"accepted": "1",
+			"question": "Include PV array dimensions",
+			"label": "Include PV array dimensions",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",					
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":23,
+		"fields":{
+			"template": 2,
+			"question": 23
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":24,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "10",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "3",
+			"accepted": "1",
+			"question": "Include roof surface description",
+			"label": "Include roof surface description",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",				
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":24,
+		"fields":{
+			"template": 2,
+			"question": 24
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":26,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "11",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "3",
+			"accepted": "1",
+			"question": "Include roof rafter size/spacing",
+			"label": "Include roof rafter size/spacing",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",				
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":26,
+		"fields":{
+			"template": 2,
+			"question": 26
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":28,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "13",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "3",
+			"accepted": "1",
+			"question": "Include attachment location with array layout",
+			"label": "Include attachment location with array layout",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",				
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":28,
+		"fields":{
+			"template": 2,
+			"question": 28
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":29,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "14",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "3",
+			"accepted": "1",
+			"question": "Include attachment detail on plan set",
+			"label": "Include attachment detail on plan set",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",			
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":29,
+		"fields":{
+			"template": 2,
+			"question": 29
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":31,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "15",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "3",
+			"accepted": "1",
+			"question": "Include max attachment spacing",
+			"label": "Include max attachment spacing",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",				
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":31,
+		"fields":{
+			"template": 2,
+			"question": 31
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":32,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "16",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "3",
+			"accepted": "1",
+			"question": "Include max rail overhang",
+			"label": "Include max rail overhang",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",				
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":32,
+		"fields":{
+			"template": 2,
+			"question": 32
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":33,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "2",
+			"default_value": "{\"note\": \"\", \"allowed\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"min_distance\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "3",
+			"accepted": "1",
+			"question": "Attic vent covering rules",
+			"label": "Attic vent covering rules",
+			"template": "radio_covered_with_exception.html",	
+			"js": "radio_covered_with_exception.js",
+			"display_template": "radio_covered_with_exception_display.html",				
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "free-form"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":33,
+		"fields":{
+			"template": 2,
+			"question": 33
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":35,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "3",
+			"default_value": "{\"note\": \"\", \"allowed\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "3",
+			"accepted": "1",
+			"question": "Studor vent rules",
+			"label": "Studor vent rules",
+			"template": "radio_studer_vent_rules_with_exception.html",	
+			"js": "radio_studer_vent_rules_with_exception.js",	
+			"display_template": "radio_studer_vent_rules_with_exception_display.html",
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "allowed_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":35,
+		"fields":{
+			"template": 2,
+			"question": 35
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":36,
+		"fields":{
+			"form_type": "MF",
+			"answer_choice_group": "33",
+			"display_order": "9",
+			"default_value": "{\"value\":\"must draw individual modules\"}",
+			"category": "3",
+			"accepted": "1",
+			"question": "Module drawings",
+			"label": "Module drawings",		
+			"template": "radio_module_drawings.html",	
+			"js": "radio_module_drawings.js",
+			"display_template": "radio_module_drawings_display.html",				
+			"terminology": "answer",				
+			"qtemplate": "2"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":36,
+		"fields":{
+			"template": 2,
+			"question": 36
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":37,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "2",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "5",
+			"accepted": "1",
+			"question": "Show equipment in equipment specs",
+			"label": "Show equipment in equipment specs",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":37,
+		"fields":{
+			"template": 2,
+			"question": 37
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":38,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "3",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "5",
+			"accepted": "1",
+			"question": "Show DC/AC placard specs on page",
+			"label": "Show DC/AC placard specs on page",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",			
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":38,
+		"fields":{
+			"template": 2,
+			"question": 38
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":39,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "4",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "5",
+			"accepted": "1",
+			"question": "Include actual placard scale drawings",
+			"label": "Include actual placard scale drawings",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":39,
+		"fields":{
+			"template": 2,
+			"question": 39
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":43,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "6",
+			"default_value": "{\"note\": \"\", \"allowed\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "3",
+			"accepted": "1",
+			"question": "WEEBs for module grounding",
+			"label": "WEEBs for module grounding",
+			"template": "radio_allowed_with_exception.html",	
+			"js": "radio_allowed_with_exception.js",	
+			"display_template": "radio_allowed_with_exception_display.html",					
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "allowed_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":43,
+		"fields":{
+			"template": 2,
+			"question": 43
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":45,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "5",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "5",
+			"accepted": "1",
+			"question": "Call out individual distances between electrical equipment",
+			"label": "Call out individual distances between electrical equipment",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":45,
+		"fields":{
+			"template": 2,
+			"question": 45
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":46,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "6",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "5",
+			"accepted": "1",
+			"question": "Show Electrical Conduit Run on site plan",
+			"label": "Show Electrical Conduit Run on site plan",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":46,
+		"fields":{
+			"template": 2,
+			"question": 46
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":47,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "7",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "5",
+			"accepted": "1",
+			"question": "Conductor size calculations",
+			"label": "Conductor size calculations",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":47,
+		"fields":{
+			"template": 2,
+			"question": 47
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":49,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "8",
+			"default_value": "{\"note\": \"\", \"allowed\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "5",
+			"accepted": "1",
+			"question": "ASHRAE min/max design temps",
+			"label": "ASHRAE min/max design temps",
+			"template": "radio_allowed_with_exception.html",
+			"js": "radio_allowed_with_exception.js",	
+			"display_template": "radio_allowed_with_exception_display.html",
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "allowed_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":49,
+		"fields":{
+			"template": 2,
+			"question": 49
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":51,
+		"fields":{
+			"form_type": "TA",
+			"display_order": "5",
+			"default_value": "{\"value\":\"\"}",
+			"category": "7",
+			"accepted": "1",
+			"question": "Inspection scheduling notes",
+			"label": "Inspection scheduling notes",								
+			"terminology": "answer",
+			"validation_class": "required",						
+			"qtemplate": "2",
+            "has_multivalues": "1"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":51,
+		"fields":{
+			"template": 2,
+			"question": 51
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":52,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "1",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "11",
+			"accepted": "1",
+			"question": "Rough structural inspection",
+			"label": "Rough structural inspection",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",					
+			"terminology": "answer",						
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":52,
+		"fields":{
+			"template": 2,
+			"question": 52
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":53,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "2",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "11",
+			"accepted": "1",
+			"question": "Rough electrical inspection",
+			"label": "Rough electrical inspection",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",					
+			"terminology": "answer",						
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":53,
+		"fields":{
+			"template": 2,
+			"question": 53
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":54,
+		"fields":{
+			"form_type": "T",
+			"display_order": "4",
+			"default_value": "{\"value\":\"\"}",
+			"category": "11",
+			"accepted": "1",
+			"question": "Percentage of modules allowed to attach prior to rough inspection",
+			"label": "Percentage of modules allowed to attach prior to rough inspection",				
+			"terminology": "answer",					
+			"validation_class": "required number",
+			"field_suffix": "%",
+			"qtemplate": "2"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":54,
+		"fields":{
+			"template": 2,
+			"question": 54
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":55,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "5",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "11",
+			"accepted": "1",
+			"question": "Access to roof for inspections",
+			"label": "Access to roof for inspections",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",				
+			"terminology": "answer",						
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":55,
+		"fields":{
+			"template": 2,
+			"question": 55
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":56,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "6",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "11",
+			"accepted": "1",
+			"question": "Access to attic for inspections",
+			"label": "Access to attic for inspections",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",					
+			"terminology": "answer",						
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":56,
+		"fields":{
+			"template": 2,
+			"question": 56
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":57,
+		"fields":{
+			"form_type": "TA",
+			"display_order": "65",
+			"default_value": "{\"value\":\"\"}",
+			"category": "1",
+			"accepted": "1",
+			"question": "Department furlough days",
+			"label": "Department furlough days",
+			"validation_class" : "required",
+			"terminology": "answer",	
+            "qtemplate": "2"
+		}
+	},
+	{
+		"model": "website.TemplateQuestion",
+		"pk":57,
+		"fields":{
+			"template": 2,
+			"question": 57
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":59,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "4",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "4",
+			"accepted": "1",
+			"question": "Include PDF version of PV submittal",
+			"label": "Include PDF version of PV submittal",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",								
+			"terminology": "answer",						
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":59,
+		"fields":{
+			"template": 2,
+			"question": 59
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":60,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "5",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "4",
+			"accepted": "1",
+			"question": "Include PDF version of PV permit",
+			"label": "Include PDF version of PV permit",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",				
+			"terminology": "answer",						
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":60,
+		"fields":{
+			"template": 2,
+			"question": 60
+		}
+	},		
+	{
+		"model": "website.Question",
+		"pk":61,
+		"fields":{
+			"form_type": "T",
+			"display_order": "1",
+			"default_value": "{\"value\":\"\"}",
+			"category": "3",
+			"accepted": "1",
+			"question": "Enforced building code version",
+			"label": "Enforced building code version",								
+			"terminology": "version",
+			"validation_class": "required",						
+			"qtemplate": "2"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":61,
+		"fields":{
+			"template": 2,
+			"question": 61
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":62,
+		"fields":{
+			"form_type": "T",
+			"display_order": "6",
+			"default_value": "{\"value\":\"\"}",
+			"category": "4",
+			"accepted": "1",
+			"question": "Required spec sheets",
+			"label": "Required spec sheets",			
+			"terminology": "spec sheet",	
+			"validation_class": "required",	
+            "has_multivalues": "1",									
+			"qtemplate": "2"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":62,
+		"fields":{
+			"template": 2,
+			"question": 62
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":63,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "7",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\" , \"url_or_email_for_submissions\": \"url\" }",
+			"category": "4",
+			"accepted": "1",
+			"question": "Homeowner signature on PNM interconnect",
+			"label": "Homeowner signature on PNM interconnect",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",				
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":63,
+		"fields":{
+			"template": 2,
+			"question": 63
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":64,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "110",
+			"default_value": "{\"note\": \"\", \"disclose_issue\": \"\", \"disclose_communication\": \"\"}",
+			"category": "1",
+			"accepted": "1",
+			"question": "Homeowner requirements",
+			"label": "Homeowner requirements",
+			"template": "homeowner_requirements.html",	
+			"display_template": "homeowner_requirements_display.html",			
+			"js": "homeowner_requirements.js",	
+			"terminology": "answer",	
+            "qtemplate": "2"
+		}
+	},
+	{
+		"model": "website.TemplateQuestion",
+		"pk":64,
+		"fields":{
+			"template": 2,
+			"question": 64
+		}
+	},		
+	{
+		"model": "website.Question",
+		"pk":65,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "15",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "5",
+			"accepted": "1",
+			"question": "3-wire for large systems",
+			"label": "3-wire for large systems",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":65,
+		"fields":{
+			"template": 2,
+			"question": 65
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":66,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "8",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "3",
+			"accepted": "1",
+			"question": "Show proposed number of PV panels",
+			"label": "Show proposed number of PV panels",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",					
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":66,
+		"fields":{
+			"template": 2,
+			"question": 66
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":67,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "9",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "5",
+			"accepted": "1",
+			"question": "Ampacity of all overcurrent devices",
+			"label": "Ampacity of all overcurrent devices",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":67,
+		"fields":{
+			"template": 2,
+			"question": 67
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":68,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "10",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "5",
+			"accepted": "1",
+			"question": " Ampacity of any disconnect",
+			"label": " Ampacity of any disconnect",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":68,
+		"fields":{
+			"template": 2,
+			"question": 68
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":69,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "3",
+			"default_value": "{\"note\": \"\", \"enforced\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "6",
+			"accepted": "1",
+			"question": "Fire setbacks",
+			"label": "Fire setbacks",
+			"template": "fire_setbacks.html",
+			"js": "fire_setbacks.js",	
+			"display_template": "fire_setbacks_display.html",			
+			"terminology": "answer",						
+			"qtemplate": "2",
+            "migration_type": "enforced_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":69,
+		"fields":{
+			"template": 2,
+			"question": 69
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":70,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "8",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "4",
+			"accepted": "0",
+			"question": "Property plan",
+			"label": "Property plan",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",				
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":70,
+		"fields":{
+			"template": 2,
+			"question": 70
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":71,
+		"fields":{
+			"form_type": "T",
+			"display_order": "50",
+			"default_value": "{\"value\":\"\"}",
+			"category": "1",
+			"accepted": "1",
+			"question": "System size cap",
+			"label": "System size cap",
+			"validation_class" : "required number",
+			"field_attributes" : "maxLength='200' size='35'",
+			"terminology": "answer",	
+			"field_suffix": "kW",
+            "qtemplate": "2"
+		}
+	},
+	{
+		"model": "website.TemplateQuestion",
+		"pk":71,
+		"fields":{
+			"template": 2,
+			"question": 71
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":72,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "2",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "8",
+			"accepted": "1",
+			"question": "Meter socket",
+			"label": "Meter socket",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",			
+			"terminology": "answer",						
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":72,
+		"fields":{
+			"template": 2,
+			"question": 72
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":73,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "17",
+			"default_value": "{\"note\": \"\", \"required\": \"No\"}",
+			"category": "3",
+			"accepted": "1",
+			"question": "Include building elevation",
+			"label": "Include building elevation",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",				
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_and_note"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":73,
+		"fields":{
+			"template": 2,
+			"question": 73
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":75,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "12",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "5",
+			"accepted": "1",
+			"question": "Electrical stamp",
+			"label": "Electrical stamp",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":75,
+		"fields":{
+			"template": 2,
+			"question": 75
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":76,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "13",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "5",
+			"accepted": "1",
+			"question": "DC disconnect",
+			"label": "DC disconnect",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":76,
+		"fields":{
+			"template": 2,
+			"question": 76
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":77,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "3",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "8",
+			"accepted": "1",
+			"question": "Meter access",
+			"label": "Meter access",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",	
+			"terminology": "answer",										
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":77,
+		"fields":{
+			"template": 2,
+			"question": 77
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":78,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "9",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "4",
+			"accepted": "1",
+			"question": "License holder signature",
+			"label": "License holder signature",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",				
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":78,
+		"fields":{
+			"template": 2,
+			"question": 78
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":79,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "4",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "8",
+			"accepted": "1",
+			"question": "Include plant location map on plans",
+			"label": "Include plant location map on plans",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",					
+			"terminology": "answer",						
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":79,
+		"fields":{
+			"template": 2,
+			"question": 79
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":80,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "5",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "9",
+			"accepted": "1",
+			"question": "Submit construction permitting paperwork before zoning approval",
+			"label": "Submit construction permitting paperwork before zoning approval",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":80,
+		"fields":{
+			"template": 2,
+			"question": 80
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":81,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "9",
+			"default_value": "{\"apply\":\"in person\", \"request_by_phone\":\"\", \"request_by_fax\":\"\", \"request_by_email\":\"\",\"phone\":\"\", \"fax\":\"\", \"email\":\"\"}",
+			"category": "7",
+			"accepted": "1",
+			"instruction": "How do you request a copy of inspection approval/certification?",
+			"question": "Inspection approval copies",
+			"label": "Inspection approval copies",								
+			"terminology": "answer",
+			"template": "radio_inspection_approval_copies.html",	
+			"js": "radio_inspection_approval_copies.js",	
+			"display_template": "radio_inspection_approval_copies_display.html",								
+			"qtemplate": "2",
+            "migration_type": "request_type"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":81,
+		"fields":{
+			"template": 2,
+			"question": 81
+		}
+	},		
+	{
+		"model": "website.Question",
+		"pk":82,
+		"fields":{
+			"form_type": "T",
+			"display_order": "10",
+			"default_value": "{\"value\":\"\"}",
+			"category": "4",
+			"accepted": "1",
+			"question": "Sets of signed and sealed drawings to be submitted with construction permitting paperwork",
+			"label": "Sets of signed and sealed drawings to be submitted with construction permitting paperwork",								
+			"terminology": "answer",
+			"validation_class": "required number",		
+			"field_suffix": "sets",				
+			"qtemplate": "2"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":82,
+		"fields":{
+			"template": 2,
+			"question": 82
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":83,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "11",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "4",
+			"accepted": "1",
+			"question": "Fastening schedule on Engineering letters correlated to rafter spacing",
+			"label": "Fastening schedule on Engineering letters correlated to rafter spacing",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",			
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "radio_with_exception"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":83,
+		"fields":{
+			"template": 2,
+			"question": 83
+		}
+	},			
+	{
+		"model": "website.Question",
+		"pk":84,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "2",
+			"default_value": "{\"available\":\"no\", \"url\":\"\"}",
+			"category": "7",
+			"accepted": "1",
+			"question": "Online inspection requests",
+			"label": "Online inspection requests",
+			"template": "available_url.html",	
+			"js": "available_url.js",	
+			"display_template": "available_url_display.html",							
+			"terminology": "answer",						
+			"qtemplate": "2",
+            "migration_type": "available_url"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":84,
+		"fields":{
+			"template": 2,
+			"question": 84
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":85,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "10",
+			"default_value": "{\"mail\":\"\", \"email\":\"\", \"onsite\":\"\"}",
+			"category": "7",
+			"accepted": "1",
+			"instruction": "How do you receive signed approvals for inspections in this jurisdiction?",
+			"question": "Signed inspection approval delivery",
+			"label": "Signed inspection approval delivery",								
+			"terminology": "answer",
+			"template": "signed_inspection_approval_delivery.html",	
+			"js": "signed_inspection_approval_delivery.js",	
+			"display_template": "signed_inspection_approval_delivery_display.html",												
+			"qtemplate": "2",
+            "migration_type": "delivery_type"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":85,
+		"fields":{
+			"template": 2,
+			"question": 85
+		}
+	},		
+	{
+		"model": "website.Question",
+		"pk":86,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "3",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "11",
+			"accepted": "1",
+			"question": "Rough grounding inspection",
+			"label": "Rough grounding inspection",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",					
+			"terminology": "answer",						
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":86,
+		"fields":{
+			"template": 2,
+			"question": 86
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":88,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "1",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "9",
+			"accepted": "1",
+			"question": "Zoning department approval",
+			"label": "Zoning department approval",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",
+			"terminology": "answer",						
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":88,
+		"fields":{
+			"template": 2,
+			"question": 88
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":91,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "14",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "5",
+			"accepted": "1",
+			"question": "AC disconnect",
+			"label": "AC disconnect",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":91,
+		"fields":{
+			"template": 2,
+			"question": 91
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":92,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "5",
+			"default_value": "{\"note\": \"\", \"allowed\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "3",
+			"accepted": "1",
+			"question": "Vent spanning rules",
+			"label": "Vent spanning rules",
+			"template": "radio_vent_spanning_rules_with_exception.html",	
+			"js": "radio_vent_spanning_rules_with_exception.js",	
+			"display_template": "radio_vent_spanning_rules_with_exception_display.html",				
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "allowed_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":92,
+		"fields":{
+			"template": 2,
+			"question": 92
+		}
+	},		
+	{
+		"model": "website.Question",
+		"pk":93,
+		"fields":{
+			"form_type": "T",
+			"display_order": "5",
+			"default_value": "{\"value\":\"\"}",
+			"category": "1",
+			"accepted": "1",
+			"instruction": "What is the official name of the department in this jurisdiction that handle building permits for solar?",				
+			"question": "Permitting department name",
+			"label": "Permitting department name",
+			"validation_class" : "required",
+			"field_attributes" : "maxLength='200' size='35'",
+			"terminology": "name",	
+            "qtemplate": "2"
+		}
+	},
+	{
+		"model": "website.TemplateQuestion",
+		"pk":93,
+		"fields":{
+			"template": 2,
+			"question": 93
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":96,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "70",
+			"default_value": "{\"available\":\"no\", \"url\":\"\"}",
+			"category": "1",
+			"accepted": "1",
+			"question": "Solar permitting checklist",
+			"label": "Solar permitting checklist",
+			"template": "available_url.html",	
+			"js": "available_url.js",	
+			"display_template": "available_url_display.html",				
+			"terminology": "answer",	
+            "qtemplate": "2",
+            "migration_type": "available_url"
+		}
+	},
+	{
+		"model": "website.TemplateQuestion",
+		"pk":96,
+		"fields":{
+			"template": 2,
+			"question": 96
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":97,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "45",
+			"default_value": "{\"note\": \"\", \"plan_check_service_type\": \"Over the counter\"}",
+			"category": "1",
+			"accepted": "1",			
+			"question": "Plan-check services",
+			"label": "Plan-check services",
+			"template": "plan_check_service_type.html",
+			"display_template": "plan_check_service_type_display.html",			
+			"terminology": "service type",	
+            "qtemplate": "2",
+            "migration_type": "plan_check_service"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":97,
+		"fields":{
+			"template": 2,
+			"question": 97
+		}
+	},		 
+	{
+		"model": "website.Question",
+		"pk":98,
+		"fields":{
+			"form_type": "T",
+			"display_order": "90",
+			"default_value": "{\"value\":\"\"}",
+			"category": "1",
+			"accepted": "1",
+			"instruction": "Enter overall percentage of inspections that initially fail?",
+			"question": "Overall percentage of rejected applications",
+			"label": "Overall percentage of rejected applications",
+			"validation_class": "required number",
+			"terminology": "answer",	
+			"field_suffix": "%",
+            "qtemplate": "2"
+		}
+	},
+	{
+		"model": "website.TemplateQuestion",
+		"pk":98,
+		"fields":{
+			"template": 2,
+			"question": 98
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":99,
+		"fields":{
+			"form_type": "TA",
+			"display_order": "85",
+			"default_value": "{\"value\":\"\"}",
+			"category": "1",
+			"accepted": "1",
+			"question": "Common application errors",
+			"label": "Common application errors",
+			"validation_class": "required",			
+			"terminology": "answer",	
+            "qtemplate": "2",
+            "has_multivalues": "1"            
+		}
+	},
+	{
+		"model": "website.TemplateQuestion",
+		"pk":99,
+		"fields":{
+			"template": 2,
+			"question": 99
+		}
+	},							
+	{
+		"model": "website.Question",
+		"pk":102,
+		"fields":{
+			"form_type": "MF",
+			"answer_choice_group": "35",
+			"display_order": "95",
+			"default_value": "{\"value\":\"\"}",
+			"category": "1",
+			"accepted": "1",
+			"question": "Average system size",
+			"label": "Average system size",
+			"template": "system_size.html",				
+			"validation_class": "required number",
+			"terminology": "size",	
+			"field_suffix": "kW",			
+            "qtemplate": "2"
+		}
+	},
+	{
+		"model": "website.TemplateQuestion",
+		"pk":102,
+		"fields":{
+			"template": 2,
+			"question": 102
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":104,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "100",
+			"default_value": "{\"note\": \"\", \"available\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "1",
+			"accepted": "1",
+			"question": "Local tax exemptions for PV solar",
+			"label": "Local tax exemptions for PV solar",
+			"template": "radio_available_with_exception.html",	
+			"js": "radio_available_with_exception.js",					
+			"display_template": "radio_available_with_exception_display.html",	
+			"terminology": "answer",	
+            "qtemplate": "2",
+            "migration_type": "available_if_greater_than"
+		}
+	},
+	{
+		"model": "website.TemplateQuestion",
+		"pk":104,
+		"fields":{
+			"template": 2,
+			"question": 104
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":105,
+		"fields":{
+			"form_type": "T",
+			"display_order": "6",
+			"default_value": "{\"value\":\"\"}",
+			"category": "7",
+			"accepted": "1",
+			"instruction": "Please enter a valid URL. For example: http://www.solarpermit.org",					
+			"question": "Online inspection checklist",
+			"label": "Online inspection checklist",								
+			"terminology": "answer",
+			"display_template": "url.html",			
+			"validation_class": "required url",						
+			"qtemplate": "2"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":105,
+		"fields":{
+			"template": 2,
+			"question": 105
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":106,
+		"fields":{
+			"form_type": "T",
+			"display_order": "3",
+			"default_value": "{\"value\":\"\"}",
+			"category": "7",
+			"accepted": "1",
+			"instruction": "If it is a range of inspections (example: 1-2) please enter the highest number of inspections in the range.",			
+			"question": "Number of inspections required",
+			"label": "Number of inspections required",								
+			"terminology": "number",
+			"validation_class": "required number",				
+			"field_suffix": "inspections",		
+			"qtemplate": "2"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":106,
+		"fields":{
+			"template": 2,
+			"question": 106
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":107,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "4",
+			"default_value": "{\"note\": \"\", \"time_window\": \"8\"}",
+			"category": "7",
+			"accepted": "1",				
+			"question": "Time window for a scheduled inspection",
+			"label": "Time window for a scheduled inspection",								
+			"terminology": "time window",			
+			"template": "time_window.html",		
+			"display_template": "time_window_display.html",				
+			"qtemplate": "2",
+            "migration_type": "time_range"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":107,
+		"fields":{
+			"template": 2,
+			"question": 107
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":108,
+		"fields":{
+			"form_type": "T",
+			"display_order": "8",
+			"default_value": "{\"value\":\"\"}",
+			"category": "7",
+			"accepted": "1",
+			"instruction": "Enter overall percentage of inspections that initially fail.",
+			"question": "Overall percentage of rejected inspections",
+			"label": "Overall percentage of rejected inspections",								
+			"terminology": "answer",
+			"validation_class": "required number",		
+			"field_suffix": "%",				
+			"qtemplate": "2"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":108,
+		"fields":{
+			"template": 2,
+			"question": 108
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":109,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "1",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "6",
+			"accepted": "1",
+			"question": "Fire code review of site plan documents",
+			"label": "Fire code review of site plan documents",
+			"template": "radio_with_exception.html",
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",		
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":109,
+		"fields":{
+			"template": 2,
+			"question": 109
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":110,
+		"fields":{
+			"form_type": "TA",
+			"display_order": "7",
+			"default_value": "{\"value\":\"\"}",
+			"category": "7",
+			"accepted": "1",
+			"question": "Common reasons for inspection failure",
+			"label": "Common reasons for inspection failure",								
+			"terminology": "answer",
+			"validation_class": "required",						
+			"qtemplate": "2",
+            "has_multivalues": "1"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":110,
+		"fields":{
+			"template": 2,
+			"question": 110
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":111,
+		"fields":{
+			"form_type": "MF",
+			"answer_choice_group": "34",
+			"display_order": "80",
+			"default_value": "{\"value\":\"no\"}",
+			"category": "1",
+			"accepted": "1",
+			"question": "Department staff training in PV solar",
+			"label": "Department staff training in PV solar",
+			"template": "radio_has_training.html",		
+			"display_template": "radio_has_training_display.html",				
+			"terminology": "answer",	
+            "qtemplate": "2"
+		}
+	},
+	{
+		"model": "website.TemplateQuestion",
+		"pk":111,
+		"fields":{
+			"template": 2,
+			"question": 111
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":112,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "105",
+			"default_value": "{\"note\": \"\", \"required\": \"No\"}",
+			"category": "1",
+			"accepted": "1",
+			"question": "Licensing for solar contractors",
+			"label": "Licensing for solar contractors",
+			"description": "Besides NABCEP certification, or a required statewide license, are there any other community specific licenses required?",
+			"template": "radio_licensing_required.html",	
+			"display_template": "radio_licensing_required_display.html",				
+			"terminology": "answer",	
+            "qtemplate": "2",
+            "migration_type": "additional_licensing_required"
+		}
+	},
+	{
+		"model": "website.TemplateQuestion",
+		"pk":112,
+		"fields":{
+			"template": 2,
+			"question": 112
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":277,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "12",
+			"default_value": "{\"note\": \"\", \"required\": \"No\", \"system_rating_method\": \"\", \"equality\": \"greater than\", \"kW\": \"\", \"url_or_email_for_submissions\": \"url\"  }",
+			"category": "3",
+			"accepted": "1",
+			"question": "Include load calculations",
+			"label": "Include load calculations",
+			"template": "radio_with_exception.html",	
+			"js": "radio_with_exception.js",	
+			"display_template": "radio_with_exception_display.html",				
+			"terminology": "answer",				
+			"qtemplate": "2",
+            "migration_type": "required_if_greater_than"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":277,
+		"fields":{
+			"template": 2,
+			"question": 277
+		}
+	},		
+	{
+		"model": "website.Question",
+		"pk":278,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "2",
+			"default_value": "{\"city\": \"\", \"state\": \"\", \"zip_code\": \"\", \"address2\": \"\", \"address1\": \"\", \"county\": \"\" }",
+			"category": "9",
+			"accepted": "1",
+			"question": "Zoning department address",
+			"label": "Zoning department address",
+            "template": "address.html",
+            "display_template": "address_display.html",            
+			"terminology": "address",	
+            "qtemplate": "2",
+            "migration_type": "address"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":278,
+		"fields":{
+			"template": 2,
+			"question": 278
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":279,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "3",
+			"default_value": "{\"phone\": \"\", \"ext\": \"\"}",
+			"category": "9",
+			"accepted": "1",
+			"question": "Zoning department primary phone number",
+			"label": "Zoning department primary phone number",
+            "template": "phone.html",
+			"display_template": "phone_display.html",		            
+			"terminology": "phone number",	
+            "qtemplate": "2",
+            "migration_type": "phone"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":279,
+		"fields":{
+			"template": 2,
+			"question": 279
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":280,
+		"fields":{
+			"form_type": "T",
+			"display_order": "4",
+			"default_value": "{\"value\":\"\"}",
+			"category": "9",
+			"accepted": "1",
+			"validation_class": "required email",
+			"question": "Zoning department email",
+			"label": "Zoning department email",	
+			"instruction": "(e.g. free2rhyme@yahoo.com)",
+			"terminology": "email address",				
+			"field_attributes" : "maxLength='64'",
+            "qtemplate": "2"		
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":280,
+		"fields":{
+			"template": 2,
+			"question": 280
+		}
+	},	
+	{
+		"model": "website.Question",
+		"pk":281,
+		"fields":{
+			"form_type": "TA",
+			"display_order": "2",
+			"default_value": "{\"value\":\"\"}",
+			"category": "6",
+			"accepted": "1",
+			"question": "Fire department contact information",
+			"label": "Fire department contact information",
+			"terminology": "contact",	
+			"validation_class": "required",								
+			"qtemplate": "2"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":281,
+		"fields":{
+			"template": 2,
+			"question": 281
+		}
+	},
+	{
+		"model": "website.Question",
+		"pk":282,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "35",
+			"default_value": "{\"link_1\": \"\", \"name_1\": \"\"}",
+			"category": "1",
+			"accepted": "1",
+			"instruction": "Where are online versions of applications and forms available for this jurisdiction?",
+			"question": "Online forms",
+			"label": "Online forms",
+			"template": "online_forms.html",
+			"display_template": "url.html",			
+			"terminology": "link",
+            "has_multivalues": "1",	
+            "qtemplate": "2"		
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":282,
+		"fields":{
+			"template": 2,
+			"question": 282
+		}
+	},		 
+	{
+		"model": "website.Question",
+		"pk":283,
+		"fields":{
+			"form_type": "MF",
+			"display_order": "42",
+			"default_value": "{\"compliant\": \"yes\" }",
+			"category": "1",
+			"accepted": "1",
+			"description": "Under this bill, it's illegal for cities and counties in CA to charge more than $500 for residential solar permits unless they provide substantial evidence to support a higher cost.",
+			"instruction": "",
+			"question": "Is this AHJ compliant with CA Senate Bill 1222?",
+			"label": "Is this AHJ compliant with <a href='http://www.leginfo.ca.gov/pub/11-12/bill/sen/sb_1201-1250/sb_1222_bill_20120927_chaptered.pdf' target='_blank' >CA Senate Bill 1222</a>?",
+			"template": "radio_compliant_sb1222_with_exception.html",		
+			"display_template": "radio_compliant_sb1222_with_exception.html",				
+			"terminology": "answer",
+            "has_multivalues": "0",	
+            "qtemplate": "2",		
+            "state_exclusive": "CA"
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":283,
+		"fields":{
+			"template": 2,
+			"question": 283
+		}
+	},   
+	{
+		"model": "website.Question",
+		"pk":284,
+		"fields":{
+			"form_type": "TA",
+			"display_order": "112",
+			"default_value": "{\"value\":\"\"}",
+			"category": "1",
+			"accepted": "1",
+			"question": "Parking Information",
+			"label": "Parking Information",
+			"validation_class": "required",			
+			"terminology": "answer",	
+            "qtemplate": "2"
+		}
+	},	 
+	{
+		"model": "website.TemplateQuestion",
+		"pk":284,
+		"fields":{
+			"template": 2,
+			"question": 284
+		}
+	},  	
+	{
+		"model": "website.View",
+		"pk":1,
+		"fields":{
+			"name": "ProjectPermit",
+			"description": "ProjectPermit.org"
+		}
+	}, 		
+	{
+		"model": "website.ViewQuestions",
+		"pk":1,
+		"fields":{
+			"view": 1,
+			"question": 96,
+			"display_order": 5			
+		}
+	},    
+	{
+		"model": "website.ViewQuestions",
+		"pk":2,
+		"fields":{
+			"view": 1,
+			"question": 14,
+			"display_order": 10
+		}
+	},    
+	{
+		"model": "website.ViewQuestions",
+		"pk":3,
+		"fields":{
+			"view": 1,
+			"question": 97,
+			"display_order": 15
+		}
+	},    
+	{
+		"model": "website.ViewQuestions",
+		"pk":4,
+		"fields":{
+			"view": 1,
+			"question": 16,
+			"display_order": 20
+		}
+	},    
+	{
+		"model": "website.ViewQuestions",
+		"pk":5,
+		"fields":{
+			"view": 1,
+			"question": 112,
+			"display_order": 25
+		}
+	},    
+	{
+		"model": "website.ViewQuestions",
+		"pk":6,
+		"fields":{
+			"view": 1,
+			"question": 107,
+			"display_order": 30
+		}
+	},    
+	{
+		"model": "website.ViewQuestions",
+		"pk":7,
+		"fields":{
+			"view": 1,
+			"question": 106,
+			"display_order": 35
+		}
+	}																																		
+]		
