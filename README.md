@@ -3,9 +3,14 @@ solarpermit-1.3.30
 
 Web Based Tool for Tracking Solar Permitting Requirements in The United States
 
-===============
+
+Initial Source Release
+================
+We will be merging the previous development trunk here.  If you would like to participate in development, please join us on github or start a conversation in our forums.
+
 
 Install Instructions
+================
 
 1.  Install Dependencies
     A. Apache 2
