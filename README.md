@@ -1,6 +1,8 @@
 solarpermit-1.3.30
 ===============
+
 Web Based Tool for Tracking Solar Permitting Requirements in The United States
+
 ===============
 
 Install Instructions
