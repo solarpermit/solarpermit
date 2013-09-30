@@ -1,0 +1,22 @@
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form')  | truncate(30, True) }}
+			</div>
+			
+			{% else %}
+			
+			<div  >         
+				{% if answer_content.get('available') == 'yes'  or answer_content.get('available') == 'Yes'%}	
+
+            		{% if answer_content.get('url') != None %}
+				<a href="{{answer_content.get('url')}}" target='_blank' >{{answer_content.get('url') | truncate(30, True) }}</a>   			
+            		{% else %}
+            			url is missing.
+            		{% endif %}	
+            
+            	{% else %}
+            	Not available
+             	{% endif %}
+            </div>
+            
+			{% endif %}		            

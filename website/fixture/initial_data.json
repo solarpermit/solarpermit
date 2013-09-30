@@ -2568,7 +2568,7 @@
 			"js": "available_url.js",	
 			"display_template": "available_url_display.html",				
 			"terminology": "answer",	
-            "qtemplate": "2",
+            "qtemplate": "2",          
             "migration_type": "available_url"
 		}
 	},
@@ -2722,9 +2722,10 @@
 			"accepted": "1",
 			"instruction": "Please enter a valid URL. For example: http://www.solarpermit.org",					
 			"question": "Online inspection checklist",
-			"label": "Online inspection checklist",								
+			"label": "Inspection checklist",								
 			"terminology": "answer",
 			"display_template": "url.html",			
+            "has_multivalues": "1",				
 			"validation_class": "required url",						
 			"qtemplate": "2"
 		}
@@ -3060,7 +3061,7 @@
 			"accepted": "1",
 			"instruction": "Where are online versions of applications and forms available for this jurisdiction?",
 			"question": "Online forms",
-			"label": "Online forms",
+			"label": "Forms",
 			"template": "online_forms.html",
 			"display_template": "url.html",			
 			"terminology": "link",
@@ -3128,7 +3129,35 @@
 			"template": 2,
 			"question": 284
 		}
-	},  	
+	}, 	
+	{
+		"model": "website.Question",
+		"pk":285,
+		"fields":{
+			"form_type": "T",
+			"display_order": "112",
+			"default_value": "{\"value\":\"\"}",
+			"category": "1",
+			"accepted": "1",
+			"instruction": "Please enter a valid URL. For example: http://www.solarpermit.org",
+			"question": "Relevant Links",
+			"label": "Relevant Links",
+			"validation_class" : "required",		
+			"validation_class": "required url",		
+			"display_template": "url.html",
+			"terminology": "link",
+            "has_multivalues": "1",	
+            "qtemplate": "2"		
+		}
+	}, 		
+	{
+		"model": "website.TemplateQuestion",
+		"pk":285,
+		"fields":{
+			"template": 2,
+			"question": 285
+		}
+	},			
 	{
 		"model": "website.View",
 		"pk":1,

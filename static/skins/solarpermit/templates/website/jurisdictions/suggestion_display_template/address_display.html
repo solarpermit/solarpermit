@@ -1,0 +1,27 @@
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			
+			<div>
+
+			{% if answer_content.get('address1')  !='' and answer_content.get('address1')  != None %}
+            {{answer_content.get('address1')}},
+            {% endif %}
+			{% if answer_content.get('address2')  !='' and answer_content.get('address2')  != None %}
+            {{answer_content.get('address2')}},
+            {% endif %}
+			{% if answer_content.get('city')  !='' and answer_content.get('city')  != None %}
+            {{answer_content.get('city')}},
+            {% endif %}
+            {{answer_content.get('state')}}
+            {{answer_content.get('zip_code')}}     
+                 
+                    
+            </div>
+           
+
+			{% endif %}		           

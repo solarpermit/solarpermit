@@ -1,0 +1,17 @@
+    <div class="form_field">
+            <div class="field">
+                <select name="{{name}}" id="{{id}}"  class="{{class}}" style="{{style}}" {{attribute}} >
+                {% for item in dropdown %}
+                <option value="{{item[1]}}" {% if value == item[1] %}selected{% endif %} >{{item[1]}}</option>               
+                {% endfor %}
+                </select>
+            </div>        
+            <div class="field_help_text">
+                {{help_text}}
+            </div>
+            <div class="error_div">
+                {{msg_error}}
+            </div>
+    </div>
+
+        

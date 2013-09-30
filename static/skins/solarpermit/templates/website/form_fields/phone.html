@@ -1,0 +1,25 @@
+
+            <div class="form_field" >
+                <div class="label">{{question_label}}:</div>         
+                <div class="field">
+                    <input type="text" name="field_phone" id="{{form_id}}_field_phone" value="{{phone}}" class="required phoneUS" style="width:210px" maxLength="64" >
+                </div>       
+                <div class="field_help_text">
+                    Example: (555) 555-5555
+                </div>                
+                <div class="error_div"></div>     
+            </div>     
+                                
+            <div class="form_field" >
+                <div class="label">Extension:</div>        
+                <div class="field">
+                    <input size="10" maxLength="10" type="text" name="field_ext" id="{{form_id}}_field_ext" value="{{ext}}" class=""  >
+                </div> 
+                <div class="field_help_text">
+                    Optional
+                </div>                  
+                <div class="error_div"></div>              
+            </div>
+            <div class="field_help_text" style="padding-bottom:5px;">
+                {{instruction}}
+            </div>              

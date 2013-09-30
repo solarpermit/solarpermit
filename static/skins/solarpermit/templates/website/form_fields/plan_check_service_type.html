@@ -1,0 +1,18 @@
+
+            <div class="form_field" >     
+                <div class="label">{{question_label}}:</div>     
+                <div class="field">
+                   <input type="radio" name="field_plan_check_service_type" value="over the counter"  {% if plan_check_service_type == 'over the counter' or plan_check_service_type == 'Over the counter' %}checked{% endif %} >Over the counter
+                   <br/><input type="radio" name="field_plan_check_service_type" value="outsourced"  {% if plan_check_service_type == 'outsourced'  or plan_check_service_type == 'Outsourced' %}checked{% endif %}>Outsourced
+                   <br/><input type="radio" name="field_plan_check_service_type" value="in-house" {% if plan_check_service_type == 'in-house' or plan_check_service_type == 'In-house' %}checked{% endif %}>In-house (not same day)
+                </div>                              
+            </div>
+            <div class="form_field" >            
+                <div class="label">Notes:</div>
+                <div class="field">
+                    <textarea name="field_note" id="{{form_id}}_field_note" rows="5" cols="30">{{note}}</textarea>
+                </div>
+            </div>                            
+            <div class="field_help_text" style="padding-bottom:5px;">
+                {{instruction}}
+            </div>         

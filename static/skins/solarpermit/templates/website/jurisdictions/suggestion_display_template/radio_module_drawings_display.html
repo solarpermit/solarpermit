@@ -1,0 +1,20 @@
+			
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			
+			<div  >         
+				{% if answer_content.get('value') == 'must draw individual modules' or answer_content.get('value') == 'Must draw individual modules' %}
+					Must draw individual modules
+				{% elif answer_content.get('value') == 'n in series in a rectangle allowed' or answer_content.get('value') == 'N in series in a rectangle allowed'  %}	
+                    "N in series" in a rectangle allowed
+                {% else %}
+                	TBD
+                {% endif %}
+            </div>
+
+			{% endif %}		            

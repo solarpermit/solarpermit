@@ -1,0 +1,26 @@
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			
+			<div  >         
+				{% if answer_content.get('required') == 'no' or answer_content.get('required') == 'No' %}
+					Additional licensing beyond a business license is not required
+				{% elif answer_content.get('required') == 'yes'  or answer_content.get('required') == 'Yes' %}	
+                    Additional licensing beyond a business license is required
+                {% else %}
+                	TBD
+                {% endif %}
+            </div>
+            
+            <div >
+            {% if answer_content.get('note') != None %}
+            	{{answer_content.get('note') | replace('\n', '<br/>')}}
+            {% endif %}
+            </div>
+            
+
+			{% endif %}		            

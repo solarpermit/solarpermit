@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Site Map{% endblock %}
+
+{% block body %}
+<div class="contentOnlyPage">
+	<span><a href="/sitemap/">Site Map</a></span> > <span><a href="/sitemap/states/">Jurisdictions by State</a></span>
+	<h1>Jurisdictions in {{state_name}}</h1>
+	<div>
+		{% if list_exist %}
+			{% include list_template %}
+		{% else %}
+			<div>List of jurisdictions has not been generated yet. Run /runCron/sitemap/ to generate.</div>
+		{% endif %}
+	</div>
+</div>
+
+{% endblock %}

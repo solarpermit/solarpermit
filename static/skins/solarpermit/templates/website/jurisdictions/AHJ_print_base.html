@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- template base.html -->
+
+<head>
+	<title>{% block title %}{% endblock %} </title>
+	<meta charset="utf-8">
+{% include "website/blocks/canonical_url.html" %}
+
+	{% block forestyle %}{% endblock %}
+
+	
+	{% include "website/fancybox_stylesheets.html" %}
+	<link rel="stylesheet" type="text/css" href="/media/style/main.css" />
+	<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css" />
+	<link rel="stylesheet" type="text/css" href="/media/style/jquery-ui-1.10.1.custom.css" />
+	<link href="/media/style/fileuploader.css" rel="stylesheet" type="text/css" />	
+	
+	
+	<script type="text/javascript" src="/media/js/jquery-1.7.2.min.js"></script>	
+	<script type="text/javascript" src="/media/js/jquery.validate.js"></script>
+	<script type="text/javascript" src="/media/js/additional-methods.js"></script>
+	<script type="text/javascript" src="/media/js/jquery.simplemodal.js"></script>
+	<script type="text/javascript" src="/media/js/jquery.jscroll.custom.js"></script>	
+	<script type="text/javascript" src="/media/js/controller.js"></script>
+	<script type="text/javascript" src="/media/js/jquery.dajax.core.js"></script>
+	<script type="text/javascript" src="/media/js/jquery-ui-1.10.1.custom.min.js"></script>
+	<script type='text/javascript' src="/media/js/fileuploader.js"></script>	
+	{% block forejs %}{% endblock %}
+	<script type="text/javascript">
+		var js_csrf = '{{csrf_token}}';
+		
+		/*$(document).keyup(function(event) {
+		    var keycode = (event.keyCode ? event.keyCode : event.which);
+		    if(keycode == '13') 
+		    {   
+			   try
+			  	{
+		       		controller.submitForm('#'+document.activeElement.form.id);
+		       		return false;
+		       }
+		       catch(err)
+		       {
+			
+			   }
+		    }
+		});*/
+		
+		function show_hide_profile_action()
+		{	
+			obj = document.getElementById('profile_actions');
+			obj_img = document.getElementById('profile_action_indicator');
+			
+		   	if (obj.style.visbility == 'visible')
+		   	{
+			  	
+			  	obj.style.display = 'none';
+		    	obj.style.visbility = 'hidden';
+		    	obj_img.src = '/media/images/arrow_right.png';
+		 	}
+		    else
+		   	{
+			  	
+			  	obj.style.display = 'block';
+		      	obj.style.visbility = 'visible';   
+		      	obj_img.src = '/media/images/arrow_down.png';        
+		    } 
+		
+		}
+		
+		function show_hide_page_action()
+		{	
+			obj = document.getElementById('page_action_items');
+			obj_img = document.getElementById('page_action_indicator');
+			
+		   	if (obj.style.visbility == 'visible')
+		   	{
+			  	
+			  	obj.style.display = 'none';
+		    	obj.style.visbility = 'hidden';
+		    	obj_img.src = '/media/images/arrow_right.png';
+		 	}
+		    else
+		   	{
+			  	
+			  	obj.style.display = 'block';
+		      	obj.style.visbility = 'visible';   
+		      	obj_img.src = '/media/images/arrow_down.png';        
+		    } 
+		
+		}	
+		
+		function hide_page_action()
+		{	
+			obj = document.getElementById('page_action_items');
+			obj_img = document.getElementById('page_action_indicator');
+			
+			obj.style.display = 'none';
+		    obj.style.visbility = 'hidden';
+		    obj_img.src = '/media/images/arrow_right.png';
+		
+		}				
+	
+		function close_simple_popup(div)
+		{
+			obj = document.getElementById(div);
+			obj.innerHTML = '';
+			obj.style.display='none';		
+		}	
+		
+		function open_simple_popup(id, div)
+		{
+			obj = document.getElementById(div);
+			if (obj.style.display == 'none')
+			{
+				var left = $('#id_'+id).position().left + 5;
+				var top = $('#id_'+id).position().top + 20;   
+				obj.style.left = left+'px';
+				obj.style.top = top+'px';
+				document.getElementById(div).style.display='block';
+			}
+			else
+			{
+				document.getElementById(div).style.display='none';
+			}	
+		}			
+		
+	
+		var org_id = 0;
+		var member_id = 0;
+		function set_org_id(orgid)
+		{
+			org_id = orgid;
+		}
+		
+		function set_member_id(memberid)
+		{
+			member_id = memberid;
+		}
+				
+		function cancel_request()
+		{
+			controller.postRequest('/organization/', {ajax: 'cancel_org_request', orgid: org_id, caller:'user_profile'});
+		}
+		    
+		function cancel_my_request (org_name, org_id)
+		{
+		        controller.showConfirm({
+		            title: 'Do you want to cancel your request to join  '+org_name+'?',
+		            message: '<br>',
+		            proceedText: 'Yes, cancel my request',
+		            cancelText: 'No, do not cancel my request',
+		            callback: cancel_request
+		        });
+		}
+		
+		function remove_request()
+		{
+			controller.postRequest('/organization/', {ajax: 'remove_from_my_profile', mid: member_id, caller:'user_profile'});
+		}
+		    
+		function remove_from_my_profile (org_name, org_id)
+		{
+		        controller.showConfirm({
+		            title: 'Do you want to remove  '+org_name+' from your profile?',
+		            message: '<br>',
+		            proceedText: 'Remove from My Profile ',
+		            cancelText: 'Cancel',
+		            callback: remove_request
+		        });
+		}	
+		
+		function accept_invitation()
+		{
+			controller.postRequest('/organization/', {ajax: 'accept_invite', mid: member_id, caller:'user_profile'});
+		}
+		    
+		function accept_invite (org_name, org_id)
+		{
+		        controller.showConfirm({
+		            title: 'Do you want to accept the invitation to join  '+org_name+'?',
+		            message: '<br>',
+		            proceedText: 'I accept ',
+		            cancelText: 'Cancel',
+		            callback: accept_invitation
+		        });
+		}			
+		
+		function decline_invitation()
+		{
+			controller.postRequest('/organization/', {ajax: 'decline_invite', mid: member_id, caller:'user_profile'});
+		}
+		    
+		function decline_invite (org_name, org_id)
+		{
+		        controller.showConfirm({
+		            title: 'Do you want to decline the invitation to join  '+org_name+'?',
+		            message: '<br>',
+		            proceedText: 'I decline ',
+		            cancelText: 'Cancel',
+		            callback: decline_invitation
+		        });
+		}					
+					
+		function show_data(data_obj_id, edit_option_id)
+		{   
+			document.getElementById(data_obj_id).className = 'show_data';
+			document.getElementById(edit_option_id).style.visibility = 'hidden';			
+			return false;
+		}
+	
+		function show_edit_option(data_obj_id, edit_option_id)
+		{   
+			document.getElementById(data_obj_id).className = 'show_edit_option';
+			document.getElementById(edit_option_id).style.visibility = 'visible';
+			document.getElementById(edit_option_id).style.display = 'block';				
+			return false;
+		}
+		
+		function switch_to_edit(data_obj_id, edit_obj_id)
+		{   
+			$('#'+edit_obj_id).show();
+			$('#'+data_obj_id).hide();
+		
+			return false;
+		}		
+		
+		function switch_to_data(data_obj_id, edit_obj_id)
+		{   
+			$('#'+edit_obj_id).hide();
+			$('#'+data_obj_id).show();
+
+			return false;
+		}	
+		
+		function submit_edit(form_id, field_name)
+		{	//alert(field_name);
+			document.getElementById('name').value = field_name;
+			controller.submitForm('#'+form_id);		
+			return false;
+		}		
+	
+		function onload(action_key)
+		{	
+			if (action_key == 'reset_password')
+			{	
+				controller.postRequest('.', {ajax: 'launch_reset_password', reset_password_key: '{{reset_password_key}}'}); 
+			}
+		
+			if (action_key == 'create_account')
+			{	
+				controller.postRequest('/account/', {ajax: 'create_account', invitation_key: '{{invitation_key}}'}); 
+			}		
+		
+			if (action_key == "user_profile")
+			{
+				controller.postRequest('/account/', {ajax: 'user_profile'});
+			}
+		
+			controller.showMessage('{{system_message_text}}', '{{system_message_type}}');
+	
+		}
+
+	</script>
+</head>
+
+<body onLoad="onload('{{action_key}}');" style="bakground-color: #fff;">
+<div id="print-main">
+<div class='page_title'>
+        {% block page_title %}{% endblock%}
+        
+</div>		
+
+<div id="top_main_content" >
+{% block top_main_content %}{% endblock %}
+</div>
+
+
+<div id="main_content" class="main_content" >
+{% block body %}
+{% endblock %}
+</div>
+{% include "website/jurisdictions/AHJ_print_footer.html" %}
+
+{% block endjs %}
+{% endblock %}
+
+
+{% include "website/fancybox_scripts.html" %}
+</div>
+</body>
+</html>
+<!-- end template base.html -->

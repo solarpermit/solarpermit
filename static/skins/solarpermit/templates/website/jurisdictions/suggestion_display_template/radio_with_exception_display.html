@@ -1,0 +1,39 @@
+			
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			
+				<div>         
+					{% if answer_content.get('required') == 'no' or answer_content.get('required') == 'No' %}
+						Not required
+					{% elif answer_content.get('required') == 'yes'  or answer_content.get('required') == 'Yes' %}	
+	                    Required
+	                {% elif answer_content.get('required') == 'yes, with exceptions' or answer_content.get('required') == 'Yes, with exceptions'  %}	
+	                   Required with exceptions
+	                {% else %}
+	                	TBD
+	                {% endif %}
+	            </div>
+            
+            
+				{% if answer_content.get('required') == 'yes, with exceptions' or answer_content.get('required') == 'Yes, with exceptions'  %}	
+	            
+					<div >
+					{% if answer_content.get('depends_on_system_rating') == 'yes' or answer_content.get('depends_on_system_rating') == 'Yes'   %}
+						Depends on system rating: {{answer_content.get('equality')}}  {{answer_content.get('kW')}} by {{answer_content.get('system_rating_method')}}
+					{% endif %}
+					</div>
+					            
+		            <div >
+		            {% if answer_content.get('note') != None %}
+		            	{{answer_content.get('note') | replace('\n', '<br/>')}}
+		            {% endif %}
+		            </div>
+	            
+	            {% endif %}
+
+			{% endif %}			

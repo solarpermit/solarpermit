@@ -1,0 +1,15 @@
+    <div class="form_field">
+            <div class="field">
+                {% for item in options %}
+                <input type='radio' name="{{name}}" id="{{id}}_{{item[0]}}"  class="{{class}}" style="{{style}}" {{attribute}} value="{{item[0]}}" {% if value == item[0] %}checked{% endif %} >{{item[1]}}  <br/>           
+                {% endfor %}
+            </div>        
+            <div class="field_help_text">
+                {{help_text}}
+            </div>
+            <div class="error_div">
+                {{msg_error}}
+            </div>
+    </div>
+
+        

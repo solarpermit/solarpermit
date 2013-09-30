@@ -1,0 +1,70 @@
+
+            <div class="form_field" >        
+                <div class="label">from:</div>
+                <div class="field">
+                    <select name="field_from_hour" >
+                        <option value="1" {% if from_hour == "1" %}selected{% endif%}>1</option>
+                        <option value="2" {% if from_hour == "2" %}selected{% endif%}>2</option>
+                        <option value="3" {% if from_hour == "3" %}selected{% endif%}>3</option>
+                        <option value="4" {% if from_hour == "4" %}selected{% endif%}>4</option>
+                        <option value="5" {% if from_hour == "5" %}selected{% endif%}>5</option>
+                        <option value="6" {% if from_hour == "6" %}selected{% endif%}>6</option>
+                        <option value="7" {% if from_hour == "7" %}selected{% endif%}>7</option>
+                        <option value="8" {% if from_hour == "8" %}selected{% endif%}>8</option>
+                        <option value="9" {% if from_hour == "9" %}selected{% endif%} >9</option>
+                        <option value="10" {% if from_hour == "10" %}selected{% endif%}>10</option>
+                        <option value="11" {% if from_hour == "11" %}selected{% endif%}>11</option>
+                        <option value="12" {% if from_hour == "12" %}selected{% endif%}>12</option>
+                    </select>
+                     <select name="field_from_min" >
+                        <option value="00" {% if from_min == "00" %}selected{% endif %}>00</option>
+                        <option value="15" {% if from_min == "15" %}selected{% endif %}>15</option>
+                        <option value="30" {% if from_min == "30" %}selected{% endif %}>30</option>
+                        <option value="45" {% if from_min == "45" %}selected{% endif %}>45</option>
+                    </select>  
+                     <select name="field_from_am_pm" >
+                        <option value="am" {% if from_am_pm == "am"  or from_am_pm == 'AM' %}selected{% endif %} >am</option>
+                        <option value="pm" {% if from_am_pm == "pm"  or from_am_pm == 'PM' %}selected{% endif %}>pm</option>
+                    </select>    
+                </div>                              
+            </div>
+            <div class="form_field" >            
+                <div class="label">to:</div>
+                <div class="field">
+                    <select name="field_to_hour" >
+                        <option value="1" {% if to_hour == "1" %}selected{% endif%}>1</option>
+                        <option value="2" {% if to_hour == "2" %}selected{% endif%}>2</option>
+                        <option value="3" {% if to_hour == "3" %}selected{% endif%}>3</option>
+                        <option value="4" {% if to_hour == "4" %}selected{% endif%}>4</option>
+                        <option value="5" {% if to_hour == "5" %}selected{% endif%} >5</option>
+                        <option value="6" {% if to_hour == "6" %}selected{% endif%}>6</option>
+                        <option value="7" {% if to_hour == "7" %}selected{% endif%}>7</option>
+                        <option value="8" {% if to_hour == "8" %}selected{% endif%}>8</option>
+                        <option value="9" {% if to_hour == "9" %}selected{% endif%}>9</option>
+                        <option value="10" {% if to_hour == "10" %}selected{% endif%}>10</option>
+                        <option value="11" {% if to_hour == "11" %}selected{% endif%}>11</option>
+                        <option value="12" {% if to_hour == "12" %}selected{% endif%}>12</option>
+                    </select>
+                     <select name="field_to_min" >
+                        <option value="00" {% if to_min == "00" %}selected{% endif %} >00</option>
+                        <option value="15" {% if to_min == "15" %}selected{% endif %}>15</option>
+                        <option value="30" {% if to_min == "30" %}selected{% endif %}>30</option>
+                        <option value="45" {% if to_min == "45" %}selected{% endif %}>45</option>
+                    </select>  
+                     <select name="field_to_am_pm" >
+                        <option value="am" {% if to_am_pm == "am" or to_am_pm == "AM"%}selected{% endif %}>am</option>
+                        <option value="pm" {% if to_am_pm == "pm" or to_am_pm == "PM"%}selected{% endif %} >pm</option>
+                    </select>   
+                </div>                                            
+            </div>
+            <div class="field_help_text" style="padding-bottom:5px;">
+                {{instruction}}
+            </div>             
+            <div class="form_field" >            
+                <div class="label">Notes:</div>
+                <div class="field">
+                    <textarea name="field_note" id="{{form_id}}_field_note" rows="5" cols="30">{{note}}</textarea>
+                </div>
+            </div>                         
+              
+        

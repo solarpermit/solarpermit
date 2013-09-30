@@ -1,0 +1,158 @@
+<table width="100%" id="fee_{{answer_id}}" border="0" >
+
+
+{% for fee_type in fee_types %}
+    {% set fee_type_name = fee_answer.get('fee_type_'+fee_type) %}
+    <!-- dummy placeholder for feeitem - start -->
+    <input type="hidden" name="field_fee_type_{{fee_type}}" id="{{form_id}}_field_fee_type_{{fee_type}}" value="{{fee_type_name}}"  >
+    <!-- dummy placeholder for feeitem - end -->    
+    {#
+    <tr>
+        <td width="100%" colspan="2">
+            <div class="form_field" >
+                <div class="label">Fee type:</div>        
+                <div class="field">
+                    <input type="text" name="field_fee_type_{{fee_type}}" id="{{form_id}}_field_fee_type_{{fee_type}}" value="{{fee_type_name}}" class="required" style="width:190px" maxLength="200" >
+                </div>   
+                <div class="field_help_text" >
+                    Enter the name of the fee type
+                </div>                   
+                <div class="error_div"></div>               
+            </div>     
+        </td>
+    </tr>
+    #}
+    {% for fee_item_id in fee_items.get(fee_type) %}
+        {% set fee_item_key = fee_type + '_' + fee_item_id %}
+        {% set fee_item = fee_answer.get('fee_item_'+fee_item_key) %}
+        {% set fee_formula = fee_answer.get('fee_formula_'+fee_item_key) %}
+        {% set fee_flat_rate = fee_answer.get('fee_flat_rate_'+fee_item_key) %}
+        {% set fee_percentage_of_total_system_cost = fee_answer.get('fee_percentage_of_total_system_cost_'+fee_item_key) %}
+        {% set fee_percentage_of_total_system_cost_cap = fee_answer.get('fee_percentage_of_total_system_cost_cap_'+fee_item_key) %}
+        {% set fee_percentage_of_total_system_cost_cap_amt = fee_answer.get('fee_percentage_of_total_system_cost_cap_amt_'+fee_item_key) %}
+        {% set fee_per_inverter = fee_answer.get('fee_per_inverter_'+fee_item_key) %}
+        {% set fee_per_module = fee_answer.get('fee_per_module_'+fee_item_key) %}
+        {% set fee_per_major_components = fee_answer.get('fee_per_major_components_'+fee_item_key) %}                                                        
+        {% set fee_per_component_cap = fee_answer.get('fee_per_component_cap_'+fee_item_key) %}
+        {% set fee_per_component_cap_cap_amt = fee_answer.get('fee_per_component_cap_cap_amt_'+fee_item_key) %}
+        {% set fee_jurisdiction_cost_recovery_notes = fee_answer.get('fee_jurisdiction_cost_recovery_notes_'+fee_item_key) %}    
+        {% set fee_other = fee_answer.get('fee_other_'+fee_item_key) %}                       
+
+    <tr>
+    {#
+        <td width="50%" valign="top">
+            <div class="form_field" >
+                <div class="label">Fee item:</div>        
+                <div class="field">
+                    <input type="text" name="field_fee_item_{{fee_item_key}}" id="{{form_id}}_field_fee_item_{{fee_item_key}}" value="{{fee_item}}" class="required" style="width:190px" maxLength="200" >                
+                </div>   
+                <div class="field_help_text" >
+                    Enter the name of the fee item
+                </div>                   
+                <div class="error_div"></div>                 
+            </div>  
+        </td>
+    #}
+        <td width="100%" valign="top" colspan="2">
+        <!-- dummy placeholder for feeitem - start -->
+        <input type="hidden" name="field_fee_item_{{fee_item_key}}" id="{{form_id}}_field_fee_item_{{fee_item_key}}" value="{{fee_item}}"  >                
+        <!-- dummy placeholder for feeitem - end -->
+            <div class="form_field" id="fee_formulas_{{fee_item_key}}" > 
+                <div class="label">Formula:</div>         
+                <div class="field">
+                    <select name="field_fee_formula_{{fee_item_key}}" id="select_fee_formula_{{fee_item_key}}" class="select_fee_formula" >
+                        <option value="flat_rate" selected {% if fee_formula == 'flat_rate' %}selected{% endif %} >Flat Rate</option>
+                        <option value="percentage_of_total_system_cost" {% if fee_formula == 'percentage_of_total_system_cost' %}selected{% endif %} >Percentage of total system cost</option>
+                        <option value="fee_per_component"  {% if fee_formula == 'fee_per_component' %}selected{% endif %} >Fee per component</option>
+                        <option value="jurisdiction_cost_recovery" {% if fee_formula == 'jurisdiction_cost_recovery' %}selected{% endif %} >Jurisdiction cost recovery</option>
+                        <option value="other" {% if fee_formula == 'other' %}selected{% endif %} >Other</option>
+                    </select>
+                </div>                              
+            </div>         
+            
+            <div id="fee_details_{{fee_item_key}}" >
+                <div class="form_field" >   
+                             
+        {% if fee_formula == 'flat_rate' %}    
+                    <div class="field">
+                    $ <input type="text" name="field_fee_flat_rate_{{fee_item_key}}" id="{{form_id}}_field_fee_flat_rate_{{fee_item_key}}" value="{% if fee_flat_rate != None %}{{fee_flat_rate}}{% endif %}" class="required number" style="width:50px" maxLength="50" >          
+                    </div>
+                    <div class="field_help_text" >
+                        Enter the flat rate fee.
+                    </div>                       
+        {% elif fee_formula == 'percentage_of_total_system_cost' %}    
+                    <div class="field">        
+                    <input type="text" name="field_fee_percentage_of_total_system_cost_{{fee_item_key}}" id="{{form_id}}_field_fee_percentage_of_total_system_cost_{{fee_item_key}}" value="{% if fee_percentage_of_total_system_cost != None %}{{fee_percentage_of_total_system_cost}}{% endif %}" class="required number" style="width:50px" maxLength="50" > %         
+                    </div>
+                    <div class="field">
+                    <input type="checkbox" name="field_fee_percentage_of_total_system_cost_cap_{{fee_item_key}}" id="{{form_id}}_field_fee_percentage_of_total_system_cost_cap_{{fee_item_key}}" value="yes" {% if fee_percentage_of_total_system_cost_cap == 'yes' %}checked{% endif %} >This cost is capped at $ <input type="text" name="field_fee_percentage_of_total_system_cost_cap_amt_{{fee_item_key}}" id="{{form_id}}_field_fee_percentage_of_total_system_cost_cap_amt_{{fee_item_key}}" value="{% if fee_percentage_of_total_system_cost_cap_amt != None %}{{fee_percentage_of_total_system_cost_cap_amt}}{% endif %}" class="number" style="width:50px" maxLength="50" >         
+                    </div>
+                    <div class="field_help_text" >
+                        Enter the percentage of total system, and the cap amount, if necessary.
+                    </div>   
+        {% elif fee_formula == 'fee_per_component' %}  
+                    <div class="field">
+                    $ <input type="text" name="field_fee_per_inverter_{{fee_item_key}}" id="{{form_id}}_field_fee_per_inverter_{{fee_item_key}}" value="{% if fee_per_inverter != None %}{{fee_per_inverter}}{% endif %}" class="required number" style="width:50px" maxLength="50" > per inverter
+                    </div>
+                    <div class="field">
+                    $ <input type="text" name="field_fee_per_module_{{fee_item_key}}" id="{{form_id}}_field_fee_per_module_{{fee_item_key}}" value="{% if fee_per_module != None %}{{fee_per_module}}{% endif %}" class="required number" style="width:50px" maxLength="50" > per module
+                    </div>
+                    <div class="field">
+                    $ <input type="text" name="field_fee_per_major_components_{{fee_item_key}}" id="{{form_id}}_field_fee_per_major_components_{{fee_item_key}}" value="{% if fee_per_major_components != None %}{{fee_per_major_components}}{% endif %}" class="required number" style="width:50px" maxLength="50" > per other major components 
+                    </div>                                                   
+                    <div class="field">
+                        <input type="checkbox" name="field_fee_per_component_cap_{{fee_item_key}}" id="{{form_id}}_field_fee_per_component_cap_{{fee_item_key}}" value="yes" {% if fee_per_component_cap == 'yes' %}checked{% endif %}  >This cost is capped at $ <input type="text" name="field_fee_per_component_cap_cap_amt_{{fee_item_key}}" id="{{form_id}}_field_fee_per_component_cap_cap_amt_{{fee_item_key}}" value="{% if fee_per_component_cap_cap_amt != None %}{{fee_per_component_cap_cap_amt}}{% endif %}" class="number" style="width:50px" maxLength="50" >         
+                    </div>
+                    <div class="field_help_text" >
+                        Enter the fee per component, and the cap amount, if necessary.
+                    </div>                      
+                    
+        {% elif fee_formula == 'jurisdiction_cost_recovery' %}
+                    <div class="field">
+                        <textarea name="field_fee_jurisdiction_cost_recovery_notes_{{fee_item_key}}" id="{{form_id}}_field_fee_jurisdiction_cost_recovery_notes_{{fee_item_key}}" rows="3" cols="25" class="required " >{% if fee_jurisdiction_cost_recovery_notes != None %}{{fee_jurisdiction_cost_recovery_notes | replace('\n', '&#013') | safe }}{% endif %}</textarea>
+                    </div>
+                    <div class="field_help_text" >
+                        Enter the jurisdiction cost recovery notes.
+                    </div>                      
+        {% else %}       
+                    <div class="field">
+                        <textarea name="field_fee_other_{{fee_item_key}}" id="{{form_id}}_field_fee_other_{{fee_item_key}}" rows="3" cols="25" class="required " >{% if fee_other != None %}{{fee_other | replace('\n', '&#013') | safe }}{% endif %}</textarea>                
+                    </div>   
+                    <div class="field_help_text" >
+                        Enter the fee amt, calculation, etc...
+                    </div>                   
+                                 
+
+            {% endif %} 
+                    <div class="error_div"></div>    
+                    <div id="fee_per_component_error_{{fee_item_key}}" class="unique_error_div" ></div>    
+                </div>       
+            </div>
+        </td>
+    </tr>   
+    {% endfor %} 
+    <tr id="add_another_fee_item_btn_{{fee_type}}_tr">
+        <td width="100%" colspan="2">
+            <div class="form_field" >
+                <input type="button" name="add_another_fee_item_btn_{{fee_type}}"  id="add_another_fee_item_btn_{{fee_type}}" class="smallbutton"  title=""  value="+ Add another cost" >            
+            </div>     
+        </td>
+    </tr>  
+    {#
+    <tr>
+        <td width="100%" colspan="2">
+            <hr>    
+        </td>
+    </tr> 
+    #}      
+{% endfor %}
+</table>  
+        {#}
+        <div id="add_another_btn_div" style='display:block;padding:15px 0 15px 0;'> 
+            <input type="button" name="add_another_fee_type_btn"  id="add_another_fee_type_btn" class="smallbutton"  title="" value="+ Add another fee type" >
+        </div>    
+         #}   
+        <div class="field_help_text" style="padding-bottom:5px;">
+            {{instruction}}
+        </div>   
+            

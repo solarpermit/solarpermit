@@ -1,0 +1,22 @@
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			
+			<div>
+                 {{answer_content.get('from_hour')}}:{{answer_content.get('from_min')}} {{answer_content.get('from_am_pm')}} -  
+				 {{answer_content.get('to_hour')}}:{{answer_content.get('to_min')}} {{answer_content.get('to_am_pm')}} 
+                          
+            </div>
+            
+		   <div >
+			{% if answer_content.get('note') != None %}
+				{{answer_content.get('note') | replace('\n', '<br/>')}}
+			{% endif %}
+			</div>       
+           
+
+			{% endif %}		           

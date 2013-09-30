@@ -1,0 +1,59 @@
+{# added distinction to id, in order prevent duplicates -RG #}    <div  class="qasv_content" id="child_of_div_{{question_id}}"  >
+        <div class="label"  >
+            {{question_label}}
+        </div>  
+            
+         <div class="data" id="qa_{{question_id}}_data" >
+             <div class="prompt" >{{prompt}}</div>       
+            
+            {% if approved | length > 0 %}
+            <table class="suggestion_table"  >
+                {% for answer_key in approved.keys() %}
+                 <tr >
+                    <td class="suggestion_left">
+                  
+                    {% if approved.get(answer_key).get('suggestion_header') %}
+                    <div class="label suggestion_header">{{approved.get(answer_key).get('suggestion_header')}}</div>   
+                    {% endif %} 
+                    
+                    {% if approved.get(answer_key).get('formatted_answer') %}
+                    <div class="field">
+                        {{approved.get(answer_key).get('formatted_answer')}}
+                    </div>   
+                    <div class="field valhis">
+                    	<div id="validation_history_div_{{answer_key}}" style="display:none;"></div>
+                        <a data-id="{{answer_key}}" id="validation_history_{{answer_key}}" href="#" class="comments" title="" onmouseover="controller.postRequest('.', {ajax: 'validation_history', entity_id: {{answer_key}}, entity_name: 'requirement'}); return false;">Validation history</a> - 
+                        <span class="prompt_small">Sign in to add a comment</span>
+                    </div>  
+                    {% endif %}
+                    </td>
+					{% if  is_print !=False  %}
+                    <td class="suggestion_right">  
+                        <span class="vote_panel">                          
+                            <span class="cannot_vote">
+                            
+                                {{approved.get(answer_key).get('vote').get('total_up_votes')}}
+                                
+                                <input type="button" id="voteup_{{answer_key}}" name="voteup_{{answer_key}}" value="Approve" class="voteup disabled">
+                                
+                                <input type="button" id="votedown_{{answer_key}}" name="votedown_{{answer_key}}" value=" " class="votedown disabled">
+                                
+                                {% if approved.get(answer_key).get('down_vote_last') | int > 0 %}
+                                <span class="last_down_votes" id="down_vote_last_{{answer_key}}" onmouseover="display_down_vote_last_msg('{{answer_key}}', '{{approved.get(answer_key).get('down_vote_last')}}', '{{approved.get(answer_key).get('last_down_vote_date')}}', '{{terminology}}')" onmouseout="display_down_vote_last_msg('{{answer_key}}', '', '', '')" >                                
+                                {% else %}
+                                <span >
+                                {% endif %} 
+                                    {{approved.get(answer_key).get('vote').get('total_down_votes')}}                                  
+                                </span>
+                            </span>               
+                        </span>                        
+                    </td>                     
+                	{% endif %
+                </tr>
+                {% endfor %}
+            </table>                
+            {% endif %}            
+            
+        </div>
+            
+    </div>

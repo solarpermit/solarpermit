@@ -1,0 +1,53 @@
+<!-- this template is designed specifically for adding new answer for solarpermit.org, per provided specs -->
+<div class="column-field" field = "{{name}}" onmouseover="controller.initEditFieldEvent(this);" authenticated="{% if request.user.is_authenticated() == True %}true{% else %}false{% endif %}">
+	<div class="show_data" id="{{name}}_data_field" 
+	    > 
+	    <div class="label" id="{{name}}_click_to_show_edit"
+	        {% if request.user.is_authenticated() == True %}
+	        onClick=""
+	        {% endif %}    
+	        
+	        {% if message_count > 0%}style="display:none"{% endif %}  
+	        >
+	    {% if request.user.is_authenticated() == True %}         
+	        <span style="float:left;visibility:visible;display:none;" id="{{name}}_edit_btn" ><img width="12"src="/media/images/edit.png" alt="edit" >&nbsp;</span>         
+	    {% endif %}          
+	        {{label}}:
+	    </div> 
+	    <div id="qa_{{name}}_data" class="qa_data" >
+	        <div class="form_field" {% if message_count > 0%}style="display:none"{% endif %} >
+	        {% if value_existed == 'no'  or value == None %}
+	            <div class="no_info_available_yet" style="color:#C1CDCD;font-style:italic;">No info available yet</div>
+	        {% else %}
+	            {{value}}
+	        {% endif %}
+	            {% if request.user.is_authenticated() != True %}
+	            <div  id="{{name}}_suggest_answer_prompt" style="visibility:visible;display:none;">
+	                Please sign in to provide a value for this field
+	            </div>      
+	            {% endif %}        
+	        </div>
+	    </div>
+	</div>
+	        
+	<div id="{{name}}_edit_field" class="show_edit_option" {% if message_count > 0 %}style="display:block"{% else %}style="display:none"{% endif %}> 
+	    <div class="label" >{{label}}:</div>   
+	    <div>
+	        {{form_fields}}
+	    </div>
+	    {% if mode == 'individual' %}
+	    <div style="padding:15px 0 15px 0;">
+	    <!--
+	        <a name="save_{{name}}" value="Save" id="save_{{name}}" class="mainbutton" onClick="controller.submitForm('#form_{{name}}');"  title="" >Save</a>            
+	        <a name="Cancel" value="Cancel" id="cancel_{{name}}" class="mainbutton" 
+	                onClick="document.getElementById('{{name}}_edit_field').style.display='none';document.getElementById('{{name}}_data_field').style.display='block';"  title="" >Cancel</a>
+	    -->
+	    <input type="button" id="save_{{name}}" class="smallbutton" value="Save" title="" >
+	    <input type="button" id="cancel_{{name}}" class="smallbutton" value="Cancel">    
+	    </div>
+	    {% endif %}  
+	</div>    
+</div>        
+<script type='text/javascript'>
+//	controller.editFieldEvents("div.column-field[field='{{name}}']");
+</script>

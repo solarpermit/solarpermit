@@ -1,0 +1,15 @@
+/**
+ * jScroll jQuery Plugin v2.0
+ * http://jscroll.com/
+ *
+ * Copyright 2011-2013, Philip Klauzinski
+ * http://klauzinski.com/
+ * Dual licensed under the MIT and GPL Version 2 licenses.
+ * http://jscroll.com/#license
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * @author Philip Klauzinski
+ * @requires jQuery v1.4.3+
+ */
+(function(b){b.jscroll={defaults:{debug:false,autoTrigger:true,loadingHtml:"<small>Loading...</small>",padding:0,nextSelector:"a:last",contentSelector:""}};var a=function(c,q){var d=c.data("jscroll"),j=(typeof q==="function")?{callback:q}:q,o=b.extend({},b.jscroll.defaults,j,d||{}),i=(c.css("overflow-y")==="visible"),k=c.find(o.nextSelector).first(),g=i?b(window):c;c.data("jscroll",b.extend({},d,{initialized:true,waiting:false,nextHref:k.attr("href")}));c.contents().wrapAll('<div class="jscroll-inner" />');p();if(o.autoTrigger){h(k);g.bind("scroll.jscroll",function(){return f()})}else{k.bind("click.jscroll",function(){h(k);l();return false})}function p(){var s=b(o.loadingHtml).filter("img").attr("src");if(s){var r=new Image();r.src=s}}function h(r){var s=r.parent().not(".jscroll-inner").addClass("jscroll-next-parent").hide();if(!s.length){r.wrap('<div class="jscroll-next-parent" />').parent().hide()}}function m(){return g.unbind(".jscroll").removeData("jscroll").find(".jscroll-inner").children().unwrap().filter(".jscroll-added").children().unwrap()}function f(){var x=c.find("div.jscroll-inner").first(),w=c.data("jscroll"),s=parseInt(c.css("paddingTop"))+parseInt(c.css("borderTopWidth")),u=i?g.scrollTop():c.offset().top,t=x.length?x.offset().top:0,r=Math.ceil(u-t+g.height()+s),v=b.trim(w.nextHref+" "+o.contentSelector);if(n(w)&&!w.waiting&&r+o.padding>=x.outerHeight()){e("info","jScroll:",x.outerHeight()-r,"from bottom. Loading next request...");return l()}}function n(r){r=r||c.data("jscroll");if(!r.nextHref){e("warn","jScroll: nextSelector not found - destroying");c.jscroll.destroy();return false}else{return true}}function l(){var s=c.find("div.jscroll-inner").first(),r=c.data("jscroll");r.waiting=true;s.append('<div class="jscroll-added" />').children(".jscroll-added").last().html('<div class="jscroll-loading">'+o.loadingHtml+"</div>");return n(r)&&c.animate({scrollTop:s.outerHeight()},0,function(){s.find("div.jscroll-added").last().load(r.nextHref,function(v,u,w){var t=b(this).find(o.nextSelector).first();r.waiting=false;r.nextHref=t.attr("href");b(".jscroll-next-parent",c).remove();if(o.autoTrigger){h(t)}else{t.bind("click.jscroll",function(){h(t);f();return false})}e("dir",r)})})}function e(r){if(o.debug&&typeof console==="object"&&(typeof r==="object"||typeof console[r]==="function")){if(typeof r==="object"){var t=[];for(var s in r){if(typeof console[s]==="function"){t=(r[s].length)?r[s]:[r[s]];console[s].apply(console,t)}else{console.log.apply(console,t)}}}else{console[r].apply(console,Array.prototype.slice.call(arguments,1))}}}b.extend(c.jscroll,{destroy:m});return c};b.fn.jscroll=function(c){return this.each(function(){var f=b(this),e=f.data("jscroll");if(e&&e.initialized){return}var d=new a(f,c)})}})(jQuery);

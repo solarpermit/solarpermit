@@ -1,0 +1,33 @@
+
+    <div class="form_field" >
+        <div class="label">Email address:</div>
+        <div id="form_field_data_email" class="show_data"  onmouseout="return show_data('form_field_data_email', 'edit_option_email')" onmouseover="return show_edit_option('form_field_data_email', 'edit_option_email')" onClick="return switch_to_edit('form_field_data_email', 'form_field_edit_email')" > 
+            {% if email == '' %}
+                No info available
+            {% else %}
+                {{email}}
+            {% endif %}
+            <span style="float:right;visibility:hidden;" id="edit_option_email" >
+                <img width="12"src="/media/images/edit.png" alt="edit" >&nbsp;Click to edit
+            </span>
+        </div>
+      
+        <div id="form_field_edit_email" style="display:none">
+            <div class="field">
+                <input type="text" name="email" id="{{form_id}}_field_email" value="{{email}}" class="" style="width:210px" >
+            </div>        
+            <div class="field_help_text">
+                (e.g. free2rhyme@yahoo.com)
+            </div>
+            <div id="msg_{{form_id}}_field_email" class="form_field_error_message">
+                {{error_email}}
+            </div>
+            {% if mode == 'individual' %}
+            <div>
+                <a name="save_email" value="Save" id="save_email" class="mainbutton" onClick="submit_edit('{{form_id}}', 'email')" title="" >Save</a>
+                <a name="Cancel" value="Cancel" id="cancel_email" class="mainbutton" onClick="return switch_to_data('form_field_data_email', 'form_field_edit_email')"  title="" >Cancel</a>
+            </div>
+            {% endif %}  
+        </div>               
+    </div>
+        

@@ -1,0 +1,14 @@
+    <div class="form_field">
+            {% if question_label is defined  %}<div class="label">{{question_label}}:</div>{% endif %}  
+            <div class="field">
+                <input type="text" name="field_{{name}}" id="{{id}}" value="{{value}}" class="{{class}} {{validation_class}}" style="{{style}}" {{field_attributes}} >&nbsp;{{field_suffix}}
+            </div>        
+            <div class="field_help_text">
+                {{instruction}}
+            </div>
+            <div class="error_div">
+                {{msg_error}}
+            </div>
+    </div>
+
+        

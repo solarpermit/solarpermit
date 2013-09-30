@@ -1,0 +1,50 @@
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			
+			<div  >         
+				{% if answer_content.get('scale') == 'any' or answer_content.get('scale') == 'Any'  %}
+					Any scale
+				{% elif answer_content.get('scale') == 'specific'  or answer_content.get('scale') == 'Specific' %}	
+                    Only specific scale(s)
+                {% else %}
+                	{{answer_content.get('scale')}}
+                {% endif %}
+            </div>
+            
+            <div >
+	            {% if answer_content.get('scale') == 'specific'  or answer_content.get('scale') == 'Specific' %}
+	           		{% if answer_content.get('scale_factor_1_1') != ''  and answer_content.get('scale_factor_1_1') != None %}  
+	           			{% if answer_content.get('scale_factor_1_1') == 'yes' %}1:1{% endif %}
+	           		{% endif %}
+	           		{% if answer_content.get('scale_factor_1_5') != ''  and answer_content.get('scale_factor_1_5') != None %}  
+	           			{% if answer_content.get('scale_factor_1_5') == 'yes' %}1:5{% endif %}
+	           		{% endif %}	           			
+	           		{% if answer_content.get('scale_factor_1_10') != ''  and answer_content.get('scale_factor_1_10') != None %}  
+	           			{% if answer_content.get('scale_factor_1_10') == 'yes' %}1:10{% endif %}	        
+	           		{% endif %}	           			   				           		
+	           		{% if answer_content.get('scale_factor_1_20') != ''  and answer_content.get('scale_factor_1_20') != None %}  
+	           			{% if answer_content.get('scale_factor_1_20') == 'yes' %}1:20{% endif %}	           		
+	           		{% endif %}
+	           		{% if answer_content.get('scale_factor_other') != ''  and answer_content.get('scale_factor_other') != None %}  
+	           			{% if answer_content.get('scale_factor_other') == 'yes' %}
+			           		{% if answer_content.get('scale_factor_1') != ''  and answer_content.get('scale_factor_1') != None %}  
+				           		{% if answer_content.get('scale_factor_2') != ''  and answer_content.get('scale_factor_2') != None %}  
+	           						{{answer_content.get('scale_factor_1')}}:{{answer_content.get('scale_factor_2')}}
+	           					{% else %}
+	           						Other
+				           		{% endif %}		
+				           	{% else %}
+				           		Other	           		
+			           		{% endif %}	   			
+	           			{% endif %}	           		
+	           		{% endif %}	           		
+	            {% endif %}
+            </div>
+            
+
+			{% endif %}		            

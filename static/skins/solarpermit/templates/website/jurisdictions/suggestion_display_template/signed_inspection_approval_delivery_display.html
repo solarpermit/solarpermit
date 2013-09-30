@@ -1,0 +1,22 @@
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			
+			<div  >         
+				{% if answer_content.get('mail') != '' and answer_content.get('mail') != None %}
+                   {% if answer_content.get('mail').lower() == 'yes' %}<div>Standard email</div>{% endif %}
+                {% endif %}
+				{% if answer_content.get('email') != '' and answer_content.get('email') != None %}
+                   {% if answer_content.get('email').lower() == 'yes' %}<div>Email</div>{% endif %}
+				{% endif %}            
+				{% if answer_content.get('onsite') != '' and answer_content.get('onsite') != None %}
+                   {% if answer_content.get('onsite').lower() == 'yes' %}<div>On-site</div>{% endif %}
+				{% endif %}     				                 
+            </div>
+
+
+			{% endif %}		

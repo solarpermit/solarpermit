@@ -1,0 +1,21 @@
+{% for user_obj in user_list %}
+	{% if user_obj.organizations|length > 0 %}
+		<div class="disabled">
+			<!--{{user_obj.user_display_name}}-->
+		 	<a id="id_{{user_obj.user.id}}" href="#" onmouseover="controller.postRequest('/account/', {ajax: 'user_profile_short', caller:'dialog', user_id: '{{user_obj.user.id}}', unique_list_id: '{{user_obj.user.id}}' });" onmouseout="document.getElementById('simple_popup_div_on_dialog').style.display='none';">{{user_obj.user.get_profile().get_display_name()}}</a>
+			
+			{% for organization in user_obj.organizations %}
+				<br>&nbsp;&nbsp;&nbsp;<span>Member of {{organization.name}}</span>
+			{% endfor %}
+		</div>
+	{% else %}
+		<div class="selectable unbind" data-userid="{{user_obj.user.id}}">
+			<!--{{user_obj.user_display_name}}-->
+		 	<a id="id_{{user_obj.user.id}}" href="#" onmouseover="controller.postRequest('/account/', {ajax: 'user_profile_short', caller:'dialog', user_id: '{{user_obj.user.id}}', unique_list_id: '{{user_obj.user.id}}' });" onmouseout="document.getElementById('simple_popup_div_on_dialog').style.display='none';">{{user_obj.user.get_profile().get_display_name()}}</a>
+			
+		</div>
+	{% endif %}
+{% endfor %}
+{% if user_list|length > 0 %}
+	<div id="users_select_page_nav" class="endlessnav"><a href="/organization/user/search/?{{search_param}}{{next_page_param}}">Next Page</a></div>
+{% endif %}

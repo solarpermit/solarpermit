@@ -1,0 +1,13 @@
+{% extends "small_modal_dialog.html" %}
+
+
+{% block body_modal_dialog %}
+<span><img src="/media/images/checkmark2.png" width="30" alt="validated" /></span>
+<span class="validation_history">
+{% include "website/jurisdictions/validation_history.html" %}
+</span>
+{% endblock %}
+
+{% block modal_dialog_action %}
+
+{% endblock %}

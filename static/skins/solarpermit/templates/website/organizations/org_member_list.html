@@ -1,0 +1,46 @@
+{% for member in members %}
+	<div id='id_member_{{member.id}}' data-id="{{member.id}}" {% if date_type == 'join' and access == 'Admin' and member.role.name == 'Member' %} onmouseover="$('#id_remove_btn_{{member.id}}').show();$('#id_member_{{member.id}}').addClass('row_even');" onmouseout="$('#id_remove_btn_{{member.id}}').hide();$('#id_member_{{member.id}}').removeClass('row_even');"{% else %} onmouseover="$('#id_member_{{member.id}}').addClass('row_even');" onmouseout="$('#id_member_{{member.id}}').removeClass('row_even');" {% endif %}>
+		<table><tr>
+		<!--<td style="width: 170px;">{{member.user_name_Label()}}</td>-->
+		<td style="width: 170px;">
+			<a id="id_{{member.id}}" data-user="{{member.user.id}}" data-member="{{member.id}}" class="member_name" href="#">{{member.user.username}}</a>
+			{% if date_type == 'requested' %}
+				{{member.user.first_name}}
+				{{member.user.last_name}}
+				{{member.user.email}}
+			{% endif %}
+		</td>
+		<td style="width: 120px;">
+			{% if access == 'Admin' and date_type == 'join' %}
+				<select id="id_role_{{member.id}}" class="unbind" name="role_{{member.id}}" data-member-id="{{member.id}}" data-member-uid="{{member.user.id}}" data-old-value="{% if member.role.name == 'Administrator' or member.role.name == 'Owner'%}Administrator{%else%}Member{% endif %}">
+					<option value="Administrator" {% if member.role.name == 'Administrator' %}selected{% endif %}>Administrator</option>
+					<option value="Member" {% if member.role.name == 'Member' %}selected{% endif %}>Member</option>
+				</select>
+			{% else %}
+				{{member.role.name}}
+			{% endif %}
+		</td>
+		{% if date_type == 'join'%}
+			<td style="width: 120px;">
+				<span>{% if member.join_date %}{{member.join_date.strftime('%m/%d/%y %I:%M%p')}}{% else %} &nbsp;{% endif%}<span>
+			</td>
+			<td>
+				{% if access == 'Admin' %}
+				<span><a style="display:none;" id="id_remove_btn_{{member.id}}" class="smallbutton unbind" href="#" data-member-id="{{member.id}}">Remove</a><span>
+				{% endif %}
+			</td>
+		{% else %}
+			<td style="width: 120px;">{% if member.requested_date %}{{member.requested_date.strftime('%m/%d/%y %I:%M%p')}}{% else %} &nbsp; {% endif%}</div>
+			<td id="action_dev_{{member.id}}">
+				<span><a id="id_approve_btn" href="#" onclick="controller.postRequest('/organization/', {ajax: 'handle_pending_request', type: 'approve', mid: {{member.id}}});return false;" class="smallbutton">Approve</a></span>
+				<span><a id="id_deny_btn" href="#" onclick="controller.postRequest('/organization/', {ajax: 'handle_pending_request', type: 'deny',mid: {{member.id}}});return false;" class="smallbutton">Deny</a></span>
+			</td>
+		{% endif %}
+		</tr></table>
+	</div>
+{% endfor %}
+{% if members|length > 0 %}
+	<div id="org_members_nav"><a href="/organization/members/?orgid={{organization.id}}&{{next_page_param}}&data_type={{date_type}}">Next Page</a></div>
+{% else %}
+	<div>&nbsp;</div>
+{% endif %}

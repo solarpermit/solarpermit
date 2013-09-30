@@ -1,0 +1,21 @@
+
+    <div class="form_field">
+        <div class="field_help_text">Choose the name you would like other NSPD users to see when you interact with the system.  For example, when you suggest a value for a field or leave a comment.  You can change this preference at any time on your profile page.</div>        
+        <div class="field">
+            <input type="radio" {% if display_as == 'realname' %}checked{% endif %} name="display_as" id="{{form_display_as}}_field_display_as_realname" value="realname" class=""  >Display my real first and last name<br>
+            <input type="radio" {% if display_as == 'username' %}checked{% endif %} name="display_as" id="{{form_display_as}}_field_display_as_username" value="username" class=""  >Display my username
+        </div>
+    </div>
+
+    <div class="form_field" id="field_username" >
+        <div class="label">Username:</div>
+        <div class="field"><input type="text" name="username" id="{{form_display_as}}_field_username" value="{{username}}" class="required" maxlength="20" style="width:210px"></div>
+        <div class="field_help_text">20 characters maximum</div>
+        <div class="error_div">
+            {% if 'form_display_as_field_username' in message %}
+                {% if message.get('form_display_as_field_username') != None %}
+                    {{message.get('form_display_as_field_username')}}
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>

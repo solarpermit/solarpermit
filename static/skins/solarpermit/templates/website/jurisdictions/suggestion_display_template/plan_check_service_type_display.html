@@ -1,0 +1,27 @@
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			
+			<div  >         
+				{% if answer_content.get('plan_check_service_type') == 'over the counter' or answer_content.get('plan_check_service_type') == 'Over the counter' %}
+					Over the counter
+				{% elif answer_content.get('plan_check_service_type') == 'outsourced'  or answer_content.get('plan_check_service_type') == 'Outsourced' %}	
+                    Outsourced
+                {% elif answer_content.get('plan_check_service_type') == 'in-house'  or answer_content.get('plan_check_service_type') == 'In-house' %}	
+                   In-house (not same day)
+                {% else %}
+                	TBD
+                {% endif %}
+            </div>
+            
+            <div >
+            {% if answer_content.get('note') != None %}
+            	{{answer_content.get('note') | replace('\n', '<br/>')}}
+            {% endif %}
+            </div>
+            
+			{% endif %}		            

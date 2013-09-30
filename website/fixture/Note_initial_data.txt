@@ -1,0 +1,46 @@
+# The file initial_data.json contains the following data:
+RoleType
+OrganizationCategory
+RatingCategory
+ActionCategory
+ReactionCategory
+AnswerChoiceGroup
+AnswerChoice
+Template
+QuestionCategory
+Question
+TemplateQuestion
+View
+
+
+
+# RoleType:
+Role(s) of the user with respect to the organization.  two available roles: administrator and member.
+
+
+# QuestionCategory
+Categories of questions.  They include General, Building, Clerical, Electrical, Fire, Inspection Requirements, Inspection Process, Utility, and Zoning.
+if the 'accepted' value is 1, the category is active and is being used.
+
+
+# Question and TemplateQuestion
+Question and its related templatequestion record are grouped together for easy lookup. 
+If the 'accepted' value is 1, the question is active and is being used.
+Validation_class: to specify the jquery form field validation classes, ex: required email.  Applicable only when formtype is not 'MF'
+Description: the text displayed immediately below the question label on the AHJ page
+Instruction: the text displayed in the answer form to provide information or instruction on the form
+When has_multivalues is 1, the user can enter multiple answers to the question
+state_exclusive: to specify that the question is exclusive to the specified state
+When the formtype is 'MF' the following attributes are applicable: template, js, display_template
+Template: name of the template which defines the answer form
+js: name of the javascript validation script accompanying the template
+display_template: name of the template which defines how the answer is displayed.
+
+
+# View
+Collection of questions selected from various question categories. Ex: quirks, favorites, projectpermit.org
+
+# ViewQuestions
+Questions associated with a particular view.  
+The order of display of the questions in a view is determined by display_order, in the increment of 5 (for easy rearranging or insert, if needed to)
+

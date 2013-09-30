@@ -1,0 +1,11 @@
+	<div style="display: none;">
+		<ul id="recent_results">
+
+
+{% for user_search in user_searches %}
+			<li><a href="/jurisdiction/{{user_search.entity_id}}/">{{user_search.label}}</a></li>
+{% endfor %}
+
+
+		</ul>
+	</div>

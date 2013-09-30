@@ -1,0 +1,17 @@
+{# this is no longer used 9/11/13 #}
+    <div >
+        <div class="label_small">
+        
+            Top contributors of solar permitting data for {% if category == 'all_info' %}all categories {% else %} the {{category_name | title}} category {% endif %} of {{jurisdiction.name}}, {{jurisdiction.state}}:        
+        </div>
+    
+        <div class="field" >
+        {% for contributor in top_contributors %}
+        <a href="{{contributor[0].get_clickable_website()}}" class="link_small" target="_blank">{{contributor[0].name}}</a>
+        
+        {% if loop.last == False %}
+        -
+        {% endif %}
+        {% endfor %}
+        </div>
+    </div>

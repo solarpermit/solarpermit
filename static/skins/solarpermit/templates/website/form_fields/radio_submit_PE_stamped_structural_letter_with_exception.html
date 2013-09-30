@@ -1,0 +1,71 @@
+            <div class="form_field" >  
+                <div class="label">{{question_label}}:</div>           
+                <div class="field">
+                   <input type="radio" name="field_required" id="field_required_no_{{question_id}}" value="no" {% if required == 'no' or required == 'No' %} checked {% endif %}   >Not required
+                   <br/><input type="radio" name="field_required" id="field_required_yes_{{question_id}}" value="yes" {% if required == 'yes'  or required == 'Yes' %} checked {% endif %}  >Required
+                   <br/><input type="radio" name="field_required" id="field_required_yes_with_exception_{{question_id}}" value="yes, with exceptions" {% if required == 'yes, with exceptions'  or required == 'Yes, with exceptions' %} checked {% endif %}  >Required with exceptions
+                </div>                              
+            </div>
+
+            <div id="no_{{question_id}}" {% if required == 'no' or  required == 'No' %} style="display:block;"{% else %} style="display:none;" {% endif %}>            
+                <div class="form_field" >
+                <div class="label">Dead load calculations:</div>                   
+                    <div class="field">
+                       <input type="radio" name="field_dead_load_calculations" id="dead_load_calculations_no_{{question_id}}" value="no" {% if dead_load_calculations == 'no' or dead_load_calculations == 'No' %} checked {% endif %}   >Not required
+                       <br/><input type="radio" name="field_dead_load_calculations" id="dead_load_calculations_yes_{{question_id}}" value="yes" {% if dead_load_calculations == 'yes'  or dead_load_calculations == 'Yes' %} checked {% endif %}  >Required
+                    </div>  
+                    <div class="error_div"></div>               
+                </div>                  
+            </div>
+            
+            <div id="yes_with_exceptions_{{question_id}}" {% if required == 'yes, with exceptions'  or required == 'Yes, with exceptions' %} style="display:block;"{% else %} style="display:none;" {% endif %}>
+                <div class="form_field" >            
+                    <div class="field">
+                        <input type="checkbox" name="field_depends_on_system_rating" id="field_depends_on_system_rating_{{question_id}}" value="yes" {% if depends_on_system_rating == 'yes'  or depends_on_system_rating == 'Yes' %}checked{% endif %} >Depends on system rating
+                    </div>
+                </div>    
+                
+                <div>
+                    <div id="system_rating_method_{{question_id}}" class="form_field" {% if depends_on_system_rating == 'yes'  or depends_on_system_rating == 'Yes' %} style="display:block;"{% else %} style="display:none;" {% endif %}>            
+                        <div class="field">
+                            <select name="field_equality" >
+                                <option value="greater than" {% if equality == "greater than" %}selected{% endif%}>></option>
+                                <option value="greater than or equal to" {% if equality == "greater than or equal to" %}selected{% endif%}>>=</option>
+                                <option value="less than" {% if equality == "less than" %}selected{% endif%}><</option>
+                                <option value="less than or equal to" {% if equality == "less than or equal to" %}selected{% endif%}><=</option>                    
+                            </select>                        
+                            <input type="text" id="kW" name="field_kW"  value="{{kW}}" class="number" style="width:30px" maxLength="10" >    kW      
+
+                        </div>
+                    
+                        <div class="form_field" >            
+                            <div class="field">
+                                System rating method: 
+                                <select name="field_system_rating_method" >
+                                    <option value="STC" {% if system_rating_method == "STC" %}selected{% endif%}>STC</option>
+                                    <option value="PTC" {% if system_rating_method == "PTC" %}selected{% endif%}>PTC</option>
+                                    <option value="CEC" {% if system_rating_method == "CEC" %}selected{% endif%}>CEC</option>
+                                </select>
+                            </div>
+                        </div>    
+                    </div>                                
+                </div>
+                <!--
+                <div class="form_field" >            
+                    <div class="field">
+                        <input type="checkbox" name="field_depends_on_segment" value="yes" {% if depends_on_segment == 'yes' or depends_on_segment == 'yes' %}checked{% endif %} >Depends on segment
+                    </div>
+                </div> 
+                -->                               
+                <div class="form_field" >            
+                    <div class="label">Notes:</div>
+                    <div class="field">
+                        <textarea name="field_note" id="field_note_{{question_id}}" rows="5" cols="30">{{note}}</textarea>
+                    </div>
+                </div>             
+            
+            </div>        
+            <div class="field_help_text" style="padding-bottom:5px;">
+                {{instruction}}
+            </div>                     
+          

@@ -1,0 +1,12 @@
+			<div class="form_field" >  
+				<div class="label">{{question_label}}:</div>           
+                <div class="field">
+                   <input type="radio" name="field_value" id="field_value_no_{{question_id}}" value="not required" {% if value == 'not required' or value == 'Not required' %} checked {% endif %}   >Not required
+                   <br/><input type="radio" name="field_value" id="field_value_yes_{{question_id}}" value="required" {% if value == 'required' or value == 'Required'  %} checked {% endif %}   >Required
+                </div>          
+				<div class="field_help_text">
+					{{instruction}}
+				</div>                                       
+            </div>
+            
+            

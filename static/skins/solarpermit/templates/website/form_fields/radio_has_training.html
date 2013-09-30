@@ -1,0 +1,11 @@
+			<div class="form_field" >  
+				<div class="label">{{question_label}}:</div>           
+                <div class="field">
+                   <input type="radio" name="field_value" id="field_value_no_{{question_id}}" value="no" {% if value == 'no'  or value == 'No' %} checked {% endif %}   >Staff has no training in PV Solar
+                   <br/><input type="radio" name="field_value" id="field_value_yes_{{question_id}}" value="yes" {% if value == 'yes'  or value == 'Yes' %} checked {% endif %}   >Staff has training in PV Solar
+                </div>                            
+				<div class="field_help_text">
+					{{instruction}}
+				</div>                  
+            </div>
+            

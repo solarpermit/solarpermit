@@ -1,0 +1,20 @@
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			
+			<div  >         
+				{% if answer_content.get('value') == 'no'  or answer_content.get('value') == 'No' %}
+					Staff has no training in PV Solar
+				{% elif answer_content.get('value') == 'yes'  or answer_content.get('value') == 'Yes' %}	
+                    Staff has training in PV Solar
+                {% else %}
+                	TBD
+                {% endif %}
+            </div>
+            
+			{% endif %}		            
+            

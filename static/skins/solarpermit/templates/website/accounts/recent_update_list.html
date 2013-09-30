@@ -1,0 +1,25 @@
+{% for update in updates%}
+	<div>
+		{% if update.title_flag == True %}
+		<a href='/jurisdiction/{{update.jurisdiction.name_for_url}}/'><strong>{{update.jurisdiction.show_jurisdiction('short')}}</strong></a>
+		{% endif %}
+		<p class="recent-updates-p">{{update.type}}</p>
+		{% if update.question_type == 'CF' %}
+		<p class="recent-updates-p"> {{update.question}}</p>
+		{% endif %}
+		<p class="recent_updates_value">{{update.answer}}</p>
+	</div>
+	<br>
+{% endfor %}
+
+{% if updates|length > 0 %}
+	<div>
+		<span id="org_page_nav" class="endlessnav"><a href="/recent_updates/search/?{{next_page_param}}{{search_param}}">Next Page</a></span>
+	</div>
+{% endif %}
+
+{% if next_page_num > 4 %}
+<div>
+	<span>Up to 100 recent updates display in this list. Previous updates are no longer displayed.</span>
+</div>
+{% endif %}

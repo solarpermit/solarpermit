@@ -1,0 +1,18 @@
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			
+			<div>
+                 {{answer_content.get('phone')}} 
+                 {% if answer_content.get('ext') != None and answer_content.get('ext') != ''  %}
+                 ext: {{answer_content.get('ext')}}
+                 {% endif %}
+                             
+            </div>
+          
+
+			{% endif %}		           

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+    
+
+<!-- template jurisdiction_state_browse.html -->
+
+
+{% block title %} {{jurisdiction.get_jurisdiction_display('title')}}{% endblock %}
+
+
+{% block breadcrum %}
+
+			<span style="padding-left:10px;">
+{% if request.user.is_authenticated() == False %}
+				<a href="{{home}}" >Home</a> &gt;
+{% endif %}
+				<a href="/jurisdiction/browse/?state={{state}}">{{state_long_name}}</a>  &gt; {{jurisdiction.get_jurisdiction_display('breadcrum')}}
+			</span>
+{% endblock %}
+
+
+{% block page_title %}{{jurisdiction.get_jurisdiction_display('page_title')}}        <!-- jurisdiction_id = {{jurisdiction.id}} -->{% endblock %}
+
+
+{% block forestyle %}
+	<link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css" />
+{% endblock %}
+
+
+{% block top_main_content %}
+			<span style="padding-left:10px;">
+{% if jurisdiction.jurisdiction_type!='U' and jurisdiction.jurisdiction_type!='SC'  and jurisdiction.jurisdiction_type != 'CINP' and jurisdiction.jurisdiction_type != 'CONP' %}
+{% if last_contributed_date == ''  or last_contributed_date == None %}
+				This page is empty and has not been edited{% if request.user.is_authenticated() %} - <img width="12" height="12" src="/media/images/add-to-favorites.png" alt="Add to Favorites" > {% if jurisdiction.user_favorite_jurisdiction(user) %} <a id="favorite-a" href="#" title="Remove {{jurisdiction.show_jurisdiction('long')}} from your favorite jurisdictions">Remove from favorites</a> {% else %} <a id="favorite-a" href="#" title="Add {{jurisdiction.show_jurisdiction('long')}} to your favorite jurisdictions"> Add to favorites</a> {% endif %}{% endif %}
+{% else %}
+    {% if last_contributed_by != None %}
+				<span id="jurisdicton_last_updated">Last updated {{last_contributed_date}} by <a href='#' id='id_jurisdicton_last_updated' onmouseover="controller.postRequest('/account/', {ajax: 'user_profile_short', user_id: '{{last_contributed_by.id}}',  unique_list_id: 'jurisdicton_last_updated'  });"  >{{last_contributed_by.get_profile().get_display_name()}}</a></span>
+    {% else %}
+                <span id="jurisdicton_last_updated">Last updated {{last_contributed_date}} by </span>    
+    {% endif %}
+{% if request.user.is_authenticated() %}
+					- <img width="12" height="12" src="/media/images/add-to-favorites.png" alt="Add to Favorites">
+{% if jurisdiction.user_favorite_jurisdiction(user) %}
+					<a id="favorite-a" href="#" title="Remove {{jurisdiction.show_jurisdiction('long')}} from your favorite jurisdictions">Remove from favorites</a>
+{% else %}
+					<a id="favorite-a" href="#" title="Add {{jurisdiction.show_jurisdiction('long')}} to your favorite jurisdictions">Add to favorites</a>
+{% endif %}
+{% endif %}
+{% endif %}
+{# superfluous? -RG {% else %} #}
+{% endif %}
+			</span>
+            {% if non_question_categories == False %}
+            <span style="padding-left:10px;">
+            <input type="checkbox" name="empty_data_fields_hidden" id="empty_data_fields_hidden" value="1" {% if empty_data_fields_hidden | int == 1 %}checked{% endif %} /> 
+            {% if empty_data_fields_hidden | int == 1 %}Empty data fields hidden.  Uncheck to show.{% else %}Empty data fields visible. Check to hide.{% endif %}
+            </span>
+            {% endif %}
+{% endblock %}
+
+
+{% block body %}
+
+		<div class="cssTable fullWidth ahjWrap"><div class="cssRow">
+			<div id="category_bg_block" class="cssCell" >
+{% include '/website/jurisdictions/AHJ_categories.html' %}
+			</div>
+        <div class="data-container" >
+			<div class="ahj-tab cssCell" >
+
+{% include "/website/accounts/sign_in.html" %}              <!-- this is required for all all AHJ pages-->
+{% include "/website/jurisdictions/AHJ_top_contributors.html" %}
+		<div id="print">
+            <a class="atooltips" href="/jurisdiction/{{jurisdiction.name_for_url}}/?layout=print" target="_blank" title="Print info from all categories" >Print all</a>
+            {% if category !='all_info'%}
+            <a  class="atooltips" href="?layout=print" target="_blank"  title="Print info from the {{category_name}} section">Print this category</a>
+            {% endif %}
+            <div class="clearboth"></div>
+        </div>    
+        <div id="ahj_tab_content" style="float:left">
+            {% block category_content %}    
+            
+            {% endblock %}
+        </div>
+    
+        <div id="validation_history_popup" style="position:absolute;left:200px;top:200px;width:300px;height:100px;background-color:black;color:white;display:none;z-index:3000;display:none;visibility:visible;padding:10px 10px 10px 10px;"></div>
+        <div id="down_vote_last_msg" style="position:absolute;width:300px;height:40px;background-color:black;color:white;display:none;z-index:3000;display:none;visibility:visible;padding:10px 10px 10px 10px;"></div>
+        <div id="div_tooltip" style="position:absolute;background-color:black;color:white;display:none;z-index:3000;display:none;visibility:visible;padding:10px 10px 10px 10px;"></div>
+    
+    </div>
+    </div>
+
+</div></div>{# eo cssTable #}
+<div class="bottomclearboth"></div>
+{% endblock %}

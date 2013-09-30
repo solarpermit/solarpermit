@@ -1,0 +1,52 @@
+{% extends "base_second_dialog.html" %}
+
+{% block modal_dialog_title %}Select users to invite to {{organization.name}}{% endblock %}
+
+{% block modal_dialog_header %}{% endblock %}
+
+{% block modal_dialog_message %}{% endblock %}
+{% block modal_dialog_form_top %}<form id="org_user_select_form">{% endblock %}
+{% block body_modal_dialog %}
+	
+		<input type="hidden" id='orgid' value="{{organization.id}}">
+		<div class="listing_userselect left_half">
+			<h3>Select a user to invite</h3>
+			<div class="listing_filter">
+				<input id="search_user" class="searchfield_table_filter" type="text" name="text" placeholder="Search" style="width:200px;">
+			</div>
+			<div class="listing_list">
+				<div id="user_list" class="endlesslist" style="height: 184px; overflow: scroll; width: 244px; margin-left: -3px;">
+					{% include "website/organizations/users_select_list.html" %}
+				</div>
+			</div>
+		</div>
+		<div class="listing_userselect middle">
+			<p><a id="user_select_btn" href="#" class="smallbutton disabled" title="Add" >></a></p>
+			<p>&nbsp;</p>
+			<p><a id="user_deselect_btn" href="#" class="smallbutton disabled" title="Remove" ><</a></p>
+		</div>
+		<div class="listing_userselect right_half">
+			<div id="selected_user_list" class="endlesslist" style="height: 352px;overflow: scroll; width:230px; margin-left:-4px;">
+			</div>
+		</div>
+		<div class="listing_userselect left_half" style="height: 20px;border: none;"></div>
+		<div class="listing_userselect left_half" style="height: auto;">
+			<h3>Invite a new user</h3>
+		    <div class="form_field">
+		        <div class="field">
+		        	<input id="invite_email" type="text" name="invite_email" class="email" style="width:175px;">
+		        	<a id="invite_email_btn" href="#" class="smallbutton">></a>
+		        </div>
+		        <div class="field_help_text">Enter one email address at a time</div>
+		        <div class="error_div"></div>
+		    </div>
+		</div>
+{% endblock %}
+
+{% block modal_dialog_action %}
+		<!--span><a id="user_invite_btn" href="#" class="mainbutton disabled">Send invitation</a></span>
+		<span><a id="user_invite_cancel_btn" href="#" class="mainbutton">Cancel</a></span-->
+		<input type="submit" id="user_invite_btn" class="mainbutton disabled" disabled="disabled" value="Send invitation">
+		<input type="button" id="user_invite_cancel_btn" class="mainbutton" value="Cancel">
+{% endblock %}
+{% block modal_dialog_form_bottom %}</form>{% endblock %}

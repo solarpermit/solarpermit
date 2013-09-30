@@ -1,0 +1,1 @@
+$('#jurisdiction_list').jscroll();

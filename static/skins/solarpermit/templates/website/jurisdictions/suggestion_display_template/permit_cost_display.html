@@ -1,0 +1,99 @@
+            {% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+                <div >
+                    {{answer_content.get('free-form') | replace('\n', '<br/>')}}
+    
+                </div>
+            {% else %}
+            
+<table width="100%" id="fee" border="0" >
+                        
+     
+{% for fee_type in fee_types %}
+    {% set fee_type_name = answer_content.get('fee_type_'+fee_type) %}
+    {#
+    <tr>
+        <td width="100%" colspan="2">
+                <div class="label">{{fee_type_name}}</div>                     
+        </td>
+    </tr>
+    #}
+    {% for fee_item_id in fee_items.get(fee_type) %}
+        {% set fee_item_key = fee_type + '_' + fee_item_id %}    
+        {% set fee_item = answer_content.get('fee_item_'+fee_item_key) %}
+        {% set fee_formula = answer_content.get('fee_formula_'+fee_item_key) %}        
+        {% set fee_flat_rate = answer_content.get('fee_flat_rate_'+fee_item_key) %}
+        {% set fee_percentage_of_total_system_cost = answer_content.get('fee_percentage_of_total_system_cost_'+fee_item_key) %}
+        {% set fee_percentage_of_total_system_cost_cap = answer_content.get('fee_percentage_of_total_system_cost_cap_'+fee_item_key) %}
+        {% set fee_percentage_of_total_system_cost_cap_amt = answer_content.get('fee_percentage_of_total_system_cost_cap_amt_'+fee_item_key) %}
+        {% set fee_per_inverter = answer_content.get('fee_per_inverter_'+fee_item_key) %}
+        {% set fee_per_module = answer_content.get('fee_per_module_'+fee_item_key) %}
+        {% set fee_per_major_components = answer_content.get('fee_per_major_components_'+fee_item_key) %}                                                        
+        {% set fee_per_component_cap = answer_content.get('fee_per_component_cap_'+fee_item_key) %}
+        {% set fee_per_component_cap_cap_amt = answer_content.get('fee_per_component_cap_cap_amt_'+fee_item_key) %}
+        {% set fee_jurisdiction_cost_recovery_notes = answer_content.get('fee_jurisdiction_cost_recovery_notes_'+fee_item_key) %}    
+        {% set fee_other = answer_content.get('fee_other_'+fee_item_key) %}           
+    <tr valign="top">
+    {#
+        <td width="50%" >
+            <div class="field">
+                {% if fee_item != None %}
+                    {{fee_item | replace('\n', '<br/>') | safe }}
+                {% endif %}                        
+            </div>   
+        </td>
+    #}
+        <td width="100%" colspan="2" >        
+            <div class="field">
+            
+            {% if fee_formula == 'flat_rate' %}
+                {% if fee_flat_rate != None %}
+                    <div>Flat rate of $ {{fee_flat_rate | replace('\n', '<br/>') | safe }}</div>
+                {% endif %}             
+            {% elif fee_formula == 'percentage_of_total_system_cost' %}
+                {% if fee_percentage_of_total_system_cost != None %}
+                    <div>{{fee_percentage_of_total_system_cost | replace('\n', '<br/>') | safe }}% of the total system cost</div>
+                {% endif %}
+                {% if fee_percentage_of_total_system_cost_cap == 'yes' %}
+                    <div>, capped at $ {{fee_percentage_of_total_system_cost_cap_amt | replace('\n', '<br/>') | safe }}</div>
+                {% endif %}                              
+            {% elif fee_formula == 'fee_per_component' %}
+                {% if fee_per_inverter != None and fee_per_inverter | float != 0.0 %}
+                    <div>$ {{fee_per_inverter | replace('\n', '<br/>') | safe }} per inverter</div>
+                {% endif %}
+                {% if fee_per_module != None and fee_per_module | float != 0.0 %}
+                    <div>$ {{fee_per_module | replace('\n', '<br/>') | safe }} per module</div>
+                {% endif %}
+                {% if fee_per_major_components != None and fee_per_major_components | float != 0.0 %}
+                    <div>$ {{fee_per_major_components | replace('\n', '<br/>') | safe }} per other major component</div>
+                {% endif %}                                
+                {% if fee_per_component_cap == 'yes' %}
+                    <div>, capped at $ {{fee_per_component_cap_cap_amt | replace('\n', '<br/>') | safe }}</div>
+                {% endif %}             
+            {% elif fee_formula == 'jurisdiction_cost_recovery' %}
+                {% if fee_jurisdiction_cost_recovery_notes != None %}
+                    <div>{{fee_jurisdiction_cost_recovery_notes | replace('\n', '<br/>') | safe }}</div>
+                {% endif %}            
+            {% elif fee_formula == 'other' %}
+                {% if fee_other != None %}
+                    <div>{{fee_other | replace('\n', '<br/>') | safe }}</div>
+                {% endif %}  
+              
+            {% endif %}        
+                        
+            </div>   
+        </td>
+    </tr>   
+    {% endfor %} 
+    
+    {#
+    <tr>
+        <td width="100%" colspan="2">
+            <hr>    
+        </td>
+    </tr>  
+    #}     
+{% endfor %}
+</table>          
+                
+            {% endif %}                                    
+     

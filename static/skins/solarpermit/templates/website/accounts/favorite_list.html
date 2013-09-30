@@ -1,0 +1,9 @@
+{% for j in jurisdiction_name_list %}
+<div id="favorite-{{j.id}}" data-id="{{j.id}}" data-name="{{j.name}}" class="selectable">
+	<table width="100%">
+		<tr>
+			<td class="favorite-td2"><a href="/jurisdiction/{{j.name_for_url}}/" class="favorite_link">{{j.name}}</a></td>
+			<td class="favorite-td3"><a style="display:none;" href="#" data-jid="{{j.id}}" class="remove_favorite" title="Remove from favorite">X</a></td></tr>
+	</table>
+</div>
+{% endfor %}

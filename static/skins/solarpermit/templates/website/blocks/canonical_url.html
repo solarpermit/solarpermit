@@ -1,0 +1,26 @@
+{% if '/jurisdiction/' in request.META.get('PATH_INFO') %}
+    {% if'/jurisdiction/browse' in request.META.get('PATH_INFO') %}
+        {% if request.META.get('QUERY_STRING') != '' %}
+            <link rel="canonical" href="http://{{request.META.get('HTTP_HOST')}}{{request.META.get('PATH_INFO')}}?{{request.META.get('QUERY_STRING')}}">
+        {% else %}
+            <link rel="canonical" href="http://{{request.META.get('HTTP_HOST')}}{{request.META.get('PATH_INFO')}}">
+        {% endif %}
+    {% elif'/jurisdiction/search' in request.META.get('PATH_INFO') %}
+        <link rel="canonical" href="http://{{request.META.get('HTTP_HOST')}}{{request.META.get('PATH_INFO')}}">
+    {% elif jurisdiction %}
+        {% set jur_url = '/jurisdiction/' + jurisdiction.name_for_url | string %}
+        {% if jur_url in request.META.get('PATH_INFO') %}
+            <link rel="canonical" href="http://{{request.META.get('HTTP_HOST')}}{{jur_url}}">
+        {% else %}
+            <link rel="canonical" href="http://{{request.META.get('HTTP_HOST')}}{{request.META.get('PATH_INFO')}}">
+        {% endif %}
+    {% else %}
+        <link rel="canonical" href="http://{{request.META.get('HTTP_HOST')}}{{request.META.get('PATH_INFO')}}">
+    {% endif %}
+
+{% else %}
+
+    <link rel="canonical" href="http://{{request.META.get('HTTP_HOST')}}{{request.META.get('PATH_INFO')}}">
+
+{% endif %}
+    

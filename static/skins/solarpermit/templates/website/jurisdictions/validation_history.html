@@ -1,0 +1,26 @@
+
+    <div {% if destination != 'dialog' %}class="black_tooltip" {% endif %}>
+
+        <div style="">
+        <p><strong>Validation History</strong></p>
+        {% if answer.creator.is_superuser == 0 %}
+            Suggested by {{answer.creator.get_profile().get_display_name()}} on {{create_datetime}}
+        {% else %}
+            Added by a system administrator on {{approval_datetime}}
+        {% endif %}
+            </br>
+            {% if organization != None %}
+                Member of {% if request.user.is_authenticated() and destination=='dialog' %}<a href='{{organization.get_clickable_website()}}' target="_blank" >{{organization.get_display_website()}}</a>{% else %}{{organization.name}}{% endif %}
+            {% endif %}
+        </div>
+        
+        {% if vote | length > 0 %}
+        <div style="padding-top:5px">
+            Verified as accurate on {{approval_datetime}}
+            </br>
+            {{vote.get('total_up_votes')}} up votes
+            <br/>
+            {{vote.get('total_down_votes')}} down votes
+        </div>   
+        {% endif %}     
+    </div>  

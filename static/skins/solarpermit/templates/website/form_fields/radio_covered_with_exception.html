@@ -1,0 +1,68 @@
+
+            
+			<div class="form_field" >  
+				<div class="label">{{question_label}}:</div>           
+                <div class="field">
+                   <input type="radio" name="field_allowed" id="field_allowed_no_{{question_id}}" value="no" {% if allowed == 'no' or allowed == 'No' %} checked {% endif %}   > Attic vents cannot be covered
+                   <br/><input type="radio" name="field_allowed" id="field_allowed_yes_{{question_id}}" value="yes" {% if allowed == 'yes'  or allowed == 'Yes' %} checked {% endif %}  > Attic vents can be covered
+                   <br/><input type="radio" name="field_allowed" id="field_allowed_yes_with_exception_{{question_id}}" value="yes, with exceptions" {% if allowed == 'yes, with exceptions'  or allowed == 'Yes, with exceptions' %} checked {% endif %}  > Attic vents can be covered with exceptions
+                </div>                              
+            </div>            
+
+			<div id="yes_{{question_id}}" {% if allowed == 'yes' or allowed == 'yes, with exceptions' or allowed == 'Yes' or allowed == 'Yes, with exceptions'%} style="display:block;"{% else %} style="display:none;" {% endif %}>            
+                <div class="form_field" >
+                <div class="label">Min distance between vents and modules:</div>                   
+                    <div class="field">
+                        <input type="text" id="min_distance_{{question_id}}" name="field_min_distance"  value="{{min_distance}}" class="number" style="width:20px" maxLength="10" >    
+                    </div>  
+                    <div class="error_div"></div>               
+                </div>                
+			</div>
+			
+			<div id="yes_with_exceptions_{{question_id}}" {% if allowed == 'yes, with exceptions'  or allowed == 'Yes, with exceptions' %} style="display:block;"{% else %} style="display:none;" {% endif %}>
+				<div class="form_field" >			
+					<div class="field">
+						<input type="checkbox" name="field_depends_on_system_rating" id="field_depends_on_system_rating_{{question_id}}" value="yes" {% if depends_on_system_rating == 'yes'  or depends_on_system_rating == 'Yes' %}checked{% endif %} >Depends on system rating
+					</div>
+				</div>	
+				
+				<div>
+					<div id="system_rating_method_{{question_id}}" class="form_field" {% if depends_on_system_rating == 'yes'  or depends_on_system_rating == 'Yes' %} style="display:block;"{% else %} style="display:none;" {% endif %}>			
+						<div class="field">
+							<select name="field_equality" >
+		                        <option value="greater than" {% if equality == "greater than" %}selected{% endif%}>></option>
+		                        <option value="greater than or equal to" {% if equality == "greater than or equal to" %}selected{% endif%}>>=</option>
+		                        <option value="less than" {% if equality == "less than" %}selected{% endif%}><</option>
+		    		            <option value="less than or equal to" {% if equality == "less than or equal to" %}selected{% endif%}><=</option>                    
+		                    </select>						
+							<input type="text" id="kW" name="field_kW"  value="{{kW}}" class="number" style="width:30px" maxLength="10" >	kW	  
+
+						</div>
+					
+						<div class="form_field" >			
+							<div class="field">
+								System rating method: 
+								<select name="field_system_rating_method" >
+			                        <option value="STC" {% if system_rating_method == "STC" %}selected{% endif%}>STC</option>
+			                        <option value="PTC" {% if system_rating_method == "PTC" %}selected{% endif%}>PTC</option>
+			                        <option value="CEC" {% if system_rating_method == "CEC" %}selected{% endif%}>CEC</option>
+			                    </select>
+							</div>
+						</div>	
+					</div>								
+				</div>
+				<!--
+				<div class="form_field" >			
+					<div class="field">
+						<input type="checkbox" name="field_depends_on_segment" value="yes" {% if depends_on_segment == 'yes' or depends_on_segment == 'yes' %}checked{% endif %} >Depends on segment
+					</div>
+				</div>	
+                -->							
+				<div class="form_field" >			
+					<div class="label">Notes:</div>
+					<div class="field">
+						<textarea name="field_note" id="field_note_{{question_id}}" rows="5" cols="30">{{note}}</textarea>
+					</div>
+				</div>			 
+			
+			</div>         

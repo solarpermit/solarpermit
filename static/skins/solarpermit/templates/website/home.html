@@ -1,0 +1,714 @@
+{% extends "base.html" %}
+
+
+{% block title %}Home{% endblock %}
+{% block forestyle %}
+{#	<!--link rel="stylesheet" type="text/css" href="/media/style/page.css" /-->
+	<link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css" />
+	<style>
+		{% if login != 'True' %}
+		#carousel { width: 700px; height: 380px; }
+		#home_contributors { width: 700px;  height: 400px; }
+		{% else %}
+		#carousel { width: 100%; height: 380px; }
+		#home_contributors { width: 90%; height: 380px;  }
+		{% endif %}
+	</style>
+#}
+
+	<style>
+		/* carousel styles */
+		.smallCarousel {
+			max-width: 960px;
+			margin: 0 auto 0 auto;
+		}
+		.carouselWrap {
+			border: 1px solid #abc2d4;
+			width: 676px;
+		}
+		.slideContainer {
+			width: 676px;
+			height: 420px;
+			background-color: #999;
+			overflow: hidden;
+		}
+		.slideWrap {
+			width: 2712px;
+			height: 420px;
+		}
+		.slide {
+			width: 676px;
+			height: 420px;
+			float: left;
+			clear: none;
+			background-position: top right;
+		}
+		.slideThumb {
+			width: 118px;
+			height: 68px;
+			cursor: pointer;
+		}
+		.slideLeft {
+			width: 68px;
+			height: 68px;
+			cursor: pointer;
+			background-image: url('/media/images/slidePrevious.png');
+			background-position: top right;
+		}
+		.slideRight {
+			width: 68px;
+			height: 68px; 
+			cursor: pointer;
+			background-image: url('/media/images/slideNext.png');
+			background-position: top left;
+		}
+		.autoPlay {
+			width: 68px;
+			height: 68px;
+			cursor: pointer;
+			background-image: url('/media/images/autoPlayBG.png');
+			background-repeat: no-repeat;
+			background-position: top left;
+		}
+		.slideThumb, .slidePausePlay, .slideLeft, .slideRight {
+			-moz-user-select: -moz-none;
+    		-khtml-user-select: none;
+    		-webkit-user-select: none;
+    		-o-user-select: none;
+    		user-select: none;
+		}
+		#slide_0 {
+			background-image: url('/media/images/slide_0_bg.jpg');
+		}
+		#slideGo_0 {
+			background-image: url('/media/images/slide_0_thumb.jpg');
+		}
+		#slide_0 h2 {
+			color: #fff;
+			font-size: 24px;
+			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+			margin: 18px 20px 0 20px;
+		}
+		#slide_0 p {
+			color: #fff;
+			font-size: 17px;
+			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+			margin: 17px 20px 32px 20px;
+		}
+		#slide_0 p span {
+			color: #34d388;
+		}
+		
+		#slide_0 a {
+			margin-left: 28px;
+		}
+		
+		#slide_1 {
+			background-color: #fff;
+		}
+		#slideGo_1 {
+			background-image: url('/media/images/slide_1_thumb.png');
+		}
+		#slide_1 h2 {
+			color: #88a4bc;
+			font-size: 22px;
+			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+			text-align: center;
+			margin: 16px 20px 0 20px;
+		}
+		#slide_1 h2 span {
+			font-weight: normal;
+		}
+		#slide_1 p {
+			color: #88a4bc;
+			font-size: 17px;
+			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+			text-align: center;
+			margin: 0 20px 32px 20px;
+		}
+		#us_states_map {
+			width: 656px !important;
+			height: 380px !important;
+			margin: 0  auto;
+		}
+		
+		
+		#slide_2 {
+			background-image: url('/media/images/slide_2_bg.png');
+		}
+		#slideGo_2 {
+			background-image: url('/media/images/slide_2_thumb.png');
+		}
+		#slide_2 h2 {
+			color: #017bac;
+			font-size: 24px;
+			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+			margin: 10px 71px 0 35px;
+		}
+		#slide_2 p {
+			color: #017bac;
+			font-size: 22px;
+			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+			margin: 10px 71px 10px 35px; 
+		}
+		#slide_2 a {
+			margin-left: 39px;
+		}
+		
+		#slide_3 {
+			background-image: url('/media/images/slide_3_bg.jpg');
+		}
+		#slideGo_3 {
+			background-image: url('/media/images/slide_3_thumb.jpg');
+		}
+		#slide_3 h2 {
+			color: #fff;
+			font-size: 24px;
+			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+			text-shadow: 0px 3px 3px rgba(0,0,0,0.34);
+			margin: 18px 20px 0 24px;
+		}
+		#slide_3 p {
+			color: #fff;
+			font-size: 17px;
+			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+			margin: 17px 20px 0 24px;
+		}
+		#slide_3 ul {
+			margin: 8px 0 0 24px;
+			padding: 0;
+		}
+		#slide_3 li {
+			list-style-type: none;
+			font-size: 16px;
+			line-height: 22px;
+			font-weight: bold;
+			color: #333;
+		}
+		#slide_3 li a {
+			font-size: 16px;
+			line-height: 22px;
+			font-weight: bold;
+			color: #333;
+		}
+
+{# hiding unused element #}
+		.breadcrum {
+			display: none;
+		}
+		.page_title {
+			display: none;
+		}
+		#top_main_content {
+			display: none;
+		}
+{# EO hiding unused element #}
+
+{# Modifying existing styling rules #}
+		body {
+			padding: 108px 0 0 0 !important;
+		}
+		#keep_me_signed_in {
+			margin-left: 0;
+		}
+		.field div a {
+			position: relative;
+			top: 4px;
+		}
+		#main-wrapper {
+			padding-bottom: 10px !important;
+		}
+		footer {
+			margin-top: 0 !important;
+		}
+		.contentOnlyPage {
+			width: 100% !important;
+		}
+{# EO Modifying existing styling rules #}
+
+{# home page content #}
+		.homeContent {
+			width: 678px;
+			margin: 20px auto 0 auto;
+{#
+{% if login != 'True' %} #}
+			padding-right: 282px;
+{# {% endif %}
+#}
+		}
+{#
+{% if login != 'True' %}
+
+{% endif %}
+#}
+		.homeContent h2 {
+			font-size: 36px;
+			font-weight: normal;
+			margin-top: 20px;
+			margin-bottom: 30px;
+			line-height: 24px;
+			padding-top: 4px;
+			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+		}
+		.homeContent .cssCell {
+			padding-bottom: 30px;
+			padding-right: 10px;
+		}
+		.homeContent h3 {
+			color: #27b473;
+			display: inline;
+			font-size: 25px;
+			font-weight: normal;
+			margin: 0;
+			pading: 0 10px 0 5px;
+			line-height: 21px;
+			font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+		}
+		.homeContent .cssCell p {
+			display: inline;
+			font-size: 14px;
+			font-weight: 300;
+			padding: 0;
+			margin: 0 0 12px 0;
+		}
+		.welcome_content {
+				padding-left: 10px;
+		}
+		.welcome_content h2 {
+			font-size: 16px;
+			font-weight: 600;
+			color: #27b473;;
+		}
+		.welcome_content p {
+			font-size: 14px;
+			color: #666;
+		}
+		.welcome_content ul {
+			margin: 10px 10px 10px 0;
+			padding: 0 20px 0 20px;
+		}
+		.welcome_content li {
+			font-size: 14px;
+			margin-bottom: 10px;
+		}
+
+{# EO home page content #}
+
+	</style>
+{% endblock %}
+
+{% block forejs %}
+	<script src="/media/js/raphael.js"></script>
+	<script src="/media/js/color.jquery.js"></script>
+	<script src="/media/js/jquery.usmap.js"></script>
+	<script type="text/javascript">
+			function submit_form(form_id) {   
+				document.getElementById(form_id).submit();
+				return false;
+			}
+			function go_to_state(state) {
+				window.location.href="/jurisdiction/browse/?state="+state;
+				return false;
+			}
+{#			$(function(){
+				$('#carousel').anythingSlider({	hashTags: false, 
+					autoPlay: true, 
+					startText:'<img width="24" height="24" src="/media/images/button_grey_play.png" alt="play" >',
+					stopText: '<img width="24" height="24" src="/media/images/button_grey_pause.png" alt="pause" >',
+					delay: 8000
+				});
+				$('#home_contributors').anythingSlider({ hashTags: false,									
+					autoPlay: true,
+					buildArrows: true,
+					buildNavigation: false,
+					buildStartStop:false,
+					mode: 'vertical',
+					delay: 8000
+				});
+			});
+#}
+	</script>
+{#	
+	<script type='text/javascript' src="/media/js/jquery.anythingslider.js"></script>
+#}
+	<script type="text/javascript">
+	
+		 function show_states_map(){
+			$('#us_states_map').usmap({
+				'stateStyles': {
+					fill: "#88a4bc", //fill: "#b5b5b5",
+					stroke: "#ffffff",
+					"stroke-width": 1,
+					"stroke-linejoin": "round",
+					scale: [1, 1]
+				},
+				'stateHoverStyles': {
+					fill: "#2bb473",
+					stroke: "#ffffff",
+					scale: [1.1, 1.1]
+				},
+				'labelBackingStyles': {
+					fill: "#88a4bc", //fill: "#b5b5b5",
+					stroke: "#ffffff",
+					"stroke-width": 1,
+					"stroke-linejoin": "round",
+					scale: [1, 1]
+				},
+				// The styles for the hover
+				'labelBackingHoverStyles': {
+					fill: "#2bb473",
+					stroke: "#ffffff",
+				},
+				'labelTextStyles': {
+					fill: "#222",
+					'stroke': 'none',
+					'font-weight': 300,
+					'stroke-width': 0,
+					'font-size': '10px'
+				},
+				click: function(event, data) {
+					go_to_state(data.name);
+				},
+				showLabels: true,
+			});			
+		}
+		$(document).ready(function(){
+
+{#
+			$('#homemore').bind('click', function (){
+				$('#carousel').data('AnythingSlider').gotoPage(2, true);
+				return false;
+			});
+
+			$('.panel1').hover(function (){$('#carousel').data('AnythingSlider').gotoPage(1, true);}, function(){});
+			$('.panel2').hover(function (){$('#carousel').data('AnythingSlider').gotoPage(2, true);}, function(){});
+			$('.panel3').hover(function (){$('#carousel').data('AnythingSlider').gotoPage(3, true);}, function(){});
+			$('.panel4').hover(function (){$('#carousel').data('AnythingSlider').gotoPage(4, true);}, function(){});
+#}
+
+
+{# carousel javascript #}
+			//globals
+			var autoPlay = true;
+			var lockSlide = false;
+			var slideWidth = 676;
+			var activeSlide = 0;
+			var maxSlide = 3;
+			var t; // set time out id
+			// initialize the carousel
+			var slides = [];
+			for (var i=0;i<=maxSlide;i++) {
+				var thisElement = $("#slide_" + i).detach();
+				slides.push(thisElement);
+			}
+			$('.slideWrap').append(slides[0]);
+						
+			// function select slide
+			function selectSlide(n,d) {
+				//alert(n);
+				var slideContent = slides[n];
+				if (n==1){
+					//slideContent = $(slideContent).filter('#map_wrapper').html('');
+				}
+				if (typeof d==="undefined" || d===null) {d="next";}
+				if (lockSlide != true) {
+					lockSlide = true;
+					if (n != activeSlide) {
+						if (d=='prev') {
+							// go left / sliding to right
+							$('.slideWrap').css('margin-left', (-1 *slideWidth) +'px');
+							$('.slideWrap').prepend(slideContent);
+							$('.slideWrap').animate({
+								marginLeft: '0px'
+							},function(){
+								// set up carousel for next animation
+								$('.slideWrap .slide').filter(':last').detach();
+								$('.slideWrap').css('margin-left','0px');
+								activeSlide = n;
+								lockSlide = false;
+							});
+						} else {
+							// go right / sliding to left
+							$('.slideWrap').append(slideContent);
+							$('.slideWrap').animate({
+								marginLeft: (-1 * slideWidth) +'px'
+							},function(){
+								// set up carousel for next animation
+								$('.slideWrap .slide').filter(':first').detach();
+								$('.slideWrap').css('margin-left','0px');
+								activeSlide = n;
+								lockSlide = false;
+							});
+						}
+					} else {
+						lockSlide = false;
+					}
+				}
+				if (n==1){
+					$('#map_wrapper').html('<div id="us_states_map"></div>');
+					show_states_map();
+				}
+			}
+			function previousSlide() {
+				var n = (activeSlide <= 0) ? maxSlide : parseInt(activeSlide)-1;
+				selectSlide(n,'prev');
+			}
+			function nextSlide() {
+				var n = (activeSlide >= maxSlide) ? 0 : parseInt(activeSlide)+1;
+				selectSlide(n,'next');
+				if (autoPlay === true) {
+					t = setTimeout(nextSlide,5000);
+				}
+			}
+			$('.slideThumb').click(function(){
+				var n = $(this).attr('id').split('_'); // takes the number off of the end of the thumbnail's ID
+				n = n[1];
+				if (n < activeSlide) {
+					d = 'prev';
+				} else {
+					d = 'next';
+				}
+				slidePause();
+				selectSlide(n,d);
+			});
+			function slidePause() {
+				clearTimeout(t);
+				autoPlay = false;
+				$('.autoPlay').css('background-position','top right');				
+			}
+			function slidePlay() {
+				autoPlay = true;
+				nextSlide();
+				$('.autoPlay').css('background-position','top left');
+			}
+			$('.slideLeft').click(function(){
+				slidePause();
+				previousSlide();
+			});
+			$('.slideRight').click(function(){
+				slidePause();
+				nextSlide();
+			});
+			$('.autoPlay').click(function(){
+				if (autoPlay === true) {
+					slidePause()
+				} else {
+					slidePlay()					
+				}
+			});
+			t = setTimeout(nextSlide,5000);
+{# EO carousel javascript #}
+
+
+
+		});
+	</script>
+	
+
+{% endblock %}
+
+
+{% block body %}
+{#
+<div class="contentOnlyPage">
+	<div class="cssTable fullWidth" style="padding-bottom: 42px;">
+		<div class="cssRow">
+			<div class="cssCell" style="width: 704px; height: 384px; background-color:#ccf;">
+				<div style="width: 704px; height: 432px; overflow: hidden">
+					<div id="carouselcontainer">
+						<ul id="carousel">
+							<li>
+								<img src="/media/images/Slide1_Image.jpg" alt="slides">
+								<div id="about_slide">
+									<span class="about_header">Welcome to SolarPermit.org</span>
+									<br /><br />
+									<span class="about_text">At SolarPermit.org, you can access the </span>
+									<span class="about_green">National Solar Permitting Database</span>
+									<span class="about_text">,<br /> a </span>
+									<span class="about_green">FREE</span>
+									<span class="about_text"> and active community-based database that compiles solar permitting requirements around the nation into one single &amp; easy-to-use website.</span>
+									<br /><br /><br />
+									<a class="mainbutton" href="http://solarpermit.org/jurisdiction/browse/" >Browse the Data Now</a>
+								</div>
+							</li>
+							<li>
+								<br>
+								<span class="carousel_title" id="mapTitle">Find your solar permitting requirements here. <strong>Click on a state.</strong></span>
+								<br><br><br>
+								<div id="map_wrapper"><div id="us_states_map"></div></div>
+								<span class="sub-title-centered">Find solar permitting requirements by state</span>
+							</li>
+							<li id="news_slide">
+								<br><span class="news_header">Solar Permitting Study</span>
+								<div id="w-container" >
+									<div class="des">
+										<p>
+											<span class="about_text">The largest study ever completed of solar installers in the top 12 states.
+											<br />See the facts and insights that could help your business.</span>
+										</p>
+										<p>
+											<br><a href="/media/upfiles/CPF-DOE_Permitting_Study_Dec2012_Final.pdf" class="mainbutton">Read More</a></span>
+										</p>
+									</div>
+								</div>
+							</li>
+							<li class="home-contributors">
+								<div class="carousel_title">Contributors</div>
+									<div class="sub-title">We're working with respected industry partners
+										<br />to simplify solar permitting. <strong>Together.</strong>
+									</div>
+									<ul>
+										<li>AllEarth Renewables</li>
+										<li>BE Solar</li>
+										<li>Burnham Energy</li>
+										<li>Grow Solar Wisconsin</li>
+										<li>HelioPower</li>
+										<li>Next Step Living</li>
+										<li>Paramount Solar</li>
+										<li>PetersenDean</li>
+										<li>Positive Energy</li>
+										<li>PvPermits</li>
+										<li>Real Goods Solar</li>
+										<li>SunWize</li>
+										<li>Vote Solar</li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			<div class="cssCell" style="min-width: 308px;">
+{% if login != 'True' %}
+				<div id="signincontainer">
+{% include "website/accounts/sign_in_home.html" %}
+				</div>
+{% else %}&nbsp;{% endif %}
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+#}
+
+
+
+{# new carousel #}
+<div class="cssTable smallCarousel">
+	<div class="cssCell" style="width: 676px;">
+		<div class="cssTable carouselWrap">
+			<div class="cssRow">
+				<div class="cssCell">
+					<div class="slideContainer">
+						<div class="slideWrap">
+							<div id="slide_0" class="slide">
+								<h2>Welcome to SolarPermit.org</h2>
+								<p>At SolarPermit.org, you can access the <span>National Solar Permitting Database</span>,
+									<br />a <span>FREE</span> and active community-based database that compiles solar permitting
+									<br />requirements around the nation into one single & easy-to-use website.</p>
+								<a class="mainbutton" href="http://solarpermit.org/jurisdiction/browse/">Browse the Data Now</a>
+							</div>
+							<div id="slide_1" class="slide">
+								<h2><span>Find your solar permitting requirements here.</span> <strong>Click on a state.</strong></h2>
+								<div id="map_wrapper"><div id="us_states_map" ></div></div>
+								
+								<p>Find solar permitting requirements by state</p>
+							</div>
+							<div id="slide_2" class="slide">
+								<h2>Solar Permitting Study</h2>
+								<p>Get the Facts on solar permitting from our nationwide study of 273 installers.</p>
+								<a target="_blank" href="/media/upfiles/CPF-DOE_Permitting_Study_Dec2012_Final.pdf" class="mainbutton">Read More</a>
+							</div>
+							<div id="slide_3" class="slide" style="background-color:#0ff;">
+								<h2>Contributors</h2>
+								<p>We're working with respected industry partners 
+									<br />to simplify solar permitting. <strong>Together.</strong></p>
+								<ul>
+									<li><a href="http://www.allearthrenewables.com/" target="_blank">AllEarth Renewables</a></li>
+									<li><a href="http://www.besolarenergy.com/" target="_blank">BE Solar</a></li>
+									<li><a href="http://burnhamnationwide.com/" target="_blank">Burnham Energy</a></li>
+									<li><a href="http://www.growsolar.org/" target="_blank">Grow Solar Wisconsin</a></li>
+									<li><a href="http://heliopower.com/" target="_blank">HelioPower</a></li>
+									<li><a href="http://nextstepliving.com/" target="_blank">Next Step Living</a></li>
+									<li><a href="http://www.paramountsolar.com/" target="_blank">Paramount Solar</a></li>
+									<li><a href="http://www.petersendean.com/" target="_blank">PetersenDean</a></li>
+									<li><a href="http://positiveenergysolar.com/" target="_blank">Positive Energy</a></li>
+									<li><a href="http://solarpermits.net/" target="_blank">PvPermits</a></li>
+									<li><a href="http://realgoodssolar.com/" target="_blank">Real Goods Solar</a></li>
+									<li><a href="http://www.sunwize.com/" target="_blank">SunWize</a></li>
+									<li><a href="http://votesolar.org/" target="_blank">Vote Solar</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="cssRow">
+				<div class="cssTable" style="width: 100%;">
+					<div class="cssCell slideLeft">&nbsp;</div>
+					<div id="slideGo_0" class="cssCell slideThumb">&nbsp;</div>
+					<div id="slideGo_1" class="cssCell slideThumb" style="background-color: #0f0;">&nbsp;</div>
+					<div class="cssCell autoPlay" style="background-color: #c0f;">&nbsp;</div>
+					<div id="slideGo_2" class="cssCell slideThumb">&nbsp;</div>
+					<div id="slideGo_3" class="cssCell slideThumb" style="background-color: #0ff;">&nbsp;</div>
+					<div class="cssCell slideRight">&nbsp;</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="cssCell" style="width: 282px; padding-left: 10px;">
+		<div id="signIn">
+{% if login != 'True' %}
+			<div id="signincontainer">
+{% include "website/accounts/sign_in_home.html" %}
+			</div>
+{% else %}
+			<div class="welcome_content">
+
+<h2>Thanks for joining the SolarPermit.org Community!</h2>
+<p>As a registered user, you can:</p>
+ <ul>
+ 	<li>Add, edit and vote on the accuracy of permitting requirements</li>
+	<li>Easily track changes to permitting requirements in jurisdictions where you often work using our Favorite Jurisdictions tracking tool</li>
+	<li>Gain recognition for your submissions and improve your company's search engine rankings</li>
+ </ul>
+<p>To learn more about the features available to you, access our <a href="/getting-started/">Getting Started</a> page.</p>
+
+
+
+
+			</div>
+{% endif %}
+		</div>
+	</div>
+</div>
+{# EO new carousel #}
+<div class="homeContent">
+	<h2>2 Ways to Get Involved Today!</h2>
+	<div class="cssTable">
+		<div class="cssRow">
+			<div class="cssCell numCol">
+				<img src="/media/images/1.png" alt="1" />
+			</div>
+			<div class="cssCell padRight">
+				<h3>Get Permitting Data</h3>
+				<p>- Save time and money by utilizing up-to-date permitting requirements from across the country.  Simply search for, or browse to, the city or county you are doing business in and retreive the information you need.</p>
+			</div>
+		</div>
+		<div class="cssRow">
+			<div class="cssCell numCol">
+				<img src="/media/images/2.png" alt="2" />
+			</div>
+			<div class="cssCell padRight">
+				<h3>Participate in the Community</h3>
+				<p>- Contribute to the database and share best permitting practices with information you already collect today.  Join other industry leaders - together we can help reduce permitting headaches and the cost of installing solar for our industry.</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+{% endblock %}
+
+{% block endjs %}{% endblock %}

@@ -1,0 +1,61 @@
+{% if is_print != None and is_print  %}
+<div id="map">
+	{% if str_address != '' and str_address != None%}
+		<img src='http://maps.googleapis.com/maps/api/staticmap?center={{str_address}}&amp;zoom=13&amp;size=390x340&amp;maptype=roadmap&amp;markers={{str_address}}&amp;sensor=false' alt="google map" />
+	{% else %}
+		<p>No map available.</p>
+	
+		<p>An address must be added before a map can display.</p>
+	{% endif %}
+</div>
+{% else %}
+	<div id="map"  >
+	<p>No map available.</p>
+	
+	<p>An address must be added before a map can display.</p>
+	
+	</div>
+	
+	    <script type="text/javascript"
+	      src="https://maps.googleapis.com/maps/api/js?key={{google_api_key}}&amp;sensor=false">
+	    </script>
+	    <script type="text/javascript">
+	    var map;
+	    //$(document).ready(function() {
+	
+	
+	          var geocoder;
+	          function initialize() {
+	            geocoder = new google.maps.Geocoder();
+	            var latlng = new google.maps.LatLng(-34.397, 150.644);
+	            var mapOptions = {
+	              zoom: 14,
+	              center: latlng,
+	              mapTypeId: google.maps.MapTypeId.ROADMAP
+	            }
+	            map = new google.maps.Map(document.getElementById("map"), mapOptions);
+	          }
+	          
+	          function load_google_map(str_address) {
+	            geocoder.geocode( { 'address': str_address}, function(results, status) {
+	              if (status == google.maps.GeocoderStatus.OK) {
+	                map.setCenter(results[0].geometry.location);
+	                var marker = new google.maps.Marker({
+	                    map: map,
+	                    position: results[0].geometry.location
+	                });
+	
+	              } else {
+	                //alert("Geocode was not successful for the following reason: " + status);
+	              }
+	            });
+	          }
+	          
+	        {% if str_address != '' and str_address != None %}
+	            initialize();
+	            load_google_map('{{str_address}}');      
+	
+	        {% endif %}
+	    //});    
+	    </script>
+{% endif %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Test Organization{% endblock %}
+
+{% block forestyle %}
+{% endblock %}
+
+{% block endjs %}
+{% endblock %}
+
+{% block body %}
+<table width="100%" cellspacing="0" cellpadding="0" border="0" style="">
+  <tbody><tr>
+    <td style="width:70%;">
+<div id="carouselcontainer">
+	<span class="title">Test Organization</span><br><br>
+ 	
+	<div><a onClick="controller.postRequest('/organization/', {ajax: 'open_choose_org'}); return false;"  href="#" >Choose a Company or Organization</a></div>
+	<div><a onClick="controller.showConfirm(); return false;"  href="#" >Test Confirmation Dialog not in Modal Dialog</a></div>
+	<div><a onClick="controller.showMessage('This is a system message.'); return false;"  href="#" >Test System Message</a></div>
+ 	
+ 	<h2>Organization Examples</h2>
+ 	{% for organization in organizations %}
+		<div><a onClick="controller.postRequest('/organization/', {ajax: 'open_org_details', orgid: {{organization.id}}}); return false;"  href="#" >{{organization.name}}</a></div>
+ 	{% endfor %}
+</div>
+    </td>
+  </tr>
+</tbody></table>
+{% endblock %}

@@ -1,0 +1,38 @@
+			<div class="form_field" >  
+				<div class="label">{{question_label}}:</div>           
+                <div class="field">
+                   <input type="radio" name="field_scale" id="field_scale_any_{{question_id}}" value="any" {% if scale == 'any' %} checked {% endif %}   >Any scale
+                   <br/><input type="radio" name="field_scale" id="field_scale_specific_{{question_id}}" value="specific" {% if scale == 'specific' %} checked {% endif %}   >Only specific scales
+                </div>                              
+            </div>
+
+			<div id="specific_{{question_id}}" {% if scale == 'specific' or scale == 'Specific' %} style="display:block;"{% else %} style="display:none;" {% endif %}>
+
+					<div id="standard_page_sizes" class="form_field">	
+						<div class="label">Scale factors:</div>			
+						<div class="field" id="field_scale_factor_{{question_id}}">
+		 				   <input type="checkbox" name="field_scale_factor_1_1" id="field_scale_factor_1_1_{{question_id}}" value="yes" {% if scale_factor_1_1 == 'yes' %} checked {% endif %}   >1:1
+						   <br/><input type="checkbox" name="field_scale_factor_1_5" id="field_scale_factor_1_5_{{question_id}}" value="yes" {% if scale_factor_1_5 == 'yes' %} checked {% endif %}   >1:5
+						   <br/><input type="checkbox" name="field_scale_factor_1_10" id="field_scale_factor_1_10_{{question_id}}" value="yes" {% if scale_factor_1_10 == 'yes' %} checked {% endif %}   >1:10 
+						   <br/><input type="checkbox" name="field_scale_factor_1_20" id="field_scale_factor_1_20_{{question_id}}" value="yes" {% if scale_factor_1_20 == 'yes' %} checked {% endif %}   >1:20
+						   <br/><input type="checkbox" name="field_scale_factor_other" id="field_scale_factor_other_{{question_id}}" value="yes" {% if scale_factor_other == 'yes' %} checked {% endif %}   >Other 						   		                    
+						</div>
+					</div>	
+					
+				
+				<div id="other_{{question_id}}" class="form_field" {% if scale_factor_other == 'yes' %} style="display:block;"{% else %} style="display:none;" {% endif %}>			
+					<div class="label"></div>
+					<div class="field">
+						<input type="text" name="field_scale_factor_1"  value="{{scale_factor_1}}" class="required number" style="width:15px" maxLength="2" > : <input type="text"  name="field_scale_factor_2"  value="{{scale_factor_2}}" class="required number" style="width:15px" maxLength="2" >
+					</div>
+		 			<div class="field_help_text">
+						Please enter the drawing scale factors
+					</div>
+					<div class="error_div">
+						{{msg_error}}
+					</div>  					
+					
+				</div>										 
+			
+			</div>            
+           

@@ -1,0 +1,93 @@
+<div id="user_profile_container">
+  <span class="title">User Profile</span><br><br>
+  <div id="user_profile_content">
+
+<div class="form_fields_container">
+<form id="{{form_id}}" name="{{form_id}}" action="/account/" method="post" accept-charset="utf-8">
+  <input type="hidden" name="ajax" value="user_profile_submit" >
+  <input type="hidden" name="userid" value="{{userid}}" > 
+  <input type="hidden" name="mode" value="{{mode}}" >     
+  <input type="hidden" name="name" id="name" value="" >
+  
+    <div class="form_field">
+        <div class="label">Username:</div>
+        <div id="form_field_data_username" class="show_data"  style="width:350px;cursor:pointer;" onmouseout="return show_data('form_field_data_username', 'edit_option_username')" onmouseover="return show_edit_option('form_field_data_username', 'edit_option_username')" onClick="return switch_to_edit('form_field_data_username', 'form_field_edit_username')" > 
+            {% if username == '' %}
+                No info available
+            {% else %}
+                {{username}}
+            {% endif %}
+            <span style="float:right;visibility:hidden;" id="edit_option_username" >
+                <img width="12"src="/media/images/edit.png" alt="edit" >&nbsp;Click to edit
+            </span>
+        </div>
+      
+        <div id="form_field_edit_username" style="display:none">
+            <div class="field">
+                <input type="text" name="username" id="{{form_id}}_field_username" value="{{username}}" class="" style="width:210px" maxLength="20" onBlur="return check_{{form_id}}_field_username(this, 'msg_{{form_id}}_field_username', '{{form_id}}');">
+            </div>        
+            <div class="field_help_text">
+                20 characters maximum
+            </div>
+            <div id="msg_{{form_id}}_field_username" class="form_field_error_message" >
+                {{error_username}}
+            </div>
+            {% if mode == 'individual' %}
+            <div style="height:25px;padding-top:10px;">
+                <a disabled name="save_username" value="Save" id="{{form_id}}_field_usernme_submit_button" class="mainbutton" onClick="submit_edit('{{form_id}}', 'username')"  title="" >Save</a>
+                <a name="Cancel" value="Cancel" id="cancel_username" class="mainbutton" onClick="return switch_to_data('form_field_data_username', 'form_field_edit_username')"  title="" >Cancel</a>
+            </div>
+            {% endif %}  
+        </div>               
+    </div>
+        
+        
+
+    <div class="form_field" >
+        <div class="label">Email address:</div>
+        <div id="form_field_data_email" class="show_data"  style="width:350px;cursor:pointer;" onmouseout="return show_data('form_field_data_email', 'edit_option_email')" onmouseover="return show_edit_option('form_field_data_email', 'edit_option_email')" onClick="return switch_to_edit('form_field_data_email', 'form_field_edit_email')" > 
+            {% if email == '' %}
+                No info available
+            {% else %}
+                {{email}}
+            {% endif %}
+            <span style="float:right;visibility:hidden;" id="edit_option_email" >
+                <img width="12"src="/media/images/edit.png" alt="edit" >&nbsp;Click to edit
+            </span>
+        </div>
+      
+        <div id="form_field_edit_email" style="display:none">
+            <div class="field">
+                <input type="text" name="email" id="{{form_id}}_field_email" value="{{email}}" class="" style="width:210px" >
+            </div>        
+            <div class="field_help_text">
+                (e.g. free2rhyme@yahoo.com)
+            </div>
+            <div id="msg_{{form_id}}_field_email" class="form_field_error_message">
+                {{error_email}}
+            </div>
+            {% if mode == 'individual' %}
+            <div>
+                <a name="save_email" value="Save" id="save_email" class="mainbutton" onClick="submit_edit('{{form_id}}', 'email')" title="" >Save</a>
+                <a name="Cancel" value="Cancel" id="cancel_email" class="mainbutton" onClick="return switch_to_data('form_field_data_email', 'form_field_edit_email')"  title="" >Cancel</a>
+            </div>
+            {% endif %}  
+        </div>               
+    </div>
+                
+    
+    {% include '/website/form_fields/email.html' %}
+    
+<div id="my_org_list">    
+    {% include '/website/form_fields/org.html' %}      
+</div>
+</form>
+<!--    
+    <div class="form_field">
+    <span><input type="button" name="update_user_profile" value="Update User Profile" id="update_user_profile_button" class="mainbutton" onClick="controller.postRequest('/account/', {ajax: 'update_user_profile'}); return false;" style="height:30px;" title="Update your profile." ></span>  
+    </div>
+-->
+
+<div id="simple_popup_div" class="simple_popup" />test<div>
+</div>
+

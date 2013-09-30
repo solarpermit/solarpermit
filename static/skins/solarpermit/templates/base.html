@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>{% block title %}{% endblock %} - National Solar Permitting Database</title>
+	
+{% include "website/blocks/canonical_url.html" %}
+
+{% block forestyle %}
+	
+{% endblock %}
+
+	
+{% include "website/fancybox_stylesheets.html" %}
+
+
+	<link rel="stylesheet" type="text/css" href="/media/style/main.css" />
+	<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css" />
+	<link rel="stylesheet" type="text/css" href="/media/style/jquery-ui-1.10.1.custom.css" />
+	<link href="/media/style/fileuploader.css" rel="stylesheet" type="text/css" />	
+	<link rel="shortcut icon" href="/media/images/solarpermit_favicon.png" />
+
+	<script src="/media/js/jquery-1.7.2.min.js"></script>	
+	<script src="/media/js/jquery.validate.js"></script>
+	<script src="/media/js/additional-methods.js"></script>
+	<script src="/media/js/jquery.simplemodal.js"></script>
+	<script src="/media/js/jquery.jscroll.custom.js"></script>	
+	<script src="/media/js/controller.js"></script>
+	<script src="/media/js/jquery.dajax.core.js"></script>
+	<script src="/media/js/jquery-ui-1.10.1.custom.min.js"></script>
+	<script src="/media/js/fileuploader.js"></script>	
+	
+	<script type="text/javascript" src="/media/js/flexcomplete/jquery.flexcomplete.js"></script>
+	
+	<!--[if lt IE 9]>
+		<script>
+			// declare html5 blocks for ie8 and ie7
+			document.createElement('header');
+			document.createElement('nav');
+			document.createElement('section');
+			document.createElement('article');
+			document.createElement('aside');
+			document.createElement('footer');
+			document.createElement('hgroup');
+		</script>
+	<![endif]-->
+
+{% block forejs %}{% endblock %}
+	
+	<script type="text/javascript">
+		
+		var js_csrf = '{{csrf_token}}';
+		
+		function set_error_class() {
+		    document.getElementById('username').style.backgroundColor="#FCC";
+		    document.getElementById('password').style.backgroundColor="#FCC"; 
+		}
+
+{#		function close_simple_popup(div) {
+			obj = document.getElementById(div);
+			obj.innerHTML = '';
+			obj.style.display='none';		
+		}
+
+		function open_simple_popup(id, div)	{
+			obj = document.getElementById(div);
+			if (obj.style.display == 'none') {}
+				var left = $('#id_'+id).position().left + 5;
+				var top = $('#id_'+id).position().top + 20;   
+				obj.style.left = left+'px';
+				obj.style.top = top+'px';
+				document.getElementById(div).style.display='block';
+			} else {
+				document.getElementById(div).style.display='none';
+			}
+		}		#}
+
+		var org_id = 0;
+		var member_id = 0;
+
+		function set_org_id(orgid)
+		{
+			org_id = orgid;
+		}
+
+		function set_member_id(memberid)
+		{
+			member_id = memberid;
+		}
+
+		function cancel_request()
+		{
+			controller.postRequest('/organization/', {ajax: 'cancel_org_request', orgid: org_id, caller:'user_profile'});
+		}
+
+		function cancel_my_request (org_name, org_id)
+		{
+		        controller.showConfirm({
+		            title: 'Do you want to cancel your request to join  '+org_name+'?',
+		            message: '<br>',
+		            proceedText: 'Yes, cancel my request',
+		            cancelText: 'No, do not cancel my request',
+		            callback: cancel_request
+		        });
+		}
+
+		function remove_request()
+		{
+			controller.postRequest('/organization/', {ajax: 'remove_from_my_profile', mid: member_id, caller:'user_profile'});
+		}
+
+		function remove_from_my_profile (org_name, org_id)
+		{
+		        controller.showConfirm({
+		            title: 'Do you want to remove  '+org_name+' from your profile?',
+		            message: '<br>',
+		            proceedText: 'Remove from My Profile ',
+		            cancelText: 'Cancel',
+		            callback: remove_request
+		        });
+		}	
+
+		function accept_invitation()
+		{
+			controller.postRequest('/organization/', {ajax: 'accept_invite', mid: member_id, caller:'user_profile'});
+		}
+
+		function accept_invite (org_name, org_id)
+		{
+		        controller.showConfirm({
+		            title: 'Do you want to accept the invitation to join  '+org_name+'?',
+		            message: '<br>',
+		            proceedText: 'I accept ',
+		            cancelText: 'Cancel',
+		            callback: accept_invitation
+		        });
+		}			
+
+		function decline_invitation()
+		{
+			controller.postRequest('/organization/', {ajax: 'decline_invite', mid: member_id, caller:'user_profile'});
+		}
+
+		function decline_invite (org_name, org_id)
+		{
+		        controller.showConfirm({
+		            title: 'Do you want to decline the invitation to join  '+org_name+'?',
+		            message: '<br>',
+		            proceedText: 'I decline ',
+		            cancelText: 'Cancel',
+		            callback: decline_invitation
+		        });
+		}					
+
+		function show_data(data_obj_id, edit_option_id)
+		{   
+			document.getElementById(data_obj_id).className = 'show_data';
+			document.getElementById(edit_option_id).style.visibility = 'hidden';			
+			return false;
+		}
+
+		function show_edit_option(data_obj_id, edit_option_id)
+		{   
+			document.getElementById(data_obj_id).className = 'show_edit_option';
+			document.getElementById(edit_option_id).style.visibility = 'visible';
+			document.getElementById(edit_option_id).style.display = 'block';				
+			return false;
+		}
+
+		function switch_to_edit(data_obj_id, edit_obj_id)
+		{   
+			$('#'+edit_obj_id).show();
+			$('#'+data_obj_id).hide();
+		
+			return false;
+		}		
+
+		function switch_to_data(data_obj_id, edit_obj_id)
+		{   
+			$('#'+edit_obj_id).hide();
+			$('#'+data_obj_id).show();
+
+			return false;
+		}	
+
+		function submit_edit(form_id, field_name)
+		{	//alert(field_name);
+			document.getElementById('name').value = field_name;
+			controller.submitForm('#'+form_id);		
+			return false;
+		}		
+
+		function onload(action_key)
+		{	
+			if (action_key == 'reset_password')
+			{	
+				controller.postRequest('.', {ajax: 'launch_reset_password', reset_password_key: '{{reset_password_key}}'}); 
+			}
+
+			if (action_key == 'create_account')
+			{	
+				{% if request.user.is_authenticated() == False %}
+				controller.postRequest('/account/', {ajax: 'create_account', invitation_key: '{{invitation_key}}'});
+				{% endif %} 
+			}		
+
+			if (action_key == "user_profile")
+			{
+				controller.postRequest('/account/', {ajax: 'user_profile'});
+			}
+			
+			if (action_key == "request_org")
+			{
+				controller.postRequest('/organization/', {ajax: 'open_org_details', orgid: '{{orgid}}'});
+			}
+			
+			controller.showMessage('{{system_message_text}}', '{{system_message_type}}');
+
+		}
+	</script>
+	
+	<script type='text/javascript'>
+		
+		$(document).ready(function() {
+			onload('{{action_key}}'); {# // moved from onload attribute in body tag #}
+			$('#update_org_info_link').tooltip({track: true});
+{#			// profile menu #} 
+			$('.profile_header_link').hover(
+					function(){
+						$('.headRight ul').show();
+						$('body').bind('mousemove.profile_header', function (event) {
+							$target = $('.profile_header_link');
+							//capture initial mouse location
+							var startX = $target.data('mouseX');
+							if (!startX) {
+								$target.data('mouseX', event.pageX);
+								startX = event.pageX;
+							}
+							var startY = $target.data('mouseY');
+							if (!startY) {
+								$target.data('mouseY', event.pageY);
+								startY = event.pageY;
+							}
+							var dX = event.pageX - startX;
+							var dY = event.pageY - startY;
+							//see if mouse moves out of range
+							if ((dX > $target.width()) || (dX < -100) ||
+									(dY > $target.height() + 50) || (dY < -50)) {
+								$('.headRight ul').hide();
+								$('body').unbind('mousemove.profile_header');
+							}
+						});
+					}); {# //shows the profile menu on hover of username #}
+			$('.headRight ul').hover(
+					function(){
+						$('body').unbind('mousemove.profile_header'); //no need now that is hovering here
+					},
+					function(){
+						$('.headRight ul').hide();
+						$('body').unbind('mousemove.profile_header');
+					}); {# //hides the profile menu on mouseout #}
+			$('.profile_header_link').click(function(){ {# //allow clicking on the username to still function #}
+				if ($('.headRight ul').css('display') == 'block') {
+					$('.headRight ul').hide();
+				} else {
+					$('.headRight ul').show();
+				}
+			});
+			
+			
+			
+			
+	    	$('#search_field').flexcomplete({
+	    	    list_groups: [
+	    	        {id: 'recent_results', local: true, container: '#recent_results', header: 'Recent', max_items: 3},
+	    	        {id: 'search_results', local: false, container: '#search_results', header: 'Suggestions', max_items: 7}
+	    	    ],
+	    	    search_url: '/jurisdiction/autocomplete/',
+	    	    search_parameter: 'q',
+	    	    top_margin: 6,
+	    	    footer: 'Press Enter to search'
+		    }); 
+													
+			$('#empty_data_fields_hidden').click(function(event) {
+				var $target = $(event.target); 
+				if ($('#empty_data_fields_hidden').is(':checked'))
+					query_string = 'empty_data_fields_hidden=' + 1;
+				else
+					query_string = 'empty_data_fields_hidden=' + 0;
+					
+				if (document.URL.search(/empty_data_fields_hidden=/i) < 0)
+				{
+					if (document.URL.search('/=/') < 0)
+						url = document.URL + '?' + query_string
+					else
+						url = document.URL + '&' + query_string
+				}
+				else
+				{
+					url = document.URL.replace(/empty_data_fields_hidden=1/i, query_string)				
+					url = url.replace(/empty_data_fields_hidden=0/i, query_string)
+				}
+																
+				location.href= url
+			});										                                     
+		});
+	</script>
+	<!--[if lte IE 9]>
+	<script type="text/javascript" src="/media/js/placeholder_ie_fix.js"></script>
+	<script type='text/javascript'>
+	$(document).ready(function() {
+	    placeholder_ie_fix('#search_field');
+	});
+	</script>
+	<![endif]-->
+</head>
+
+<body>
+
+
+{% include "website/header.html" %}
+<div id="main-wrapper" >
+{% if page == "AHJ"%}
+<div class="header-2nd" >
+{% endif %}
+		<div class='breadcrum' >
+
+
+{% block breadcrum %}{% endblock%}
+
+
+		</div>
+		<h1 class='page_title'>{% block page_title %}{% endblock%}</h1>		
+		<div id="messagediv" style='display:none;'></div>
+		<div id="top_main_content" >
+
+
+{% block top_main_content %}{% endblock %}
+
+
+		</div>{# <!-- eo #top_main_content --> #}
+{#		<!-- <div id="main_content" class="main_content" ></div> --> #}
+{% if page == "AHJ"%}
+</div>
+{% endif %}
+
+	
+{% block body %}{% endblock %}
+
+
+{% block endjs %}{% endblock %}
+	
+
+{% block dialog %}
+{% include "base_message_dialog.html" %}
+{% include "base_info_dialog.html" %}
+{% endblock %}
+
+
+{% include "website/fancybox_scripts.html" %}
+
+
+{% include "website/blocks/system_message.html" %}
+
+
+		<div id="fromServer"></div>
+		<div id="fancyboxformDiv"></div>
+		<div id="secondDialogDiv"></div>
+		<div id="simple_popup_div_on_page" style="position:absolute;left:200px;top:200px;width:300px;height:200px;display:none;z-index:3000;display:none;visibility:visible;">User Profile</div>
+		<div class="clearboth"></div>
+	</div><!-- propper close of main-wrapper -->
+
+{% include "website/footer.html" %}
+{# close comment tags on lines 340 and 353 to active tracking code #}
+{% if ENABLE_GOOGLE_ANALYTICS %}
+{# Analytics Tracking Code #}
+
+{% if request.user.is_authenticated() %}
+	{% set this_user = request.user.get_profile().user %}
+	{% set user_email = this_user.email %}
+	{% set is_superuser = this_user.is_superuser %}
+	{% set is_staff = this_user.is_staff %}
+{% else %}
+	{% set user_email = ''  %}
+	{% set is_staff = 0 %}
+	{% set is_superuser = 0 %}	
+{% endif %}
+
+{% if '@cleanpowerfinance.com' not in user_email and '@aerio.com' not in user_email and is_staff | int != 1 and is_superuser | int != 1 and request.META.get('REMOTE_ADDR') not in INTERNAL_IPS %}
+	<script type="text/javascript">
+		//alert('google');
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-37378051-1']);
+		//_gaq.push(['_trackPageview']);
+		// track anchor/bookmarks in page for easier custom goals
+		_gaq.push(['_trackPageview', location.pathname + location.search + location.hash]);
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+{# Marketo Tracking Code #}
+	<script type="text/javascript">document.write(unescape("%3Cscript src='" + document.location.protocol + "//munchkin.marketo.net/munchkin.js' type='text/javascript'%3E%3C/script%3E"));</script>
+	<script>Munchkin.init('464-OTD-366');</script>
+{% endif %}
+
+{% endif %}
+
+</body>
+</html>

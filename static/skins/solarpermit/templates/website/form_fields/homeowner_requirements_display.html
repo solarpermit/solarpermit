@@ -1,0 +1,9 @@
+			<div  >         
+                   {% if question_content.get(this_question.id).get('pending').get(answer.id).get('answer').get('disclose_communication') == 'yes' %}Homeowners must disclose any prior communication with Historic Board{% endif %}
+                   {% if question_content.get(this_question.id).get('pending').get(answer.id).get('answer').get('disclose_issue') == 'yes' %}<br/>Homeownser must disclose known issues with roof structure{% endif %}
+                             
+            </div>
+            
+            <div >
+            	{{question_content.get(this_question.id).get('pending').get(answer.id).get('answer').get('note')}}
+            </div>

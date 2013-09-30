@@ -1,0 +1,32 @@
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			
+			<div  >         
+				{% if answer_content.get('required') == 'no' or answer_content.get('required') == 'No' %}
+					Not required
+				{% elif answer_content.get('required') == 'yes' or answer_content.get('required') == 'Yes' %}	
+                    Required
+                {% else %}
+                	TBD
+                {% endif %}
+            </div>
+            
+            <div >
+            {% if answer_content.get('required') == 'yes'  or answer_content.get('required') == 'Yes' %}
+            	{% if answer_content.get('size') != '' and answer_content.get('required') != None %}
+            		{% if answer_content.get('size') != 'other'  and answer_content.get('size') != 'Other' %}
+            	 		{{answer_content.get('size')}}
+            	 	{% elif answer_content.get('size') == 'other'  or answer_content.get('size') == 'Other'  %}
+            	 		{{answer_content.get('width')}} x {{answer_content.get('height')}} inches
+            	 	{% endif %}
+            	 {% endif %}
+            {% endif %}
+            </div>
+            
+
+			{% endif %}		            

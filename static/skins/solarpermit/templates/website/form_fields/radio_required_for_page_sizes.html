@@ -1,0 +1,38 @@
+			<div class="form_field" >  
+				<div class="label">{{question_label}}:</div>           
+                <div class="field">
+                   <input type="radio" name="field_required" id="field_required_no_{{question_id}}" value="no" {% if required == 'no' or required == 'No'  %} checked {% endif %}   >Not required
+                   <br/><input type="radio" name="field_required" id="field_required_yes_{{question_id}}" value="yes" {% if required == 'yes'  or required == 'Yes' %} checked {% endif %}  >Required
+                </div>                              
+            </div>
+
+			<div id="yes_{{question_id}}" {% if required == 'yes' or required == 'Yes'  %} style="display:block;"{% else %} style="display:none;" {% endif %}>
+
+					<div id="standard_page_sizes" class="form_field"  >		
+						<div class="label">Sizes:</div>	
+						<div class="field">
+							<select name="field_size" id="field_size_{{question_id}}" >
+		                        <option value="8x11" {% if size == "8x11" or size == '8 x 11' %}selected{% endif%}>8.5 x 11</option>
+		                        <option value="11x17" {% if size == "11x17" or size == '11 x 17'  %}selected{% endif%}>11 x 17</option>
+		                        <option value="other" {% if size == "other" or size == "Other"  %}selected{% endif%}>Other</option>                   
+		                    </select>								  
+
+						</div>
+					</div>	
+					
+				
+				<div id="other_{{question_id}}" class="form_field" {% if size == 'other' %} style="display:block;"{% else %} style="display:none;" {% endif %}>			
+					<div class="label">Width x Height:</div>
+					<div class="field">
+						<input type="text" name="field_width"  id="field_width_{{question_id}}" value="{{width}}" class="required number" style="width:15px" maxLength="2" > x <input type="text"  name="field_height" id="field_height_{{question_id}}"  value="{{height}}" class="required number" style="width:15px" maxLength="2" > inches
+					</div>
+		 			<div class="field_help_text">
+						Please enter the width and height in inches
+					</div>
+					<div class="error_div">
+						{{msg_error}}
+					</div>    					
+				</div>										 
+			
+			</div>            
+           

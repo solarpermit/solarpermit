@@ -1,0 +1,35 @@
+{% extends "base_modal_dialog.html" %}
+
+{% block modal_dialog_title %}Send Feedback About SolarPermit.org{% endblock %}
+
+{% block modal_dialog_message %}{{form_send_feedback_fail_reason}}{% endblock %}
+
+{% block body_modal_dialog %}
+
+Please share your feedback about <a href='http://solarpermit.org' target='_blank'>SolarPermit.org.</a>  Our team will review user feedback to improve the site and ensure that we are meeting the needs of our users.
+
+<form id="{{form_id}}" name="form_send_feedback" action="/info/" method="post" accept-charset="utf-8">
+  <input type="hidden" name="ajax" value="send_feedback" >
+  
+<div class="form_help_text"></div>
+
+<div class="form_fields_container">
+    <div class="form_field">
+        <div class="label">Your feedback and comments:</div>
+        <div class="field">
+            <textarea name="feedback" id="{{form_id}}_field_feedback" rows="5" cols="60" class="required" >{% if feedback != None %}{{feedback | trim }}{% endif %}</textarea>
+        </div>       
+        <div class="error_div"></div>  
+    </div>
+</div>
+
+</form>
+
+{% endblock %}
+
+
+{% block modal_dialog_action %}
+    <span><a href="#" name="submit_feedback" value="Send" id="{{form_id}}_submit_button" class="mainbutton" onClick="controller.submitForm('#{{form_id}}');return false;"  title="Complete the form to send feedback" >Send</a></span>
+    <span><a href="#" name="cancel" value="Cancel" id="cancel_feedback" class="mainbutton" onClick="jQuery.fancybox.close();return false;"" title="Cancel">Cancel</a></span>
+{% endblock %}
+

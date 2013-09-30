@@ -1,0 +1,51 @@
+
+        <div id="form_field_add_address" style="">
+            <div class="form_field" >
+                <div class="label">Street Address:</div>        
+                <div class="field">
+                    <input type="text" name="field_address1" id="{{form_id}}_field_address1" value="{{address1}}" class="required" style="width:210px" maxLength="200" >
+                </div>   
+                <div class="error_div"></div>               
+            </div>     
+            <div class="form_field" >
+                <div class="label">Street Address line 2:</div>        
+                <div class="field">
+                    <input type="text" name="field_address2" id="{{form_id}}_field_address2" value="{{address2}}" class="" style="width:210px" maxLength="200" >
+                </div>
+                <div class="field_help_text">
+                    Optional
+                </div>                                 
+            </div>   
+            {% if jurisdiction.jurisdiction_type == 'CO' %}
+            <div class="form_field" >
+                <div class="label">City:</div>        
+                <div class="field">
+                    <!--<input type="text" name="field_city" id="{{form_id}}_field_city" value="" class="required" style="width:210px" maxLength="200" >-->
+                    <select name="field_city" id="{{form_id}}_field_city" class="" >
+                        <option value="" >Please select a city</option>
+                    {% for this_city in jurisdiction.get_city_jurisdictions_by_county() %}
+                        <option value="{{this_city.name}}" {% if this_city.name == city %} selected {% endif %} >{{this_city.name}}</option>
+                    {% endfor %}
+                    </select>
+                </div>   
+                <div class="error_div"></div>              
+            </div>
+            {% else %}
+                <input type="hidden" name="field_city" value="{{city}}" />
+            {% endif %}
+                                
+            <div class="form_field" >
+                <div class="label">Zip Code:</div>        
+                <div class="field">
+                    <input size="10" maxLength="10" type="text" name="field_zip_code" id="{{form_id}}_field_zip_code" value="{{zip_code}}" class="required number"  >
+                </div>   
+                <div class="error_div"></div>               
+            </div>
+            <input type="hidden" name="field_state" value="{{state}}" />
+            
+            <div class="field_help_text" style="padding-bottom:5px;">
+                {{instruction}}
+            </div>             
+        </div>               
+   
+        

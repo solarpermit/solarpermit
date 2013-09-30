@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+   
+
+{% block title %}Jurisdiction - Search{% endblock %}
+
+
+{% if breadcrum == 'yes' %}
+{% block breadcrum %}
+
+
+		<span style="padding-left:10px;"><a href="{{home}}" >Home</a> &gt; {{state_long_name}}</span>
+
+
+{% endblock %}
+{% endif %}
+
+
+{% block page_title %}Jurisdictions in {{state_long_name}}{% endblock %}
+
+
+		<div style="boder-bottom:1px solid #ffffff;"></div><!-- closing tag moved out of following block to prevent validation error -->
+
+
+{% block top_main_content %}
+
+
+{% include "website/jurisdictions/jurisdiction_filter.html" %}
+
+
+		<div class="column_header_row">
+		<table style="width:100%;table-layout:fixed;">
+		    <tr>
+		    	<td style="width:10px;padding-left:10px"></td>
+		        <td style="width:300px;">
+					<p id="id_sort_name" class="sort-up"><a id='name' href='/jurisdiction/search/' class="header_link" onClick="return sort('name');" >Name</a></p>
+		        </td>
+		        <td style="width:200px;text-align:left"><p id="id_sort_last"><a href="/jurisdiction/search/" onClick="return sort('last');" class=header_link>Last updated</a></p></td>
+		        <td style="width:200px;text-align:left"><p id="id_sort_update"><a href="/jurisdiction/search/" onClick="return sort('updated');" class=header_link>Updated by</a></p></td>
+                    <td style="width:100px;font-style:italic;text-align:left" >{% if search_by == 'search_by_zip' %}Distance (miles){% endif %}</td>
+                    <td style="width:50%;font-style:italic;text-align:left" ></td>
+		    </tr>
+		</table>
+		</div>
+{% endblock %}
+
+
+{% block body %}
+     
+        <div id="jurisdiction_list" class="listing">
+{% if list %}          
+{% include "website/jurisdictions/jurisdiction_list.html" %}
+{% else %}
+        Your search could not be processed. Please try a more detailed search.
+{% endif %}
+        </div>
+
+{% endblock %}
+
+
+{% block endjs %}
+		<script type='text/javascript'>
+			function sort(sort_by)
+			{
+				if (document.getElementById('sort_dir').value == 'asc'){
+					document.getElementById('sort_dir').value = 'desc';
+					$('.sort-up').removeClass('sort-up');
+					if (sort_by == 'name'){
+						$('#id_sort_name').addClass('sort-down');
+						document.getElementById('sort_by').value = 'name'
+					} else if (sort_by == 'last'){
+						$('#id_sort_last').addClass('sort-down');
+						$('#id_sort_last').css('background-position', '85px center');
+						document.getElementById('sort_by').value = 'last'
+					} else {
+						$('#id_sort_update').addClass('sort-down');
+						$('#id_sort_update').css('background-position', '85px center');
+						document.getElementById('sort_by').value = 'updated'
+					}
+				}else{
+					document.getElementById('sort_dir').value = 'asc';
+					$('.sort-down').removeClass('sort-down');
+					if (sort_by == 'name'){
+						$('#id_sort_name').addClass('sort-up');
+						document.getElementById('sort_by').value = 'name'
+					} else if (sort_by == 'last'){
+						$('#id_sort_last').addClass('sort-up');
+						$('#id_sort_last').css('background-position', '85px center');
+						document.getElementById('sort_by').value = 'last'
+					} else {
+						$('#id_sort_update').addClass('sort-up');
+						$('#id_sort_update').css('background-position', '85px center');
+						document.getElementById('sort_by').value = 'updated'
+					}
+				}
+			
+				controller.submitForm('#jurisdiction_search');
+				return false;
+			}
+			$(document).ready(function() {
+				$('#filter').val('all'); //reset to all on back page
+				$('#jurisdiction_list').jscroll();
+				$('#text_2').bind('keyup', function (event) {
+					var $target = $(event.target);
+					if ((event.which != 38) &&
+							(event.which != 40) &&
+							(event.which != 13)) {
+						//var searchText = $target.val();
+						controller.submitForm('#jurisdiction_search');
+					}
+				});
+			});
+		</script>
+{% endblock %}

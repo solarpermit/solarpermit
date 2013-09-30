@@ -1,0 +1,25 @@
+html, body{
+	overflow:visible!important;
+}
+#print-main{width:960px;margin:0 auto;overflow:visible;}
+#print-main .main_content{border:0px;height:auto;}
+#print-main .ahj-tab{border:0px!important;}
+#print-main .page_title{color:#00A8E4;padding-left:0px;}
+#print-main h3.title{font-size: 20px;font-weight: bold;border-bottom:2px solid #C1CDCD;}
+#print{display:none;}
+#footer label{display:block;text-align: center;}
+.suggestion_btn_placement{display:none;}
+/*#qa_1_data{display:none;}*/
+.question_suggestions_alert{display:none;}
+.suggestion_right{display:none;}
+.suggestion_left .comments{display:none;}
+.suggestion_left .field:hover {
+	border:1px dashed #FFFFFF!important;
+}
+.valhis{display:none;}
+.ahj_general{width:100%!important;}
+.ahj_general_left{width:300px!important;}
+#map{float:right;}
+.qasv_content{margin-right:0px!important;}
+.ahj_general_left .field{width:400px;}
+

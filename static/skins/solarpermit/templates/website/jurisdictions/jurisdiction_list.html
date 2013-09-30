@@ -1,0 +1,69 @@
+			<table style="width:100%;table-layout:fixed;">
+
+
+{% for item in list %}
+				<tr {% if loop.index is divisibleby(2) %}class="row_even"{% else %}class="row_odd"{% endif %} >    
+					<td style="width:10px;padding-left:10px">
+
+
+{% if item.user_favorite_jurisdiction(user) %}
+						<img width="10" src="/media/images/add-to-favorites.png" alt="Add to Favorites" >
+{% endif %}
+
+
+					</td>          
+					<td style="width:300px;">
+						<a href="/jurisdiction/{{item.name_for_url}}/" title="View {{ item.name | title }} {{item.get_county_equivalent_name() | title }} ">{{ item.show_jurisdiction()}}</a>
+					</td>
+
+{% if item.jurisdiction_type != 'U' and item.jurisdiction_type != 'CINP' and item.jurisdiction_type != 'CONP' %}
+	{% if item.last_contributed != '' and item.last_contributed != None %}
+					<!--<td style="width:200px;">{{item.last_contributed.strftime('%m/%d/%y %I:%M %p')}}</td>-->
+					<td style="width:200px;">{{item.display_last_contributed()}}</td>
+	{% else %}
+					<td style="width:200px;" class="info">No data entered yet</td>
+	{% endif %}
+
+	{% if item.last_contributed_by != None %}					
+					<td style="width:200px;"><a id="id_{{item.id}}" href="#" onmouseover="controller.postRequest('/account/', {ajax: 'user_profile_short', user_id: {{item.last_contributed_by.id}}, unique_list_id: '{{item.id}}'  });" onmouseout="document.getElementById('simple_popup_div_on_page').style.display='none';">{{item.last_contributed_by.get_profile().get_display_name()}}</a></td>
+	{% else %}       
+					<td style="width:200px;" class="info">No data entered yet</td>
+	{% endif %}
+{% else %}
+	{% if item.jurisdiction_type == 'U' %}
+	{%	set type_text = 'Unincorporated' %}
+ 	{% elif item.jurisdiction_type == 'CINP' %}
+ 	{%	set type_text = 'City Non-permit' %}
+ 	{% elif item.jurisdiction_type == 'CONP' %}
+ 	{%	set type_text = 'County Non-permit' %} 	
+ 	{% else %}
+ 	{%	set type_text = '' %} 	
+ 	{% endif %}
+					<td style="width:200px;" class="info2">N/A ({{ type_text }})</td>
+					<td style="width:200px;" class="info2">
+						{% if item.parent != None %}
+						Redirects to 
+						<a href="/jurisdiction/{{item.parent.name_for_url}}/" title="View {{ item.parent.name | title }} {{item.parent.get_county_equivalent_name() | title }} ">
+							{{item.parent.get_jurisdiction_display('title')}}
+						</a>
+						{% else %}
+						&nbsp;
+						{% endif %}
+					</td>
+{% endif %}
+{% if item.distance %}
+					<td style="width:100px;font-style:italic;text-align:left" >{{item.distance|round(2)}} {{item.unit}}</td>
+{% else %}
+					<td style="width:100px;font-style:italic;text-align:left" >&nbsp;</td>
+{% endif %}
+					<td style="width:50%;font-style:italic;text-align:left" ></td>
+				</tr>
+{% endfor %}
+
+
+			</table>
+
+
+{% if list|length > 0 %}
+			<div id="jurisdiction_list_nav" class="endlessnav"><a href="?{{next_page_param}}&amp;state={{state}}&amp;q={{primary_search_str|replace(' ','+')}}&amp;text_2={{secondary_search_str}}&amp;caller={{caller}}&amp;filter={{filter}}&amp;sort_by={{sort_by}}&amp;sort_dir={{sort_dir}}&amp;">Next Page</a></div>
+{% endif %}

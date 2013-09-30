@@ -1,0 +1,9 @@
+			<div  >         
+                   {% if question_content.get(this_question.id).get('pending').get(answer.id).get('answer').get('additional_licensing_required') == 'yes' %}<li>Additional licensing beyond a business license is required</li>{% endif %}
+                   {% if question_content.get(this_question.id).get('pending').get(answer.id).get('answer').get('additional_licensing_required') == 'no' %}<li>Additional licensing beyond a business license is not required</li>{% endif %}
+                             
+            </div>
+            
+            <div >
+            	{{question_content.get(this_question.id).get('pending').get(answer.id).get('answer').get('note')}}
+            </div>

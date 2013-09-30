@@ -1,0 +1,27 @@
+{% extends "base_second_dialog.html" %}
+
+{% block modal_dialog_title %}Create New Comment{% endblock %}
+
+{% block modal_dialog_header %}{% endblock %}
+
+{% block modal_dialog_message %}{% endblock %}
+{% block modal_dialog_form_top %}<form id="id_create_ucomment" name="create_ucomment" method="post" action=".">{% endblock %}
+{% block body_modal_dialog %}
+
+	<input type="hidden" name="ajax" value="ucomment_create_submit" />
+	<input type="hidden" name="jurisdiction_id" value="{{jurisdiction.id}}" />
+	<input type="hidden" name="comment_type" value="{{comment_type}}" />
+	<input type="hidden" name="parent_comment" value="{{parent_comment}}" />
+	<div class="form_field">
+            <div class="field">
+                <textarea rows="4" cols="60" name="comment" id="id_comment" class="required"></textarea>
+            </div>        
+    </div>
+
+{% endblock %}
+
+{% block modal_dialog_action %}
+	<input id="id_comment_post" type="submit" class="smallbutton" value="Post comment">
+	<input type="button" id="id_cancel_create" class="smallbutton" title="Cancel" value="Cancel">
+{% endblock %}
+{% block modal_dialog_form_bottom %}</form>{% endblock %}

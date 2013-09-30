@@ -1,0 +1,88 @@
+{% for c in commnets %}
+<li id="li-{{c.id}}" data-comment-id="{{c.id}}">
+<h4> Posted by {{c.user.get_profile().get_display_name()}} {{c.get_comment_time()}}</h4>
+	<div id="comment_{{c.id}}">
+	{% if c.approval_status != 'F' and c.approval_status != 'R' %}
+	<p>{{c.comment}}</p>
+	<div id="button-div-{{c.id}}" >
+		<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'reply_comment', cid: {{c.id}}});return false;">Reply</a>
+		{% if user.id == c.user.id %}
+		<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'remove_comment', cid: {{c.id}}});return false;">Delete</a>
+		{% endif %}
+		<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'flag_comment', cid: {{c.id}}});return false;">Flag</a>
+	</div>
+	{% else %}
+	<p>This comment had been flagged as inappropriate and is hidden pending review.</p>
+	{% endif %}
+	</div>
+	{% if c.get_son_comments()|length > 0 %}
+		<ul class="ul-level-2">
+			{% for c1 in c.get_son_comments() %}			
+			<li id="li-{{c1.id}}" class="reply cl2" data-comment-id="{{c1.id}}"><h4>			
+				Reply by {{c1.user.get_profile().get_display_name()}} {{c1.get_comment_time()}}</h4>
+				<div id="comment_{{c1.id}}">
+				{% if c1.approval_status != 'F' and c1.approval_status != 'R' %}
+				<p>{{c1.comment}}</p>
+				<div id="button-div-{{c1.id}}" >
+					<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'reply_comment', cid: {{c1.id}}});return false;">Reply</a> 
+					{% if user.id == c1.user.id %}
+					<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'remove_comment', cid: {{c1.id}}});return false;">Delete</a>
+					{% endif %}
+					<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'flag_comment', cid: {{c1.id}}});return false;">Flag</a>
+				</div>
+				{% else %}
+				<p>This comment had been flagged as inappropriate and is hidden pending review.</p>
+				{% endif %}
+				</div>
+				{% if c1.get_son_comments()|length > 0  %}
+				<ul class="ul-level-3">
+					{% for c2 in c1.get_son_comments() %}					
+					<li id="li-{{c2.id}}" class="reply cl3 " data-comment-id="{{c2.id}}"><h4>
+						Reply by {{c2.user.get_profile().get_display_name()}} {{c2.get_comment_time()}}</h4>
+						<div id="comment_{{c2.id}}">
+						{% if c2.approval_status != 'F' and c2.approval_status != 'R' %}
+						<p>{{c2.comment}}</p>
+						<div id="button-div-{{c2.id}}" >
+							<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'reply_comment', cid: {{c2.id}}});return false;">Reply</a>
+							{% if user.id == c2.user.id %}
+							<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'remove_comment', cid: {{c2.id}}});return false;">Delete</a>
+							{% endif %} 
+							<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'flag_comment', cid: {{c2.id}}});return false;">Flag</a>
+						</div>
+						{% else %}
+						<p>This comment had been flagged as inappropriate and is hidden pending review.</p>
+						{% endif %}
+						</div>
+						{% if c2.get_son_comments()|length > 0  %}
+						<ul class="ul-level-4">
+							{% for c3 in c2.get_son_comments() %}
+								<li id="li-{{c3.id}}" class="reply cl4" data-comment-id="{{c3.id}}">
+								<h4>								
+									Reply by {{c3.user.get_profile().get_display_name()}} {{c3.get_comment_time()}}</h4>
+									<div id="comment_{{c3.id}}">
+									{% if c3.approval_status != 'F' and c3.approval_status != 'R' %}
+									<p>{{c3.comment}}</p>
+									<div id="button-div-{{c3.id}}" >
+										{% if user.id == c3.user.id %}
+										<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'remove_comment', cid: {{c3.id}}});return false;">Delete</a>
+										{% endif %}
+										<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'flag_comment', cid: {{c3.id}}});return false;">Flag</a>
+									</div>
+									{% else %}
+									<p>This comment had been flagged as inappropriate and is hidden pending review.</p>
+									{% endif %}
+									</div>
+								</li>
+							{% endfor %}
+						</ul>
+						{% endif %}
+					</li>
+					{% endfor %}
+				</ul>
+				{% endif %}
+			</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+</li>
+{% endfor %}

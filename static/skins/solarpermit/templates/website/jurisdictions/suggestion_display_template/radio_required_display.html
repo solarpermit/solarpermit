@@ -1,0 +1,21 @@
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			
+			<div  >         
+				{% if answer_content.get('value') == 'not required' or answer_content.get('value') == 'Not required' %}
+					Not required
+				{% elif answer_content.get('value') == 'required' or answer_content.get('value') == 'Required'%}	
+                    Required
+                {% else %}
+                	TBD
+                {% endif %}
+            </div>
+            
+
+			{% endif %}		            
+            

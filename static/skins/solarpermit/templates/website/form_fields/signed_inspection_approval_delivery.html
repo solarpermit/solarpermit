@@ -1,0 +1,14 @@
+			<div class="form_field" >  
+				<div class="label">{{question_label}}:</div>           
+                <div class="field">
+                   <input type="checkbox" name="field_mail" id="field_mail_{{question_id}}" value="yes" {% if mail == 'yes' %} checked {% endif %}   >Standard mail
+                   <br/><input type="checkbox" name="field_email" id="field_email_{{question_id}}" value="yes" {% if email == 'yes' %} checked {% endif %}   >Email
+				   <br/><input type="checkbox" name="field_onsite" id="field_onsite_{{question_id}}" value="yes" {% if onsite == 'yes' %} checked {% endif %}   >Onsite                   
+                </div>  
+				<div class="error_div" id="error_div_{{question_id}}">
+					{{msg_error}}
+				</div>                                                        
+            </div>
+			<div class="field_help_text" style="padding-bottom:5px;">
+				{{instruction}}
+			</div>           

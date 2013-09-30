@@ -1,0 +1,41 @@
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			<div  >      
+			{% if answer_content.get('apply') != '' and answer_content.get('apply') != None %}
+			   
+				{% if answer_content.get('apply') == 'in person' or answer_content.get('apply') == 'In person' %}
+					Must request in person
+				{% elif answer_content.get('apply') == 'remotely' or answer_content.get('apply') == 'Remotely' %}	
+                    Can request remotely
+                {% else %}
+                	{{answer_content.get('apply')}}
+                {% endif %}
+            {% endif %}
+            </div>
+            
+            <div >
+			{% if answer_content.get('apply') != '' and answer_content.get('apply') != None %}
+            
+	            {% if answer_content.get('apply') == 'remotely'  or answer_content.get('apply') == 'Remotely'  %}
+	            		{% if answer_content.get('request_by_phone') == 'yes'  or answer_content.get('request_by_phone') == 'Yes' %}
+	            			<div>Phone - {{answer_content.get('phone')}}</div>
+	            		{% endif %}
+	            	
+	            		{% if answer_content.get('request_by_fax') == 'yes' or answer_content.get('request_by_fax') == 'Yes' %}
+	            			<div>Fax - {{answer_content.get('fax')}}</div>
+	            		{% endif %}
+	     
+	            		{% if answer_content.get('request_by_email') == 'yes' or answer_content.get('request_by_email') == 'Yes' %}
+	            			<div>Email - {{answer_content.get('email')}}</div>
+	            		{% endif %}
+	            {% endif %}
+            {% endif %}
+            </div>
+            
+
+			{% endif %}		            

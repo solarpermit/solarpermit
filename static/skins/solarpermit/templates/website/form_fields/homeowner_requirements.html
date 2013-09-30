@@ -1,0 +1,20 @@
+			<div class="form_field" >  
+				<div class="label">{{question_label}}:</div>           
+                <div class="field">
+                   <input type="checkbox" name="field_disclose_communication" id="field_disclose_communication_{{question_id}}" value="yes" {% if disclose_communication == 'yes' or disclose_communication == 'Yes' %} checked {% endif %}   >Homeowners must disclose any prior communication with Historic Board
+                   <br/>
+                   <input type="checkbox" name="field_disclose_issue" id="field_disclose_issue_{{question_id}}" value="yes" {% if disclose_issue == 'yes' or disclose_issue == 'Yes' %} checked {% endif %}   >Homeownser must disclose known issues with roof structure
+                </div>     
+				<div class="error_div" id="error_div_homeowner_req">
+					{{msg_error}}
+				</div>                                         
+            </div>
+            
+            <div id="note_{{question_id}}" >
+            	<div class="field">
+            		<textarea name="field_note" id="field_note_{{question_id}}" rows="5" cols="30">{{note}}</textarea>
+            	</div>
+            </div>
+			<div class="field_help_text" style="padding-bottom:5px;">
+				{{instruction}}
+			</div>             

@@ -1,0 +1,28 @@
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			
+			<div  >         
+				{% if answer_content.get('enforced') == 'no'  or answer_content.get('enforced') == 'No' %}
+					Not enforced
+				{% elif answer_content.get('enforced') == 'yes' or answer_content.get('enforced') == 'Yes'  %}	
+                    Enforced
+                {% elif answer_content.get('enforced') == 'yes, with exceptions'  or answer_content.get('enforced') == 'Yes, with exceptions' %}	
+                   Enforced with exceptions
+                {% else %}
+                	TBD
+                {% endif %}
+            </div>
+            
+            <div >
+            {% if answer_content.get('note') != None %}
+            	{{answer_content.get('note') | replace('\n', '<br/>')}}
+            {% endif %}
+            </div>
+            
+
+			{% endif %}		            

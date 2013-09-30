@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- template base.html -->
+
+<head>
+	<title>{% block title %}{% endblock %} </title>
+	<meta charset="utf-8">
+{% include "website/blocks/canonical_url.html" %}
+
+	{% block forestyle %}{% endblock %}
+	<!--
+	<link href="/style/website.css" rel="stylesheet" type="text/css" media="screen" />
+	<link href="/style/main.css"  rel="stylesheet" type="text/css" media="screen" />
+	
+	<link rel="stylesheet" type="text/css" href="/js/notifybar/jquery.notifyBar.css" />
+	<link rel="stylesheet" type="text/css" href="/style/superfish.css" />
+	<link rel="stylesheet" type="text/css" href="/style/jquery.mobile.css" />
+	<link rel="stylesheet" type="text/css" href="/style/tooltip.css" />
+	<link href="/style/screen.css"  rel="stylesheet" type="text/css" media="screen" />-->
+	
+	{% include "website/fancybox_stylesheets.html" %}
+	<link rel="stylesheet" type="text/css" href="/media/style/main.css" />
+	<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css" />
+	<link rel="stylesheet" type="text/css" href="/media/style/jquery-ui-1.8.22.custom.css" />
+	<link href="/media/style/fileuploader.css" rel="stylesheet" type="text/css" />	
+	
+	{% block forejs %}{% endblock %}
+	<script type="text/javascript" src="/media/js/jquery-1.7.2.min.js"></script>	
+	<script type="text/javascript" src="/media/js/jquery.validate.js"></script>
+	<script type="text/javascript" src="/media/js/additional-methods.js"></script>
+	<script type="text/javascript" src="/media/js/jquery.simplemodal.js"></script>
+	<script type="text/javascript" src="/media/js/jquery.jscroll.custom.js"></script>	
+	<script type="text/javascript" src="/media/js/controller.js"></script>
+	<script type="text/javascript" src="/media/js/jquery.dajax.core.js"></script>
+	<script type="text/javascript" src="/media/js/jquery-ui-1.8.22.custom.min.js"></script>
+	<script type='text/javascript' src="/media/js/fileuploader.js"></script>	
+	
+	<script type='text/javascript'>
+	var js_csrf = '{{csrf_token}}';	
+	function set_error_class()
+	{
+	    document.getElementById('username').style.backgroundColor="#FCC";
+	    document.getElementById('password').style.backgroundColor="#FCC"; 
+	}
+	</script>
+
+</head>
+
+<body style="">
+
+<div id="shell" style="display:table;margin:0px auto;padding-top:5%;">
+	{% block body %}
+	{% endblock %}
+</div>
+
+{% include "website/footer.html" %}
+
+{% block endjs %}{% endblock %}
+
+
+{% block dialog %}
+{% include "base_message_dialog.html" %}
+{% include "base_info_dialog.html" %}
+{% endblock %}
+
+{% include "website/fancybox_scripts.html" %}
+{% include "website/blocks/system_message.html" %}
+<div id="fromServer"></div>
+<div id="fancyboxformDiv"></div>
+<div id="secondDialogDiv"></div>
+</body>
+</html>
+<!-- end template base.html -->

@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+    
+<!-- template jurisdiction_state_browse.html -->
+{% block title %}User Profile{% endblock %}
+{% block page_title %}My Profile{% endblock %}
+
+
+{% block body %}
+
+<div id="user_profile_container">
+  <div id="user_profile_content">
+
+<div class="form_fields_container">
+<table>
+    <tr>
+        <td>
+    <form id="{{form_first_name}}" name="{{form_first_name}}" action="." method="post" accept-charset="utf-8">
+            <input type="hidden" name="ajax" value="user_profile_first_name_submit" />
+             <input type="hidden" name="user_profile_first_name_div" value="{{user_profile_first_name_div}}" />
+    <div id="{{user_profile_first_name_div}}">
+        {{body_first_name}}
+    </div>
+    </form>
+        </td>
+        <td>
+    <form id="{{form_last_name}}" name="{{form_last_name}}" action="." method="post" accept-charset="utf-8">
+            <input type="hidden" name="ajax" value="user_profile_last_name_submit" />
+             <input type="hidden" name="user_profile_last_name_div" value="{{user_profile_last_name_div}}" />
+    <div class="profile-field"   id="{{user_profile_last_name_div}}">
+        {{body_last_name}}
+    </div>
+    </form>        
+        </td>
+    </tr>
+</table>
+</div>    
+
+
+<div class="form_fields_container">
+
+    <form id="{{form_title}}" name="{{form_title}}" action="." method="post" accept-charset="utf-8">
+            <input type="hidden" name="ajax" value="user_profile_title_submit" />
+             <input type="hidden" name="user_profile_title_div" value="{{user_profile_title_div}}" />
+    <div class="profile-field"   id="{{user_profile_title_div}}">
+        {{body_title}}
+    </div>
+    </form>
+</div>    
+
+<div class="form_fields_container">
+
+    <form id="{{form_display_as}}" name="{{form_display_as}}" action="." method="post" accept-charset="utf-8">
+            <input type="hidden" name="ajax" value="user_profile_display_as_submit" />
+             <input type="hidden" name="user_profile_display_as_div" value="{{user_profile_display_as_div}}" />
+    <div class="profile-field"   id="{{user_profile_display_as_div}}">
+        {{body_display_as}}
+    </div>
+    </form>
+</div>     
+
+<div class="form_fields_container">
+
+    <form id="{{form_email}}" name="{{form_email}}" action="." method="post" accept-charset="utf-8">
+            <input type="hidden" name="ajax" value="user_profile_email_submit" />
+             <input type="hidden" name="user_profile_email_div" value="{{user_profile_email_div}}" />
+    <div class="profile-field"   id="{{user_profile_email_div}}">
+        {{body_email}}
+    </div>
+    </form>
+</div> 
+
+<div class="form_fields_container">
+
+    <form id="{{form_password}}" name="{{form_password}}" action="." method="post" accept-charset="utf-8">
+            <input type="hidden" name="ajax" value="user_profile_password_submit" />
+             <input type="hidden" name="user_profile_password_div" value="{{user_profile_password_div}}" />
+    <div class="profile-field"   id="{{user_profile_password_div}}">
+        {{body_password}}
+    </div>
+    </form>
+</div> 
+
+ 
+                
+    
+<div id="my_org_list">    
+    {% include '/website/form_fields/org.html' %}      
+</div>
+
+</div>   
+</div>
+
+
+{% endblock %}
+
+{% block endjs %}
+{% endblock %}

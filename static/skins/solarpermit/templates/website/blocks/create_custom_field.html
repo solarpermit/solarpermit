@@ -1,0 +1,39 @@
+{% extends "base_modal_dialog.html" %}
+
+{% block modal_dialog_title %}Add a custom field{% endblock %}
+
+{% block modal_dialog_message %}{{create_custom_field_fail_reason}}{% endblock %}
+
+{% block body_modal_dialog %}
+    
+<form id="{{form_id}}" name="{{form_id}}" action="/custom_field/" onSubmit="return controller.submitForm('#{{form_id}}');" method="post" accept-charset="utf-8">
+  <input type="hidden" name="ajax" value="{{form_id}}_submit" >
+  <input type="hidden" name="jurisdiction_id" id="jurisdiction_id" value="{{jurisdiction.id}}" >
+  <input type="hidden" name="category_id" id="category_id" value="{{category_id}}" >
+  <input type="hidden" name="current_category" id="category_id" value="{{current_category}}" >
+  <input type="hidden" name="current_questions" id="category_id" value="{{current_questions}}" >
+        
+<div class="form_help_text">Add a custom field to the {{jurisdiction.show_jurisdiction('short')}} {{category | capitalize}} section.</div>
+
+    <div class="form_field" id="field_field_title" >
+        <div class="label">Field title:</div>
+        <div class="field"><input type="text" name="field_title" id="{{form_id}}_field_field_title" value="{{field_title}}" class="required"  style="width:210px"></div>
+        <div class="field_help_text">Enter the title for the field.  For example: "Address"</div>
+        <div class="error_div"></div>
+    </div>
+    
+    <div class="form_field">
+        <div class="label">Field value:</div>
+        <div class="field"><textarea name="field_value" id="{{form_id}}_field_field_value" rows="3" cols="40" class="required" ></textarea></div>
+        <div class="field_help_text">Enter the data the field should display</div>        
+        <div class="error_div"></div>
+    </div>
+
+</form>
+{% endblock %}
+
+{% block modal_dialog_action %}
+    <input type="submit" id="{{form_id}}_submit_button" class="mainbutton" value="Create field" title="Complete the form above to create the custom field." onClick="if($('#{{form_id}}').validate().form()){$('{{form_id}}_submit_button').attr('disabled','disabled');}">
+    <input type="button" id="{{form_id}}_cancel" class="mainbutton" onClick="jQuery.fancybox.close();return false;" value="Cancel" title="Cancel">    
+{% endblock %}
+

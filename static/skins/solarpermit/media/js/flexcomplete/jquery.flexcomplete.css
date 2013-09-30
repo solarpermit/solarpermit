@@ -1,0 +1,37 @@
+.flexcomplete {
+	position: absolute;
+	color: #333;
+	background: #fff;
+	border: 1px solid #999;
+	/* style="line-height: '+line_height+'px;position:absolute;" */
+
+	
+}
+.flexcomplete ul {
+	cursor: pointer;
+	padding: 0;
+	margin: 0;
+	text-align: left;
+}
+.flexcomplete ul li {
+	list-style-type: none;
+	padding: 0 5px;
+}
+.flexcomplete ul li:hover,
+.flexcomplete ul li.highlight {
+	color: #FFFFFF;
+	background: #888888;
+}
+.flexcomplete .header {
+	color: #AAAAAA;
+	font-style: italic;
+	list-style-type: none;
+	padding: 5px 5px 0px 5px;
+	text-align: left;
+}
+.flexcomplete .footer {
+	color: #AAAAAA;
+	list-style-type: none;
+	padding: 0 5px;
+	text-align: middle;
+}

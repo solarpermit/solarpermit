@@ -1,0 +1,17 @@
+			<div class="form_field" >  
+				<div class="label">{{question_label}}:</div>           
+                <div class="field">
+                   <input type="radio" name="field_required" id="field_required_no_{{question_id}}" value="no" {% if required == 'no' or required == 'No' %} checked {% endif %}   >Additional licensing beyond a business license is not required
+                   <br/><input type="radio" name="field_required" id="field_required_yes_{{question_id}}" value="yes" {% if required == 'yes' or required == 'Yes' %} checked {% endif %}   >Additional licensing beyond a business license is required            
+                </div>      
+				<div class="field_help_text">
+					{{instruction}}
+				</div>                                          
+            </div>
+            
+            <div id="yes_with_exceptions_{{question_id}}" >
+            	<div class="label">Note:</div>     
+            	<div class="field">
+            		<textarea name="field_note" id="field_note_{{question_id}}" rows="5" cols="30">{{note}}</textarea>
+            	</div>
+            </div>

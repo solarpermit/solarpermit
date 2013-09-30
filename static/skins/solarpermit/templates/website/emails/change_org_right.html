@@ -1,0 +1,14 @@
+<p style="margin:15px 0px;">Dear {{invited_username}},</p>
+{% if right == 'Administrator' %}
+<p style="margin:15px 0px;">{{username}} has given you admin rights for the {{org_name}} account at SolarPermit.org. Admin rights allow you to update details and manage the member list. </p>
+
+<p style="margin:15px 0px;">If you feel these admin rights have been assigned in error, please sign in to SolarPermit.org and submit your feedback.</p>
+{% else %}
+<p style="margin:15px 0px;">{{username}} has revoked your admin rights for the {{org_name}} account on SolarPermit.org. </p>
+
+<p style="margin:15px 0px;">If you feel these admin rights have been revoked in error, please sign in to SolarPermit.org and submit your feedback.</p>
+{% endif %}
+
+<p style="margin:15px 0px;">--The team at SolarPermit.org</p>
+
+<p style="margin:15px 0px;"><a style="background:#86bc0a;border:1px solid #618806;height:20px;padding:5px 20px 5px 20px;font-family:Tahoma, Geneva, sans-serif;font-size:12px;color:#ffffff;font-weight:bold;text-decoration:none;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px;margin: 2px 4px;" href="{{site_url}}/sign_in/?next=/profile">Sign in to SolarPermit.org...</a></p>

@@ -1,0 +1,25 @@
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			
+			<div  >         
+				{% if answer_content.get('disclose_communication') != '' and answer_content.get('disclose_communication') != None %}
+                   {% if answer_content.get('disclose_communication').lower() == 'yes' %}<li>Homeowners must disclose any prior communication with Historic Board</li>{% endif %}
+                {% endif %}
+				{% if answer_content.get('disclose_issue') != '' and answer_content.get('disclose_issue') != None %}
+                   {% if answer_content.get('disclose_issue').lower() == 'yes' %}<li>Homeownser must disclose known issues with roof structure</li>{% endif %}
+				{% endif %}                             
+            </div>
+            
+		   <div >
+			{% if answer_content.get('note') != None %}
+				{{answer_content.get('note') | replace('\n', '<br/>')}}
+			{% endif %}
+			</div>       
+            
+
+			{% endif %}		            

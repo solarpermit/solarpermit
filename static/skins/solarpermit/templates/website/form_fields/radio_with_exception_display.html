@@ -1,0 +1,10 @@
+			<div  >         
+                 {{question_content.get(this_question.id).get('pending').get(answer.id).get('answer').get('required')}}
+                             
+            </div>
+            
+            <div >
+            {% if question_content.get(this_question.id).get('pending').get(answer.id).get('answer').get('note') != None %}
+            	{{question_content.get(this_question.id).get('pending').get(answer.id).get('answer').get('note')}}
+            {% endif %}
+            </div>

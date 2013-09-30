@@ -1,0 +1,39 @@
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			
+			<div  >         
+				{% if answer_content.get('allowed') == 'no' or answer_content.get('allowed') == 'No' %}
+					Studor vents cannot be used to remove existing plumbing vents
+				{% elif answer_content.get('allowed') == 'yes'  or answer_content.get('allowed') == 'Yes' %}	
+                    Studor vents can be used to remove existing plumbing vents
+                {% elif answer_content.get('allowed') == 'yes, with exceptions' or answer_content.get('allowed') == 'Yes, with exceptions'  %}	
+                   Studor vents can be used with exceptions
+                {% else %}
+                	TBD
+                {% endif %}
+            </div>
+            
+            
+			{% if answer_content.get('allowed') == 'yes, with exceptions' or answer_content.get('allowed') == 'Yes, with exceptions'  %}	
+            
+			<div >
+			{% if answer_content.get('depends_on_system_rating') == 'yes' or answer_content.get('depends_on_system_rating') == 'Yes'   %}
+				Depends on system rating: {{answer_content.get('equality')}}  {{answer_content.get('kW')}} by {{answer_content.get('system_rating_method')}}
+			{% endif %}
+			</div>
+			            
+            <div >
+            {% if answer_content.get('note') != None %}
+            	{{answer_content.get('note') | replace('\n', '<br/>')}}
+            {% endif %}
+            </div>
+            
+            {% endif %}            
+           
+
+			{% endif %}		            

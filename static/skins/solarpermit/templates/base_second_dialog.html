@@ -1,0 +1,19 @@
+<div class="second_dialog">
+	<div class="second_dialog_top_block">
+		<span class="modal_dialog_title">{% block modal_dialog_title %}{% endblock %}</span>
+	</div>
+	{% block modal_dialog_form_top %}{% endblock %}
+	<div class="second_dialog_info_block" >
+		<div class="modal_dialog_header">
+			{% block modal_dialog_header %}{% endblock %}
+		</div>		
+		<div class="modal_dialog_message">{% block modal_dialog_message %}{% endblock %}</div>	
+		{% block body_modal_dialog %}
+		{% endblock %}
+	</div>
+
+	<div class="modal_dialog_bottom_block" >
+		<div class="modal_dialog_button_bottom">{% block modal_dialog_action %}{% endblock %}</div>
+	</div>
+	{% block modal_dialog_form_bottom %}{% endblock %}
+</div>

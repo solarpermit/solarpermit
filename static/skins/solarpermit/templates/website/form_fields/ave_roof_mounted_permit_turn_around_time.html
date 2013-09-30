@@ -1,0 +1,49 @@
+
+            <div class="form_field" >    
+                <div class="label">{{question_label}}:</div>     
+                <div class="field">
+                    <select name="field_time_qty" >
+                        <option value="1" {% if time_qty == "1" %}selected{% endif%}>1</option>
+                        <option value="2" {% if time_qty == "2" %}selected{% endif%}>2</option>
+                        <option value="3" {% if time_qty == "3" %}selected{% endif%}>3</option>
+                        <option value="4" {% if time_qty == "4" %}selected{% endif%}>4</option>
+                        <option value="5" {% if time_qty == "5" %}selected{% endif%}>5</option>
+                        <option value="6" {% if time_qty == "6" %}selected{% endif%}>6</option>
+                        <option value="7" {% if time_qty == "7" %}selected{% endif%}>7</option>
+                        <option value="8" {% if time_qty == "8" %}selected{% endif%}>8</option>
+                        <option value="9" {% if time_qty == "9" %}selected{% endif%}>9</option>
+                        <option value="10" {% if time_qty == "10" %}selected{% endif%}>10</option>
+                        <option value="11" {% if time_qty == "11" %}selected{% endif%}>11</option>
+                        <option value="12" {% if time_qty == "12" %}selected{% endif%}>12</option>
+                        <option value="13" {% if time_qty == "13" %}selected{% endif%}>13</option>
+                        <option value="14" {% if time_qty == "14" %}selected{% endif%}>14</option>
+                        <option value="15" {% if time_qty == "15" %}selected{% endif%}>15</option>
+                        <option value="16" {% if time_qty == "16" %}selected{% endif%}>16</option>
+                        <option value="17" {% if time_qty == "17" %}selected{% endif%}>17</option>
+                        <option value="18" {% if time_qty == "18" %}selected{% endif%}>18</option>
+                        <option value="19" {% if time_qty == "19" %}selected{% endif%}>19</option>
+                        <option value="20" {% if time_qty == "20" %}selected{% endif%}>20</option>
+                        <option value="21" {% if time_qty == "21" %}selected{% endif%}>21</option>
+                        <option value="22" {% if time_qty == "22" %}selected{% endif%}>22</option>
+                        <option value="23" {% if time_qty == "23" %}selected{% endif%}>23</option>
+                        <option value="24" {% if time_qty == "24" %}selected{% endif%}>24</option>
+                                                                                                                       
+                    </select>
+                     <select name="field_time_unit" >
+                        <option value="hour(s)" {% if time_unit == "hour(s)" %}selected{% endif%}>hour(s)</option>
+                        <option value="day(s)" {% if time_unit == "day(s)" %}selected{% endif%}>day(s)</option>
+                        <option value="week(s)" {% if time_unit == "week(s)" %}selected{% endif%}>week(s)</option>
+                    </select>  
+                </div>                                              
+            </div>
+            <div class="form_field" >            
+                <div class="label">Notes:</div>
+                <div class="field">
+                    <textarea name="field_note" id="{{form_id}}_field_note" rows="5" cols="30">{{note}}</textarea>
+                </div>
+            </div>                         
+                <div class="field_help_text" style="padding-bottom:5px">
+                    {{instruction}}
+                </div>              
+
+        

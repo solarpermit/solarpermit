@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Jurisdiction Migration Result{% endblock %}
+{% block page_title %}{{jurisdiction.name}} Migration Result{% endblock %}
+{% block body %}
+<div style="padding: 10px;">
+	<table class="admin-table">
+		<tr>
+			<th>Source Table</th>
+			<th>Source ID</th>
+			<th>Target Table</th>
+			<th>Target ID</th>
+			<th>Note 1</th>
+			<th>Note 2</th>
+		</tr>
+		{% for history in histories %}
+			<tr>
+				<td>{{history.source_table}}</td>
+				<td>{{history.source_id}}</td>
+				<td>{{history.target_table}}</td>
+				<td>{{history.target_id}}</td>
+				<td>{{history.notes}}</td>
+				<td>{{history.notes2}}</td>
+			</tr>
+		{% endfor %}
+	</table>
+</div>
+{% endblock %}
+{% block endjs %}
+{% endblock %}

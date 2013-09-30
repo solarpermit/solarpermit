@@ -1,0 +1,12 @@
+            <div class="form_field" >  
+                <div class="label">{{question_label}}</div>           
+                <div class="field">
+                   <input type="radio" name="field_compliant" id="field_compliant_yes_{{question_id}}" value="yes" {% if compliant == 'yes' or compliant == 'yes' %} checked {% endif %}   >Yes
+                   <br/><input type="radio" name="field_compliant" id="field_compliant_no_{{question_id}}" value="no" {% if compliant == 'no'  or compliant == 'no' %} checked {% endif %}  >No
+                   <br/><input type="radio" name="field_compliant" id="field_compliant_yes_with_exception_{{question_id}}" value="yes, with exceptions" {% if compliant == 'yes, with exceptions'  or compliant == 'Yes, with exceptions' %} checked {% endif %}  >This AHJ provides evidence of reasonable cost to charge > $500 for a permit
+                </div>    
+                <div class="field_help_text">
+                    {{instruction}}   
+                </div>                                      
+            </div>
+          

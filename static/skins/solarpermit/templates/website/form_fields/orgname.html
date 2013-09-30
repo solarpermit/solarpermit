@@ -1,0 +1,33 @@
+
+    <div class="form_field" >
+        <div class="label">Organization name:</div>
+        <div id="form_field_data_orgname" class="show_data"  onmouseout="return show_data('form_field_data_orgname', 'edit_option_orgname')" onmouseover="return show_edit_option('form_field_data_orgname', 'edit_option_orgname')" onClick="return switch_to_edit('form_field_data_orgname', 'form_field_edit_orgname')" > 
+            {% if orgname == '' %}
+                No info available
+            {% else %}
+                {{orgname}}
+            {% endif %}
+            <span style="float:right;visibility:hidden;" id="edit_option_orgname" >
+                <img width="12"src="/media/images/edit.png" alt="edit" >&nbsp;Click to edit
+            </span>
+        </div>
+      
+        <div id="form_field_edit_orgname" style="display:none">
+            <div class="field">
+                <input type="text" name="orgname" id="{{form_id}}_field_orgname" value="{{orgname}}" class="" style="width:210px" maxLength="64" >
+            </div>        
+            <div class="field_help_text">
+
+            </div>
+            <div id="msg_{{form_id}}_field_orgname" class="form_field_error_message">
+                {{error_orgname}}
+            </div>
+            {% if mode == 'individual' %}
+            <div>
+                <a name="save_orgname" value="Save" id="save_orgname" class="mainbutton" onClick="submit_edit('{{form_id}}', 'orgname')"  title="" >Save</a>
+                <a name="Cancel" value="Cancel" id="cancel_orgname" class="mainbutton" onClick="return switch_to_data('form_field_data_orgname', 'form_field_edit_orgname')"  title="" >Cancel</a>                
+            </div>
+            {% endif %}  
+        </div>               
+    </div>
+        

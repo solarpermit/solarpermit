@@ -1,0 +1,18 @@
+			
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form')  | truncate(30, True) }}
+
+			</div>
+			{% else %}
+			
+			<div>
+			{% if answer_content.get('name_1') != None %}
+				<a href="{{answer_content.get('link_1')}}" target='_blank' >{{answer_content.get('name_1')   }}</a>   
+			{% elif answer_content.get('value') != None %}     
+				<a href="{{answer_content.get('value')}}" target='_blank' >{{answer_content.get('value')  }}</a>   			
+			{% endif %}                      
+            </div>
+            			
+			
+			{% endif %}		            

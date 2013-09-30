@@ -1,0 +1,17 @@
+<h1>{{subject}}</h1>
+<tr>
+{% for update in updates%}
+	<div>
+		
+		{% if update.title_flag %}
+		<h3><a href="{{site_url}}/jurisdiction/{{update.jurisdiction.id}}/" target="_blank">{{update.jurisdiction_name}}</a></h3>
+		{% endif %}	
+		<p style=" font-size: 14px;font-weight: bold;">{{update.type}}</p>
+		{% if update.question_type == 'CF' %}
+		<p> {{update.question}}</p>
+		{% endif %}
+		<p>{{ update.answer }}</p>
+			
+		
+	</div>
+{% endfor %}

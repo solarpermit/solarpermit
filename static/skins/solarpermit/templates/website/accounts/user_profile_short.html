@@ -1,0 +1,27 @@
+        <div class="form_fields_container">
+            <div class="user_profile_label">Name:</div> 
+            <div class="field">{{user.get_profile().get_display_name()}}</div>
+        </div>
+        
+        <div class="form_fields_container">
+            <div class="user_profile_label">Company or Organization:</div> 
+            {% if orgmembers != None %}
+            {% for orgmember in orgmembers %}
+                <div class="field">
+                    {{orgmember.organization.name}}
+                </div>
+                {% if orgmember.organization.website != '' and orgmember.organization.website != None %}
+                <div >
+                    <a class="comments" href="{{orgmember.organization.get_clickable_website()}}" target="_blank">{{orgmember.organization.get_display_website()}}</a>
+                </div>
+                {% endif %}
+            {% endfor %}
+            {% endif %}
+        </div>        
+
+        <div class="form_fields_container">
+            <div class="user_profile_label">Title:</div> 
+            <div class="field">{{user.get_profile().title}}</div>
+        </div>
+        
+        

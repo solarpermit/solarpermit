@@ -1,0 +1,24 @@
+			
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			
+			<div  >         
+				{% if answer_content.get('compliant') == 'yes' or answer_content.get('compliant') == 'Yes' %}
+					Yes
+				{% elif answer_content.get('compliant') == 'no'  or answer_content.get('compliant') == 'No' %}	
+                    No
+                {% elif answer_content.get('compliant') == 'yes, with exceptions' or answer_content.get('compliant') == 'Yes, with exceptions'  %}	
+                   This AHJ provides evidence of reasonable cost to charge > $500 for a permit
+                {% else %}
+                	TBD
+                {% endif %}
+            </div>
+            
+            
+
+			{% endif %}			

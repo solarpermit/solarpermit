@@ -1,0 +1,18 @@
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			<div>
+                 {{answer_content.get('time_qty')}} {{answer_content.get('time_unit')}}
+            </div>
+			<div >
+			{% if answer_content.get('note') != None %}
+				{{answer_content.get('note') | replace('\n', '<br/>')}}
+			{% endif %}
+			</div>           
+			
+
+			{% endif %}					

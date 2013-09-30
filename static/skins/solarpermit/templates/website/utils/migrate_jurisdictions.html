@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Jurisdiction Data Import{% endblock %}
+{% block page_title %}Jurisdiction Data Import{% endblock %}
+{% block body %}
+<div style="padding: 10px;">
+	<div>
+		<input type="button" value="Check status manually" onclick="check_status();">
+		<input type="button" value="Quick test migration" onclick="test_migration();">
+		<input type="button" value="Start complete migration" onclick="start_process();">
+		<input type="button" value="Reset if it is stuck" onclick="reset_status();">
+	</div>
+	<h3>Progress</h3>
+	<div id="progress_div"></div>
+	<h3>Result</h3>
+	<div id="result_div"></div>
+	<div id="status" style="display:none"></div>
+	<h3>Migration Logs</h3>
+	<div id="log_div">
+		{% include "website/utils/migration_logs.html" %}
+	</div>
+</div>
+{% endblock %}
+{% block endjs %}
+<script type='text/javascript'>
+//check status periodically, stop when done
+function set_timer() {
+	if (typeof timer != 'undefined') {
+		window.clearInterval(timer); //clear any previous timer
+	}
+	timer = setInterval(function () {
+		if ($('#status').html() == 'ended') {
+			window.clearInterval(timer)
+		}
+		controller.submitData('.', {ajax: 'progress'});
+	}, 1000); //every sec                                 
+}
+function check_status() {
+	controller.submitData('.', {ajax: 'progress'});
+}
+function test_migration() {
+	$('#progress_div').html('');
+	$('#status').html('');
+	$('#result_div').html('');
+	controller.submitData('.', {ajax: 'test'});
+	set_timer();
+}
+function start_process() {
+	$('#progress_div').html('');
+	$('#status').html('');
+	$('#result_div').html('');
+	controller.submitData('.', {ajax: 'start'});
+	set_timer();
+}
+function reset_status() {
+	$('#progress_div').html('');
+	$('#status').html('');
+	$('#result_div').html('');
+	controller.submitData('.', {ajax: 'reset'});
+}
+$(document).ready(function() {
+	
+});
+</script>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+
+{% block title %}Analytics - User Page Views{% endblock %}
+{% block body %}
+<div class="contentOnlyPage">
+    <h1>Analytics</h1>
+
+    <h2>User Page Views</h2>
+    
+    {% for org in members_orgs %}
+    <h3>Organization -- {{ org.get('organization__name') }}</h3>
+        {% set users = org_members.get(org.get('organization__id')) %}
+        {% for user_key in users.keys()  %}
+            <ul style="color:green;font-weight:bold;">{{ users.get(user_key) }}
+            {% set user_page_views = user_pages.get(user_key) %}
+            {% if user_page_views != None %}
+                {% for page_view in user_page_views %}
+                <li style="color:blue;font-weight:normal;">{{page_view.url}} - {{page_view.last_page_view_date}}</li>
+                {% endfor %}
+            {% endif %}
+            </ul>
+            
+        {% endfor %}
+    {% endfor %}
+    
+    <h3>Non-affiliated users</h3>
+    {% for user in users %}
+    <ul style="color:green;font-weight:bold;">{{user.username}}
+            {% set user_page_views = user_pages.get(user.id) %}
+            {% if user_page_views != None %}
+                {% for page_view in user_page_views %}
+                <li style="color:blue;font-weight:normal;">{{page_view.url}} - {{page_view.last_page_view_date}}</li>
+                {% endfor %}
+            {% endif %}    
+    </ul>
+    {% endfor %}    
+
+</div>
+<div class="bottomclearboth"></div>
+{% endblock %}              
