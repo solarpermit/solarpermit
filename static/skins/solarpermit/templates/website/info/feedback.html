@@ -4,17 +4,52 @@
 
 {% block modal_dialog_message %}{{form_send_feedback_fail_reason}}{% endblock %}
 
+{% block modal_dialog_form_top %}<form id="{{form_id}}" name="form_send_feedback" action="/info/" method="post" accept-charset="utf-8">{% endblock %}
 {% block body_modal_dialog %}
 
 Please share your feedback about <a href='http://solarpermit.org' target='_blank'>SolarPermit.org.</a>  Our team will review user feedback to improve the site and ensure that we are meeting the needs of our users.
 
-<form id="{{form_id}}" name="form_send_feedback" action="/info/" method="post" accept-charset="utf-8">
+
   <input type="hidden" name="ajax" value="send_feedback" >
   
 <div class="form_help_text"></div>
 
-<div class="form_fields_container">
-    <div class="form_field">
+<div class="form_fields_container" style="margin-bottom:0px;">
+
+{% if request.user.is_authenticated() == False %}
+        <div class="form_field" style="margin-bottom:5px;">
+            <div class="label">First name:</div>
+            <div class="field"><input type="text" name="first_name" id="{{form_id}}_firstname" value="{{firstname}}" class="required" style="width:210px" maxlength="20" ></div>
+            <div class="error_div"></div>            
+        </div>
+
+        <div class="form_field" style="margin-bottom:5px;">
+            <div class="label">Last name:</div>
+            <div class="field"><input type="text" name="last_name" id="{{form_id}}_lastname" value="{{lastname}}" class="required" style="width:210px" maxlength="20" ></div>
+            <div class="error_div"></div>            
+        </div>
+
+    <div class="form_field" style="margin-bottom:5px;">
+        <div class="label">Email address:</div>
+        <div class="field"><input type="text" name="email" id="{{form_id}}_email" value="{{email}}" class="required email" style="width:210px"></div>
+        <div class="error_div" ></div>
+    </div>
+    
+    <div class="form_field" style="margin-bottom:5px;">
+        <div class="label">Title:</div>
+        <div class="field"><input type="text" name="title" id="{{form_id}}_title" value="{{title}}" class="required" style="width:210px" maxlength="64"></div>
+        <div class="error_div" ></div>
+    </div>  
+
+    <div class="form_field" style="margin-bottom:5px;">
+        <div class="label">Organization:</div>
+        <div class="field"><input type="text" name="org" id="{{form_id}}_org" value="{{org}}" class="required" style="width:210px" maxlength="64"></div>
+        <div class="error_div"  ></div>
+    </div>  
+    
+{% endif %}
+    
+    <div class="form_field" style="margin-bottom:5px;">
         <div class="label">Your feedback and comments:</div>
         <div class="field">
             <textarea name="feedback" id="{{form_id}}_field_feedback" rows="5" cols="60" class="required" >{% if feedback != None %}{{feedback | trim }}{% endif %}</textarea>
@@ -23,13 +58,17 @@ Please share your feedback about <a href='http://solarpermit.org' target='_blank
     </div>
 </div>
 
-</form>
 
 {% endblock %}
 
 
 {% block modal_dialog_action %}
-    <span><a href="#" name="submit_feedback" value="Send" id="{{form_id}}_submit_button" class="mainbutton" onClick="controller.submitForm('#{{form_id}}');return false;"  title="Complete the form to send feedback" >Send</a></span>
-    <span><a href="#" name="cancel" value="Cancel" id="cancel_feedback" class="mainbutton" onClick="jQuery.fancybox.close();return false;"" title="Cancel">Cancel</a></span>
+{#
+    <span><a href="#" name="submit_feedback" value="Send" id="{{form_id}}_submit_button" class="mainbutton"   title="Complete the form to send feedback" >Send</a></span>
+    <span><a href="#" name="cancel" value="Cancel" id="cancel_feedback" class="mainbutton"  title="Cancel">Cancel</a></span>
+#}
+    <input type="submit" id="{{form_id}}_submit_button" class="mainbutton disabled" value="Send" title="Complete the form to send feedback.">
+    <input type="button" id="cancel_feedback" class="mainbutton" value="Cancel">    
 {% endblock %}
 
+{% block modal_dialog_form_bottom %}</form>{% endblock %}

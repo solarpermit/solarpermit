@@ -9,19 +9,19 @@ DATABASES = {
         'NAME': 'solarpermit',
         'HOST': '',
         'PORT': '3306',
-        'USER': '',
-        'PASSWORD': '',
+        'USER': 'root',
+        'PASSWORD': '1234',
     'OPTIONS' : { 'init_command': 'SET storage_engine=INNODB;', 'unix_socket' : '/opt/bitnami/mysql/tmp/mysql.sock',}
     },
              
-#    'natSolDB': {
-#        'ENGINE': 'django.db.backends.mysql',
-#        'NAME': 'natSolDB',
-#        'HOST': 'localhost',
-#        'PORT': '3306',
-#        'USER': 'read',
-#        'PASSWORD': '',
-#    }
+    'natSolDB': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'natSolDB',
+        'HOST': '198.61.201.124',
+        'PORT': '3306',
+        'USER': 'read',
+        'PASSWORD': 'thisisreadonly',
+    }
 
 }
 
@@ -41,14 +41,26 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 INTERNAL_IPS = ('127.0.0.1', '127.0.0.2')
 
-ADMIN_EMAIL_ADDRESS = 'info@solarpermit.org'
+ADMIN_EMAIL_ADDRESS = 'jack.jiey@gmail.com'
 
 ENABLE_GOOGLE_ANALYTICS = False
 
-DEFAULT_FROM_EMAIL = ''
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
+DEFAULT_FROM_EMAIL = 'noreply@aerio.com'
+EMAIL_HOST_USER = 'noreply@aerio.com'
+EMAIL_HOST_PASSWORD = 'aerio2012'
 EMAIL_SUBJECT_PREFIX = ''
-EMAIL_HOST=''
-EMAIL_PORT=''
+EMAIL_HOST='smtp.aerio.com'
+EMAIL_PORT='25'
+'''
+DEFAULT_FROM_EMAIL = 'no-reply@solarpermit.org'
+EMAIL_HOST_USER = 'thatguyrenic@gmail.com'
+EMAIL_HOST_PASSWORD = 'HJiYnqFC9H1Kc4OjS8KfLQ'
+EMAIL_SUBJECT_PREFIX = ''
+EMAIL_HOST='smtp.mandrillapp.com'
+EMAIL_PORT='587'
+EMAIL_USE_TLS=True
+'''
 
+SOLARPERMIT_VERSION='1'
+SAMPLE_JURISDICTIONS=['1', '101105']
+FORUM_INTEGRATION = False

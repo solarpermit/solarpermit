@@ -1,0 +1,1 @@
+alert('ahj_process_voting.js');

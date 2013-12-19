@@ -3,7 +3,7 @@
 	{% if answer.get('suggestion_header') %}
     	<div class="label suggestion_header" >{{answer.get('suggestion_header')}}</div>    
     {% endif %} 
-    <div class="field">
+    <div class="field" style="font-style:normal;">
     {% set answer_content = answer.get('answer_content') %}
     	{% if this_question.display_template == '' or this_question.display_template == None %}
             {% set template = 'website/jurisdictions/suggestion_display_template/single_field_display.html' %}

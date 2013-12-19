@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 
 from website.models import UserFavorite, UserSearch
 
+from website.utils.datetimeUtil import DatetimeHelper
+import datetime
 # this class help to handle missing url parameters gracefully
 class HttpRequestProcessor():
     request = HttpRequest #copy of the HttpRequest instance
@@ -62,11 +64,14 @@ class HttpRequestProcessor():
     # for jinja2
     def render_to_response(self, request, filename, context={},mimetype=''):
         #add recent items to context
+        print 'start time of template rendering' + str(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S %p"))        
         user = request.user
         context['user_searches'] = UserSearch.get_user_recent(user)
         context['INTERNAL_IPS'] = settings.INTERNAL_IPS   
-        context['ENABLE_GOOGLE_ANALYTICS'] = settings.ENABLE_GOOGLE_ANALYTICS              
-        
+        context['ENABLE_GOOGLE_ANALYTICS'] = settings.ENABLE_GOOGLE_ANALYTICS   
+        context['SOLARPERMIT_VERSION'] = "?v="+str(settings.SOLARPERMIT_VERSION)                 
+        context['FORUM_INTEGRATION'] = settings.FORUM_INTEGRATION   
+                
         template_dirs = settings.TEMPLATE_DIRS
         if mimetype == '':
             mimetype = settings.DEFAULT_CONTENT_TYPE
@@ -79,6 +84,7 @@ class HttpRequestProcessor():
         context['request'] = request
         template = env.get_template(filename)
         rendered = template.render(**context)
+        print 'end time of template rendering' + str(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S %p")) 
         return HttpResponse(rendered,mimetype=mimetype)
     
     def decode_jinga_template(self, request, filename, context={}, mimetype=''):
@@ -89,6 +95,8 @@ class HttpRequestProcessor():
         
         context['INTERNAL_IPS'] = settings.INTERNAL_IPS  
         context['ENABLE_GOOGLE_ANALYTICS'] = settings.ENABLE_GOOGLE_ANALYTICS   
+        context['SOLARPERMIT_VERSION'] = "?v="+str(settings.SOLARPERMIT_VERSION)  
+        context['FORUM_INTEGRATION'] = settings.FORUM_INTEGRATION                    
                             
         request_context = RequestContext(request, context)
         csrf = request_context.get('csrf_token')
@@ -97,6 +105,8 @@ class HttpRequestProcessor():
         context['request'] = request        
         template = env.get_template(filename)
         rendered = template.render(**context)        
-        
+
+
+                
         return rendered
         

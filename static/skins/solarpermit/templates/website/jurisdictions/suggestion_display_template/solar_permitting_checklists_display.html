@@ -1,0 +1,18 @@
+			
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form') | replace('\n', '<br/>')}}
+
+			</div>
+			
+			{% else %}
+			
+			<div  >         
+				{% if answer_content.get('available') | lower == 'no' %}
+					Not available
+				{% elif answer_content.get('available') | lower == 'yes'  or answer_content.get('available') == None %}	
+					{% include 'website/jurisdictions/suggestion_display_template/link_or_file.html' %} 
+                {% endif %}
+            </div>
+            
+			{% endif %}		            

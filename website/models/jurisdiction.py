@@ -41,6 +41,8 @@ class Jurisdiction(models.Model):
     last_contributed_by = models.ForeignKey(User, blank=True, null=True)    
     last_contributed_by_org = models.ForeignKey(Organization, blank=True, null=True, related_name= '_org_contributor')
     name_for_url = models.CharField(max_length=64, blank=True, null=True, db_index=True)
+    
+   
         
     def get_jurisdiction_type(self):
         jurisdiction_type = ''

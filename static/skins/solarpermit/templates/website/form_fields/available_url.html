@@ -1,9 +1,9 @@
 			<div class="form_field" >  
 				<div class="label">{{question_label}}:</div>           
                 <div class="field">
-                   <input type="radio" name="field_available" id="field_available_no_{{question_id}}" value="no" {% if available == 'no' or available == 'No' %} checked {% endif %}  onClick="document.getElementById('available_{{question_id}}').style.display='none';document.getElementById('field_url_{{question_id}}').value='';" >Not available
+                   <input type="radio" name="field_available" id="field_available_no_{{question_id}}" value="no" {% if available == 'no' or available == 'No' %} checked {% endif %}   >Not available
                    <br/>
-                   <input type="radio" name="field_available" id="field_available_yes_{{question_id}}" value="yes" {% if available == 'yes' or available == 'Yes' %} checked {% endif %}  onClick="document.getElementById('available_{{question_id}}').style.display='block';document.getElementById('field_url_{{question_id}}').value='';" >Available
+                   <input type="radio" name="field_available" id="field_available_yes_{{question_id}}" value="yes" {% if available == 'yes' or available == 'Yes' %} checked {% endif %}   >Available
                 </div>                              
             </div>
             
@@ -11,7 +11,7 @@
 			   <div class="form_field">            
 	            	<div class="label">Url:</div>     
 	            	<div class="field">
-	            		<input type="text" name="field_url" id="field_url_{{question_id}}" value="{{url}}" class="required url" style="width:210px" maxLength="200" >
+	            		<input type="text" name="field_url" id="field_url_{{question_id}}" value="{{url}}" class="required" size="50" maxLength="200" >
 	            	</div>
 		 			<div class="field_help_text">
 						Please enter a valid URL

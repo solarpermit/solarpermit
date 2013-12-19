@@ -1,7 +1,7 @@
 {% if is_print != None and is_print  %}
 <div id="map">
 	{% if str_address != '' and str_address != None%}
-		<img src='http://maps.googleapis.com/maps/api/staticmap?center={{str_address}}&amp;zoom=13&amp;size=390x340&amp;maptype=roadmap&amp;markers={{str_address}}&amp;sensor=false' alt="google map" />
+		<img id="jur_map" src='' alt="google map" />
 	{% else %}
 		<p>No map available.</p>
 	
@@ -16,14 +16,21 @@
 	
 	</div>
 	
-	    <script type="text/javascript"
-	      src="https://maps.googleapis.com/maps/api/js?key={{google_api_key}}&amp;sensor=false">
-	    </script>
+
 	    <script type="text/javascript">
-	    var map;
-	    //$(document).ready(function() {
-	
-	
+			
+			function loadScript() {
+			  var script = document.createElement('script');
+			  script.type = 'text/javascript';
+			  script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&' +
+			      'callback=initialize';
+			  document.body.appendChild(script);
+			}
+			
+			window.onload = loadScript;	    
+										
+	    	var map;			
+	    	
 	          var geocoder;
 	          function initialize() {
 	            geocoder = new google.maps.Geocoder();
@@ -34,6 +41,7 @@
 	              mapTypeId: google.maps.MapTypeId.ROADMAP
 	            }
 	            map = new google.maps.Map(document.getElementById("map"), mapOptions);
+	            load_google_map('{{str_address}}');   
 	          }
 	          
 	          function load_google_map(str_address) {
@@ -51,11 +59,8 @@
 	            });
 	          }
 	          
-	        {% if str_address != '' and str_address != None %}
-	            initialize();
-	            load_google_map('{{str_address}}');      
-	
-	        {% endif %}
-	    //});    
+
+	        
+	         
 	    </script>
 {% endif %}

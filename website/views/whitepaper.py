@@ -19,7 +19,6 @@ from django.conf import settings
 from jinja2 import FileSystemLoader, Environment
 
 from website.utils.mathUtil import MathUtil
-from website.utils.paginationUtil import PaginationUtil
 from website.models import Organization, RoleType, OrganizationMember, UserDetail
 from sorl.thumbnail import get_thumbnail
 from website.utils.fileUploader import qqFileUploader

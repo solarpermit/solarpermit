@@ -8,23 +8,28 @@
 			</a>
 			<ul class="profile_action" id="profile_actions">
 				<li><a   href="/getting-started/">Getting started</a></li>
-				<li><a   href="#" style="" onClick="controller.postRequest('/info/', {ajax: 'send_feedback'}); return false;">Send feedback</a></li>
+				<li><a   href="#" style="" id="send_feedback" >Send feedback</a></li>
 				<li><a   href="/profile/">My Profile</a></li>
+				{# for forum bridge integration #}
+				{% if FORUM_INTEGRATION == True %}
+				<li><a id="logout_with_forum" href="#"  class="mainbutton" title="Sign Out">Sign out</a></li>
+				{% else %}
 				<li><a href="/logout" id="logout" class="mainbutton" title="Sign Out">Sign out</a></li>
+				{% endif %}
 			</ul>
 			<br>
 			<span id="user_org" >
 			{% if request.user.get_profile().get_user_org() == None %}
-			<a href="#" id="update_org_info_link" onclick="controller.postRequest('/organization/', {ajax: 'open_choose_org'}); return false;" title="Tip: Help your organization gain recognition by listing it in your profile">
+			<a href="#" id="update_org_info_link" data-ajax='open_choose_org' title="Tip: Help your organization gain recognition by listing it in your profile">
 				Update your Organization Info
 			</a>
 			{% else %}
 				{% set org = request.user.get_profile().get_user_org() %}
-				<a id="update_org_info_link" href="#" onclick="controller.postRequest('/organization/', {ajax: 'open_org_details', orgid: {{org.id}} }); return false;">{{ org.name}}</a>
+				<a id="update_org_info_link" href="#" data-ajax='open_org_details' data-orgid='{{org.id}}'  >{{ org.name | truncate(25, True) }}</a>
 			{% endif %}
 			</span>
 {% else %}
-			<a class="mainbutton" onClick="controller.postRequest('/account/', {ajax: 'create_account'}); return false;"  href="#" >Create an Account</a>
+			<a id="create_account_button" class="mainbutton"  href="#" >Create an Account</a>
 {% endif %}
 		</div>
 		<form id="search_form" action="/jurisdiction/search/" method="get" style="width: 383px; margin: 0 auto 0 auto; padding-top: 21px;">
@@ -32,7 +37,7 @@
 	
 			<input id="search_field" autocomplete="off" class="searchfield" type="text" name="q" value="{{primary_search_str}}" placeholder="Search for jurisdictions by name or zip code" />
 			
-			<a href="#" onClick="$('#search_form').submit();return false;" class="search-a" style="">&nbsp;&nbsp;&nbsp;</a>
+			<a href="#" class="search-a" style="">&nbsp;&nbsp;&nbsp;</a>
 			</div>
 		</form>
 	</header>
@@ -44,6 +49,10 @@
 			{% if request.user.is_authenticated() %}<li {% if current_nav == "fj" %} class="active" {% endif %}><a href="/user_favorite/">Favorite Jurisdictions</a></li>{% endif %}
 		    <li {% if current_nav == "about"%} class="active" {% endif %}><a href="/about/">About</a></li>
 		    <li {% if current_nav == "news"%} class="active" {% endif %}><a href="/news/">News</a></li>
+			{# for forum bridge integration #}
+			{% if FORUM_INTEGRATION == True %}
+		    <li><a href="/forum/">Forum</a></li>
+		    {% endif %}
 		    {% if request.user.is_authenticated() and request.user.is_superuser == 1 %}
 		    <li {% if current_nav == "admin"%} class="active" {% endif %}><a href="/siteadmin/">Site Admin</a></li>
 		    {% endif %}

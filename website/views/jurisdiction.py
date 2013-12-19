@@ -14,7 +14,7 @@ from django.shortcuts import render
 
 from django.shortcuts import render_to_response, redirect
 from website.utils.mathUtil import MathUtil
-from website.utils.paginationUtil import PaginationUtil
+
 from website.utils.geoHelper import GeoHelper
 from website.models import Jurisdiction, Zipcode, UserSearch, Question, AnswerReference, OrganizationMember, QuestionCategory, Comment, UserCommentView, Template, ActionCategory, JurisdictionContributor, Action, UserDetail
 
@@ -29,6 +29,7 @@ from htmlentitiesdecode import decode as entity_decode
 import urllib
 
 JURISDICTION_PAGE_SIZE = 30 #page size for endless scroll
+
 
 def jurisdiction_details(request, id):
     requestProcessor = HttpRequestProcessor(request)
@@ -81,7 +82,7 @@ def get_state_jurisdictions(request, state='', sort_by='', sort_dir='', page_num
     data['get_state_jurisdiction'] = True
     requestProcessor = HttpRequestProcessor(request)
     search_str = requestProcessor.getParameter('text_2') 
-    if search_str == None:
+    if search_str == None or search_str == 'Search':
         search_str = ''       
     filter = requestProcessor.getParameter('filter')
     if filter == None:
@@ -125,6 +126,7 @@ def get_state_jurisdictions(request, state='', sort_by='', sort_dir='', page_num
 
     if sort_by == '' or sort_by == None:
         sort_by = 'name'
+    
     data['sort_by'] = sort_by
     
     if sort_dir == '' or sort_dir == None:
@@ -134,8 +136,6 @@ def get_state_jurisdictions(request, state='', sort_by='', sort_dir='', page_num
     href = '/jurisdiction/browse/?state=' + state
 
     search_params = {}
-    pagingation_obj = PaginationUtil('get', search_params, href)
-    pagingation_obj.set_up_sorting_by_columns(sort_columns, sort_desc_img, sort_asc_img, sort_class)
 
     #data['page_title'] = "Browse Jurisdiction: " + state
 
@@ -176,7 +176,22 @@ def get_state_jurisdictions(request, state='', sort_by='', sort_dir='', page_num
     if sort_by == '' or sort_by == None:     
         pass
     else:
-        order_by_str = pagingation_obj.get_order_by_str(sort_by, sort_dir) 
+        if sort_by == 'last':
+            sort_by = 'last_contributed'
+        else:
+            sort_by = 'last_contributed_by'
+            
+    if sort_dir == '' or sort_dir == None:
+        sort_dir = 'asc'
+  
+           
+    if sort_dir == 'asc':           
+        order_by_str = sort_by
+        data['sort_dir'] = 'asc'       
+    else:
+        order_by_str = '-'+sort_by
+        data['sort_dir'] = 'desc'
+        
         
     if search_str == '':
         #print 'search_str = blank'
@@ -226,10 +241,7 @@ def get_state_jurisdictions(request, state='', sort_by='', sort_dir='', page_num
     #print len(objects)
     data['list'] = objects[range_start:range_end]
     print data['list']
-    #pagingation_obj.set_up_pagination(objects, page_num, django_settings.MAX_REC_PER_PAGE)   
-    #data['list'] = pagingation_obj.getCurrentPageItems()
-    #data['pagination'] = pagingation_obj.getPaginationData()
-    data['sort'] = pagingation_obj.get_sorting_html_all_columns()   
+
 
     #data['system_message_type'] = 'success'
     #data['system_message_text'] = 'A lot of data found for your consumption'    
@@ -510,28 +522,28 @@ def jurisdiction_autocomplete(request):
     if mathUtil.is_number(text) == False:
     
         #county j name starts with text
-        jurisdiction_ids1 = Jurisdiction.objects.filter(county__istartswith=text, jurisdiction_type='CO').order_by('county', 'state').values_list('id', flat=True)[:MAX_RESULT_COUNT]
+        jurisdiction_ids1 = Jurisdiction.objects.filter(county__istartswith=text, jurisdiction_type__in=('CO', 'CC')).order_by('county', 'state').values_list('id', flat=True)[:MAX_RESULT_COUNT]
         for id in jurisdiction_ids1:
             jurisdiction_ids.append(id)    
         
         if len(jurisdiction_ids) < MAX_RESULT_COUNT:
             count_needed = MAX_RESULT_COUNT - len(jurisdiction_ids)
             #city j name starts with text
-            jurisdiction_ids2 = Jurisdiction.objects.filter(city__istartswith=text, jurisdiction_type__in=('CI', 'U')).exclude(id__in=jurisdiction_ids).order_by('city', 'state').values_list('id', flat=True)[:MAX_RESULT_COUNT]
+            jurisdiction_ids2 = Jurisdiction.objects.filter(city__istartswith=text, jurisdiction_type__in=('CI', 'U', 'CC')).exclude(id__in=jurisdiction_ids).order_by('city', 'state').values_list('id', flat=True)[:MAX_RESULT_COUNT]
             for id in jurisdiction_ids2:
                 jurisdiction_ids.append(id)
             
             if len(jurisdiction_ids) < MAX_RESULT_COUNT:
                 count_needed = MAX_RESULT_COUNT - len(jurisdiction_ids)
                 #county j name contains text
-                jurisdiction_ids3 = Jurisdiction.objects.filter(county__icontains=text, jurisdiction_type='CO').exclude(id__in=jurisdiction_ids).order_by('county', 'state').values_list('id', flat=True)[:count_needed]
+                jurisdiction_ids3 = Jurisdiction.objects.filter(county__icontains=text, jurisdiction_type__in=('CO', 'CC')).exclude(id__in=jurisdiction_ids).order_by('county', 'state').values_list('id', flat=True)[:count_needed]
                 for id in jurisdiction_ids3:
                     jurisdiction_ids.append(id)
         
                 if len(jurisdiction_ids) < MAX_RESULT_COUNT:
                     count_needed = MAX_RESULT_COUNT - len(jurisdiction_ids)
                     #city j name contains text
-                    jurisdiction_ids4 = Jurisdiction.objects.filter(city__icontains=text, jurisdiction_type__in=('CI', 'U')).exclude(id__in=jurisdiction_ids).order_by('city', 'state').values_list('id', flat=True)[:count_needed]
+                    jurisdiction_ids4 = Jurisdiction.objects.filter(city__icontains=text, jurisdiction_type__in=('CI', 'U', 'CC')).exclude(id__in=jurisdiction_ids).order_by('city', 'state').values_list('id', flat=True)[:count_needed]
                     for id in jurisdiction_ids4:
                         jurisdiction_ids.append(id)
     
@@ -628,7 +640,7 @@ def jurisdiction_search_improved(request):
     
     
     secondary_search_str = requestProcessor.getParameter('text_2') 
-    if secondary_search_str == None:
+    if secondary_search_str == None or secondary_search_str=='Search':
         secondary_search_str = ''                                  
     data['secondary_search_str'] = secondary_search_str      
 
@@ -856,9 +868,9 @@ def query(state_list, search_words, secondary_search_str, filter, order_by_str, 
             #print '2'
             for search_word in search_words:  
                 if filter == 'county':  
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__iexact='CO').order_by(order_by_str, 'state')
+                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('CO', 'CC')).order_by(order_by_str, 'state')
                 elif filter == 'city':
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('CI', 'U')).order_by(order_by_str, 'state')       
+                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('CI', 'U', 'CC')).order_by(order_by_str, 'state')       
                 elif filter == 'state':
                     objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('S')).order_by(order_by_str, 'state')                              
                 else:
@@ -870,9 +882,9 @@ def query(state_list, search_words, secondary_search_str, filter, order_by_str, 
             #print 3
             for search_word in search_words:    
                 if filter == 'county':  
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__iexact='CO').order_by(order_by_str, 'state') 
+                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('CO', 'CC')).order_by(order_by_str, 'state') 
                 elif filter == 'city':
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('CI', 'U')).order_by(order_by_str, 'state')        
+                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('CI', 'U', 'CC')).order_by(order_by_str, 'state')        
                 elif filter == 'state':
                     objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('S')).order_by(order_by_str, 'state')                             
                 else:
@@ -882,9 +894,9 @@ def query(state_list, search_words, secondary_search_str, filter, order_by_str, 
         if state_list:
             for search_word in search_words:  
                 if filter == 'county':  
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__iexact='CO').filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                                    
+                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('CO', 'CC')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                                    
                 elif filter == 'city':
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('CI', 'U')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                 
+                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('CI', 'U', 'CC')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                 
                 elif filter == 'state':
                     objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('S')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                 
                 else:
@@ -893,9 +905,9 @@ def query(state_list, search_words, secondary_search_str, filter, order_by_str, 
         else:
             for search_word in search_words:    
                 if filter == 'county':  
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__iexact='CO').filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                                            
+                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('CO', 'CC')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                                            
                 elif filter == 'city':
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('CI','U')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state') 
+                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('CI','U', 'CC')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state') 
                 elif filter == 'state':
                     objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('S')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                                  
                 else:

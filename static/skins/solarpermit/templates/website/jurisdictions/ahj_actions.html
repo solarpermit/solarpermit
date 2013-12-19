@@ -1,30 +1,28 @@
-        <div class="quirks" id="q_action_link_{{this_question.id}}" data-id="{{this_question.id}}">
-                <img id="more_{{this_question.id}}" style="float:left"  src="/media/images/more_off.png" alt="more_inactive" >
-        {% if request.user.is_authenticated() %}  
-        <ul id="ahj_actions_{{this_question.id}}" style="display:none;width:150px;left:17px;position:relative;background-color: #fff;border:1px solid #555;margin: 0px 0 0 0px;padding: 0px 0px 5px 0px;">           
-        <li id="favorite_field_{{this_question.id}}" style="list-style-type: none;text-align: left; margin:  0 0 0 px;padding: 0px">
-        {% if category == 'favorite_fields' %}
-            <a class="remove_from_favorites" data-id="{{this_question.id}}" data-jid="{{jurisdiction.id}}" id="remove_from_favorites_{{this_question.id}}" >Remove from favorites</a>&nbsp;&nbsp;
-        {% else %}
-            {% if favorite_questions == None or this_question.id not in favorite_questions %}
-                <a class="add_to_favorites" data-id="{{this_question.id}}" data-jid="{{jurisdiction.id}}" id="add_to_favorites_{{this_question.id}}" >Add to favorites</a>&nbsp;&nbsp;
+       <div class="q_action_link" id="q_action_link_{{current_question_id}}" data-id="{{current_question_id}}" >
+            <img class="q_more_actions" id="more_{{current_question_id}}"   src="/media/images/more_off.png" alt="more_inactive" data-id="{{current_question_id}}" style="margin:opx;padding:0px">
+
+       <ul id="ahj_actions_{{current_question_id}}" class="ahj_action_flyout" data-id="{{current_question_id}}" >
+                <li id="favorite_field_{{current_question_id}}" style="list-style-type: none;text-align: left; margin:  0 0 0 0px;padding: 0px 5px 0px 5px">
+            {% if category == 'favorite_fields' %}
+                    <a class="remove_from_favorites" data-id="{{current_question_id}}" data-jid="{{jurisdiction_id}}" id="remove_from_favorites_{{current_question_id}}" >Remove from favorites</a>
             {% else %}
-                Added to favorite fields
+                {% if current_question_id not in favorite_questions %}
+                    <a class="add_to_favorites" data-id="{{current_question_id}}" data-jid="{{jurisdiction_id}}" id="add_to_favorites_{{current_question_id}}" >Add to favorites</a>
+                {% else %}
+                    Added to favorites
+                {% endif %}
             {% endif %}
-        {% endif %}
-        </li>
-        
-        <li id="quirk_{{this_question.id}}"     style="list-style-type: none;text-align: left;margin: 0 0 0 px;padding: 0px">
-        {% if category == 'quirks' %}
-            <a class="remove_from_quirks" data-id="{{this_question.id}}" data-jid="{{jurisdiction.id}}" id="remove_from_quirks_{{this_question.id}}" >Remove from quirks</a>&nbsp;&nbsp;
-        {% else %}        
-            {% if quirk_questions == None or this_question.id not in quirk_questions %}
-                <a class="add_to_quirks" data-id="{{this_question.id}}" data-jid="{{jurisdiction.id}}" id="add_to_quirks_{{this_question.id}}">Add to quirks</a>&nbsp;&nbsp;
-            {% else %}
-                Added to quirks&nbsp;&nbsp;
+                </li>
+                <li id="quirk_{{current_question_id}}"     style="list-style-type: none;text-align: left;margin: 0 0 0 0px;padding: 0px 5px 0px 5px">
+            {% if category == 'quirks' %}
+                    <a class="remove_from_quirks" data-id="{{current_question_id}}" data-jid="{{jurisdiction_id}}" id="remove_from_quirks_{{current_question_id}}" >Remove from quirks</a>
+            {% else %}        
+                {% if current_question_id not in quirk_questions %}
+                    <a class="add_to_quirks" data-id="{{current_question_id}}" data-jid="{{jurisdiction_id}}" id="add_to_quirks_{{current_question_id}}">Add to quirks</a>
+                {% else %}
+                    Added to quirks
+                {% endif %}
             {% endif %}
-        {% endif %}
-        </li>
+                </li>
         </ul>
-        {% endif %}
-        </div>
+    </div>

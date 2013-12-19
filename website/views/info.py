@@ -11,7 +11,6 @@ from django.shortcuts import render
 from django.shortcuts import render_to_response
 from website.utils.httpUtil import HttpRequestProcessor
 from website.utils.mathUtil import MathUtil
-from website.utils.paginationUtil import PaginationUtil
 
 from website.utils.messageUtil import MessageUtil
 
@@ -120,25 +119,44 @@ def get_info(request):
                 data['feedback'] = ''                                                       
              
                 body = requestProcessor.decode_jinga_template(request,'website/info/feedback.html', data, '') 
+                script = requestProcessor.decode_jinga_template(request, 'website/info/feedback.js', data, '')   
                 dajax.assign('#fancyboxformDiv','innerHTML', body)                   
                 dajax.script('controller.showModalDialog("#fancyboxformDiv");')
+                dajax.script(script)                  
 
                 return HttpResponse(dajax.json())  
             else:           
                 data['email'] = settings.FEEDBACK_EMAIL
                 data['user'] = request.user
                 data['feedback'] = data['feedback'].lstrip('')
-                orgmembers = OrganizationMember.objects.filter(user = data['user'], status = 'A')   
-                user_orgs = ''
-                if len(orgmembers) > 0:
-                    for orgmember in orgmembers:
-                        user_orgs += "," + orgmember.organization.name 
+                if request.user.is_authenticated():
+                    orgmembers = OrganizationMember.objects.filter(user = data['user'], status = 'A')   
+                    user_orgs = ''
+                    if len(orgmembers) > 0:
+                        for orgmember in orgmembers:
+                            user_orgs += "," + orgmember.organization.name 
+                            
+                        user_orgs.lstrip(',')
                         
-                    user_orgs.lstrip(',')
-                    
-                data['user_orgs'] = user_orgs;
-                user_details = UserDetail.objects.filter(user=data['user'])
-                data['user_detail'] = user_details[0]
+                    data['user_orgs'] = user_orgs;
+                    user_details = UserDetail.objects.filter(user=data['user'])
+                    data['user_detail'] = user_details[0]
+
+                    data['first_name'] = data['user'].first_name     
+                    data['last_name'] = data['user'].last_name
+                    data['username'] = data['user'].username
+                    data['title'] = data['user_detail'].title    
+                    data['user_email'] = data['user'].email     
+                                        
+                else:
+                    data['first_name'] = requestProcessor.getParameter('first_name')        # required
+                    data['last_name'] = requestProcessor.getParameter('last_name')          # required
+                    data['user_email'] = requestProcessor.getParameter('email')        # required
+                    data['title'] = requestProcessor.getParameter('title')      
+                    data['user_orgs'] = requestProcessor.getParameter('org')          # required
+                    data['username'] = ''
+                
+                                                
                 email_feedback(data)
                 dajax.script('jQuery.fancybox.close();')  
                 dajax.script("controller.showMessage('Your feedback has been sent and will be carefully reviewed.', 'success');")                                                        
@@ -152,13 +170,13 @@ def email_feedback(data):
     tp = get_template('website/emails/feedback.html')
     c = Context(data)
     body = tp.render(c)
-    #from_mail = data['user'].email
-    from_mail = 'jack_smu@msn.com'
+    from_mail = data['user_email']
+    #print from_mail
     to_mail = [data['email']]
     
     msg = EmailMessage( subject, body, from_mail, to_mail)
     msg.content_subtype = "html"   
-    msg.send()
+    #msg.send()
 
 def news(request):
     data = {}
@@ -217,6 +235,20 @@ def terms_of_use(request):
     
     requestProcessor = HttpRequestProcessor(request)
     return requestProcessor.render_to_response(request,'website/info/terms_of_use.html', data, '')
+
+def contributions(request):
+    data = {}
+    data['current_nav'] = 'home'
+    
+    requestProcessor = HttpRequestProcessor(request)
+    return requestProcessor.render_to_response(request,'website/info/contribution.html', data, '')
+
+def upload(request):
+    data = {}
+    data['current_nav'] = 'upload'
+    
+    requestProcessor = HttpRequestProcessor(request)
+    return requestProcessor.render_to_response(request,'website/info/upload.html', data, '')
 
 def page_404(request):
     data = {}

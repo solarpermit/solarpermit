@@ -1,5 +1,5 @@
 from website.utils.httpUtil import HttpRequestProcessor
-from website.models import Jurisdiction, Question, AnswerReference, OrganizationMember, QuestionCategory, User, ActionCategory, Action, Comment, UserCommentView
+from website.models import Jurisdiction, Question, AnswerReference, OrganizationMember, QuestionCategory, User, ActionCategory, Action, Comment, UserCommentView, AnswerAttachment, Organization
 from website.utils.datetimeUtil import DatetimeHelper
 from website.utils.miscUtil import UrlUtil
 import json
@@ -8,6 +8,7 @@ import operator
 from datetime import timedelta, date
 from django.conf import settings as django_settings
 from website.utils.mathUtil import MathUtil
+
 
 class FieldValidationCycleUtil():
   
@@ -22,24 +23,25 @@ class FieldValidationCycleUtil():
 
         answers = AnswerReference.objects.filter(jurisdiction__exact=jurisdiction, question__exact=question, approval_status__in=('A', 'P')).order_by('approval_status','create_datetime')  
         
-        # the followings is to reject any pending answer whose status date is after the approved answer's status date.
-        approved_answer_status_datetime = None
-        pending_answer_rejected = False
-        for answer in answers:
-            if answer.approval_status == 'A':
-                approved_answer_status_datetime = answer.status_datetime
-                #print 'approve ' + str(approved_answer_status_datetime)
-            else:
-                #print 'pending ' + str(answer.status_datetime)
-                if approved_answer_status_datetime != None and answer.status_datetime <= approved_answer_status_datetime:
-                    answer.approval_status = 'R'
-                    answer.status_datetime = datetime.datetime.now()
-                    answer.save()
-                    pending_answer_rejected = True
-                    #print 'answer status updated'
-                    
-        if pending_answer_rejected:
-            answers = AnswerReference.objects.filter(jurisdiction__exact=jurisdiction, question__exact=question, approval_status__in=('A', 'P')).order_by('approval_status','create_datetime')             
+        # the followings is to reject any pending answer whose status date is after the approved answer's status date. for only non-multivalue questions.
+        if question.has_multivalues == 0:
+            approved_answer_status_datetime = None
+            pending_answer_rejected = False
+            for answer in answers:
+                if answer.approval_status == 'A':
+                    approved_answer_status_datetime = answer.status_datetime
+                    #print 'approve ' + str(approved_answer_status_datetime)
+                else:
+                    #print 'pending ' + str(answer.status_datetime)
+                    if approved_answer_status_datetime != None and answer.status_datetime <= approved_answer_status_datetime:
+                        answer.approval_status = 'R'
+                        answer.status_datetime = datetime.datetime.now()
+                        answer.save()
+                        pending_answer_rejected = True
+                        #print 'answer status updated'
+                        
+            if pending_answer_rejected:
+                answers = AnswerReference.objects.filter(jurisdiction__exact=jurisdiction, question__exact=question, approval_status__in=('A', 'P')).order_by('approval_status','create_datetime')             
         
         if (answers != None and len(answers) > 0):  
             question_data['has_suggestions'] = True
@@ -79,6 +81,7 @@ class FieldValidationCycleUtil():
  
                     
     def get_terminology(self, question):
+                     
         if question.terminology == None or question.terminology == '':
             question_terminology = 'value'
         else:
@@ -191,6 +194,22 @@ class FieldValidationCycleUtil():
         content['show_edit_mode'] = False
                     
         return content
+    
+    def get_question_messages(self, question, answer, existed_pending_answers, existed_approved_answers, count):
+        message = ''
+        if existed_pending_answers > 1:       
+            message += "More than one "+question_terminology +" suggested.  Please vote.<br/>"
+
+        if answer.approval_status == 'P': 
+            if answer.creator_id == login_user.id:      # your own suggestion. cannot vote on your own suggestion.                    
+                message += 'You suggested a ' + question_terminology  + ' for this field on ' + answer_create_datetime + '.<br>The community must vote on its accuracy or it must remain unchallenged for one week before it is approved.<br/>'
+            else:
+                message += temp_str + question_terminology  + " was suggested by <a href='#' id='"+div_id+"' onmouseover=\""+onmouseover+"\" onmouseout=\""+onmouseout+"\" >"+user_display_name + "</a> on " + answer_create_datetime + ".<br>Please vote on its accuracy.<br/>"
+        else:
+            if existed_pending_answers > 0 and message == '':    
+                message += 'The previous approved '+ question_terminology  + ' has been challenged.<br/>'  
+                            
+        return message    
                     
     def get_suggestion_header(self, question, answer, existed_pending_answers, existed_approved_answers, count):
         suggestion_header = ''
@@ -275,8 +294,9 @@ class FieldValidationCycleUtil():
                 fee_info = self.process_fee_structure(answer_obj['answer_content'])
                 for key in fee_info.keys():
                     answer_obj[key] = fee_info.get(key)   
-    
             
+            if question.support_attachments == 1:
+                answer_obj['attachments'] = AnswerAttachment.objects.filter(answer_reference = answer)
             
             if answer.approval_status == 'P':
                 count = count + 1            
@@ -631,6 +651,7 @@ class FieldValidationCycleUtil():
         action_categorys = ActionCategory.objects.filter(name__iexact=category_name)            
         action_category = action_categorys[0]
         effect_approve_reject = self.pre_validation_check(action_category, vote, entity_id)
+        
         if (effect_approve_reject == 'will_approve' or effect_approve_reject == 'will_reject') and user_confirm_vote == 'not_yet':       # approve reject none
             return effect_approve_reject
         else:
@@ -645,22 +666,26 @@ class FieldValidationCycleUtil():
                 elif effect_approve_reject == 'will_reject':
                     answer.approval_status = 'R'
                     
-            if effect_approve_reject == 'will_approve' or effect_approve_reject == 'will_reject':
+            if effect_approve_reject == 'will_approve' :   #or effect_approve_reject == 'will_reject'
                 feedback = 'registered_with_changed_status'
                 answer.status_datetime = datetime.datetime.now()
                 answer.save()
                 # reject all others suggestions only if the question is not of multivalues type
-                if answer.question.has_multivalues != 0:        # strictly predefined question
-                    answers = AnswerReference.objects.filter(jurisdiction=answer.jurisdiction, question=answer.question).exclude(id=answer.id)
-                    if answers:
-                        for answer in answers:
-                            answer.approval_status = 'R'
-                            answer.status_datetime = datetime.datetime.now()
-                            answer.save()
                 
+                self.on_approving_a_suggestion(jurisdiction, answer)
             
         return feedback
     
+    def on_approving_a_suggestion(self, answer):
+        if answer.question.has_multivalues == 0:        
+            answers = AnswerReference.objects.filter(jurisdiction=answer.jurisdiction, question=answer.question).exclude(id=answer.id)
+            if len(answers) > 0:
+                for this_answer in answers:
+                    this_answer.approval_status = 'R'
+                    this_answer.status_datetime = datetime.datetime.now()
+                    this_answer.save()   
+                    
+        return True     
     
     def register_vote(self, action_category, user_id, vote, entity_name, entity_id, jurisdiction_id):     
 
@@ -670,13 +695,11 @@ class FieldValidationCycleUtil():
         action_data = "Vote: " + vote.title()
             
         if len(action_objs) > 0:
-                     
             action_obj = action_objs[0]
             action_obj.action_datetime = datetime.datetime.now()
             action_obj.data = str(action_data)
             action_obj.save()
         else:
-           
             #contributionHelper = ContributionHelper()           
             #action_obj = contributionHelper.save_action(action_category_name, vote, entity_id, entity_name, user_id, jurisdiction_id)
             if entity_name == 'requirement' :
@@ -730,7 +753,7 @@ class FieldValidationCycleUtil():
                         status = 'will_reject'
         except:
             pass
-          
+        print status
         return status
     
     def get_jurisdiction_voting_info_by_category(self, category_name, jurisdiction, entity_category, question = None):
@@ -770,6 +793,49 @@ class FieldValidationCycleUtil():
                 
 
         return vote_info
+    
+    def get_jurisdiction_voting_info(self, category_name, jurisdiction, questions = None):
+        action_category = ActionCategory.objects.filter(name__iexact=category_name)
+        print action_category
+        if questions == None:
+            votes = Action.objects.filter(category__in=action_category, jurisdiction=jurisdiction).order_by('question_category', 'entity_id', '-action_datetime')    
+        else:
+            answer_ids = AnswerReference.objects.filter(jurisdiction__exact=jurisdiction, question__in=questions).exclude(approval_status__exact='R').exclude(approval_status__exact='F').exclude(approval_status__exact='C').values_list('id')
+            print answer_ids
+            votes = Action.objects.filter(category__in=action_category, jurisdiction=jurisdiction).order_by('question_category', 'entity_id', '-action_datetime')    
+        print votes
+        vote_info = {}
+        for vote in votes:
+            if vote.entity_id not in vote_info:
+                vote_info[vote.entity_id] = {}
+                vote_info[vote.entity_id]['total_up_votes'] = 0
+                vote_info[vote.entity_id]['total_down_votes'] = 0
+                vote_info[vote.entity_id]['user_last_vote_on_this_item'] = {}
+                vote_info[vote.entity_id]['num_consecutive_last_down_votes'] = 0
+                vote_info[vote.entity_id]['up_vote_found'] = False
+                
+            if vote.data == 'Vote: Up':
+                vote_info[vote.entity_id]['total_up_votes'] = vote_info[vote.entity_id]['total_up_votes'] + 1                
+            elif vote.data == 'Vote: Down':
+                vote_info[vote.entity_id]['total_down_votes'] = vote_info[vote.entity_id]['total_down_votes'] + 1   
+                
+                if 'last_down_vote_date' not in vote_info[vote.entity_id]:
+                    #vote_info[vote.entity_id]['last_down_vote'] = vote
+                    datetime_util_obj = DatetimeHelper(vote.action_datetime)
+                    last_down_vote_date = datetime_util_obj.showStateTimeFormat(jurisdiction.state)                    
+                    vote_info[vote.entity_id]['last_down_vote_date'] = last_down_vote_date
+                                        
+                if vote_info[vote.entity_id]['up_vote_found'] == False:
+                    vote_info[vote.entity_id]['num_consecutive_last_down_votes'] = vote_info[vote.entity_id]['num_consecutive_last_down_votes'] + 1
+                
+            #if vote.user_id not in vote_info[vote.entity_id]['user_last_vote_on_this_item']:
+            #    vote_info[vote.entity_id]['user_last_vote_on_this_item'][vote.user_id] = vote
+                
+            # temp test data
+            #vote_info[vote.entity_id]['can_vote_up'] = False
+            #vote_info[vote.entity_id]['can_vote_down'] = False
+                        
+        return vote_info    
         
         
     def get_voting_tally(self, category_name, entity_id, jurisdiction, entity_category):
@@ -946,8 +1012,7 @@ class FieldValidationCycleUtil():
     
     def save_answer(self, question_obj, answer, juris, action_category_name, user, is_callout, answer_id=None):
         if question_obj.id == 16:
-            answer = self.process_answer(question_obj, answer)
-            
+            answer = self.process_answer(question_obj, answer)    
             
         encoded_txt = answer.encode('utf-8') 
                             
@@ -984,9 +1049,7 @@ class FieldValidationCycleUtil():
             else:
                 approval_status = 'P'
                 
-                
             if approval_status == 'A' and question_obj.has_multivalues == 0:
-    
                 answerreferences = AnswerReference.objects.filter(question__exact=question_obj, jurisdiction__exact=juris, approval_status__in='P')  
                 if answerreferences:
                     for answer_ref_obj in answerreferences:
@@ -997,6 +1060,8 @@ class FieldValidationCycleUtil():
             answerreference = AnswerReference(question_id = question_obj.id, value = encoded_txt, jurisdiction_id = juris.id, is_callout = is_callout, rating_status='U', approval_status=approval_status, is_current=1, creator_id=user.id,  status_datetime = datetime.datetime.now())            
             
             answerreference.save()
+            
+            self.process_questions_with_link_or_file(answerreference)
 
 
         org_members = OrganizationMember.objects.filter(user=user, status = 'A', organization__status = 'A')
@@ -1015,6 +1080,10 @@ class FieldValidationCycleUtil():
         data = str(answer)
         action_obj = Action()
         action_obj.save_action(action_category_name, data, answerreference, entity_name, user.id, juris) 
+        
+        if question_obj.id == 96 or question_obj.id == 105 or question_obj.id == 36 or question_obj.id == 282 or question_obj.id == 62:
+            print 'process_link_or_file'
+            self.process_link_or_file(answerreference) 
 
         return answerreference 
     
@@ -1042,11 +1111,15 @@ class FieldValidationCycleUtil():
             percentage_of_total_system_cost_cap_amt = 0
             fee_per_component_cap_cap_amt = 0
                     
+            explicit_zero = False
+            
             for answer_key in answer.keys():
          
                 value = answer.get(answer_key)
                 if value != '' and mathUtil.is_number(value) == True:  
-                    value = float(value)
+                    value = float(value.replace(',', ''))
+                    if value == 0:
+                        explicit_zero = True                    
                     if answer_key.find('fee_flat_rate_') == 0:  
                         flat_rate_amt = flat_rate_amt + value  
                     else:
@@ -1063,7 +1136,7 @@ class FieldValidationCycleUtil():
                                     if cap_amt_key in answer:
                                         cap_amt = answer.get(cap_amt_key)
                                         if cap_amt != '' and mathUtil.is_number(cap_amt) == True:  
-                                            cap_amt = float(cap_amt)
+                                            cap_amt = float(cap_amt.replace(',', ''))
                                             if cap_amt > 0:
                                                 if percentage_of_total_system_cost_cap_amt == 0:
                                                     percentage_of_total_system_cost_cap_amt = cap_amt
@@ -1104,7 +1177,7 @@ class FieldValidationCycleUtil():
                                                 cap_amt = answer.get(cap_amt_key)
                                            
                                                 if cap_amt != '' and mathUtil.is_number(cap_amt) == True:  
-                                                    cap_amt = float(cap_amt)
+                                                    cap_amt = float(cap_amt.replace(',', ''))
                                                     if cap_amt > 0:
                                                         if fee_per_component_cap_cap_amt == 0:
                                                             
@@ -1116,38 +1189,60 @@ class FieldValidationCycleUtil():
                                                                 fee_per_component_cap_cap_amt = cap_amt                      
                                             
                                      
+                                     
             if flat_rate_amt == 0:
-                answer['flat_rate_amt'] = ''
+                if explicit_zero == True:
+                    answer['flat_rate_amt'] = '0'
+                else:
+                    answer['flat_rate_amt'] = ''
             else:             
                 answer['flat_rate_amt'] = str(flat_rate_amt)
                 
             if percentage_of_total_system_cost == 0:
-                answer['percentage_of_total_system_cost'] = ''
+                if explicit_zero == True:
+                    answer['percentage_of_total_system_cost'] = '0'
+                else:
+                    answer['percentage_of_total_system_cost'] = ''
             else:                          
                 answer['percentage_of_total_system_cost'] = str(percentage_of_total_system_cost)
 
             if fee_per_inverter == 0:
-                answer['fee_per_inverter'] = ''
+                if explicit_zero == True:
+                    answer['fee_per_inverter'] = '0'
+                else:
+                    answer['fee_per_inverter'] = ''
             else:                          
                 answer['fee_per_inverter'] = str(fee_per_inverter)
                 
             if fee_per_module == 0:
-                answer['fee_per_module'] = ''
+                if explicit_zero == True:
+                    answer['fee_per_module'] = '0'
+                else:
+                    answer['fee_per_module'] = ''
             else:                                         
                 answer['fee_per_module'] = str(fee_per_module)
                 
             if fee_per_major_components == 0:
-                answer['fee_per_major_components'] = ''
+                if explicit_zero == True:
+                    answer['fee_per_major_components'] = '0'
+                else:
+                    answer['fee_per_major_components'] = ''
             else:                              
                 answer['fee_per_major_components'] = str(fee_per_major_components)
             
             if percentage_of_total_system_cost_cap_amt == 0:
-                answer['percentage_of_total_system_cost_cap_amt'] = ''                
+                if explicit_zero == True:
+                    answer['percentage_of_total_system_cost_cap_amt'] = '0'
+                else:
+                    answer['percentage_of_total_system_cost_cap_amt'] = ''             
             else:            
                 answer['percentage_of_total_system_cost_cap_amt'] = str(percentage_of_total_system_cost_cap_amt)
                 
             if fee_per_component_cap_cap_amt == 0:
-                answer['fee_per_component_cap_cap_amt'] = ''
+                if explicit_zero == True:
+                    answer['fee_per_component_cap_cap_amt'] = '0'
+                else:
+                    answer['fee_per_component_cap_cap_amt'] = '' 
             else:
                 answer['fee_per_component_cap_cap_amt'] = str(fee_per_component_cap_cap_amt)  
                     
@@ -1174,13 +1269,13 @@ class FieldValidationCycleUtil():
                 '''
            
                 if answer.organization != None:
-  
-                    if answer.organization.id in contributors:
-                  
-                        contributors[answer.organization] =  contributors[answer.organization] + 1
-                    else:
-                
-                        contributors[answer.organization] = 1    
+                    if answer.organization.name != 'Clean Power Finance': # cpf not included.
+                        if answer.organization.id in contributors:
+                      
+                            contributors[answer.organization] =  contributors[answer.organization] + 1
+                        else:
+                    
+                            contributors[answer.organization] = 1    
                         
                 else:
                     #should include only status = 'A' since we want only 'active' org member, not 'AI' or 'MI'.  those are not approved yet.
@@ -1246,15 +1341,17 @@ class FieldValidationCycleUtil():
                     aobj = action_obj.save_action(validate_action_category_name, data, answer, entity_name, user_id, answer.jurisdiction)  
                     
                     # cancel all subsequent answers to the same question
-                    answers_to_be_rejected = AnswerReference.objects.filter(question = answer.question, jurisdiction = answer.jurisdiction, approval_status = 'P' )    # reject all other pending answers
-                    for answer_to_be_rejected in answers_to_be_rejected:
-                        answer_to_be_rejected.approval_status = 'R'
-                        answer_to_be_rejected.status_datetime = datetime.datetime.now()
-                        answer_to_be_rejected.save()
-                    
-                        #action
-                        data = 'rejected - another answer was approved by the cron job'
-                        action_obj.save_action(validate_action_category_name, data, answer_to_be_rejected, entity_name, user_id, answer.jurisdiction)                      
+                    question = answer.question
+                    if question.has_multivalues == 0:
+                        answers_to_be_rejected = AnswerReference.objects.filter(question = answer.question, jurisdiction = answer.jurisdiction, approval_status = 'P' )    # reject all other pending answers
+                        for answer_to_be_rejected in answers_to_be_rejected:
+                            answer_to_be_rejected.approval_status = 'R'
+                            answer_to_be_rejected.status_datetime = datetime.datetime.now()
+                            answer_to_be_rejected.save()
+                        
+                            #action
+                            data = 'rejected - another answer was approved by the cron job'
+                            action_obj.save_action(validate_action_category_name, data, answer_to_be_rejected, entity_name, user_id, answer.jurisdiction)                      
                 
     def process_fee_structure(self, answer):
         
@@ -1319,5 +1416,49 @@ class FieldValidationCycleUtil():
         
         # get fee item's details
         
-                           
+    def process_questions_with_link_or_file(self, answer):
+        print 'process_questions_with_link_or_file'
+        process = False
+        if answer.question.id == 96 or answer.question.id == 105:
+            if answer.approval_status == 'A':
+                answer_details = json.loads(answer.value)
+                if 'available' in answer_details:    
+                    if answer_details['available'] == 'no':
+                        process = True
+        '''
+        if answer.question.id == 36: 
+            if 'value' in answer_details:
+                if answer_details['value'] == 'n in series in a rectangle allowed':
+                    process = True
+        '''        
+        if process == True:
+            question = Question.objects.get(id=answer.question.id)
+            jurisdiction = Jurisdiction.objects.get(id=answer.jurisdiction.id)
+            answers = AnswerReference.objects.filter(question__exact=question, jurisdiction__exact=jurisdiction).exclude(id__exact=answer.id)
+            if len(answers) > 0:
+                for answer in answers:
+                    answer.approval_status = 'R'
+                    answer.status_datetime = datetime.datetime.now()
+                    answer.save()
+                        # need to save to table action
+                    
+    
+                    
+        
+    def process_link_or_file(self, answer):
+        answer_details = json.loads(answer.value)
+        print answer.question.question
+        if 'form_option' in answer_details:
+            print answer_details['form_option'] 
+            if answer_details['form_option'] == 'link':
+                answerattachments = AnswerAttachment.objects.filter(answer_reference__exact= answer)
+                print len(answerattachments)
+                if len(answerattachments) > 0:
+                    for answerattachment in answerattachments:
+                        answerattachment.delete()  
+                        print "===> delete"
+            elif answer_details['form_option'] == 'upload':      
+                answer_details['link_1'] = ''
+                answer.value = json.dumps(answer_details)
+                answer.save()                     
             

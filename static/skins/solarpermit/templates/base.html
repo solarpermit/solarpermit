@@ -14,23 +14,23 @@
 {% include "website/fancybox_stylesheets.html" %}
 
 
-	<link rel="stylesheet" type="text/css" href="/media/style/main.css" />
-	<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css" />
-	<link rel="stylesheet" type="text/css" href="/media/style/jquery-ui-1.10.1.custom.css" />
-	<link href="/media/style/fileuploader.css" rel="stylesheet" type="text/css" />	
+	<link rel="stylesheet" type="text/css" href="/media/style/main.css{{SOLARPERMIT_VERSION}}" />
+	<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css{{SOLARPERMIT_VERSION}}" />
+	<link rel="stylesheet" type="text/css" href="/media/style/jquery-ui-1.10.1.custom.css{{SOLARPERMIT_VERSION}}" />
+	<link href="/media/style/fileuploader.css{{SOLARPERMIT_VERSION}}" rel="stylesheet" type="text/css" />	
 	<link rel="shortcut icon" href="/media/images/solarpermit_favicon.png" />
 
-	<script src="/media/js/jquery-1.7.2.min.js"></script>	
-	<script src="/media/js/jquery.validate.js"></script>
-	<script src="/media/js/additional-methods.js"></script>
-	<script src="/media/js/jquery.simplemodal.js"></script>
-	<script src="/media/js/jquery.jscroll.custom.js"></script>	
-	<script src="/media/js/controller.js"></script>
-	<script src="/media/js/jquery.dajax.core.js"></script>
-	<script src="/media/js/jquery-ui-1.10.1.custom.min.js"></script>
-	<script src="/media/js/fileuploader.js"></script>	
+	<script src="/media/js/jquery-1.7.2.min.js{{SOLARPERMIT_VERSION}}"></script>	
+	<script src="/media/js/jquery.validate.js{{SOLARPERMIT_VERSION}}"></script>
+	<script src="/media/js/additional-methods.js{{SOLARPERMIT_VERSION}}"></script>
+	<script src="/media/js/jquery.simplemodal.js{{SOLARPERMIT_VERSION}}"></script>
+	<script src="/media/js/jquery.jscroll.custom.js{{SOLARPERMIT_VERSION}}"></script>	
+	<script src="/media/js/controller.js{{SOLARPERMIT_VERSION}}"></script>
+	<script src="/media/js/jquery.dajax.core.js{{SOLARPERMIT_VERSION}}"></script>
+	<script src="/media/js/jquery-ui-1.10.1.custom.min.js{{SOLARPERMIT_VERSION}}"></script>
+	<script src="/media/js/fileuploader.js{{SOLARPERMIT_VERSION}}"></script>			
 	
-	<script type="text/javascript" src="/media/js/flexcomplete/jquery.flexcomplete.js"></script>
+	<script type="text/javascript" src="/media/js/flexcomplete/jquery.flexcomplete.js{{SOLARPERMIT_VERSION}}"></script>
 	
 	<!--[if lt IE 9]>
 		<script>
@@ -50,7 +50,14 @@
 	<script type="text/javascript">
 		
 		var js_csrf = '{{csrf_token}}';
-		
+
+			
+		function reload_page()
+		{
+			location.reload();
+			return false;
+		}
+				
 		function set_error_class() {
 		    document.getElementById('username').style.backgroundColor="#FCC";
 		    document.getElementById('password').style.backgroundColor="#FCC"; 
@@ -93,64 +100,10 @@
 			controller.postRequest('/organization/', {ajax: 'cancel_org_request', orgid: org_id, caller:'user_profile'});
 		}
 
-		function cancel_my_request (org_name, org_id)
-		{
-		        controller.showConfirm({
-		            title: 'Do you want to cancel your request to join  '+org_name+'?',
-		            message: '<br>',
-		            proceedText: 'Yes, cancel my request',
-		            cancelText: 'No, do not cancel my request',
-		            callback: cancel_request
-		        });
-		}
 
-		function remove_request()
-		{
-			controller.postRequest('/organization/', {ajax: 'remove_from_my_profile', mid: member_id, caller:'user_profile'});
-		}
 
-		function remove_from_my_profile (org_name, org_id)
-		{
-		        controller.showConfirm({
-		            title: 'Do you want to remove  '+org_name+' from your profile?',
-		            message: '<br>',
-		            proceedText: 'Remove from My Profile ',
-		            cancelText: 'Cancel',
-		            callback: remove_request
-		        });
-		}	
 
-		function accept_invitation()
-		{
-			controller.postRequest('/organization/', {ajax: 'accept_invite', mid: member_id, caller:'user_profile'});
-		}
-
-		function accept_invite (org_name, org_id)
-		{
-		        controller.showConfirm({
-		            title: 'Do you want to accept the invitation to join  '+org_name+'?',
-		            message: '<br>',
-		            proceedText: 'I accept ',
-		            cancelText: 'Cancel',
-		            callback: accept_invitation
-		        });
-		}			
-
-		function decline_invitation()
-		{
-			controller.postRequest('/organization/', {ajax: 'decline_invite', mid: member_id, caller:'user_profile'});
-		}
-
-		function decline_invite (org_name, org_id)
-		{
-		        controller.showConfirm({
-		            title: 'Do you want to decline the invitation to join  '+org_name+'?',
-		            message: '<br>',
-		            proceedText: 'I decline ',
-		            cancelText: 'Cancel',
-		            callback: decline_invitation
-		        });
-		}					
+		
 
 		function show_data(data_obj_id, edit_option_id)
 		{   
@@ -223,7 +176,53 @@
 		
 		$(document).ready(function() {
 			onload('{{action_key}}'); {# // moved from onload attribute in body tag #}
+			
+			$('.headRight #create_account_button').click(function() {
+				controller.postRequest('/account/', {ajax: 'create_account'}); return false;
+			});
+			
+			$('.searchfielddev a.search-a').click(function(){
+				$('#search_form').submit();return false;
+			});
+			
 			$('#update_org_info_link').tooltip({track: true});
+			$('#update_org_info_link').click(
+					function(event) {
+							
+							$target = $(event.target);
+							var ajaxVal = $target.data('ajax');
+							var orgId = $target.data('orgid');
+							controller.postRequest('/organization/', {ajax: ajaxVal, orgid: orgId}); 			
+
+							return false;
+					}
+			);
+			$('#send_feedback').click(
+					function(event) {
+							
+							$target = $(event.target);
+							controller.postRequest('/info/', {ajax: 'send_feedback'});		
+
+							return false;
+					}
+			);
+			$('#give_feedback').click(
+					function(event) {
+							
+							$target = $(event.target);
+							controller.postRequest('/info/', {ajax: 'send_feedback'});		
+
+							return false;
+					}
+			);	
+			$('#logout_with_forum').click(
+					function(event) {
+							
+							$target = $(event.target);
+							controller.lsslogout('/logout');	
+					}
+			);								
+			
 {#			// profile menu #} 
 			$('.profile_header_link').hover(
 					function(){
@@ -281,35 +280,18 @@
 	    	    footer: 'Press Enter to search'
 		    }); 
 													
-			$('#empty_data_fields_hidden').click(function(event) {
-				var $target = $(event.target); 
-				if ($('#empty_data_fields_hidden').is(':checked'))
-					query_string = 'empty_data_fields_hidden=' + 1;
-				else
-					query_string = 'empty_data_fields_hidden=' + 0;
-					
-				if (document.URL.search(/empty_data_fields_hidden=/i) < 0)
-				{
-					if (document.URL.search('/=/') < 0)
-						url = document.URL + '?' + query_string
-					else
-						url = document.URL + '&' + query_string
-				}
-				else
-				{
-					url = document.URL.replace(/empty_data_fields_hidden=1/i, query_string)				
-					url = url.replace(/empty_data_fields_hidden=0/i, query_string)
-				}
-																
-				location.href= url
-			});										                                     
+			$('#fancybox_close').click(function(){
+				$.fancybox.close();
+				return false;
+			}); 																						                                     
 		});
 	</script>
 	<!--[if lte IE 9]>
-	<script type="text/javascript" src="/media/js/placeholder_ie_fix.js"></script>
+	<script type="text/javascript" src="/media/js/placeholder_ie_fix.js{{SOLARPERMIT_VERSION}}"></script>
 	<script type='text/javascript'>
 	$(document).ready(function() {
 	    placeholder_ie_fix('#search_field');
+	    placeholder_ie_fix('#jurisdiction_search #text_2');	    
 	});
 	</script>
 	<![endif]-->
@@ -401,7 +383,7 @@
 		})();
 	</script>
 {# Marketo Tracking Code #}
-	<script type="text/javascript">document.write(unescape("%3Cscript src='" + document.location.protocol + "//munchkin.marketo.net/munchkin.js' type='text/javascript'%3E%3C/script%3E"));</script>
+	<script type="text/javascript">document.write(unescape("%3Cscript src='" + document.location.protocol + "//munchkin.marketo.net/munchkin.js{{SOLARPERMIT_VERSION}}' type='text/javascript'%3E%3C/script%3E"));</script>
 	<script>Munchkin.init('464-OTD-366');</script>
 {% endif %}
 

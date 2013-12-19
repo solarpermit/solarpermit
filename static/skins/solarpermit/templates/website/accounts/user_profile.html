@@ -11,7 +11,7 @@
   
     <div class="form_field">
         <div class="label">Username:</div>
-        <div id="form_field_data_username" class="show_data"  style="width:350px;cursor:pointer;" onmouseout="return show_data('form_field_data_username', 'edit_option_username')" onmouseover="return show_edit_option('form_field_data_username', 'edit_option_username')" onClick="return switch_to_edit('form_field_data_username', 'form_field_edit_username')" > 
+        <div id="form_field_data_username" class="show_data"  style="width:350px;cursor:pointer;" onmouseout="return show_data('form_field_data_username', 'edit_option_username')" onmouseover="return show_edit_option('form_field_data_username', 'edit_option_username')" > 
             {% if username == '' %}
                 No info available
             {% else %}
@@ -34,8 +34,8 @@
             </div>
             {% if mode == 'individual' %}
             <div style="height:25px;padding-top:10px;">
-                <a disabled name="save_username" value="Save" id="{{form_id}}_field_usernme_submit_button" class="mainbutton" onClick="submit_edit('{{form_id}}', 'username')"  title="" >Save</a>
-                <a name="Cancel" value="Cancel" id="cancel_username" class="mainbutton" onClick="return switch_to_data('form_field_data_username', 'form_field_edit_username')"  title="" >Cancel</a>
+                <a disabled name="save_username" value="Save" id="{{form_id}}_field_usernme_submit_button" class="mainbutton"   title="" >Save</a>
+                <a name="Cancel" value="Cancel" id="cancel_username" class="mainbutton"  title="" >Cancel</a>
             </div>
             {% endif %}  
         </div>               
@@ -45,7 +45,7 @@
 
     <div class="form_field" >
         <div class="label">Email address:</div>
-        <div id="form_field_data_email" class="show_data"  style="width:350px;cursor:pointer;" onmouseout="return show_data('form_field_data_email', 'edit_option_email')" onmouseover="return show_edit_option('form_field_data_email', 'edit_option_email')" onClick="return switch_to_edit('form_field_data_email', 'form_field_edit_email')" > 
+        <div id="form_field_data_email" class="show_data"  style="width:350px;cursor:pointer;" onmouseout="return show_data('form_field_data_email', 'edit_option_email')" onmouseover="return show_edit_option('form_field_data_email', 'edit_option_email')"  > 
             {% if email == '' %}
                 No info available
             {% else %}
@@ -68,8 +68,8 @@
             </div>
             {% if mode == 'individual' %}
             <div>
-                <a name="save_email" value="Save" id="save_email" class="mainbutton" onClick="submit_edit('{{form_id}}', 'email')" title="" >Save</a>
-                <a name="Cancel" value="Cancel" id="cancel_email" class="mainbutton" onClick="return switch_to_data('form_field_data_email', 'form_field_edit_email')"  title="" >Cancel</a>
+                <a name="save_email" value="Save" id="save_email" class="mainbutton"  title="" >Save</a>
+                <a name="Cancel" value="Cancel" id="cancel_email" class="mainbutton"   title="" >Cancel</a>
             </div>
             {% endif %}  
         </div>               
@@ -82,12 +82,42 @@
     {% include '/website/form_fields/org.html' %}      
 </div>
 </form>
-<!--    
-    <div class="form_field">
-    <span><input type="button" name="update_user_profile" value="Update User Profile" id="update_user_profile_button" class="mainbutton" onClick="controller.postRequest('/account/', {ajax: 'update_user_profile'}); return false;" style="height:30px;" title="Update your profile." ></span>  
-    </div>
--->
+
 
 <div id="simple_popup_div" class="simple_popup" />test<div>
 </div>
+
+{% block endjs %}
+<script type='text/javascript'>
+            
+$(document).ready(function() {
+    $('#form_field_data_username').click(function(){
+        return switch_to_edit('form_field_data_username', 'form_field_edit_username');
+    });  
+          
+    $('#form_field_data_email').click(function(){
+        return switch_to_edit('form_field_data_email', 'form_field_edit_email')
+    });  
+              
+    $('#{{form_id}}_field_usernme_submit_button').click(function(){
+        submit_edit('{{form_id}}', 'username');
+        return false;
+    });  
+          
+    $('#cancel_username').click(function(){
+        return switch_to_data('form_field_data_username', 'form_field_edit_username');
+    });  
+    
+    $('#save_email').click(function(){
+        submit_edit('{{form_id}}', 'email');
+        return false;
+    });
+                              
+    $('#cancel_email').click(function(){
+        return switch_to_data('form_field_data_email', 'form_field_edit_email');
+    });                                        
+                                        
+});
+</script>
+{% endblock %}
 

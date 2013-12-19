@@ -26,10 +26,23 @@
 				</select>
 				{% if get_state_jurisdiction == True %}			
 				<span style="padding-left:10px;" >
-				<input type="checkbox" name="only_jurisditions_with_data" id="only_jurisditions_with_data" value="1" {% if only_jurisditions_with_data | int == 1 %}checked{% endif %} onClick="$('#jurisdiction_search').submit();" /> 
+				<input type="checkbox" name="only_jurisditions_with_data" id="only_jurisditions_with_data" value="1" {% if only_jurisditions_with_data | int == 1 %}checked{% endif %}  /> 
 				</span>
-				<span id="only_jurisdictions_with_data_message" >{% if only_jurisditions_with_data | int == 1 %}Jurisdictions without data are hidden. Uncheck to show.{% else %}Jurisdictions without data are visible. Check to hide.{% endif %}
+				<span id="only_jurisdictions_with_data_message" class="label">{% if only_jurisditions_with_data | int == 1 %}Jurisdictions without data are hidden. Uncheck to show.{% else %}Jurisdictions without data are visible. Check to hide.{% endif %}
 				</span>	
 				{% endif %}			
 			</form>
 		</div>
+		
+{% block endjs %}
+		<script type='text/javascript'>
+			
+			$(document).ready(function() {
+      
+                $('#only_jurisditions_with_data').click(function(){
+                    $('#jurisdiction_search').submit();
+                });        
+                                        
+			});
+		</script>
+{% endblock %}

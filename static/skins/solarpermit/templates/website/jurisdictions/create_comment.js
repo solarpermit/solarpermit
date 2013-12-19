@@ -7,3 +7,7 @@ $('#id_comment_post').bind('click', function(){
 	controller.submitForm('#id_create_comment');
 	return false;
 });
+
+$('#id_cancel_create').click(function (){
+	controller.closeSecondDialog();
+});

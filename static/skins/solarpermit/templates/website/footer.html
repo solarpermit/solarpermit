@@ -12,7 +12,7 @@ Styling has been intentionally left inline to avoid touching main.css -RG
 		</ul>
 		<ul style="clear: right; text-transform: uppercase; margin-top: 7px;">
 			<li class="first"><a style="font-size: 10px; color: #999;" href="/information-accuracy-disclaimer/">{#Information Accuracy #}Disclaimer</a></li>
-			{% if request.user.is_authenticated() %}<li style="color: #ccc"><a style="font-size: 10px; color: #999;" href="#" style="" onClick="controller.postRequest('/info/', {ajax: 'send_feedback'}); return false;">Give Feedback</a></li>{% endif %}
+			{% if request.user.is_authenticated() %}<li style="color: #ccc"><a style="font-size: 10px; color: #999;" href="#" style="" id="give_feedback" id="give_feedback" >Give Feedback</a></li>{% endif %}
 		</ul>
 		<p style="padding-top: 19px; margin-bottom: 20px;">Copyright &copy; 2013 Clean Power Finance, Inc. based in part upon work supported by U.S. Department of Energy under Assistance Agreement No. DE-EE0005349. Permission granted only for personal or educational use, or for use by or on behalf of the U.S government. Clean Power Finance, Inc prohibits the unauthorized display, reproduction, sale, and/or distribution of all or portions of the content of the National Solar Permitting Database(NSPD) without prior written consent.</p>
 	</footer>

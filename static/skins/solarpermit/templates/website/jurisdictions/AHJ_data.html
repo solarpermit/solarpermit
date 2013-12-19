@@ -1,0 +1,803 @@
+{% extends "base.html" %}
+    
+{% block forejs %}
+<script type='text/javascript'>
+$(document).ready(function() {
+    $("#form_sign_in_submit_button").click(function (){
+        controller.submitForm('#form_sign_in');
+        return false;
+    });
+    
+    $("#sign_in_create_account_button").click(function (){
+        controller.postRequest('/account/', {ajax: 'create_account'}); 
+        return false;
+    });
+    
+    $("#ahj_send_feedback").click(function (){
+        controller.postRequest('/info/', {ajax: 'send_feedback'}); 
+        return false;
+    });
+    
+    $("#ahj_create_jurisdiction_ucomment").click(function (){
+        controller.postRequest('.', {ajax: 'create_jurisdiction_ucomment'}); 
+        return false;
+    });
+
+    $('.smallbutton.create_custom_field_btn').click(function(event) {
+        //event.stopPropagation();
+        var $target = $(event.target);
+        var jurisdiction_id = $target.data('jurisdiction_id'); 
+        var category_id = $target.data('category_id'); 
+        var current_category = $target.data('current_category'); 
+        var current_questions = $target.data('current_questions'); 
+            
+            controller.postRequest('/custom_field/', {ajax: 'create_custom_field', jurisdiction_id:jurisdiction_id, category_id:category_id , current_category:current_category , current_questions: current_questions }); 
+    
+        
+        return false;
+    });    
+            
+    
+    $(".ucommentReplyBtn").click(function(){
+        cid = $(this).data("cid");
+        controller.postRequest('.', {ajax: 'reply_comment', cid: cid});
+        return false;
+    });
+    
+    $(".ucommentDeleteBtn").click(function () {
+        cid = $(this).data("cid");
+        controller.postRequest('.', {ajax: 'remove_comment', cid: cid});
+        return false;
+    });
+    
+    $(".ucommentFlagBtn").click(function () {
+        cid = $(this).data("cid");
+        controller.postRequest('.', {ajax: 'flag_comment', cid: cid});
+        return false;
+    });      
+    
+    $('#favorite-a').tooltip({track: true});
+    $(".atooltips").tooltip({track: true});    
+    {% if jurisdiction.user_favorite_jurisdiction(user) %}
+        $('#favorite-a').click(function(){controller.postRequest('/user_favorite/', {ajax:'remove_favorite', entity_id:{{jurisdiction.id}},  entity_name:'Jurisdiction'});return false;});
+    {% else %}
+        $('#favorite-a').click(function(){controller.postRequest('/user_favorite/', {ajax:'add_favorite', entity_id:{{jurisdiction.id}},  entity_name:'Jurisdiction'});return false;});
+    {% endif %}     
+    
+            $('#empty_data_fields_hidden').click(function(event) { //alert('empty_data_fields_hidden');
+                var $target = $(event.target); 
+                if ($('#empty_data_fields_hidden').is(':checked'))
+                    query_string = 'empty_data_fields_hidden=' + 1;
+                else
+                    query_string = 'empty_data_fields_hidden=' + 0;
+
+                durl = document.URL; 
+                drularray = durl.split('#');
+                durl = drularray[0]    
+
+                if (document.URL.search(/empty_data_fields_hidden=/i) < 0)
+                {
+                    if (document.URL.search('/=/') < 0)
+                        url = durl + '?' + query_string
+                    else
+                        url = durl + '&' + query_string
+                }
+                else
+                {
+                    url = durl.replace(/empty_data_fields_hidden=1/i, query_string)                
+                    url = url.replace(/empty_data_fields_hidden=0/i, query_string)
+                }
+                //alert(url);                                               
+                location.href= url
+            });        
+
+});
+</script>
+{% endblock %}
+<!-- template jurisdiction_state_browse.html -->
+
+
+{% block title %} {{jurisdiction.get_jurisdiction_display('title')}}{% endblock %}
+
+
+{% block breadcrum %}
+
+            <span style="padding-left:10px;">
+{% if request.user.is_authenticated() == False %}
+                <a href="{{home}}" >Home</a> &gt;
+{% endif %}
+                <a href="/jurisdiction/browse/?state={{jurisdiction.state}}">{{jurisdiction.get_state_display('long')}}</a>  &gt; {{jurisdiction.get_jurisdiction_display('breadcrum')}}
+            </span>
+{% endblock %}
+
+
+{% block page_title %}{{jurisdiction.get_jurisdiction_display('page_title')}}        <!-- jurisdiction_id = {{jurisdiction.id}} -->{% endblock %}
+
+
+{% block forestyle %}
+    <link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css{{SOLARPERMIT_VERSION}}" />
+{% endblock %}
+
+
+{% block top_main_content %}
+            <span style="padding-left:10px;">
+{% if jurisdiction.jurisdiction_type!='U' and jurisdiction.jurisdiction_type!='SC'  and jurisdiction.jurisdiction_type != 'CINP' and jurisdiction.jurisdiction_type != 'CONP' %}
+    {% if last_contributed_date == ''  or last_contributed_date == None %}
+                    This page is empty and has not been edited
+    {% else %}
+        {% if last_contributed_by != None %}
+                    <span id="jurisdicton_last_updated">Last updated {{jurisdiction.display_last_contributed()}} by <a href='#' id='id_jurisdicton_last_updated' onmouseover="controller.postRequest('/account/', {ajax: 'user_profile_short', user_id: '{{last_contributed_by.id}}',  unique_list_id: 'jurisdicton_last_updated'  });"  >{{last_contributed_by.get_profile().get_display_name()}}</a></span>
+        {% else %}
+                    <span id="jurisdicton_last_updated">Last updated {{jurisdiction.display_last_contributed()}} by </span>    
+        {% endif %}
+
+    {% endif %}
+    {% if request.user.is_authenticated() %}
+        {% if jurisdiction.user_favorite_jurisdiction(user) %}
+                            - <span id="favorite-a-image"><img width="12" height="12" src="/media/images/add-to-favorites.png" alt="Add to Favorites"></span>
+                            <a id="favorite-a" href="#" title="Remove {{jurisdiction.show_jurisdiction('long')}} from your favorite jurisdictions">Remove from favorites</a>
+        {% else %}
+                            - <span id="favorite-a-image"><img width="12" height="12" src="/media/images/add-to-favorites-hollow.png" alt="Add to Favorites"></span>
+                            <a id="favorite-a" href="#" title="Add {{jurisdiction.show_jurisdiction('long')}} to your favorite jurisdictions">Add to favorites</a>
+        {% endif %}
+    {% endif %}    
+
+            </span>
+            {% if category != 'favorite_fields' and category != 'quirks' %}
+            <span style="padding-left:10px;">
+            <input type="checkbox" name="empty_data_fields_hidden" id="empty_data_fields_hidden" value="1" {% if empty_data_fields_hidden | int == 1 %}checked{% endif %} /> 
+            {% if empty_data_fields_hidden | int == 1 %}Empty data fields hidden.  Uncheck to show.{% else %}Empty data fields visible. Check to hide.{% endif %}
+            </span>
+            {% endif %}
+{% endif %}
+{% endblock %}
+
+
+{% block body %}
+
+        <div class="cssTable fullWidth ahjWrap">
+            <div class="cssRow">
+                <div id="category_bg_block" class="cssCell" >
+{% include '/website/jurisdictions/AHJ_categories.html' %}
+                </div>
+                <div class="data-container cssCell" >
+                    <div class="ahj-tab " >
+
+{% include "/website/accounts/sign_in.html" %}              <!-- this is required for all all AHJ pages-->
+<div id="top-contributor">
+
+                    </div>
+                    <div id="print">
+
+            <a class="atooltips" href="/jurisdiction/{{jurisdiction.name_for_url}}/?layout=print" target="_blank" title="Print info from all categories" >Print all</a>
+            {% if category !='all_info'%}
+            <a  class="atooltips" href="?layout=print" target="_blank"  title="Print info from the {{category_name | capitalize }} section">Print this category</a>
+            {% endif %}
+            <div class="clearboth"></div>
+                    </div>    
+    
+                    <div id="ahj_tab_content cssTable" class="cssTable" style="width:100%">
+                        <div class="cssRow">
+                            <div class="cssCell" style="width:590px;">
+                        {% block category_content %}    
+                        
+                        {% endblock %}
+                            </div>
+            
+                            <div class="cssCell" style="float:left">
+                            {% if show_google_map == True %}
+                            {% include 'website/blocks/google_map.html' %}
+                            {% endif %}
+                            </div>
+                         
+                        </div>
+                    </div>
+    
+        <div id="validation_history_popup" style="position:absolute;left:200px;top:200px;width:300px;height:100px;background-color:black;color:white;display:none;z-index:3000;display:none;visibility:visible;padding:10px 10px 10px 10px;"></div>
+        <div id="down_vote_last_msg" style="position:absolute;width:300px;height:40px;background-color:black;color:white;display:none;z-index:3000;display:none;visibility:visible;padding:10px 10px 10px 10px;"></div>
+        <div id="div_tooltip" style="position:absolute;background-color:black;color:white;display:none;z-index:3000;display:none;visibility:visible;padding:10px 10px 10px 10px;"></div>
+    
+                </div>
+            </div>
+        </div>{# eo cssTable #}
+<div class="bottomclearboth"></div>
+{% endblock %}
+
+{% block endjs %}
+<script type='text/javascript'>             
+    $(document).ready(function() {
+        //console.log(Date.now()-timeStart);
+        //$('#pageload_time').html((Date.now()-timerStart));
+        {% if show_ahj_message == True %}
+            controller.postRequest('.', {ajax: 'show_ahj_message', jurisdiction_id: {{jurisdiction.id}} });
+        {% endif %}             
+
+        controller.postRequest('.', {ajax: 'get_ahj_answers_votes', jurisdiction_id: {{jurisdiction.id}}, category:'{{category}}' });      
+        controller.postRequest('.', {ajax: 'get_ahj_questions_messages', jurisdiction_id: {{jurisdiction.id}}, category:'{{category}}' });  
+        controller.postRequest('.', {ajax: 'get_ahj_questions_actions', jurisdiction_id: {{jurisdiction.id}}, category:'{{category}}' });
+        controller.postRequest('.', {ajax: 'get_ahj_answers_validation_history_and_comments', jurisdiction_id: {{jurisdiction.id}}, category:'{{category}}' });  
+        controller.postRequest('.', {ajax: 'get_ahj_ahj_top_contributors', jurisdiction_id: {{jurisdiction.id}}, category:'{{category}}' });        
+        controller.postRequest('.', {ajax: 'get_ahj_answers_attachments', jurisdiction_id: {{jurisdiction.id}}, category:'{{category}}' });  
+        controller.postRequest('.', {ajax: 'get_ahj_num_quirks_favorites', jurisdiction_id: {{jurisdiction.id}}, category:'{{category}}' }); 
+        controller.postRequest('.', {ajax: 'get_ahj_answers_headings', jurisdiction_id: {{jurisdiction.id}}, category:'{{category}}' });         
+                            
+                               
+        var $questionLabel = $('.qasv_content.need_tooltip')
+        $questionLabel.each(function () {
+            
+            var $container = $(this);
+            $container.removeClass('need_tooltip');
+            var $target = $container.find('div.label');
+            var questionId = $container.data('id');
+            var pendingAids = $container.data('paids');
+            var jurId = $container.data('jurid');
+            var $editButton = $container.find('#edit_button_'+pendingAids);
+            if ($editButton.length > 0) {
+                $target.click(function (){
+                    return controller.suggestionField.clickEditBt(pendingAids, 'answer', jurId, questionId, pendingAids);
+                });
+            }
+            var showIcon = $target.data('icon');
+            var label_tooltip = $target.data('label_tooltip');
+            if (showIcon == 'Y') {
+                $target.tooltip({track: true, 
+                    content: function() {
+                        if (showIcon == 'Y') {
+                            if (label_tooltip != '') {
+                                return label_tooltip;                   
+                            }
+                            else
+                            {
+                                v1 = $target.attr('title'); 
+                                if (v1 != 'None') {
+                                    var a_or_an = 'a';  
+                                    var vowels = 'aeiou';
+                                    if (vowels.indexOf(v1.charAt(0)) >= 0)
+                                        a_or_an = 'an';
+                                        
+                                    return 'Suggest ' + a_or_an + ' ' + v1 + ' for this field';
+                                } else { 
+                                    return 'Suggest a value for this field';
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                $target.mouseover(function (e) {
+                    $target.addClass("field_mo_l1").addClass("field_mo_l2");
+                    $container.addClass("editdiv");
+                    //show_edit_cancel_btns(pendingAids);
+                });
+                $target.mouseleave(function (e) {
+                    $target.removeClass("field_mo_l2");
+                });
+                $container.parent().mouseleave(function (e) {
+                    $target.removeClass("field_mo_l1").removeClass("field_mo_l2");
+                    $container.removeClass("editdiv");
+                    //hide_edit_cancel_btns(pendingAids);
+                });
+                var is_print = $target.data('print');
+                if (is_print == 'F'){
+                    $target.click(function (){
+                        return controller.suggestionField.clickAddLabel(jurId, questionId);
+                    });
+                }
+            }
+        });
+             
+        
+        var $historyTooltip = $('.need_history');
+        $historyTooltip.mouseover(function (event) {
+            //alert('validaetion');
+            var $target = $(event.target);
+            //var $target = $(event.target);
+            //$target.removeClass('need_history');
+            var answerId = $target.data('id');
+            //alert(answerId);
+            controller.postRequest('.', {ajax: 'validation_history', entity_id: answerId, entity_name: 'requirement', destination: '' });
+            $target.tooltip({track: true, 
+                content: function() {
+                    return $('#validation_history_div_'+answerId).html();
+                }
+            });
+        });
+        var $historyDialog = $('.need_history_dialog');
+        $historyDialog.click(function (event) {
+            var $target = $(event.target);
+            //$target.removeClass('need_history_dialog');
+            var answerId = $target.data('id');
+            //alert('history dialog');
+            $target.click(function () {
+                controller.postRequest('.', {ajax: 'validation_history', entity_id: answerId, entity_name: 'requirement', destination: 'dialog' });
+            });
+        });        
+        
+        var $commentsDialog = $('.need_comment');
+        $commentsDialog.each(function () {
+            var $target = $(this);
+            $target.removeClass('need_comment');
+            var answerId = $target.data('id');
+            var jid = $target.data('jid');
+            $target.click(function (e) {
+                controller.postRequest('/jurisdiction_comment/', {ajax: 'open_jurisdiction_comment', jurisdiction_id: jid, entity_id: answerId, entity_name: 'AnswerReference'});
+                e.preventDefault();
+            });
+        });        
+        
+        $('.add_to_favorites').click(function(event) 
+        {   
+            var $target = $(event.target);
+            var questionId = $target.data('id');
+            var jid = $target.data('jid');    
+            $('#add_to_favorites_'+questionId).unbind('click');
+            $('#add_to_favorites_'+questionId).attr('disabled', 'disabled');            
+            controller.postRequest('.', {ajax: 'add_to_views', jurisdiction_id: jid, question_id: questionId, entity_name: 'favorites', destination: '' });
+        });
+        
+        $('.add_to_quirks').click(function(event) 
+        {
+
+            var $target = $(event.target);
+            var questionId = $target.data('id');
+            var jid = $target.data('jid');   
+            $('#add_to_quirks_'+questionId).unbind('click');
+            $('#add_to_quirks_'+questionId).attr('disabled', 'disabled');            
+            controller.postRequest('.', {ajax: 'add_to_views', jurisdiction_id: jid, question_id: questionId, entity_name: 'quirks', destination: '' });
+        });
+        
+        $('.remove_from_favorites').click(function(event) 
+        {   
+            var $target = $(event.target);
+            var questionId = $target.data('id');
+            var jid = $target.data('jid');    
+            controller.postRequest('.', {ajax: 'remove_from_views', jurisdiction_id: jid, question_id: questionId, entity_name: 'favorites', destination: '' });
+        });
+        
+        $('.remove_from_quirks').click(function(event) 
+        {
+            var $target = $(event.target);
+            var questionId = $target.data('id');
+            var jid = $target.data('jid');    
+            controller.postRequest('.', {ajax: 'remove_from_views', jurisdiction_id: jid, question_id: questionId, entity_name: 'quirks', destination: '' });
+        });
+        
+
+        $('.approve_this_value').each(function(event) {
+            $(this).click(function (e) {        
+                $target = $(e.target);
+                answer_id = $target.data('id');
+                terminology = $target.data('terminology');                                                       
+         
+                controller.showConfirm({
+                        title: 'Are you sure you want to approve this '+terminology+'?',
+                        icon: 'question_mark.jpg',
+                        message: '<br>',
+                        proceedText: 'Yes',
+                        cancelText: 'Cancel',
+                        callback: function() {
+                            $('#approve_this_value_'+answer_id).attr('disabled','disabled');
+                            controller.postRequest('.', {ajax: 'approve_suggestion', entity_id : answer_id});                                             
+                        }
+                });       
+            });
+        });        
+        
+        $('.add_another_value').each(function(event) 
+        {
+            $(this).click(function (e) {        
+                $target = $(e.target);
+                var questionId = $target.data('id');
+                var jid = $target.data('jid');    
+                controller.postRequest('.', {ajax: 'get_add_form', jurisdiction_id: jid, question_id: questionId});
+                controller.openSuggestion(questionId);
+                //return false;
+            });
+        });
+
+        
+        $('.canvoteup').each(function() {
+            $(this).click(function (e) {        
+                $target = $(e.target);
+                answer_id = $target.data('answerid');
+                terminology = $target.data('terminology');
+                canvotedown = $target.data('canvotedown');
+                
+                if (canvotedown == 'false')
+                {
+                    controller.showConfirm({
+                        title: 'Do you want to change your vote to approve?',
+                        icon: 'question_mark.jpg',
+                        message: '<br>',
+                        proceedText: 'Yes',
+                        cancelText: 'Cancel',
+                        callback: function() {
+                            $('#voteup_'+answer_id).unbind('click');
+                            $('#voteup_'+answer_id).attr('disabled','disabled');
+                            $('#voteup_'+answer_id).addClass('disabled');
+                            controller.postRequest('.', {ajax: 'vote', vote: 'up', entity_name: 'requirement', entity_id: answer_id});
+                            //return true;                                          
+                        }
+                    });  
+                }
+                else   
+                {
+                    $('#voteup_'+answer_id).unbind('click');
+                    $('#voteup_'+answer_id).attr('disabled','disabled');
+                    $('#voteup_'+answer_id).addClass('disabled');
+                    controller.postRequest('.', {ajax: 'vote', vote: 'up', entity_name: 'requirement', entity_id: answer_id});            
+                }
+                                          
+            });
+        });
+
+
+        $('.canvotedown').each(function() {
+            $(this).click(function (e) {
+                $target = $(e.target);
+                answer_id = $target.data('answerid');
+                terminology = $target.data('terminology');
+                canvoteup = $target.data('canvoteup');
+                
+                if (canvoteup == 'false')
+                {    
+                    controller.showConfirm({
+                        title: 'Do you want to change your vote to disapprove?',
+                        icon: 'question_mark.jpg',
+                        message: '<br>',
+                        proceedText: 'Yes',
+                        cancelText: 'Cancel',
+                        callback: function() {
+                                $('#votedown_'+answer_id).unbind('click');    
+                                $('#votedown_'+answer_id).attr('disabled','disabled');
+                                $('#votedown_'+answer_id).addClass('disabled');        
+                                controller.postRequest('.', {ajax: 'vote', vote: 'down', entity_name: 'requirement', entity_id: answer_id});                                          
+                            }
+                    });  
+                }
+                else   
+                {
+                    $('#votedown_'+answer_id).unbind('click');    
+                    $('#votedown_'+answer_id).attr('disabled','disabled');
+                    $('#votedown_'+answer_id).addClass('disabled');        
+                    controller.postRequest('.', {ajax: 'vote', vote: 'down', entity_name: 'requirement', entity_id: answer_id});
+                }
+            
+            });
+        });
+        
+        
+        $('.cancel_this_value').each(function() {         
+            $(this).click(function (e) {
+                $target = $(e.target);
+                answer_id = $target.data('id');  
+                controller.showConfirm({
+                    title: 'Are you sure you want to cancel your suggestion?',
+                    icon: 'question_mark.jpg',
+                    message: '<br>',
+                    proceedText: 'Yes',
+                    cancelText: 'No',
+                    callback: function()
+                        {
+                            controller.postRequest('.', {ajax: 'cancel_suggestion', entity_id : answer_id});
+                        }
+                }); 
+            });
+        });
+        
+        $('.canedit').click(function() {
+            answer_id = $(this).data('id');
+            terminology = $(this).data('terminology');
+            jur_id = $(this).data('jurid');
+            qid = $(this).data('qid');
+            return controller.suggestionField.clickEditBt(answer_id,terminology,jur_id,qid,answer_id);
+        });
+        
+        
+        $('.q_action_link').each(function() {
+            $(this).mouseover(function (e) { 
+                $target = $(e.target);
+                questionId = $target.data('id');
+                $('#ahj_actions_'+questionId).show();
+                $('#more_'+questionId).attr('src', '/media/images/more_on.png');
+            }).mouseout(function (e) {
+                $target = $(e.target);
+                questionId = $target.data('id'); 
+                p =  $target.position();
+                l = p.left ;
+                t = p.top ;
+                startX = e.pageX ;        
+                startY = e.pageY ;
+                //alert($target.width());
+                //alert(l);alert(t);alert(startX);alert(startY);
+                if ( (startX > l && startX < l+ 150) && ( t+$target.height()-5 < startY && startY < t+100 +$target.height()) ) {} else{
+                    //alert(123);            
+                    $('#ahj_actions_'+questionId).hide();
+                    $('#more_'+questionId).attr('src', '/media/images/more_off.png');
+                }
+            });       
+         });
+         
+         $('.ahj_action_flyout').mouseover(function (){
+             qid = $(this).data('id');
+             $('#ahj_actions_'+qid).show();
+            $('#more_'+qid).attr('src', '/media/images/more_on.png');
+         });
+         
+         $('.ahj_action_flyout').mouseout(function (){
+             qid = $(this).data('id');
+             $('#ahj_actions_'+qid).hide();
+            $('#more_'+qid).attr('src', '/media/images/more_off.png');
+         });
+    });
+
+    function show_hide_vote_confirmation(id)
+    {
+        $('#vote_confirmation_'+id).fadeIn(1000, function() {
+                $('#vote_confirmation_'+id).fadeOut(8000, function () {
+                          
+                });                
+            });            
+    }
+
+    
+    function send_approval(entity_id)
+    {   //alert('send_approval' + entity_id);
+        $('#approve_this_value_'+entity_id).attr('disabled','disabled');
+        controller.postRequest('.', {ajax: 'approve_suggestion', entity_id : entity_id});
+        return false;
+    }
+    
+    function confirm_rejected(entity_id, value_terminology)
+    {
+            controller.showConfirm({
+                title: 'Reject this '+value_terminology+'?',
+                icon: 'question_mark.jpg',
+                message: 'Your vote will confirm this '+value_terminology+' as false and close voting.<br/>Are you sure you want to reject this '+value_terminology+'?',
+                proceedText: 'Yes',
+                cancelText: 'Cancel',
+                callback: function(){
+                    controller.postRequest('.', {ajax: 'vote', vote: 'down', entity_name: 'requirement', entity_id: entity_id, confirmed:'yes'});                     
+                }
+            });  
+        return false;
+    } 
+    
+    function process_ahj_post_pageload_data(data) {
+        process_ahj_questions_messages(data);                                     
+        process_ahj_actions(data);           
+        process_ahj_comments(data);      
+        process_ahj_answers_votes(data);    
+        process_ahj_top_contributors(data);        
+        process_ahj_qirks(data);   
+        process_ahj_user_favorites(data);  
+        process_ahj_answers_attachments(data);              
+    }  
+     
+    function process_ahj_qirks_user_favorites(data) {      
+        process_ahj_qirks(data);   
+        process_ahj_user_favorites(data);  
+           
+    }     
+    
+    function process_ahj_answers_attachments(data) {
+
+        answers_attachments = data['answers_attachments'];
+        
+        for (var answer_id in answers_attachments)
+        {
+            answer_attachment = answers_attachments[answer_id];
+            html_str = "<div style='padding-top:5px;'><div>";
+            html_str += "<a href='/media"+answer_attachment['file_upload']+"' target=_blank><img width='48' alt='pdf_files' src='/media/images/pdf.png'></a>";
+            html_str += "</div><div style='text-align: left;'>";
+            html_str += "<a href='/media"+answer_attachment['file_upload']+"' target=_blank>"+answer_attachment['file_name']+"</a>";
+            html_str += "</div>";
+        
+            $('#attachment_'+answer_id).html(html_str);
+            $('#attachment_'+answer_id).show();
+        }
+                                                                               
+        return false;
+    }           
+    
+    function process_ahj_qirks(data)
+    {
+        quirkcount = data['quirk_number_of_questions'];
+        $('#quirkcount').html(quirkcount);
+    }
+    
+    function process_ahj_user_favorites(data)
+    {
+        user_favorites_count = data['user_number_of_favorite_fields'];
+        $('#favfieldscount').html(user_favorites_count);
+    }
+       
+    function process_ahj_answers_headings(data) {
+
+        answers_headings = data['answers_headings'];
+        
+        for (var answer_id in answers_headings)
+        {
+            answer_heading = answers_headings[answer_id];
+        
+            $('#suggestion_header_'+answer_id).html(answer_heading);
+            $('#suggestion_header_'+answer_id).show();
+        }
+                                                                               
+        return false;
+    }           
+    
+    
+    function process_ahj_top_contributors(data)
+    {
+        $('#top-contributor').html(data['top_contributors']);
+        return false;
+    }
+    function process_ahj_answers_votes(data) {
+        //alert('process_ahj_voting');
+        // answer_id, can_vote_up, total_up_votes, down_vote_last, can_vote_down, total_down_votes, last_down_vote_date
+        answers_votes = data['answers_votes'];
+        
+        for (var answer_id in answers_votes)
+        {
+            answer_votes = answers_votes[answer_id];
+            $('#up_vote_num_'+answer_id).html(answer_votes['total_up_votes']);  //alert(answer_votes['total_up_votes'])           
+            $('#down_vote_num_'+answer_id).html(answer_votes['total_down_votes']); //alert(answer_votes['total_down_votes'])
+            
+            if (parseInt(answer_votes['total_up_votes']) > 0 || parseInt(answer_votes['total_down_votes']) > 0)
+                $('#edit_btn_'+answer_id).attr('title', 'Voting in progress.  You can no longer edit your suggestion.');
+                $('#cancel_btn_'+answer_id).attr('title', 'Voting in progress.  You can no longer cancel your suggestion.');
+                
+            if (answer_votes['down_vote_last'] > 0)
+                $('#down_vote_'+answer_id).addClass('last_down_votes need_down_tip');
+                                        
+            //alert(answer_id + answer_votes['login_user_last_vote']);
+            if (answer_votes['login_user_last_vote'] === 'up')
+            {   
+                $('#up_vote_'+answer_id).addClass('cannot_vote');
+                $('#voteup_'+answer_id).addClass('disabled');    
+                $('#voteup_'+answer_id).removeClass('canvoteup');    
+
+                $('#down_vote_'+answer_id).removeClass('cannot_vote');                   
+                $('#votedown_'+answer_id).removeClass('disabled');   
+                $('#votedown_'+answer_id).addClass('canvotedown');                                                            
+            }
+            else
+            {
+                $('#up_vote_'+answer_id).removeClass('cannot_vote');
+                $('#voteup_'+answer_id).removeClass('disabled');    
+                $('#voteup_'+answer_id).addClass('canvoteup');    
+
+                $('#down_vote_'+answer_id).addClass('cannot_vote');                   
+                $('#votedown_'+answer_id).addClass('disabled');   
+                $('#votedown_'+answer_id).removeClass('canvotedown');                                
+
+                if (answer_votes['down_vote_last'] > 0)
+                {
+                    $('#down_vote_'+answer_id).removeClass('cannot_vote');  
+                    $('#down_vote_'+answer_id).addClass('last_down_votes need_down_tip');
+                }
+                else
+                    $('#down_vote_'+answer_id).addClass('cannot_vote');                        
+                 
+            }
+        }
+                             
+        return false;
+    }
+    
+    function process_ahj_comments(data) {
+        answers_comments = data['answers_comments'];
+        for (var answer_id in answers_comments)
+        {
+            answer_comment = answers_comments[answer_id];
+            var comment_text = '';
+            if (parseInt(answer_comment['comment_total']) == 0)
+                comment_text = "Add a comment";
+            else 
+            {
+                comment_text = answer_comment['comment_total'] + " comments" ;
+                if (parseInt(answer_comment['new_comment_total']) != parseInt(answer_comment['comment_total']))
+                    comment_text = comment_text + " (* " + answer_comment['new_comment_total'] + " new)";
+            }
+         
+            $('#answer_comment_'+answer_id).html(comment_text);    
+            
+        }
+                                       
+        return false;
+    }    
+    
+    function process_ahj_votes_html(data) {
+        answers_votes = data['answers_votes_html'];
+        for (var answer_id in answers_votes)
+        {
+            answer_votes = answers_votes[answer_id];
+            if (answer_votes != '')
+            {   //alert(answer_votes);
+                $('#answer_vote_'+answer_id).html(answer_votes);
+            } 
+            
+        }
+                                       
+        return false;
+    }        
+    
+    function process_ahj_action_html(data) {
+
+        questions_actions = data['questions_action_html'];
+        
+        for (var question_id in questions_actions)
+        {
+            if (questions_actions[question_id] != '')
+            {
+                $('#q_actions_'+question_id).html(questions_actions[question_id]);
+            }
+        }
+                                                                               
+        return false;
+    }                
+
+    
+    function process_ahj_actions(data) {
+        var category = '{{category}}';
+        questions_actions = data['questions_actions'];
+        quirk_questions = questions_actions['quirk_questions'];
+        favorite_questions = questions_actions['favorite_questions'];
+        
+        for (var i=0;i<quirk_questions.length;i++)
+        {
+            if (category != 'quirks')
+                $('#quirk_'+quirk_questions[i]).html('Added to quirks');   
+        }
+ 
+        for (var i=0;i<favorite_questions.length;i++)
+        {
+            if (category != 'favorite_fields')
+                $('#favorite_field_'+favorite_questions[i]).html('Added to favorite fields');   
+        }
+                                                                               
+        return false;
+    } 
+    
+    function process_ahj_questions_messages(data) {
+
+        questions_messages = data['questions_messages'];
+        
+        for (var question_id in questions_messages)
+        {
+            if (questions_messages[question_id] != '')
+            {
+                $('#question_messages_'+question_id).html("<div class='cssCell' style='padding:5px;'>"+questions_messages[question_id]+"</div>");
+                $('#question_messages_'+question_id).show();
+            }
+        }
+                                                                               
+        return false;
+    }                
+
+    function display_tooltip(anchor_div, message)
+    {
+        message = "<div class='black_tooltip'>"+message+"</div>";
+        controller.showInfo({target: '#'+anchor_div, content: message});
+     
+        return false;
+    }
+    
+    $(document).ready(function() {
+
+        $(".cancel_btn").tooltip({track: true});
+        $(".edit_btn").tooltip({track: true});
+
+        $("#create_account_a").click(function (){
+            controller.postRequest('/account/', {ajax: 'create_account'}); 
+            return false;
+        });
+        
+        $("#form_sign_in_submit_button").click(function (){
+            controller.submitForm('#form_sign_in');
+            return false;
+        });
+    });
+</script>
+{% endblock %}

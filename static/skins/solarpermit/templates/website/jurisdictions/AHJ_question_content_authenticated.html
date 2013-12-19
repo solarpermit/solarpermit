@@ -1,13 +1,13 @@
 {# added distinction to id, in order prevent duplicates -RG #}    
-    <div  class="qasv_content {% if is_print == True %}{% else %}need_tooltip{% endif %}" id="child_of_div_{{this_question.id}}" data-id="{{this_question.id}}" data-paids="{{pending_editable_answer_ids}}">
+    <div  class="qasv_content {% if is_print == True %}{% else %}need_tooltip{% endif %}" id="child_of_div_{{this_question.id}}" data-id="{{this_question.id}}" data-paids="{{pending_editable_answer_ids}}" data-jurid="{{jurisdiction.id}}">
 
         {% if can_still_add == True %}
-        <div class="label" title="{{terminology}}" data-icon="Y" {% if is_print == True %} {% else %}onClick="controller.suggestionField.clickAddLabel({{jurisdiction.id}}, {{this_question.id}});" {% endif %}>        
+        <div class="label"  title="{{terminology}}" data-icon="Y" {% if is_print == True %} {% else %}onClick="controller.suggestionField.clickAddLabel({{jurisdiction.id}}, {{this_question.id}});" {% endif %}>        
             <span style="float:left;visibility:visible;display:none;padding-right:5px" id="edit_question_{{this_question.id}}" {% if is_print == True %} {% else %}onmouseover="display_tooltip('edit_question_{{this_question.id}}', '{{add_btn_value}}')" {% endif %}  ><img width="10" src="/media/images/edit.png" alt="edit" ></span>{{question_label}}
             {% if question_label[-1] != '?' %}{% endif %}
 
         {% else %}
-        <div class="label" title="{{terminology}}" data-icon="N">        
+        <div class="label"  title="{{terminology}}" data-icon="N">        
             <span style="float:left;visibility:visible;display:none;padding-right:5px" id="edit_question_{{this_question.id}}" {% if is_print == True %} {% else %}onmouseover="display_tooltip('edit_question_{{this_question.id}}', 'Sorry, you have already provided an answer.')" {% endif %} ><img width="10" src="/media/images/edit.png"  alt="edit" ></span>{{question_label}}
             {% if question_label[-1] != '?' %}{% endif %} 
         {% endif %}
@@ -30,10 +30,11 @@
             {% if show_add_button == False %}
    
             <div id="qa_{{this_question.id}}_add" class="suggestion_edit_box">
-                <form id="form_{{this_question.id}}" name="name_{{this_question.id}}" action="." onSubmit="return controller.submitForm('#form_{{this_question.id}}');" method="post" accept-charset="utf-8">
+                <form id="form_{{this_question.id}}" name="name_{{this_question.id}}" action="."  method="post" accept-charset="utf-8"><!--onSubmit="return controller.submitForm('#form_{{this_question.id}}');"-->
                     <input type="hidden" name="ajax" value="suggestion_submit" />
                          <input type="hidden" name="jurisdiction_id" value="{{jurisdiction.id}}" />
                          <input type="hidden" name="question_id" value="{{this_question.id}}" />   
+  
           
                 <div id="qa_{{this_question.id}}_fields">    
                 
@@ -86,7 +87,7 @@
                                     <div class="edit_btn" id="edit_btn_{{answer_obj.id}}" title = "{{answer.get('edit_msg')}}"  >
                                     
                                     {% if answer.get('can_edit') %} 
-                                    <input class="editbt field_mo_l1" id="edit_button_{{answer_obj.id}}" type="button"  value="Edit" onClick="return controller.suggestionField.clickEditBt('{{answer_obj.id}}','{{terminology}}','{{jurisdiction.id}}','{{this_question.id}}','{{answer_obj.id}}');" >
+                                    <input class="editbt canedit field_mo_l1" id="edit_button_{{answer_obj.id}}" type="button"  value="Edit" data-answerid="{{answer_obj.id}}" data-terminology="{{terminology}}" data-jurid="{{jurisdiction.id}}" data-qid="{{this_question.id}}"  >
                                     
                                     {% else %}
                                     <span class="editbt disabled field_mo_l1"></span>
@@ -112,6 +113,11 @@
                                     {% set template = 'website/jurisdictions/suggestion_display_template/'+this_question.display_template %}
                                     {% include template %}
                                 {% endif %}
+                                
+                                 {% if this_question.support_attachments | int == 1 %}
+                                    {% set attachments = answer.get('attachments') %}
+                                    {% include 'website/jurisdictions/suggestion_display_template/file_uploading_display.html' %}                       
+                                 {% endif %}                                  
                             </div>
                         
                             {% if is_print == True and answer_obj.approval_status != 'A' %}
@@ -124,25 +130,14 @@
                                     <a class="comments need_history need_history_dialog" data-id="{{answer_obj.id}}" id="validation_history_{{answer_obj.id}}" href="javascript:void(0);" title="" >Validation history</a> - 
                                     <a class="comments need_comment" href="#" data-id="{{answer_obj.id}}" data-jid="{{jurisdiction.id}}">
                                         {{answer.get('comment_text')}}
-                                     </a>
-                         {% if answer_obj.get_attachment_num() > 0 %}
-                         - <a id="attachement_link" class="comments" href="javascript:void(0);" onClick="controller.postRequest('.', {ajax: 'open_attachement', answer_id: '{{answer_obj.id}}'}); return false;">Attachments ({{answer_obj.get_attachment_num()}})</a>
-                         <div id="qa_{{answer_obj.id}}_attachements" class="suggestion_edit_box">
-                         </div>
-                         {% endif %}                                     
+                                     </a>                                    
                                 </div>  
                             {% else %}                    
                             
                                 <div class="valhis">
-                                    <a href="javascript:void(0);" class="comments" onClick="controller.postRequest('/jurisdiction_comment/', {ajax: 'open_jurisdiction_comment', jurisdiction_id: {{jurisdiction.id}}, entity_id: {{answer_obj.id}}, entity_name: 'AnswerReference'}); return false;">
+                                    <a href="#" class="comments" onClick="controller.postRequest('/jurisdiction_comment/', {ajax: 'open_jurisdiction_comment', jurisdiction_id: {{jurisdiction.id}}, entity_id: {{answer_obj.id}}, entity_name: 'AnswerReference'}); return false;">
                                         {{answer.get('comment_text')}}
-                                    </a> 
-                                     {% if answer_obj.get_attachment_num() > 0 %}
-			                         -    
-			                          <a id="attachement_link" class="comments" href="javascript:void(0);" onClick="controller.postRequest('.', {ajax: 'open_attachement', answer_id: '{{answer_obj.id}}'}); return false;">Attachments ({{answer_obj.get_attachment_num()}})</a>
-			                         <div id="qa_{{answer_obj.id}}_attachements" class="suggestion_edit_box">
-			                         </div>
-			                         {% endif %} 
+                                    </a>
                                 </div>
                             {% endif %}
                         
@@ -152,11 +147,11 @@
                     {% if  is_print ==True  %}
                         <span class="suggestion_right">&nbsp;</span>
                     {% else %}
-                        <span class="suggestion_right">
+                        <span class="suggestion_right" >
                             <span class="vote_panel">                    
                                 {% if answer.get('can_vote_up') == 'true' %}
                                     {{answer.get('total_up_votes')}}
-                                    <input type="button" id="voteup_{{answer_obj.id}}" name="voteup_{{answer_obj.id}}" value="Approve" class="voteup" onClick="set_entity('{{answer_obj.id}}', '{{terminology}}');vote_up('{{answer.get('can_vote_down')}}');return false;">
+                                    <input type="button" id="voteup_{{answer_obj.id}}" name="voteup_{{answer_obj.id}}" value="Approve" class="voteup canvoteup" data-answerid="{{answer_obj.id}}" data-terminology="{{terminology}}" data-canvotedown="{{answer.get('can_vote_down')}}">
                                 {% else %}
                                     <span class="cannot_vote">
                                     {{answer.get('total_up_votes')}}
@@ -165,7 +160,7 @@
                                 {% endif %}
      
                                 {% if answer.get('can_vote_down') == 'true' %}    
-                                    <input type="button" id="votedown_{{answer_obj.id}}" name="votedown_{{answer_obj.id}}" value=" " class="votedown" onClick="set_entity('{{answer_obj.id}}', '{{terminology}}');vote_down('{{answer.get('can_vote_up')}}');return false;" title="Reject">
+                                    <input type="button" id="votedown_{{answer_obj.id}}" name="votedown_{{answer_obj.id}}" value=" " class="votedown canvotedown" data-answerid="{{answer_obj.id}}" data-terminology="{{terminology}}" data-canvoteup="{{answer.get('can_vote_up')}}" title="Reject">
                                     
                                     {% if answer.get('down_vote_last') | int > 0 %}
                                         <span class="last_down_votes need_down_tip" id="down_vote_last_{{answer_obj.id}}"  data-last="{{answer.get('down_vote_last')}}" data-date="{{answer.get('last_down_vote_date')}}" title="{{terminology}}" >
@@ -210,7 +205,7 @@
                                  <input type="hidden" name="jurisdiction_id" value="{{jurisdiction.id}}" />
                                  <input type="hidden" name="question_id" value="{{this_question.id}}" /> 
                                  <input type="hidden" name="answer_id" value="{{answer_obj.id}}" />                          
-                            
+                  
                             <div id="qa_{{answer_obj.id}}_edit_fields">    
 
                             </div>
@@ -245,11 +240,11 @@
     
                            
             <div id="qa_{{this_question.id}}_add" class="suggestion_edit_box">
-                <form id="form_{{this_question.id}}" name="name_{{this_question.id}}" action="." onSubmit="return controller.submitForm('#form_{{this_question.id}}');" method="post" accept-charset="utf-8">
+                <form id="form_{{this_question.id}}" name="name_{{this_question.id}}" action="."  method="post" accept-charset="utf-8"><!--onSubmit="return controller.submitForm('#form_{{this_question.id}}');"-->
                     <input type="hidden" name="ajax" value="suggestion_submit" />
                          <input type="hidden" name="jurisdiction_id" value="{{jurisdiction.id}}" />
                          <input type="hidden" name="question_id" value="{{this_question.id}}" />   
-          
+           
                 <div id="qa_{{this_question.id}}_fields">    
                 
                 </div>

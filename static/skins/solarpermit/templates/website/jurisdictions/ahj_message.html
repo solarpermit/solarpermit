@@ -1,0 +1,17 @@
+{% extends "medium_modal_dialog.html" %}
+
+{% block modal_dialog_title %}{% endblock %}
+{% block body_modal_dialog %}
+			{% if not request.user.is_authenticated() %}
+					<p class="ahj_reminder_message" >	
+						See missing or incorrect information? You can mouse over a field and click the blue pencil to add or edit the information as a registered user. Don't have an account yet? <a href='' id="register" >Register</a> for one today!.		
+					</p>
+			{% else %}
+
+
+			{% endif %}					
+{% endblock %}
+
+{% block modal_dialog_action %}
+	<input type="button" id="ahj_message_close" class="mainbutton" value="Close">
+{% endblock %}

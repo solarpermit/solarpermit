@@ -1,7 +1,7 @@
 <div class="modal_dialog">
 	<div class="modal_dialog_top_block">
 		<div class="modal_dialog_title">{% block modal_dialog_title %}{% endblock %}</div>
-		<div class="modal_dialog_close"><a href="#" onclick="$.fancybox.close();return false;">&nbsp;&nbsp;&nbsp;x&nbsp;&nbsp;&nbsp;</a></div>
+		<div class="modal_dialog_close"><a id="fancybox_close" href="#" >&nbsp;&nbsp;&nbsp;x&nbsp;&nbsp;&nbsp;</a></div>
 	</div>
 	{% block modal_dialog_form_top %}{% endblock %}
 	<div class="modal_dialog_info_block" >
@@ -20,4 +20,3 @@
 	{% block modal_dialog_form_bottom %}{% endblock %}
 </div>
 <div id="simple_popup_div_on_dialog" style="position:absolute;left:200px;top:200px;width:300px;height:200px;display:none;z-index:3000;display:none;visibility:visible;">User Profile</div> 
-

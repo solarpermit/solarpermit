@@ -11,21 +11,21 @@
 
 	
 	{% include "website/fancybox_stylesheets.html" %}
-	<link rel="stylesheet" type="text/css" href="/media/style/main.css" />
-	<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css" />
-	<link rel="stylesheet" type="text/css" href="/media/style/jquery-ui-1.10.1.custom.css" />
-	<link href="/media/style/fileuploader.css" rel="stylesheet" type="text/css" />	
+	<link rel="stylesheet" type="text/css" href="/media/style/main.css{{SOLARPERMIT_VERSION}}" />
+	<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css{{SOLARPERMIT_VERSION}}" />
+	<link rel="stylesheet" type="text/css" href="/media/style/jquery-ui-1.10.1.custom.css{{SOLARPERMIT_VERSION}}" />
+	<link href="/media/style/fileuploader.css{{SOLARPERMIT_VERSION}}" rel="stylesheet" type="text/css" />	
 	
 	
-	<script type="text/javascript" src="/media/js/jquery-1.7.2.min.js"></script>	
-	<script type="text/javascript" src="/media/js/jquery.validate.js"></script>
-	<script type="text/javascript" src="/media/js/additional-methods.js"></script>
-	<script type="text/javascript" src="/media/js/jquery.simplemodal.js"></script>
-	<script type="text/javascript" src="/media/js/jquery.jscroll.custom.js"></script>	
-	<script type="text/javascript" src="/media/js/controller.js"></script>
-	<script type="text/javascript" src="/media/js/jquery.dajax.core.js"></script>
-	<script type="text/javascript" src="/media/js/jquery-ui-1.10.1.custom.min.js"></script>
-	<script type='text/javascript' src="/media/js/fileuploader.js"></script>	
+	<script type="text/javascript" src="/media/js/jquery-1.7.2.min.js{{SOLARPERMIT_VERSION}}"></script>	
+	<script type="text/javascript" src="/media/js/jquery.validate.js{{SOLARPERMIT_VERSION}}"></script>
+	<script type="text/javascript" src="/media/js/additional-methods.js{{SOLARPERMIT_VERSION}}"></script>
+	<script type="text/javascript" src="/media/js/jquery.simplemodal.js{{SOLARPERMIT_VERSION}}"></script>
+	<script type="text/javascript" src="/media/js/jquery.jscroll.custom.js{{SOLARPERMIT_VERSION}}"></script>	
+	<script type="text/javascript" src="/media/js/controller.js{{SOLARPERMIT_VERSION}}"></script>
+	<script type="text/javascript" src="/media/js/jquery.dajax.core.js{{SOLARPERMIT_VERSION}}"></script>
+	<script type="text/javascript" src="/media/js/jquery-ui-1.10.1.custom.min.js{{SOLARPERMIT_VERSION}}"></script>
+	<script type='text/javascript' src="/media/js/fileuploader.js{{SOLARPERMIT_VERSION}}"></script>	
 	{% block forejs %}{% endblock %}
 	<script type="text/javascript">
 		var js_csrf = '{{csrf_token}}';

@@ -1,12 +1,12 @@
 {% for organization in organizations %}
 	<div><table><tr>
 		<td style="width: 30px;"><input type="radio" class="organization_radio unbind" name="organization_select" data-org-name="{{organization.name}}" value="{{organization.id}}"></td>
-		<td style="width: 200px;"><a href="#" onclick="controller.postRequest('/organization/', {ajax: 'choose_org_details',orgid: {{organization.id}}}); return false;">{{organization.name}}</a></td>
+		<td style="width: 200px;"><a href="#" class="org" data-orgid="{{organization.id}}" >{{organization.name}}</a></td>
 		<td>{% if organization.create_datetime %}{{organization.create_datetime.strftime('%m/%d/%y %I:%M%p')}}{% endif %}</td>
 	</tr></table></div>
 {% endfor %}
 {% if organizations|length > 0 %}
 	<div>
-		<span id="org_page_nav" class="endlessnav"><a href="/organization/search/?{{next_page_param}}{{search_param}}{{sort_dir}}">Next Page</a></span>
+		<span id="org_page_nav" class="endlessnav"><a href="/organization/search/?{{next_page_param}}{{search_param}}{{sort_dir}}{{sort_by_date_added_dir}}">Next Page</a></span>
 	</div>
 {% endif %}

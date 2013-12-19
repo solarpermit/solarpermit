@@ -18,7 +18,7 @@
 		Jurisdictions in {{state_long_name}}
 {% elif jurisdiction_search_str != '' %}
 		<span style="padding-left: 20px;color: #333333;font-family:'Times New Roman',Times,serif;font-size: 24px;font-weight: normal;">
-			<input name="search_back" id="search_back" type="image" onClick="history.back();"  src="/media/images/Back.png" title="Back" alt="Back" />&nbsp;&nbsp;
+			<input name="search_back" id="search_back" type="image"   src="/media/images/Back.png" title="Back" alt="Back" />&nbsp;&nbsp;
     		{% if search_by == 'search_by_zip' %}Jurisdictions near {% else %}Results for {% endif %} "{{primary_search_str}}"
     	</span>
 {% endif %}
@@ -35,10 +35,10 @@
 				<tr>
 					<td style="width:10px;padding-left:10px"></td>
 					<td style="width:300px;">
-						<p id="id_sort_name" class="sort-up"><a id='name' href='/jurisdiction/search/' class="header_link" onClick="return sort('name');" >Name</a></p>
+						<p id="id_sort_name" class="sort-up"><a id='name' href='/jurisdiction/search/' class="header_link">Name</a></p>
 					</td>
-					<td style="width:200px;text-align:left"><p id="id_sort_last"><a href="/jurisdiction/search/" onClick="return sort('last');" class=header_link>Last updated</a></p></td>
-					<td style="width:200px;text-align:left"><p id="id_sort_update"><a href="/jurisdiction/search/" onClick="return sort('updated');" class=header_link>Updated by</a></p></td>
+					<td style="width:200px;text-align:left"><p id="id_sort_last"><a href="/jurisdiction/search/" class="header_link">Last updated</a></p></td>
+					<td style="width:200px;text-align:left"><p id="id_sort_update"><a href="/jurisdiction/search/" class="header_link">Updated by</a></p></td>
                     <td style="width:100px;font-style:italic;text-align:left" >{% if search_by == 'search_by_zip' %}Distance (miles){% endif %}</td>
                     <td style="width:50%;font-style:italic;text-align:left" ></td>
 				</tr>
@@ -72,11 +72,11 @@
 						document.getElementById('sort_by').value = 'name'
 					} else if (sort_by == 'last'){
 						$('#id_sort_last').addClass('sort-down');
-						$('#id_sort_last').css('background-position', '85px center');
+						//$('#id_sort_last').css('background-position', '85px left');
 						document.getElementById('sort_by').value = 'last'
 					} else {
 						$('#id_sort_update').addClass('sort-down');
-						$('#id_sort_update').css('background-position', '85px center');
+						//$('#id_sort_update').css('background-position', '85px left');
 						document.getElementById('sort_by').value = 'updated'
 					}
 				}else{
@@ -87,11 +87,11 @@
 						document.getElementById('sort_by').value = 'name'
 					} else if (sort_by == 'last'){
 						$('#id_sort_last').addClass('sort-up');
-						$('#id_sort_last').css('background-position', '85px center');
+						//$('#id_sort_last').css('background-position', '85px left');
 						document.getElementById('sort_by').value = 'last'
 					} else {
 						$('#id_sort_update').addClass('sort-up');
-						$('#id_sort_update').css('background-position', '85px center');
+						//$('#id_sort_update').css('background-position', '85px left');
 						document.getElementById('sort_by').value = 'updated'
 					}
 				}
@@ -109,6 +109,29 @@
 						controller.submitForm('#jurisdiction_search');
 					}
 				});
+				$('#id_sort_name #name').click(function(){
+					return sort('name');
+				});
+				$('#id_sort_last a').click(function(){
+					return sort('last');
+				});
+				$('#id_sort_update a').click(function(){
+					return sort('updated');
+				});
+				
+				$('.show_user_profile').mouseover(function(){
+					user_id = $(this).data('userid');
+					item_id = $(this).data('itmeid');
+					controller.postRequest('/account/', {ajax: 'user_profile_short', user_id: user_id, unique_list_id: item_id  });
+				});
+				
+				$('.show_user_profile').mouseover(function(){
+					document.getElementById('simple_popup_div_on_page').style.display='none';
+				});
+                $('#search_back').click(function(){
+                    history.back();
+                });     
+                                        
 			});
 		</script>
 {% endblock %}

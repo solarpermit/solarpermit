@@ -1,4 +1,5 @@
-{% include 'website/form_fields/common_form_utils.js' %}
+controller.setUpFormSubmit('#form_{{question_id}}', '#save_{{question_id}}');
+controller.setUpFormSubmit('#form_edit_{{answer_id}}', '#save_edit_{{answer_id}}');
 
 var fee_flat_rate_html = "<div class='field'>$ <input type='text' name='field_fee_flat_rate_xxx_yyy' id='{{form_id}}_field_fee_flat_rate_xxx_yyy' value='' class='required number' style='width:50px' maxLength='50' ></div><div class='field_help_text' >Enter the flat rate fee.</div>      ";
 var fee_percentage_of_total_system_cost_html = "<div class='field'><input type='text' name='field_fee_percentage_of_total_system_cost_xxx_yyy' id='{{form_id}}_field_fee_percentage_of_total_system_cost_xxx_yyy' value='' required number' style='width:50px' maxLength='50' > %</div><div class='field'><input type='checkbox' name='field_fee_percentage_of_total_system_cost_cap_xxx_yyy' id='{{form_id}}_field_fee_percentage_of_total_system_cost_cap_xxx_yyy' value='yes' >This cost is capped at $ <input type='text' name='field_fee_percentage_of_total_system_cost_cap_amt_xxx_yyy' id='{{form_id}}_field_fee_percentage_of_total_system_cost_cap_amt_xxx_yyy' value='' class='number' style='width:50px' maxLength='50' ></div><div class='field_help_text' >Enter the percentage of total system, and the cap amount, if necessary.</div>"; 
@@ -188,20 +189,40 @@ function change_fee_details(fee_type_id, fee_item_id, value)
 	document.getElementById('fee_details_'+fee_type_id+'_'+fee_item_id).innerHTML = html_str;	
 }
 
+
+var submitCount_q_{{question_id}} = 0;
+var submitCount_a_{{answer_id}} = 0;
+
 $('#save_{{question_id}}').click(function(event) {
-	if (validate_fee_form())
-		return submitHandler(event);
-	else
-		return false;
+	if (++submitCount_q_{{question_id}} == 1)
+	{	
+		if (validate_fee_form())
+		{
+			var success = controller.submitHandler(event, submitCount_q_{{question_id}});	
+			if (success == false)
+				submitCount_q_{{question_id}} = 0;
+		}
+	}
+
+	return false;
 });
 
-$('#save_edit_{{answer_id}}').click(function(event) 
-{
-	if (validate_fee_form())
-		return submitHandler(event);
-	else
-		return false;
+$('#save_edit_{{answer_id}}').click(function(event) {
+	if (++submitCount_a_{{answer_id}} == 1)
+	{
+		if (validate_fee_form())
+		{
+			var success = controller.submitHandler(event, submitCount_a_{{answer_id}});	
+			if (success == false)
+				submitCount_a_{{answer_id}} = 0;
+		}
+	}
+	
+	return false;
 });
+
+
+
 
 function validate_fee_form()
 {	

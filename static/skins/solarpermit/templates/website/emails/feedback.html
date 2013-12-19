@@ -1,13 +1,15 @@
-<p>{{user.username}} has sent the following feedback about SolarPermit.org:</p>
+<p>{% if username != '' %} {{username}} {% else %} {{first_name}} {{last_name}} {% endif %} has sent the following feedback about SolarPermit.org:</p>
 
 
-<p>Full Name: {{user.first_name}} {{user.last_name}}</p>
+<p>Full Name: {{first_name}} {{last_name}}</p>
 
-<p>Username: {{user.username}}</p>
+{% if username != '' %}
+<p>Username: {{username}}</p>
+{% endif %}
 
-<p>Email: {{user.email}}</p>
+<p>Email: {{user_email}}</p>
 
-<p>Title: {{user_detail.title}}</p>
+<p>Title: {{title}}</p>
 
 <p>Organization(s): {{user_orgs}}</p>
 

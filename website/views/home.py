@@ -21,11 +21,11 @@ from django.contrib.auth import authenticate, login
 from django.conf import settings
 #from django.contrib.auth.hashers import make_password
 from jinja2 import FileSystemLoader, Environment
-from website.models import UserDetail
+from website.models import UserDetail, JurisdictionRating, Jurisdiction
 import hashlib
 
 from website.utils.messageUtil import MessageUtil,add_system_message,get_system_message
-
+from django.contrib.auth import authenticate, login, logout
 
 def home(request):
     user = request.user
@@ -53,11 +53,23 @@ def home(request):
     message_data = get_system_message(request) #get the message List
     data =  dict(data.items() + message_data.items())   #merge message list to data
     
+    data['recently_updated_jurs'] = JurisdictionRating.recently_updated()
+    
+    data['popular_jurs'] = JurisdictionRating.most_popular()
+    
+    
+        
+    
     
     invitation_key = requestProcessor.getParameter('invitation_key')    
     if invitation_key != '' and invitation_key != None:
         data['action_key'] = 'create_account'
         data['invitation_key'] = invitation_key
+        if user.is_authenticated():
+            logout(request) 
+                       
+        return requestProcessor.render_to_response(request,'website/home.html', data, '')        
+        
         
     action = requestProcessor.getParameter('action')    
     if action != '' and action != None:

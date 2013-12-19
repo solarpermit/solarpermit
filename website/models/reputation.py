@@ -1,5 +1,4 @@
 import datetime
-from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -513,8 +512,8 @@ class Reaction(models.Model):
      
         #print action_data                   
         reaction_obj = Reaction.objects.create(category_id=reaction_category[0].id, action_id=action_obj.id, data=action_obj.data, user_id=user_id, scale=reaction_category[0].points, jurisdiction_id=jurisdiction_id, question_category_id=entity_category_id)
-        contributionHelper = ContributionHelper()
-        contributionHelper.track_contributions(reaction_category[0].points, jurisdiction_id, entity_category_id, user_id)        
+        #contributionHelper = ContributionHelper()
+        #contributionHelper.track_contributions(reaction_category[0].points, jurisdiction_id, entity_category_id, user_id)        
 
 #user's overall rating
 class UserRating(models.Model):
@@ -554,6 +553,67 @@ class OrganizationRating(models.Model):
     class Meta:
         app_label = 'website'
 
+#to support things like most popular jurisdictions in the last 7 days
+class JurisdictionRating(models.Model):
+    RATING_TYPE_CHOICES = (
+        ('V', 'Views - unique views'),
+    )
+    jurisdiction = models.ForeignKey(Jurisdiction, blank=True, null=True, db_index=True)
+    rating_type = models.CharField(choices=RATING_TYPE_CHOICES, max_length=8, blank=True, null=True)
+    rank = models.IntegerField(blank=True, null=True) #starting from 1, top
+    value = models.CharField(max_length=255, blank=True, null=True) #like number of unique views
+    create_datetime = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    modify_datetime = models.DateTimeField(auto_now=True, blank=True, null=True)    
+    class Meta:
+        app_label = 'website'
+    
+    @staticmethod
+    def recently_updated(): #list of jurisdictions recently updated, limited to last 7 days, up to 10
+        #
+        # we really just want the last 10 jurisdictions updated...
+        #
+        # let's refactor this code from 19 lines to 4
+        #
+        '''
+        jurisdiction_ids = {}
+        jurisdictions = []
+        today = datetime.datetime.now()
+        d = datetime.timedelta(days=-8)
+        start_date = today + d
+        excluded_jurs = Jurisdiction.objects.filter(id__in=django_settings.SAMPLE_JURISDICTIONS)
+        actions = Action.objects.filter(action_datetime__gt=start_date).exclude(jurisdiction__in=excluded_jurs).order_by('-action_datetime')
+        for action in actions:
+            try:
+                jurisdiction_ids[action.jurisdiction.id]
+            except:
+                jurisdiction_ids[action.jurisdiction.id] = True
+        count = 0
+        for id in jurisdiction_ids:
+            jurisdiction = Jurisdiction.objects.get(id=id)
+            jurisdictions.append(jurisdiction)
+            count += 1
+            if count >= 10:
+                break
+        '''
+        
+        # take advantage of lazy querysets and do it smartly
+        jurisdictions = Jurisdiction.objects.filter(last_contributed_by__gt=0)
+        for sample in django_settings.SAMPLE_JURISDICTIONS:
+            jurisdictions = jurisdictions.exclude(id=sample)
+        jurisdictions = jurisdictions.order_by('-last_contributed')[:10]
+        
+        return jurisdictions
+        
+    @staticmethod
+    def most_popular(): #list of jurisdictions with most unique user views, limited to last 7 days, up to 10
+        #this assumes cron for "manage.py most_popular" has been run daily
+        jurisdictions = []
+        excluded_jurs = Jurisdiction.objects.filter(id__in=django_settings.SAMPLE_JURISDICTIONS)        
+        jurisdiction_ratings = JurisdictionRating.objects.filter(rating_type='V').exclude(jurisdiction__in=excluded_jurs).order_by('rank')
+        for jurisdiction_rating in jurisdiction_ratings:
+            jurisdictions.append(jurisdiction_rating.jurisdiction)
+        return jurisdictions
+ 
 class JurisdictionContributor(models.Model):
     jurisdiction = models.ForeignKey(Jurisdiction, blank=True, null=True, db_index=True)
     question_category = models.ForeignKey(QuestionCategory, blank=True, null=True, db_index=True) #if null, it is for the overall jurisdiction
@@ -690,7 +750,7 @@ class EntityView(models.Model):
                 unique_view = False
                 entity_view_obj = entity_view_objs[0]
                 entity_view_obj.session_key = session_key
-                entity_view_obj.latest_datetime = datetime.now()
+                entity_view_obj.latest_datetime = datetime.datetime.now()
                 entity_view_obj.save()
             else:
                 # check if this is the case where the user did not log at first, view the page, then logged in. check the session.
@@ -700,17 +760,17 @@ class EntityView(models.Model):
                     unique_view = False                    
                     entity_view_obj = entity_view_objs[0]
                     entity_view_obj.user_id = user_id
-                    entity_view_obj.latest_datetime = datetime.now()
+                    entity_view_obj.latest_datetime = datetime.datetime.now()
                     entity_view_obj.save()                    
                 else:
-                    EntityView.objects.create(entity_name=entity_name, entity_id=entity_id, user_id=user_id, session_key=session_key, latest_datetime=datetime.now())
+                    EntityView.objects.create(entity_name=entity_name, entity_id=entity_id, user_id=user_id, session_key=session_key, latest_datetime=datetime.datetime.now())
         else:               # not logged in
             entity_view_objs = EntityView.objects.filter(entity_name__iexact=entity_name, entity_id__exact=entity_id, session_key__exact=session_key)
             if entity_view_objs:
               
                 unique_view = False
                 entity_view_obj = entity_view_objs[0]
-                entity_view_obj.latest_datetime = datetime.now()
+                entity_view_obj.latest_datetime = datetime.datetime.now()
                 entity_view_obj.save()                
             else:
                 EntityView.objects.create(entity_name=entity_name, entity_id=entity_id, session_key=session_key, latest_datetime=datetime.now())
