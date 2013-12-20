@@ -1,8 +1,9 @@
-solarpermit-1.3.38
+solarpermit-1.3.37
 ===============
 
 Web Based Tool for Tracking Solar Permitting Requirements in The United States
 
+Please see the wiki for additional documentaiton - [https://github.com/solarpermit/solarpermit/wiki](https://github.com/solarpermit/solarpermit/wiki)
 
 Initial Source Release
 ================
