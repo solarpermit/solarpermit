@@ -37,7 +37,10 @@ Install Instructions
         a.  replace "/path/to/software" on line 3.
     B. Change settings... do not edit settings.py, use settings_local.py to
        override
-5. Load SQL to database
+5. Configure Database
+    A. CREATE DATABASE solarpermit;
+    B. ./manage.py syncdb
+    C. ./manage.py migrate website
 6. Restart Apache
       
 Need help?  Have questions?
