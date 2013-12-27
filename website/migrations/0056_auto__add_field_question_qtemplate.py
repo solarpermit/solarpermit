@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'Question.qtemplate'
         db.add_column('website_question', 'qtemplate',
-                      self.gf('django.db.models.fields.related.ForeignKey')(default=0, to=orm['website.Template'], null=True, blank=True),
+                      self.gf('django.db.models.fields.related.ForeignKey')(to=orm['website.Template'], null=True, blank=True),
                       keep_default=False)
 
 

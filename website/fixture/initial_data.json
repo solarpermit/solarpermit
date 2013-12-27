@@ -398,6 +398,47 @@
             "display_order": "3"
 		}
 	},           
+
+        {
+                "model":"website.AnswerChoiceGroup",
+                "pk": 32,
+                "fields":{
+                        "name": "Radio: required, not required"
+                }
+        },
+        {
+                "model":"website.AnswerChoiceGroup",
+                "pk": 33,
+                "fields":{
+                        "name": "Radio: 'Must draw individual modules', N in series in a rectangle allowed"
+                }
+        },
+        {
+                "model":"website.AnswerChoiceGroup",
+                "pk": 34,
+                "fields":{
+                        "name": "Radio: 'Staff has no training in PV solar', Staff has training in PV solar"
+                }
+        },
+        {
+                "model":"website.AnswerChoiceGroup",
+                "pk": 35,
+                "fields":{
+                        "name": "Dropdown: 1-10"
+                }
+        },
+
+        {
+                "model":"website.Template",
+                "pk": 2,
+                "fields":{
+                    "name": "Standard Requirements Template",
+                    "description": "Standard Requirements Template",
+                    "template_type": "RT"
+                }
+        },
+
+
 	{
 		"model": "website.QuestionCategory",
 		"pk":1,
