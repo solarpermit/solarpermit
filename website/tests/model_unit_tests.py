@@ -5,15 +5,13 @@ from website.models.userDetail import UserSearch
 
 
 class ModelUnitTests(unittest.TestCase):
+    def setUp(self):
+        user = User.objects.create_user("testuser", "testuser@testing.solarpermit.org", "testuser")
+        user.save()
+
     def test_user_search(self):
-        return
         user = User.objects.all()[0] #just get 1st user
         entity_id_range = range(1, 11) #1 to 10
-        
-        #delete any previous test data if any
-        user_searches = UserSearch.objects.filter(user=user, entity_name='Jurisdiction', entity_id__in=entity_id_range)
-        for user_search in user_searches:
-            user_search.delete()
         
         for index in entity_id_range:
             user_search = UserSearch(user=user, entity_name='Jurisdiction', entity_id=index)
