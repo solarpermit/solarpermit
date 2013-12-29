@@ -272,7 +272,7 @@ def account(request):
                                 else:
                                  
                                     add_system_message(request, 'success_create_account')
-                                    url = request.META.get('HTTP_REFERER')
+                                    url = request.META.get('HTTP_REFERER') or ''
                                     if '?' in url:
                                         url = url + '&reload=true#registered'                                        
                                     else:

@@ -20,6 +20,10 @@ class NewUserTestCase(TestCase):
                             'password': "qwertyuiop",
                             'verify_password': "qwertyuiop" })
         self.assertEqual(res.status_code, 200)
+        # the request can fail partially, successfully creating the
+        # user object but displaying a python exception message; thus
+        # we check that there is no dialog box
+        self.assertEqual(-1, res.content.find("modal_dialog_message"))
         new_user = User.objects.all()[0]
         self.assertFalse(new_user.is_superuser)
         self.assertFalse(new_user.is_staff)
