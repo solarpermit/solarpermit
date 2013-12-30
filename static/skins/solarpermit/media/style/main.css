@@ -6,7 +6,7 @@ body {
     font-size: 12px;
     font-weight: normal;
     margin: 0;
-    padding: 93px 0 0 0;
+    padding: 0 0 0 0;
     background-color: #FFFFFF;
     min-width: 960px;
 }
@@ -24,9 +24,6 @@ header {
     height: 71px;
     width: 100%;
     min-width: 960px;
-    position: fixed;
-    top: 0;
-    left: 0;
     z-index: 25;
 }
 .logo {
@@ -75,10 +72,7 @@ nav {
     border-top: 1px solid #4a5f71;
     border-bottom: 1px solid #374857;
     height: 30px;
-	width: 100%;
-    position: fixed;
-    top: 71px;
-    left: 0;
+    width: 100%;
     z-index: 24;
     margin: 0;
     padding: 0;
