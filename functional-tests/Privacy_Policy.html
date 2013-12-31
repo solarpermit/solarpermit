@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://solarpermit.org/" />
+<title>Privacy_Policy</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Privacy_Policy</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=create_account_button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>id=launch_privacy_policy</td>
+	<td>Privacy policy</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=launch_privacy_policy</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>//div[@id='secondDialogDiv']/div/div[2]/p[15]</td>
+	<td>In an attempt to provide you with increased value, we may include third party links on our site. These linked sites have separate and independent privacy policies. This Privacy Policy only covers our Site and does not cover any other website. We therefore have no responsibility or liability for the content and activities of these linked sites. Nonetheless, we seek to protect the integrity of our site and welcome any feedback about these linked sites (including if a specific link does not work).</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='secondDialogDiv']/div/div[2]/p[15]</td>
+	<td>In an attempt to provide you with increased value, we may include third party links on our site. These linked sites have separate and independent privacy policies. This Privacy Policy only covers our Site and does not cover any other website. We therefore have no responsibility or liability for the content and activities of these linked sites. Nonetheless, we seek to protect the integrity of our site and welcome any feedback about these linked sites (including if a specific link does not work).</td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=permitting@cleanpowerfinance.com</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=Close</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>
