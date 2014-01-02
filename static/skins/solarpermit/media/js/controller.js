@@ -704,7 +704,7 @@ var controller = new function () {
     	});
     }
     this.suggestionField = {};
-    this.suggestionField.clickEditBt = function(answer_id,terminology,jurisdiction_id,question_id,answer_id){
+    this.suggestionField.clickEditBt = function(answer_id,terminology,jurisdiction_id,question_id){
 	    	if (typeof isPrint != 'undefined' && isPrint){
 	    		return false;
 	    	}
