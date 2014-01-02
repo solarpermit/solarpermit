@@ -21,6 +21,7 @@ from django.contrib.auth import authenticate, login
 from django.conf import settings
 #from django.contrib.auth.hashers import make_password
 from jinja2 import FileSystemLoader, Environment
+from compressor.contrib.jinja2ext import CompressorExtension
 from website.models import UserDetail, JurisdictionRating, Jurisdiction
 import hashlib
 
@@ -188,7 +189,8 @@ def decode_jinga_template(self, request, filename, context={},mimetype=''):
     template_dirs = settings.TEMPLATE_DIRS
     if mimetype == '':
         mimetype = settings.DEFAULT_CONTENT_TYPE
-    env = Environment(loader=FileSystemLoader(template_dirs))
+    env = Environment(loader=FileSystemLoader(template_dirs),
+                      extensions=[CompressorExtension])
         
     request_context = RequestContext(request, context)
     csrf = request_context.get('csrf_token')
