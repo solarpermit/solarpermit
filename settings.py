@@ -188,8 +188,10 @@ INSTALLED_APPS = (
     'djkombu',
     'followit',  
     'sorl.thumbnail',
-    'dajax',    
+    'dajax',
+    'webassets',
     'website',
+    'django_extensions',
     #'debug_toolbar',    
 )
 

@@ -1,0 +1,71 @@
+from webassets import Bundle, register
+
+register('notifybar-css',
+         '/js/notifybar/jquery.notifyBar.css',
+         filter='cssmin',
+         output='notifybar.%(version).css')
+register('fancybox-css',
+         '/media/js/fancybox/helpers/jquery.fancybox-buttons.css',
+         '/media/js/fancybox/helpers/jquery.fancybox-thumbs.css',
+         '/media/js/fancybox/jquery.fancybox.css',
+         filter='cssmin',
+         output='fancybox.%(version).css')
+register('flexcomplete-css',
+         '/media/js/flexcomplete/jquery.flexcomplete.css',
+         filter='cssmin',
+         output='flexcomplete.$(version).css')
+register('fileuploader-css',
+         '/media/style/fileuploader.css',
+         filter='cssmin',
+         output='fileuploader.%(version).css')
+register('jquery-css',
+         '/media/style/jquery-ui-1.10.1.custom.css',
+         '/style/jquery.mobile.css',
+         filter='cssmin',
+         output='jquery.%(version).css')
+register('ahjprint-css',
+         '/media/style/ahjprint.css',
+         filter='cssmin',
+         output='ahjprint.%(version).css')
+register('main-css',
+         '/media/style/main.css',
+         filter='cssmin',
+         output='main.%(version).css')
+
+register('jquery-js',
+         Bundle('/media/js/jquery-1.7.2.min.js',
+                '/media/js/jquery.dajax.core.js',
+                '/media/js/jquery.jscroll.custom.js',
+                '/media/js/jquery.simplemodal.js',
+                '/media/js/jquery-ui-1.10.1.custom.min.js',
+                '/media/js/jquery.validate.js',
+                '/media/js/additional-methods.js',
+                filters='closure',
+                output='jquery.%(version).js'))
+register('fancybox-js',
+         Bundle('/media/js/fancybox/helpers/jquery.fancybox-buttons.js',
+                '/media/js/fancybox/helpers/jquery.fancybox-media.js',
+                '/media/js/fancybox/helpers/jquery.fancybox-thumbs.js',
+                '/media/js/fancybox/jquery.fancybox.js',
+                '/media/js/fancybox/jquery.mousewheel-3.0.6.pack.js',
+                filters='closure',
+                output='fancybox.%(version).js'))
+register('flexcomplete-js',
+         Bundle('/media/js/flexcomplete/jquery.flexcomplete.js',
+                filters='closure',
+                output='flexcomplete.%(version).js'))
+register('usmap-js',
+         Bundle('/media/js/raphael.js',
+                '/media/js/color.jquery.js',
+                '/media/js/jquery.usmap.js',
+                filters='closure',
+                output='usmap.%(version).js'))
+register('fileuploader-js',
+         Bundle('/media/js/fileuploader.js',
+                filters='closure',
+                output='fileuploader.%(version).js'))
+register('controller-js',
+         Bundle('/media/js/placeholder_ie_fix.js',
+                '/media/js/controller.js',
+                filters='closure',
+                output='controller.%(version).js'))

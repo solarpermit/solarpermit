@@ -351,9 +351,9 @@
 {% endblock %}
 
 {% block forejs %}
-	<script src="/media/js/raphael.js{{SOLARPERMIT_VERSION}}"></script>
-	<script src="/media/js/color.jquery.js{{SOLARPERMIT_VERSION}}"></script>
-	<script src="/media/js/jquery.usmap.js{{SOLARPERMIT_VERSION}}"></script>
+        {% assets "usmap-js" %}
+                <script src="{{ ASSET_URL }}"></script>
+        {% endassets %}
 	<script type="text/javascript">
 			function submit_form(form_id) {   
 				document.getElementById(form_id).submit();

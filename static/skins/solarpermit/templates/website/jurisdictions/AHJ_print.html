@@ -6,7 +6,9 @@
 {% block page_title %}{{jurisdiction.get_jurisdiction_display('page_title')}} {% endblock %}
 {% block forestyle %}
 <link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css{{SOLARPERMIT_VERSION}}" />
-<link rel="stylesheet" type="text/css" href="/media/style/ahjprint.css{{SOLARPERMIT_VERSION}}" />
+{% assets "ahjprint-css" %}
+        <link rel="stylesheet" href="{{ ASSET_URL }}" />
+{% endassets %}
 
 {% endblock %}
 {% block top_main_content %}

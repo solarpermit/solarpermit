@@ -3,11 +3,15 @@
 {% block title %}Test Search{% endblock %}
 
 {% block forestyle %}
-<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css" />
+{% assets "flexcomplete-css" %}
+        <link rel="stylesheet" href="{{ ASSET_URL }}">
+{% endassets %}
 {% endblock %}
 
 {% block endjs %}
-<script type="text/javascript" src="/media/js/flexcomplete/jquery.flexcomplete.js"></script>
+{% assets "flexcomplete-js" %}
+        <script src="{{ ASSET_URL }}"></script>
+{% endassets %}
 <script type='text/javascript'>
 $(document).ready(function() {
 	$('#test_search_field').flexcomplete({
