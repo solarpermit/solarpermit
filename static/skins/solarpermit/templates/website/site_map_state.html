@@ -4,10 +4,10 @@
 
 {% block body %}
 <div class="contentOnlyPage">
-	<span><a href="/sitemap/">Site Map</a></span> > <span><a href="/sitemap/states/">Jurisdictions by State</a></span>
-	<h1>Jurisdictions in {{state_name}}</h1>
-	<div>
-		{% if any_exist %}
+        <span><a href="/sitemap/">Site Map</a></span> > <span><a href="/sitemap/states/">Jurisdictions by State</a></span>
+        <h1>Jurisdictions in {{state_name}}</h1>
+        <div>
+                {% if any_exist %}
                         {% for group in groups %}
                                 <h3>{{ group.label }}</h3>
                                 <div class="cssTable fullSpace">
@@ -20,10 +20,10 @@
                                 {% endfor %}
                                 </div>
                         {% endfor %}
-		{% else %}
-			<div>List of jurisdictions has not been generated yet. Run /runCron/sitemap/ to generate.</div>
-		{% endif %}
-	</div>
+                {% else %}
+                        <div>List of jurisdictions has not been generated yet. Run /runCron/sitemap/ to generate.</div>
+                {% endif %}
+        </div>
 </div>
 
 {% endblock %}

@@ -44,7 +44,6 @@ def state_jurisdictions(request, abbreviation):
     data = { 'groups': [],
              'state_name': dict(US_STATES)[abbreviation] }
     requestProcessor = HttpRequestProcessor(request)
-    
     jurisdiction_type_groups = [{ 'name': 'State',
                                   'ids': ['S'],
                                   'label': 'State Locations' },
@@ -70,7 +69,7 @@ def state_jurisdictions(request, abbreviation):
             group['columns'] = [jurisdictions[i:i+items_per_column] for i in xrange(0, len(jurisdictions), items_per_column)]
             data['groups'].append(group)
     data['any_exist'] = any_exist
-    return requestProcessor.render_to_response(request, 'website/site_map_state.html', data, '') 
+    return requestProcessor.render_to_response(request, 'website/site_map_state.html', data, '')
 
 def site_map(request):
     data = {}
