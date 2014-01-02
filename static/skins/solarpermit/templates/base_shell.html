@@ -10,33 +10,33 @@
         {% compress css %}
 	{% block forestyle %}{% endblock %}
 	<!--
-	<link href="/style/website.css{{SOLARPERMIT_VERSION}}" rel="stylesheet" type="text/css" media="screen" />
-	<link href="/style/main.css{{SOLARPERMIT_VERSION}}"  rel="stylesheet" type="text/css" media="screen" />
+	<link href="/style/website.css" rel="stylesheet" type="text/css" media="screen" />
+	<link href="/style/main.css"  rel="stylesheet" type="text/css" media="screen" />
 	
-	<link rel="stylesheet" type="text/css" href="/js/notifybar/jquery.notifyBar.css{{SOLARPERMIT_VERSION}}" />
-	<link rel="stylesheet" type="text/css" href="/style/superfish.css{{SOLARPERMIT_VERSION}}" />
-	<link rel="stylesheet" type="text/css" href="/style/jquery.mobile.css{{SOLARPERMIT_VERSION}}" />
-	<link rel="stylesheet" type="text/css" href="/style/tooltip.css{{SOLARPERMIT_VERSION}}" />
+	<link rel="stylesheet" type="text/css" href="/js/notifybar/jquery.notifyBar.css" />
+	<link rel="stylesheet" type="text/css" href="/style/superfish.css" />
+	<link rel="stylesheet" type="text/css" href="/style/jquery.mobile.css" />
+	<link rel="stylesheet" type="text/css" href="/style/tooltip.css" />
 	<link href="/style/screen.css"  rel="stylesheet" type="text/css" media="screen" />-->
 	{% endcompress %}
 
         {% compress js %}
 	{% include "website/fancybox_stylesheets.html" %}
-	<link rel="stylesheet" type="text/css" href="/media/style/main.css{{SOLARPERMIT_VERSION}}" />
-	<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css{{SOLARPERMIT_VERSION}}" />
-	<link rel="stylesheet" type="text/css" href="/media/style/jquery-ui-1.8.22.custom.css{{SOLARPERMIT_VERSION}}" />
-	<link href="/media/style/fileuploader.css{{SOLARPERMIT_VERSION}}" rel="stylesheet" type="text/css" />	
+	<link rel="stylesheet" type="text/css" href="/media/style/main.css" />
+	<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css" />
+	<link rel="stylesheet" type="text/css" href="/media/style/jquery-ui-1.8.22.custom.css" />
+	<link href="/media/style/fileuploader.css" rel="stylesheet" type="text/css" />	
 	
 	{% block forejs %}{% endblock %}
-	<script type="text/javascript" src="/media/js/jquery-1.7.2.min.js{{SOLARPERMIT_VERSION}}"></script>	
-	<script type="text/javascript" src="/media/js/jquery.validate.js{{SOLARPERMIT_VERSION}}"></script>
-	<script type="text/javascript" src="/media/js/additional-methods.js{{SOLARPERMIT_VERSION}}"></script>
-	<script type="text/javascript" src="/media/js/jquery.simplemodal.js{{SOLARPERMIT_VERSION}}"></script>
-	<script type="text/javascript" src="/media/js/jquery.jscroll.custom.js{{SOLARPERMIT_VERSION}}"></script>	
-	<script type="text/javascript" src="/media/js/controller.js{{SOLARPERMIT_VERSION}}"></script>
-	<script type="text/javascript" src="/media/js/jquery.dajax.core.js{{SOLARPERMIT_VERSION}}"></script>
-	<script type="text/javascript" src="/media/js/jquery-ui-1.8.22.custom.min.js{{SOLARPERMIT_VERSION}}"></script>
-	<script type='text/javascript' src="/media/js/fileuploader.js{{SOLARPERMIT_VERSION}}"></script>	
+	<script type="text/javascript" src="/media/js/jquery-1.7.2.min.js"></script>	
+	<script type="text/javascript" src="/media/js/jquery.validate.js"></script>
+	<script type="text/javascript" src="/media/js/additional-methods.js"></script>
+	<script type="text/javascript" src="/media/js/jquery.simplemodal.js"></script>
+	<script type="text/javascript" src="/media/js/jquery.jscroll.custom.js"></script>	
+	<script type="text/javascript" src="/media/js/controller.js"></script>
+	<script type="text/javascript" src="/media/js/jquery.dajax.core.js"></script>
+	<script type="text/javascript" src="/media/js/jquery-ui-1.8.22.custom.min.js"></script>
+	<script type='text/javascript' src="/media/js/fileuploader.js"></script>	
 	
 	<script type='text/javascript'>
 	var js_csrf = '{{csrf_token}}';	
