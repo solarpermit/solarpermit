@@ -7,9 +7,11 @@
 	<meta charset="utf-8">
 {% include "website/blocks/canonical_url.html" %}
 
+        {% compress css %}
 	{% block forestyle %}{% endblock %}
+        {% endcompress %}
 
-	
+	{% compress js %}
 	{% include "website/fancybox_stylesheets.html" %}
 	<link rel="stylesheet" type="text/css" href="/media/style/main.css{{SOLARPERMIT_VERSION}}" />
 	<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css{{SOLARPERMIT_VERSION}}" />
@@ -262,6 +264,7 @@
 		}
 
 	</script>
+        {% endcompress %}
 </head>
 
 <body onLoad="onload('{{action_key}}');" style="bakground-color: #fff;">
@@ -282,11 +285,11 @@
 </div>
 {% include "website/jurisdictions/AHJ_print_footer.html" %}
 
-{% block endjs %}
-{% endblock %}
+{% compress js %}
+        {% block endjs %}{% endblock %}
+        {% include "website/fancybox_scripts.html" %}
+{% endcompress %}
 
-
-{% include "website/fancybox_scripts.html" %}
 </div>
 </body>
 </html>

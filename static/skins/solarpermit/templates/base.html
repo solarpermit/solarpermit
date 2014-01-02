@@ -327,9 +327,9 @@
 	
 {% block body %}{% endblock %}
 
-
+{% compress js %}
 {% block endjs %}{% endblock %}
-	
+{% endcompress %}	
 
 {% block dialog %}
 {% include "base_message_dialog.html" %}
