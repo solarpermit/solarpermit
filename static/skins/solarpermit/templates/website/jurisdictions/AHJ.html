@@ -1,6 +1,7 @@
 {% extends "base.html" %}
     
 {% block forejs %}
+{% compress js %}
 <script type='text/javascript'>
 $(document).ready(function() {
 	$("#form_sign_in_submit_button").click(function (){
@@ -42,6 +43,7 @@ $(document).ready(function() {
 	});       
 });
 </script>
+{% endcompress %}
 {% endblock %}
 <!-- template jurisdiction_state_browse.html -->
 
@@ -64,7 +66,9 @@ $(document).ready(function() {
 
 
 {% block forestyle %}
+{% compress css %}
 	<link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css" />
+{% endcompress %}
 {% endblock %}
 
 

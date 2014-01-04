@@ -32,3 +32,4 @@ South==0.8.1
 compressor
 cssmin
 closure
+coffin

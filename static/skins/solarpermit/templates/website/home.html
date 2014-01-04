@@ -3,6 +3,7 @@
 
 {% block title %}Home{% endblock %}
 {% block forestyle %}
+        {% compress css %}
 {#	<!--link rel="stylesheet" type="text/css" href="/media/style/page.css" /-->
 	<link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css" />
 	<style>
@@ -348,6 +349,7 @@
 {# EO home page content #}
 
 	</style>
+        {% endcompress %}
 {% endblock %}
 
 {% block forejs %}
