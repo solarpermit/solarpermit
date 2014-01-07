@@ -6,3 +6,4 @@ from jurisdiction import *
 from questionAnswer import *
 from reputation import *
 from server import *
+from news import *
