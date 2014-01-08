@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.conf.urls.defaults import patterns, include, handler404, handler500, url
 from django.conf import settings
 from website.views import home, test_view, account, unittest, info, jurisdiction, organization, custom_field, maintenance, siteadmin
+from website.views.news import *
 
 from django.contrib import admin
 admin.autodiscover()
@@ -74,10 +75,6 @@ else:
         (r'^about/', info.about),
         (r'^getting-started/', info.getting_started_page),  
         
-        ## admin
-        (r'^siteadmin/$', siteadmin.task_list),          
-        (r'^siteadmin/user_page_views/$', siteadmin.user_page_views),   
-                
         #data migrations
         #(r'^util/import/unincorporated/$', 'website.views.data_migration.migrate_unincorporated'),
         (r'^util/import/jurisdictions/$', 'website.views.data_migration.migrate_jurisdiction_data'),
@@ -118,13 +115,25 @@ else:
         (r'^tou/', info.terms_of_use), 
             
         #### api calls
-        (r'^api1/', 'website.views.api.searchState'),
-        
-        
-           
-    )
-
+        (r'^api1/', 'website.views.api.searchState'))
+    ## admin
+    urlpatterns += patterns('',
+                            url(r'^siteadmin/',
+                                include(patterns('',
+                                                 (r'^$', siteadmin.task_list),
+                                                 (r'^user_page_views/$', siteadmin.user_page_views),
+                                                 url(r'pressrelease/$', PressReleaseList.as_view()),
+                                                 url(r'pressrelease/add/$', PressReleaseCreate.as_view()),
+                                                 url(r'pressrelease/(?P<pk>\d+)/$', PressReleaseUpdate.as_view()),
+                                                 url(r'pressrelease/(?P<pk>\d+)/delete/$', PressReleaseDelete.as_view()),
+                                                 url(r'article/$', ArticleList.as_view()),
+                                                 url(r'article/add/$', ArticleCreate.as_view()),
+                                                 url(r'article/(?P<pk>\d+)/$', ArticleUpdate.as_view()),
+                                                 url(r'article/(?P<pk>\d+)/delete/$', ArticleDelete.as_view()),
+                                                 url(r'event/$', EventList.as_view()),
+                                                 url(r'event/add/$', EventCreate.as_view()),
+                                                 url(r'event/(?P<pk>\d+)/$', EventUpdate.as_view()),
+                                                 url(r'event/(?P<pk>\d+)/delete/$', EventDelete.as_view())))))
     if 'rosetta' in settings.INSTALLED_APPS:
         urlpatterns += patterns('',
-                        url(r'^rosetta/', include('rosetta.urls')),
-                    )
+                                url(r'^rosetta/', include('rosetta.urls')))

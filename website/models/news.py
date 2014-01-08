@@ -15,7 +15,7 @@ class PressRelease(News):
     42
 
 class Article(News):
-    publisher = models.TextField(blank=True, null=True)
+    publisher = models.TextField()
 
 class Event(News):
     start = models.DateTimeField()
