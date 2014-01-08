@@ -1,0 +1,10 @@
+    <h2>Press Releases</h2>
+    <a href="{% url 'pressrelease_create' %}">Add new</a>
+    <ol>
+        {% for news in object_list %}
+            <li value="{{ news.pk }}">
+              <a href="{% url 'pressrelease_delete' pk=news.pk %}">❌</a>
+              <a href="{% url 'pressrelease_update' pk=news.pk %}">{{ news.published }} — {{ news.title }}</a>
+            </li>
+        {% endfor %}
+    </ol>

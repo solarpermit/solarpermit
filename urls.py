@@ -45,8 +45,8 @@ else:
         #(r'^jurisdiction/(?P<id>.*)/$', 'website.views.AHJ.view_AHJ'),
         (r'^jurisdiction/(?P<name>.*)/(?P<category>.*)/$', 'website.views.AHJ.view_AHJ_by_name'),    
         (r'^jurisdiction/(?P<name>.*)/$', 'website.views.AHJ.view_AHJ_by_name'),          
-        (r'^jurisdiction_id/(?P<id>.*)/(?P<category>.*)/$', 'website.views.AHJ.view_AHJ'), 
-        (r'^jurisdiction_id/(?P<id>.*)/$', 'website.views.AHJ.view_AHJ'), 
+        #(r'^jurisdiction_id/(?P<id>.*)/(?P<category>.*)/$', 'website.views.AHJ.view_AHJ'), 
+        #(r'^jurisdiction_id/(?P<id>.*)/$', 'website.views.AHJ.view_AHJ'), 
               
         #(r'^set_up_data_sprint_19', 'website.views.data_migration.set_up_data_sprint_19'),
                 
@@ -122,18 +122,18 @@ else:
                                 include(patterns('',
                                                  (r'^$', siteadmin.task_list),
                                                  (r'^user_page_views/$', siteadmin.user_page_views),
-                                                 url(r'pressrelease/$', PressReleaseList.as_view()),
-                                                 url(r'pressrelease/add/$', PressReleaseCreate.as_view()),
-                                                 url(r'pressrelease/(?P<pk>\d+)/$', PressReleaseUpdate.as_view()),
-                                                 url(r'pressrelease/(?P<pk>\d+)/delete/$', PressReleaseDelete.as_view()),
-                                                 url(r'article/$', ArticleList.as_view()),
-                                                 url(r'article/add/$', ArticleCreate.as_view()),
-                                                 url(r'article/(?P<pk>\d+)/$', ArticleUpdate.as_view()),
-                                                 url(r'article/(?P<pk>\d+)/delete/$', ArticleDelete.as_view()),
-                                                 url(r'event/$', EventList.as_view()),
-                                                 url(r'event/add/$', EventCreate.as_view()),
-                                                 url(r'event/(?P<pk>\d+)/$', EventUpdate.as_view()),
-                                                 url(r'event/(?P<pk>\d+)/delete/$', EventDelete.as_view())))))
+                                                 url(r'pressrelease/$', PressReleaseList.as_view(), name='pressrelease_list'),
+                                                 url(r'pressrelease/add/$', PressReleaseCreate.as_view(), name='pressrelease_create'),
+                                                 url(r'pressrelease/(?P<pk>\d+)/$', PressReleaseUpdate.as_view(), name='pressrelease_update'),
+                                                 url(r'pressrelease/(?P<pk>\d+)/delete/$', PressReleaseDelete.as_view(), name='pressrelease_delete'),
+                                                 url(r'article/$', ArticleList.as_view(), name='article_list'),
+                                                 url(r'article/add/$', ArticleCreate.as_view(), name='article_create'),
+                                                 url(r'article/(?P<pk>\d+)/$', ArticleUpdate.as_view(), name='article_update'),
+                                                 url(r'article/(?P<pk>\d+)/delete/$', ArticleDelete.as_view(), name='article_delete'),
+                                                 url(r'event/$', EventList.as_view(), name='event_list'),
+                                                 url(r'event/add/$', EventCreate.as_view(), name='event_create'),
+                                                 url(r'event/(?P<pk>\d+)/$', EventUpdate.as_view(), name='event_update'),
+                                                 url(r'event/(?P<pk>\d+)/delete/$', EventDelete.as_view(), name='event_delete')))))
     if 'rosetta' in settings.INSTALLED_APPS:
         urlpatterns += patterns('',
                                 url(r'^rosetta/', include('rosetta.urls')))
