@@ -71,7 +71,8 @@ else:
         (r'^logout', account.log_out),      
         (r'^reset_password/(?P<reset_password_key>.*)/$', home.reset_password),       
         (r'^info/', info.get_info),  
-        (r'^news/', info.news),   
+        (r'^news/', info.news_static),
+        (r'^news2/', info.news_dynamic),
         (r'^about/', info.about),
         (r'^getting-started/', info.getting_started_page),  
         

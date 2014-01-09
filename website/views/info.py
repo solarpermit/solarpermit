@@ -14,7 +14,7 @@ from website.utils.mathUtil import MathUtil
 
 from website.utils.messageUtil import MessageUtil
 
-from website.models import UserDetail, OrganizationMember
+from website.models import UserDetail, OrganizationMember, news
 from website.utils.messageUtil import MessageUtil,add_system_message,get_system_message
 from website.utils.templateUtil import TemplateUtil
 
@@ -178,15 +178,28 @@ def email_feedback(data):
     msg.content_subtype = "html"   
     #msg.send()
 
-def news(request):
+def news_static(request):
     data = {}
     data['current_nav'] = 'news'
-    
+
     message_data = get_system_message(request) #get the message List
     data =  dict(data.items() + message_data.items())   #merge message list to data
-    
+
     requestProcessor = HttpRequestProcessor(request)
     return requestProcessor.render_to_response(request,'website/info/news.html', data, '')
+
+def news_dynamic(request):
+    data = {}
+    data['current_nav'] = 'news'
+    data['pressreleases'] = news.PressRelease.objects.all()
+    data['articles'] = news.Article.objects.all()
+    data['events'] = news.Event.objects.all()
+
+    message_data = get_system_message(request) #get the message List
+    data =  dict(data.items() + message_data.items())   #merge message list to data
+
+    requestProcessor = HttpRequestProcessor(request)
+    return requestProcessor.render_to_response(request,'website/info/news_dynamic.html', data, '')
 
 def about(request):
     data = {}
