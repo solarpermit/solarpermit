@@ -1,3 +1,4 @@
+from datetime import datetime
 import math
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template.loader import get_template
@@ -191,9 +192,9 @@ def news_static(request):
 def news_dynamic(request):
     data = {}
     data['current_nav'] = 'news'
-    data['pressreleases'] = news.PressRelease.objects.all()
-    data['articles'] = news.Article.objects.all()
-    data['events'] = news.Event.objects.all()
+    data['pressreleases'] = news.PressRelease.objects.all().order_by('published')
+    data['articles'] = news.Article.objects.all().order_by('published')
+    data['events'] = news.Event.objects.all().filter(expiration__gte=datetime.now()).order_by('published')
 
     message_data = get_system_message(request) #get the message List
     data =  dict(data.items() + message_data.items())   #merge message list to data
