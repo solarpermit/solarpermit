@@ -6,15 +6,15 @@
 	
         {% include "website/blocks/canonical_url.html" %}
 
-{% compress css %}
         {% block forestyle %}{% endblock %}
+        {% compress css %}
         {% include "website/fancybox_stylesheets.html" %}
 	<link rel="stylesheet" type="text/css" href="/media/style/main.css" />
 	<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css" />
 	<link rel="stylesheet" type="text/css" href="/media/style/jquery-ui-1.10.1.custom.css" />
 	<link href="/media/style/fileuploader.css" rel="stylesheet" type="text/css" />	
 	<link rel="shortcut icon" href="/media/images/solarpermit_favicon.png" />
-{% endcompress %}
+        {% endcompress %}
 
         <script type="text/javascript">
                 var True = true, False = false; // admittedly this is a little silly
@@ -29,7 +29,7 @@
         </script>
         {% block jsdata %}{% endblock %}
 
-{% compress js %}
+        {% compress js %}
 	<script src="/media/js/jquery-1.7.2.min.js"></script>	
 	<script src="/media/js/jquery.validate.js"></script>
 	<script src="/media/js/additional-methods.js"></script>
@@ -54,9 +54,9 @@
 			document.createElement('hgroup');
 		</script>
 	<![endif]-->
-
+        {% endcompress %}
         {% block forejs %}{% endblock %}
-	
+	{% compress js %}
 	<script type="text/javascript">
 		function reload_page()
 		{
@@ -355,8 +355,8 @@
 
 {% compress js %}
 {% include "website/fancybox_scripts.html" %}
-{% block endjs %}{% endblock %}
 {% endcompress %}
+{% block endjs %}{% endblock %}
 
 {# close comment tags on lines 340 and 353 to active tracking code #}
 {% if ENABLE_GOOGLE_ANALYTICS %}
@@ -388,7 +388,7 @@
 		})();
 	</script>
 {# Marketo Tracking Code #}
-	<script type="text/javascript">document.write(unescape("%3Cscript src='" + document.location.protocol + "//munchkin.marketo.net/munchkin.js{{SOLARPERMIT_VERSION}}' type='text/javascript'%3E%3C/script%3E"));</script>
+	<script type="text/javascript">document.write(unescape("%3Cscript src='" + document.location.protocol + "//munchkin.marketo.net/munchkin.js' type='text/javascript'%3E%3C/script%3E"));</script>
 	<script>Munchkin.init('464-OTD-366');</script>
 {% endif %}
 

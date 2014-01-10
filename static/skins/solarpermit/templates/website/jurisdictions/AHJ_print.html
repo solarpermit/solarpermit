@@ -5,9 +5,10 @@
 {% block breadcrum %}<span style="padding-left:10px;"><a href="{{home}}" >Home</a> &gt; <a href="/jurisdiction/browse/?state={{state}}">{{state_long_name}}</a> {% if city != None %} &gt; {{city}}{% endif %}</span>{% endblock %}
 {% block page_title %}{{jurisdiction.get_jurisdiction_display('page_title')}} {% endblock %}
 {% block forestyle %}
+{% compress css %}
 <link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css" />
 <link rel="stylesheet" type="text/css" href="/media/style/ahjprint.css" />
-
+{% endcompress %}
 {% endblock %}
 {% block top_main_content %}
 {% endblock %}
