@@ -1,3 +1,4 @@
+{% if user.is_authenticated(): %}
                             <span class="vote_panel">   
                                 {% if creator_id != login_user_id %}
                                     {% set class_cannot_vote = '' %}   
@@ -24,6 +25,4 @@
                             <div id="vote_confirmation_{{current_answer_id}}" class="vote_confirmation_msg" >
                                 <img width="15" height="15" src="/media/images/checkmark2.png" style="padding-right:5px" alt="success" >Your vote has been recorded
                             </div>
-                            
-                            
-        
+{% endif %}
