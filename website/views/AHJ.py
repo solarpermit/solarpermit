@@ -1169,8 +1169,21 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
     questions_login_user_suggested_a_value = {}
     questions_have_answers = {}
     questions_terminology = {}
+    records_by_category = {}
     for rec in records:
-        print rec
+        cid = rec['category_id']
+        if not cid in records_by_category:
+            records_by_category[cid] = { 'cat_description': rec['cat_description'],
+                                         'questions': {} }
+        qid = rec['question_id']
+        if not rec['id']: # this is a question
+            assert(rec['question_id'] not in records_by_category[cid]['questions']) # shouldn't get duplicate questions
+            rec['answers'] = []
+            records_by_category[cid]['questions'][qid] = rec
+        else: # it's an answer
+            assert(rec['question_id'] in records_by_category[cid]['questions'])
+            records_by_category[cid]['questions'][qid]['answers'].append(rec)
+
         if rec['question_id'] not in questions_pending_editable_answer_ids_array:
             questions_pending_editable_answer_ids_array[rec['question_id']] = []
                 
@@ -1200,14 +1213,21 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                 if rec['approval_status'] == 'P' :  # how about vote?
                     questions_pending_editable_answer_ids_array[rec['question_id']].append(rec['id'])
             questions_have_answers[rec['question_id']] = True
+    for cid in records_by_category:
+        # TODO: possibly we could do less sorting in the query
+        questions = records_by_category[cid]['questions']
+        qids = [qid for qid in questions]
+        qids.sort(key=lambda qid: questions[qid]['display_order'])
+        records_by_category[cid]['sorted_question_ids'] = qids
+
     if category == 'all_info' or show_google_map == True:
         data['show_google_map'] = show_google_map
         ################# get the correct address for google map #################### 
         question = Question.objects.get(id=4)      
         data['str_address'] = question.get_addresses_for_map(jurisdiction)  
         data['google_api_key'] = django_settings.GOOGLE_API_KEY     
-                            
-    data['cqa'] = records
+
+    data['cqa'] = records_by_category
     data['questions_terminology'] = questions_terminology
     data['questions_have_answers'] = questions_have_answers
     data['questions_login_user_suggested_a_value'] = questions_login_user_suggested_a_value                
