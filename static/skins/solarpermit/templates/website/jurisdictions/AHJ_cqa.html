@@ -96,7 +96,7 @@
              class="qasv_content need_tooltip"
              id="child_of_div_{{question_id}}"
              data-id="{{question_id}}"
-             data-paids="{{questions_pending_editable_answer_ids_array[question_id] | join(',')}}"
+             data-paids="{{question['pending_answer_ids']}}"
              data-jurid="{{jurisdiction.id}}">
           <div class="label"
                title="{{question['terminology']}}"
@@ -158,10 +158,10 @@
               {% endif %}
               <div class="field answer_field"
                    id="{{answer['id']}}"
-                   {% if answer['id'] in questions_pending_editable_answer_ids_array[question_id] %}
+                   {% if answer['creator_id'] == user.id and answer['approval_status'] == 'P' %}
                    onmouseover="controller.initSuggestionFieldEvent(this);"
                    {% endif %}>
-                {% if answer['id'] in questions_pending_editable_answer_ids_array[question_id] %}
+                {% if answer['creator_id'] == user.id and answer['approval_status'] == 'P' %}
                   {# need to take into account if votes have been registered for this answer #}
                   <span class="cancel_btn" id="cancel_btn_{{answer['id']}}" title="Cancel your message" style="width:20px;float:left;">
                     <input class="cancelbt field_mo_l3 cancel_this_value"
@@ -243,7 +243,7 @@
               {% endif %}
             </div>
           </div>
-          {% if answer['id'] in questions_pending_editable_answer_ids_array[answer['id']] %}
+          {% if answer['created_by'] == user.id and answer['status'] == 'P' %}
             <div class="cssRow">
               <div class="cssCell">
                 <div id="qa_answer_{{answer['id']}}_edit" class="suggestion_edit_box" style="display:none">

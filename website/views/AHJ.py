@@ -1165,7 +1165,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
     #data_answer = {}
     #answers_html = {}
     show_google_map = False
-    questions_pending_editable_answer_ids_array = {}    
     records_by_category = {}
     for rec in records:
         cid = rec['category_id']
@@ -1180,16 +1179,16 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             rec['answers'] = []
             rec['logged_in_user_suggested_a_value'] = False
             rec['terminology'] = Question().get_question_terminology(qid)
+            rec['pending_answer_ids'] = []
             records_by_category[cid]['questions'][qid] = rec
         else: # it's an answer
             assert(rec['question_id'] in records_by_category[cid]['questions'])
             question = records_by_category[cid]['questions'][qid]
             question['answers'].append(rec)
+            if rec['creator_id'] == user.id and rec['approval_status'] == 'P':
+                question['pending_answer_ids'].append(rec['id'])
             question['logged_in_user_suggested_a_value'] = rec['creator_id'] == user.id
 
-        if rec['question_id'] not in questions_pending_editable_answer_ids_array:
-            questions_pending_editable_answer_ids_array[rec['question_id']] = []
-                
         if rec['question_id'] == 4:
             show_google_map = True
                   
@@ -1201,10 +1200,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
         
             answer_content = json.loads(rec['value'])    
             answers_contents[rec['id']] = answer_content                  
-            
-            if rec['creator_id'] == user.id:
-                if rec['approval_status'] == 'P' :  # how about vote?
-                    questions_pending_editable_answer_ids_array[rec['question_id']].append(rec['id'])
     if category == 'all_info' or show_google_map == True:
         data['show_google_map'] = show_google_map
         ################# get the correct address for google map #################### 
@@ -1213,7 +1208,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
         data['google_api_key'] = django_settings.GOOGLE_API_KEY     
 
     data['cqa'] = records_by_category
-    data['questions_pending_editable_answer_ids_array'] = questions_pending_editable_answer_ids_array
     data['answers_contents'] = answers_contents   
         
     if category != 'favorite_fields' and category != 'quirks':           
