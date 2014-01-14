@@ -6,7 +6,7 @@ body {
     font-size: 12px;
     font-weight: normal;
     margin: 0;
-    padding: 93px 0 0 0;
+    padding: 0 0 0 0;
     background-color: #FFFFFF;
     min-width: 960px;
 }
@@ -24,9 +24,6 @@ header {
     height: 71px;
     width: 100%;
     min-width: 960px;
-    position: fixed;
-    top: 0;
-    left: 0;
     z-index: 25;
 }
 .logo {
@@ -75,10 +72,7 @@ nav {
     border-top: 1px solid #4a5f71;
     border-bottom: 1px solid #374857;
     height: 30px;
-	width: 100%;
-    position: fixed;
-    top: 71px;
-    left: 0;
+    width: 100%;
     z-index: 24;
     margin: 0;
     padding: 0;
@@ -1115,7 +1109,6 @@ input_error{
 	border:thin #FFCC66 solid;
 	background-color:#FFFFCC;
 	padding:5px 0px 0px 10px; 
-	margin:96px 0px 0 0;
 }
 
 .blockcontainer {
@@ -2093,7 +2086,7 @@ ul.paperlist li span.author{
 
 /** AHJ CSS section ***/
 .ahj-tab {
-	padding: 0 0px 0 5px;
+	padding: 5px 0 0 5px;
 	/*width:100%;*/
 	/** border-top:1px solid #bdbdbd; **/
 	margin:0 5px 0 0px;
@@ -2105,8 +2098,7 @@ ul.paperlist li span.author{
 	padding-right:40px;
 	border-right:1px solid #bdbdbd;
 	/** border-top:1px solid #bdbdbd; **/
-	margin-top:96px;
-	position:fixed;z-index:500;
+	z-index:500;
 }
 .ahj-tab-bg{
 	height:1000px;
@@ -2721,13 +2713,11 @@ img {border:0;}
 .valhis{clear:both;}
 
 .data-container {
-	padding-left: 130px;
 	<!--margin-top:90px;-->
 	min-width:810px;
 }
 
 .header-2nd {
-	position:fixed;
 	width:100%;
 	z-index:5;
 	background-color:white;
