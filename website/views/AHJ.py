@@ -1166,7 +1166,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
     #answers_html = {}
     show_google_map = False
     questions_pending_editable_answer_ids_array = {}    
-    questions_terminology = {}
     records_by_category = {}
     for rec in records:
         cid = rec['category_id']
@@ -1180,6 +1179,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             records_by_category[cid]['sorted_question_ids'].append(qid)
             rec['answers'] = []
             rec['logged_in_user_suggested_a_value'] = False
+            rec['terminology'] = Question().get_question_terminology(qid)
             records_by_category[cid]['questions'][qid] = rec
         else: # it's an answer
             assert(rec['question_id'] in records_by_category[cid]['questions'])
@@ -1189,9 +1189,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
 
         if rec['question_id'] not in questions_pending_editable_answer_ids_array:
             questions_pending_editable_answer_ids_array[rec['question_id']] = []
-                
-        if rec['question_id'] not in questions_terminology:
-            questions_terminology[rec['question_id']] = Question().get_question_terminology(rec['question_id'])
                 
         if rec['question_id'] == 4:
             show_google_map = True
@@ -1216,7 +1213,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
         data['google_api_key'] = django_settings.GOOGLE_API_KEY     
 
     data['cqa'] = records_by_category
-    data['questions_terminology'] = questions_terminology
     data['questions_pending_editable_answer_ids_array'] = questions_pending_editable_answer_ids_array
     data['answers_contents'] = answers_contents   
         

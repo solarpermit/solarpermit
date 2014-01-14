@@ -47,7 +47,7 @@
             <input type="button"
                    class="smallbutton add_another_value"
                    id="add_another_value_{{question_id}}"
-                   value="Add another {{questions_terminology[question_id]}}"
+                   value="Add another {{question['terminology']}}"
                    data-id="{{question_id}}"
                    data-jid="{{jurisdiction.id}}">
           </div>
@@ -99,7 +99,7 @@
              data-paids="{{questions_pending_editable_answer_ids_array[question_id] | join(',')}}"
              data-jurid="{{jurisdiction.id}}">
           <div class="label"
-               title="{{questions_terminology[question_id]}}"
+               title="{{question['terminology']}}"
                data-icon="{{icon}}"
                data-label_tooltip="{{label_tooltip}}"
                {% if not question.logged_in_user_suggested_a_value %}
@@ -140,7 +140,7 @@
             {% if user.is_authenticated() %}
               No info available yet...
             {% else %}
-              Please sign in to suggest {{questions_terminology[question_id]}}.
+              Please sign in to suggest {{question['terminology']}}.
             {% endif %}
           </div>
         {% else %}
@@ -174,7 +174,7 @@
                            id="edit_button_{{answer['id']}}"
                            type="button" value=""
                            data-id="{{answer['id']}}"
-                           data-questions_terminology="{{questions_terminology[question_id]}}"
+                           data-questions_terminology="{{question['terminology']}}"
                            data-jurid="{{jurisdiction.id}}"
                            data-qid="{{question_id}}">
                   </span>
