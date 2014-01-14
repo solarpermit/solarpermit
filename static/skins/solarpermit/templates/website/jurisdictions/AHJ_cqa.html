@@ -147,7 +147,7 @@
           <div style="float:left;width:100%;display:none" class="question_messages" id="question_messages_{{question_id}}"></div>
         {% endif %}
         {% for answer in question['answers'] %}
-          {% set answer_content = answers_contents.get(answer['id']) %}
+          {% set answer_content = answer['content'] %} {# global variable required by included templates #}
           <div class="cssTable" style="float:left;width:100%;margin-bottom:20px">
             <div class="cssRow" id="qa_{{question_id}}_data">
             <div class="cssCell suggestion_left" style="">

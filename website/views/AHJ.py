@@ -1187,6 +1187,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             question['answers'].append(rec)
             if rec['creator_id'] == user.id and rec['approval_status'] == 'P':
                 question['pending_answer_ids'].append(rec['id'])
+            rec['content'] = json.loads(rec['value'])
             question['logged_in_user_suggested_a_value'] = rec['creator_id'] == user.id
 
         if rec['question_id'] == 4:
@@ -1197,9 +1198,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                 fee_info = validation_util_obj.process_fee_structure(json.loads(rec['value']) )                   
                 for key in fee_info.keys():
                     data[key] = fee_info.get(key)               
-        
-            answer_content = json.loads(rec['value'])    
-            answers_contents[rec['id']] = answer_content                  
     if category == 'all_info' or show_google_map == True:
         data['show_google_map'] = show_google_map
         ################# get the correct address for google map #################### 
