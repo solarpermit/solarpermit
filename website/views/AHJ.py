@@ -1174,10 +1174,12 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
         cid = rec['category_id']
         if not cid in records_by_category:
             records_by_category[cid] = { 'cat_description': rec['cat_description'],
+                                         'sorted_question_ids': [],
                                          'questions': {} }
         qid = rec['question_id']
         if not rec['id']: # this is a question
             assert(rec['question_id'] not in records_by_category[cid]['questions']) # shouldn't get duplicate questions
+            records_by_category[cid]['sorted_question_ids'].append(qid)
             rec['answers'] = []
             records_by_category[cid]['questions'][qid] = rec
         else: # it's an answer
@@ -1213,13 +1215,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                 if rec['approval_status'] == 'P' :  # how about vote?
                     questions_pending_editable_answer_ids_array[rec['question_id']].append(rec['id'])
             questions_have_answers[rec['question_id']] = True
-    for cid in records_by_category:
-        # TODO: possibly we could do less sorting in the query
-        questions = records_by_category[cid]['questions']
-        qids = [qid for qid in questions]
-        qids.sort(key=lambda qid: questions[qid]['display_order'])
-        records_by_category[cid]['sorted_question_ids'] = qids
-
     if category == 'all_info' or show_google_map == True:
         data['show_google_map'] = show_google_map
         ################# get the correct address for google map #################### 
