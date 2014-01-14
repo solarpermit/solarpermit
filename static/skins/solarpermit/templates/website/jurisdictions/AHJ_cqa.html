@@ -85,7 +85,7 @@
       {% endif %}  
       <div style="margin:10px;width:100%">&nbsp;</div>
       <div id="div_question_content_{{question_id}}" style="margin-left:25px;">
-        {% if questions_login_user_suggested_a_value[question_id] == True %}
+        {% if question.logged_in_user_suggested_a_value %}
           {% set icon = 'Y' %}
           {% set label_tooltip = 'Sorry, you have already provided an answer.' %}
         {% else %}
@@ -102,7 +102,7 @@
                title="{{questions_terminology[question_id]}}"
                data-icon="{{icon}}"
                data-label_tooltip="{{label_tooltip}}"
-               {% if questions_login_user_suggested_a_value[question_id] == False or questions_login_user_suggested_a_value[question_id] == None %}
+               {% if not question.logged_in_user_suggested_a_value %}
                onClick="controller.suggestionField.clickAddLabel({{jurisdiction.id}}, {{question_id}});"
                {% endif %}>
             <span style="float:left;visibility:visible;display:none;padding-right:5px"
@@ -118,7 +118,7 @@
         {% if question['description'] != None and question['description'] != '' %}
           <div style="float:left;width:100%" class="description">{{question['description']}}</div>
         {% endif %}
-        {% if questions_login_user_suggested_a_value[question_id] == False or questions_login_user_suggested_a_value[question_id] == None %}
+        {% if not question.logged_in_user_suggested_a_value %}
           {% if question['has_multivalues'] == False  or (question['has_multivalues'] == True and questions_have_answers[question_id] == False) %}
             <div id="qa_{{question_id}}_add" class="cssCell suggestion_edit_box" style="display:none">
               <form id="form_{{question_id}}" name="name_{{question_id}}" action="."  method="post" accept-charset="utf-8">

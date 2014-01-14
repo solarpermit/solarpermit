@@ -1166,7 +1166,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
     #answers_html = {}
     show_google_map = False
     questions_pending_editable_answer_ids_array = {}    
-    questions_login_user_suggested_a_value = {}
     questions_have_answers = {}
     questions_terminology = {}
     records_by_category = {}
@@ -1181,17 +1180,17 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             assert(rec['question_id'] not in records_by_category[cid]['questions']) # shouldn't get duplicate questions
             records_by_category[cid]['sorted_question_ids'].append(qid)
             rec['answers'] = []
+            rec['logged_in_user_suggested_a_value'] = False
             records_by_category[cid]['questions'][qid] = rec
         else: # it's an answer
             assert(rec['question_id'] in records_by_category[cid]['questions'])
-            records_by_category[cid]['questions'][qid]['answers'].append(rec)
+            question = records_by_category[cid]['questions'][qid]
+            question['answers'].append(rec)
+            question['logged_in_user_suggested_a_value'] = rec['creator_id'] == user.id
 
         if rec['question_id'] not in questions_pending_editable_answer_ids_array:
             questions_pending_editable_answer_ids_array[rec['question_id']] = []
                 
-        if rec['question_id'] not in questions_login_user_suggested_a_value:
-            questions_login_user_suggested_a_value[rec['question_id']] = False
-
         if rec['question_id'] not in questions_have_answers:
             questions_have_answers[rec['question_id']] = False
                 
@@ -1211,7 +1210,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             answers_contents[rec['id']] = answer_content                  
             
             if rec['creator_id'] == user.id:
-                questions_login_user_suggested_a_value[rec['question_id']] = True                 
                 if rec['approval_status'] == 'P' :  # how about vote?
                     questions_pending_editable_answer_ids_array[rec['question_id']].append(rec['id'])
             questions_have_answers[rec['question_id']] = True
@@ -1225,7 +1223,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
     data['cqa'] = records_by_category
     data['questions_terminology'] = questions_terminology
     data['questions_have_answers'] = questions_have_answers
-    data['questions_login_user_suggested_a_value'] = questions_login_user_suggested_a_value                
     data['questions_pending_editable_answer_ids_array'] = questions_pending_editable_answer_ids_array
     data['answers_contents'] = answers_contents   
  
