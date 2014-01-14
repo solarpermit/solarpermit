@@ -1166,7 +1166,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
     #answers_html = {}
     show_google_map = False
     questions_pending_editable_answer_ids_array = {}    
-    questions_have_answers = {}
     questions_terminology = {}
     records_by_category = {}
     for rec in records:
@@ -1191,9 +1190,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
         if rec['question_id'] not in questions_pending_editable_answer_ids_array:
             questions_pending_editable_answer_ids_array[rec['question_id']] = []
                 
-        if rec['question_id'] not in questions_have_answers:
-            questions_have_answers[rec['question_id']] = False
-                
         if rec['question_id'] not in questions_terminology:
             questions_terminology[rec['question_id']] = Question().get_question_terminology(rec['question_id'])
                 
@@ -1212,7 +1208,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             if rec['creator_id'] == user.id:
                 if rec['approval_status'] == 'P' :  # how about vote?
                     questions_pending_editable_answer_ids_array[rec['question_id']].append(rec['id'])
-            questions_have_answers[rec['question_id']] = True
     if category == 'all_info' or show_google_map == True:
         data['show_google_map'] = show_google_map
         ################# get the correct address for google map #################### 
@@ -1222,10 +1217,8 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
 
     data['cqa'] = records_by_category
     data['questions_terminology'] = questions_terminology
-    data['questions_have_answers'] = questions_have_answers
     data['questions_pending_editable_answer_ids_array'] = questions_pending_editable_answer_ids_array
     data['answers_contents'] = answers_contents   
- 
         
     if category != 'favorite_fields' and category != 'quirks':           
         request.session['empty_data_fields_hidden'] = data['empty_data_fields_hidden']    

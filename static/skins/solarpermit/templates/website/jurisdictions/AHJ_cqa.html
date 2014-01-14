@@ -42,7 +42,7 @@
     {% for question_id in cqa[category_id]['sorted_question_ids'] %}
       {% set question = cqa[category_id]['questions'][question_id] %}
       {% if question['has_multivalues'] | int == 1 %}
-        {% if questions_have_answers[question_id] == True %}
+        {% if question['answers'] %}
           <div class="suggestion_btn_placement" id="suggest_value_btn_{{question_id}}">
             <input type="button"
                    class="smallbutton add_another_value"
@@ -119,7 +119,7 @@
           <div style="float:left;width:100%" class="description">{{question['description']}}</div>
         {% endif %}
         {% if not question.logged_in_user_suggested_a_value %}
-          {% if question['has_multivalues'] == False  or (question['has_multivalues'] == True and questions_have_answers[question_id] == False) %}
+          {% if not question['has_multivalues'] or (question['has_multivalues'] and question['answers']) %}
             <div id="qa_{{question_id}}_add" class="cssCell suggestion_edit_box" style="display:none">
               <form id="form_{{question_id}}" name="name_{{question_id}}" action="."  method="post" accept-charset="utf-8">
                 <input type="hidden" name="ajax" value="suggestion_submit" />
@@ -134,7 +134,7 @@
             </div>
           {% endif %}
         {% endif %}
-        {% if questions_have_answers[question_id] == False %}
+        {% if not question['answers'] %}
           <div class="prompt"
                style="float:left;width:100%;margin-bottom:20px">
             {% if user.is_authenticated() %}
@@ -151,7 +151,7 @@
           <div class="cssTable" style="float:left;width:100%;margin-bottom:20px">
             <div class="cssRow" id="qa_{{question_id}}_data">
             <div class="cssCell suggestion_left" style="">
-              {% if questions_have_answers[question_id] == True %}
+              {% if question['answers'] %}
                 <div class="suggestion_header" id="suggestion_header_{{answer['id']}}">
                   {{ answer_heading }}
                 </div>
