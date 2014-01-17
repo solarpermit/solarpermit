@@ -5,6 +5,7 @@ from django.http import HttpRequest
 from django.http import HttpResponse
 from django.conf import settings
 from jinja2 import FileSystemLoader, Environment
+from jinja2.ext import WithExtension
 from compressor.contrib.jinja2ext import CompressorExtension
 from django.template import RequestContext, Template, Context
 from django.contrib.auth.models import User
@@ -77,7 +78,7 @@ class HttpRequestProcessor():
         if mimetype == '':
             mimetype = settings.DEFAULT_CONTENT_TYPE
         env = Environment(loader=FileSystemLoader(template_dirs),
-                          extensions=[CompressorExtension])
+                          extensions=[CompressorExtension, WithExtension])
         
         request_context = RequestContext(request, context)
         csrf = request_context.get('csrf_token')
@@ -94,7 +95,7 @@ class HttpRequestProcessor():
         if mimetype == '':
             mimetype = settings.DEFAULT_CONTENT_TYPE
         env = Environment(loader=FileSystemLoader(template_dirs),
-                          extensions=[CompressorExtension])
+                          extensions=[CompressorExtension, WithExtension])
         
         context['INTERNAL_IPS'] = settings.INTERNAL_IPS  
         context['ENABLE_GOOGLE_ANALYTICS'] = settings.ENABLE_GOOGLE_ANALYTICS   

@@ -576,10 +576,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
         data['category_name'] = 'All Categories'
     else:
         data['category_name'] = category
-        
-    data['category'] = category
-    data['jurisdiction'] = jurisdiction
-    data['jurisdiction_id'] = jurisdiction.id
 
     empty_data_fields_hidden = True
     if category != 'favorite_fields' and category != 'quirks':
@@ -591,13 +587,9 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
     else:
         empty_data_fields_hidden = False
     param = requestProcessor.getParameter('empty_data_fields_hidden')
-    print("edfh = " + str(empty_data_fields_hidden))
-    print("param = " + str(param))
     if param != None:
         empty_data_fields_hidden = param == "1"
-    print("edfh = " + str(empty_data_fields_hidden))
     data['empty_data_fields_hidden'] = 1 if empty_data_fields_hidden else 0
-    print("dedfh = " + str(data['empty_data_fields_hidden']))
 
     ajax = requestProcessor.getParameter('ajax')
     if ajax != None and ajax != '':
@@ -866,7 +858,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
         if (ajax == 'add_to_views'):
             view_obj = None
             user = request.user
-            if not user.is_authorized():
+            if not user.is_authenticated():
                 raise Http401
             entity_name = requestProcessor.getParameter('entity_name') 
             question_id = requestProcessor.getParameter('question_id') 
@@ -938,7 +930,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
         if (ajax == 'remove_from_views'):
             view_obj = None
             user = request.user
-            if not user.is_authorized():
+            if not user.is_authenticated():
                 raise Http401
             entity_name = requestProcessor.getParameter('entity_name') 
             question_id = requestProcessor.getParameter('question_id') 
@@ -1080,7 +1072,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                 confirmed = 'not_yet'
 
             feedback = validation_util_obj.process_vote(user, vote, entity_name, entity_id, confirmed)
-            #data['user'] = user
+
             if feedback == 'registered':
                 if entity_name == 'requirement':
                     answer = AnswerReference.objects.get(id=entity_id)
@@ -1136,6 +1128,10 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
 
     data['last_contributed_by']  = contributor       
     ###################################################
+
+    data['category'] = category
+    data['jurisdiction'] = jurisdiction
+    data['jurisdiction_id'] = jurisdiction.id
 
     data['nav'] = 'no'   
     data['current_nav'] = 'browse'    

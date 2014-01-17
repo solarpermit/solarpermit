@@ -113,7 +113,9 @@
             </span>
             <span style="float:left;">{{question['label'] | replace('[AHJ name]', jurisdiction.name) }}</span>
           </div>
-          {% include 'website/jurisdictions/ahj_actions.html' %}
+          {% with current_question_id = question['question_id'] %}
+            {% include 'website/jurisdictions/ahj_actions.html' %}
+          {% endwith %}
         </div>
         {% if question['description'] != None and question['description'] != '' %}
           <div style="float:left;width:100%" class="description">{{question['description']}}</div>
@@ -147,7 +149,6 @@
           <div style="float:left;width:100%;display:none" class="question_messages" id="question_messages_{{question_id}}"></div>
         {% endif %}
         {% for answer in question['answers'] %}
-          {% set answer_content = answer['content'] %} {# global variable required by included templates #}
           <div class="cssTable" style="float:left;width:100%;margin-bottom:20px">
             <div class="cssRow" id="qa_{{question_id}}_data">
             <div class="cssCell suggestion_left" style="">
@@ -179,11 +180,15 @@
                            data-qid="{{question_id}}">
                   </span>
                 {% endif %}
-                {% if answer['display_template'] == '' or question['display_template'] == None %}
-                  {% include 'website/jurisdictions/suggestion_display_template/single_field_display.html' %}
-                {% else %}
-                  {% include 'website/jurisdictions/suggestion_display_template/'+answer['display_template'] %}
-                {% endif %}
+                {% with %}
+                  {% set answer_content = answer['content'] %}
+                  {% set current_question_field_suffix = answer['field_suffix'] %}
+                  {% if answer['display_template'] == '' or question['display_template'] == None %}
+                    {% include 'website/jurisdictions/suggestion_display_template/single_field_display.html' %}
+                  {% else %}
+                    {% include 'website/jurisdictions/suggestion_display_template/'+answer['display_template'] %}
+                  {% endif %}
+                {% endwith %}
                 {% if answer['support_attachments'] | int == 1 %}
                   <div id="attachment_{{answer['id']}}" style="display:none"></div>
                 {% endif %}
@@ -230,7 +235,9 @@
               </div>
             </div>
             <div class="csscell suggestion_right">
-              {% include '/website/jurisdictions/ahj_answer_votes.html' %}
+              {% with current_answer_id = answer['id'] %}
+                {% include '/website/jurisdictions/ahj_answer_votes.html' %}
+              {% endwith %}
               {% if user.is_superuser == 1 and answer['approval_status'] != 'A' %}
                 <div>
                   <input id="approve_this_value_{{answer['id']}}"
