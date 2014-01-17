@@ -572,6 +572,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
     data = {}
     data['time'] = []
 
+    data['category'] = category
     if category == 'all_info':
         data['category_name'] = 'All Categories'
     else:
@@ -1129,7 +1130,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
     data['last_contributed_by']  = contributor       
     ###################################################
 
-    data['category'] = category
     data['jurisdiction'] = jurisdiction
     data['jurisdiction_id'] = jurisdiction.id
 
