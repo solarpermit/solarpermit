@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://solarpermit.org/" />
-<title>Upload</title>
+<title>Add_to_Favorites_star</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Upload</td></tr>
+<tr><td rowspan="1" colspan="3">Add_to_Favorites_star</td></tr>
 </thead><tbody>
 <tr>
 	<td>open</td>
@@ -17,45 +17,41 @@
 	<td></td>
 </tr>
 <tr>
+	<td>type</td>
+	<td>id=search_field</td>
+	<td>torrance, CA</td>
+</tr>
+<tr>
 	<td>clickAndWait</td>
-	<td>link=Upload your data</td>
+	<td>css=a.search-a</td>
 	<td></td>
 </tr>
 <tr>
-	<td>waitForTitle</td>
-	<td>About - National Solar Permitting Database</td>
+	<td>verifyElementPresent</td>
+	<td>css=img[alt=&quot;Add to Favorites&quot;]</td>
 	<td></td>
+</tr>
+<tr>
+	<td>mouseOver</td>
+	<td>id=edit_question_93</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=add_to_favorites_93</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>id=favorite_fields</td>
+	<td>Favorite Fields 1</td>
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>css=div.contentOnlyPage &gt; h1</td>
-	<td>Upload Bulk Data to SolarPermit.org</td>
+	<td>id=favorite_fields</td>
+	<td>Favorite Fields 1</td>
 </tr>
-<tr>
-	<td>assertElementPresent</td>
-	<td>name=upload</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertElementPresent</td>
-	<td>name=new_file_1</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertElementPresent</td>
-	<td>id=email_input</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertElementPresent</td>
-	<td>name=description</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertElementPresent</td>
-	<td>name=new_file_1</td>
-	<td></td>
-</tr>
+<!--z in the name forces this test to the end of the list because you must be logged in for this test to work-->
 </tbody></table>
 </body>
 </html>
