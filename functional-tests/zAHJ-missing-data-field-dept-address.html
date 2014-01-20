@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://solarpermit.org/" />
-<title>AHJ-missing-data-field-department-name</title>
+<title>zAHJ-missing-data-field-dept-address</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">AHJ-missing-data-field-department-name</td></tr>
+<tr><td rowspan="1" colspan="3">zAHJ-missing-data-field-dept-address</td></tr>
 </thead><tbody>
 <tr>
 	<td>open</td>
@@ -27,38 +27,48 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>id=empty_data_fields_hidden</td>
+	<td>mouseOver</td>
+	<td>id=child_of_div_4</td>
 	<td></td>
 </tr>
 <tr>
-	<td>mouseOver</td>
-	<td>id=child_of_div_93</td>
-	<td>30000</td>
-</tr>
-<tr>
 	<td>click</td>
-	<td>//div[@id='child_of_div_93']/div</td>
+	<td>//div[@id='child_of_div_4']/div</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>css=div.field_help_text</td>
-	<td>exact:What is the official name of the department in this jurisdiction that handle building permits for solar?</td>
+	<td>css=#form_field_add_address &gt; div.field_help_text</td>
+	<td>exact:What is the mailing address of this jurisdiction's building department?</td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>id=id_93</td>
-	<td>test</td>
+	<td>id=form_4_field_address1</td>
+	<td>123 test rd</td>
 </tr>
 <tr>
-	<td>verifyValue</td>
-	<td>id=save_93</td>
-	<td>Save</td>
+	<td>type</td>
+	<td>id=form_4_field_zip_code</td>
+	<td>12345</td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>id=id_93</td>
+	<td>id=form_4_field_address1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=form_4_field_address2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=form_4_field_zip_code</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=save_4</td>
 	<td></td>
 </tr>
 </tbody></table>
