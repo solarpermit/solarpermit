@@ -4,12 +4,12 @@
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="selenium.base" href="http://solarpermit.org/" />
-<title>Ticket_#1369</title>
+<title>zFavorites_and_Quirks_Counting_Incorrectly</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Ticket_#1369</td></tr>
+<tr><td rowspan="1" colspan="3">zFavorites_and_Quirks_Counting_Incorrectly</td></tr>
 </thead><tbody>
 <tr>
 	<td>open</td>
@@ -19,7 +19,7 @@
 <tr>
 	<td>type</td>
 	<td>id=search_field</td>
-	<td>wood river ne</td>
+	<td>Abbott, TX</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -27,44 +27,58 @@
 	<td></td>
 </tr>
 <tr>
-	<td>mouseOver</td>
-	<td>id=more_4</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=add_to_favorites_4</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=add_to_favorites_4</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=add_to_favorites_4</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=add_to_favorites_4</td>
-	<td></td>
-</tr>
-<tr>
 	<td>waitForText</td>
-	<td>id=favfieldscount</td>
-	<td>1</td>
+	<td>//div[@id='child_of_div_2']/div</td>
+	<td>Primary phone number</td>
 </tr>
 <tr>
-	<td>verifyText</td>
-	<td>id=favfieldscount</td>
-	<td>1</td>
+	<td>mouseOver</td>
+	<td>id=more_93</td>
+	<td></td>
 </tr>
-<!--The test is finished, the rest of the script just resets the form so the test will work next run.-->
 <tr>
 	<td>mouseOver</td>
 	<td>id=more_4</td>
+	<td></td>
+</tr>
+<tr>
+	<td>mouseOver</td>
+	<td>id=more_3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>mouseOver</td>
+	<td>id=more_2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>5000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=add_to_favorites_93</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=add_to_favorites_4</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=add_to_favorites_2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=add_to_favorites_3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>2000</td>
 	<td></td>
 </tr>
 <tr>
@@ -73,10 +87,51 @@
 	<td></td>
 </tr>
 <tr>
+	<td>verifyText</td>
+	<td>id=favfieldscount</td>
+	<td>4</td>
+</tr>
+<tr>
+	<td>mouseOver</td>
+	<td>id=more_93</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=remove_from_favorites_93</td>
+	<td></td>
+</tr>
+<tr>
+	<td>mouseOver</td>
+	<td>id=more_3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=remove_from_favorites_3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>mouseOver</td>
+	<td>id=more_4</td>
+	<td></td>
+</tr>
+<tr>
 	<td>click</td>
 	<td>id=remove_from_favorites_4</td>
 	<td></td>
 </tr>
+<tr>
+	<td>mouseOver</td>
+	<td>id=more_2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=remove_from_favorites_2</td>
+	<td></td>
+</tr>
+
 </tbody></table>
 </body>
 </html>
