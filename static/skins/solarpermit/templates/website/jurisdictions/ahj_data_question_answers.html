@@ -14,8 +14,7 @@
                                 <span style="float:left;" >{{this_question.get_field_label(jurisdiction) | capitalize }}</span>
                             </div>                  
                         </div> 
-                        {% set ahj_actions_template = 'website/jurisdictions/ahj_actions.html' %}
-                        {% include ahj_actions_template %}
+                        {% include 'website/jurisdictions/ahj_actions.html' %}
                     </div>
                     <div  class="cssRow "  id="qa_{{this_question.id}}_data" >       
                         <div class="cssCell>">
@@ -93,11 +92,9 @@
                                                     
                                                     <span>                         
                                         {% if this_question.display_template == '' or this_question.display_template == None %}
-                                            {% set template = 'website/jurisdictions/suggestion_display_template/single_field_display.html' %}
-                                            {% include template %}
+                                            {% include 'website/jurisdictions/suggestion_display_template/single_field_display.html' %}
                                         {% else %}
-                                            {% set template = 'website/jurisdictions/suggestion_display_template/'+this_question.display_template %}
-                                            {% include template %}
+                                            {% include 'website/jurisdictions/suggestion_display_template/'+this_question.display_template %}
                                         {% endif %}
                                         
                                          {% if this_question.support_attachments | int == 1 %}
@@ -130,7 +127,7 @@
                                                 
                                                 <div class="csscell suggestion_right" style="">
                                                 
-                                                {%    include '/website/blocks/votes.html'  %}
+                                                {% include '/website/blocks/votes.html' %}
                                             {% if user.is_superuser == 1 and this_answer.approval_status != 'A' %}
                                                 <div>
                                                     <input id="approve_this_value_{{this_answer.id}}" type="button" class="smallbutton approve_this_value" value="Approve this {{terminology}}" data-id="{{this_answer.id}}" data-terminology="{{terminology}}" >

@@ -14,8 +14,7 @@
         </div>
         
         {% if is_print == False %}
-            {% set ahj_actions_template = 'website/jurisdictions/ahj_actions.html' %}
-            {% include ahj_actions_template %}
+            {% include 'website/jurisdictions/ahj_actions.html' %}
        {% endif %}
         
             
@@ -107,11 +106,9 @@
                                     {% set answer_id = answer_obj.id %}
                                 {% endif %}
                                 {% if this_question.display_template == '' or this_question.display_template == None %}
-                                    {% set template = 'website/jurisdictions/suggestion_display_template/single_field_display.html' %}
-                                    {% include template %}
+                                    {% include 'website/jurisdictions/suggestion_display_template/single_field_display.html' %}
                                 {% else %}
-                                    {% set template = 'website/jurisdictions/suggestion_display_template/'+this_question.display_template %}
-                                    {% include template %}
+                                    {% include 'website/jurisdictions/suggestion_display_template/'+this_question.display_template %}
                                 {% endif %}
                                 
                                  {% if this_question.support_attachments | int == 1 %}
