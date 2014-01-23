@@ -61,7 +61,6 @@ else:
         (r'^organization/user/search/', 'website.views.organization.organization_user_search'),
         (r'^organization/members/', 'website.views.organization.organization_members'),
         (r'^organization/', 'website.views.organization.organization'),             
-        (r'^whitepapers/', 'website.views.whitepaper.papers'),   
         (r'^logout', account.log_out),      
         (r'^reset_password/(?P<reset_password_key>.*)/$', home.reset_password),       
         (r'^info/', info.get_info),  
