@@ -520,7 +520,7 @@ def view_AHJ_cqa_print(request, jurisdiction, category='all_info'):
     
     (question_ids, view) = get_questions_in_category(user, jurisdiction, category)
     data['view'] = view
-    records = get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, question_ids)
+    records = get_ahj_data(jurisdiction, category, user, question_ids)
 
     answers_contents = {}
     questions_have_answers = {}
@@ -1155,7 +1155,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
 
     (question_ids, view) = get_questions_in_category(user, jurisdiction, category)
     data['view'] = view
-    records = get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, question_ids = question_ids)
+    records = get_ahj_data(jurisdiction, category, user, question_ids = question_ids)
 
     answers_contents = {}
     #data_answer = {}
@@ -1892,7 +1892,7 @@ def get_questions_in_category(user, jurisdiction, category):
             category_questions = Question.objects.filter(accepted=1, category__in=category_objs).values('id').distinct()             
             return ([q.get('id') for q in category_questions], False)
 
-def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, question_ids = []):
+def get_ahj_data(jurisdiction, category, user, question_ids = []):
     placeholder = ",".join(["%s" for id in question_ids]) if question_ids else None
     query_str = '''SELECT * FROM   (
             SELECT
@@ -2015,9 +2015,6 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
                             )
                     )
             ) AS sorting_table
-            '''
-    if empty_data_fields_hidden != 1:
-        query_str += '''
     UNION SELECT
                    NULL AS id,
                    website_question.id AS question_id,
@@ -2074,10 +2071,10 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
             website_questioncategory.id = website_question.category_id
             '''
               
-        if placeholder:
-            query_str += '''AND website_question.id IN ('''+ placeholder + ''') '''
+    if placeholder:
+        query_str += '''AND website_question.id IN ('''+ placeholder + ''') '''
     
-        query_str += '''                
+    query_str += '''                
                     AND website_questioncategory.accepted = '1' 
                     AND website_question.accepted = '1'
             '''
@@ -2092,15 +2089,11 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
             create_datetime DESC,
             id DESC;
     '''
-    #print(empty_data_fields_hidden)
     query_params = []
     query_params.append(jurisdiction.id)
     if question_ids:
         for question_id in question_ids:
             query_params.append(question_id)
-        if empty_data_fields_hidden != 1:                
-            for question_id in question_ids:
-                query_params.append(question_id)
                       
     cursor = connections['default'].cursor()
     cursor.execute(query_str, query_params)

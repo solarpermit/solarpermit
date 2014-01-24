@@ -40,7 +40,10 @@
         {{ cqa[category_id]['cat_description'] | capitalize }}
       </div>
   
-      {% for question_id in cqa[category_id]['sorted_question_ids'] %}
+      {# execute for each question_id unless we're hiding empty questions, and the question has no answers #}
+      {% for question_id in cqa[category_id]['sorted_question_ids']
+                         if not (empty_data_fields_hidden and not
+                                 cqa[category_id]['questions'][question_id]['answers']) %}
         <div data-debug-question-id="{{question_id}}">
           {% set question = cqa[category_id]['questions'][question_id] %}
           {% if question['has_multivalues'] | int == 1 %}
