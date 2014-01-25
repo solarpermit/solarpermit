@@ -3046,3 +3046,10 @@ img {border:0;}
 
 }
 
+.sitemap ul {
+  padding: 0;
+}
+
+.sitemap li {
+  list-style-type: none
+}

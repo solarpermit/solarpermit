@@ -39,7 +39,7 @@ Install Instructions
        override
 5. Configure Database
     A. CREATE DATABASE solarpermit;
-    B. ./manage.py syncdb
+    B. ./manage.py syncdb (if this fails due to a missing SQL table, run migrate website)
     C. ./manage.py migrate website
 6. Restart Apache
       
