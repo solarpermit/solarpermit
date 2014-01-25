@@ -133,7 +133,7 @@ footer {
     border-top: 1px solid #bdbdbd;
 	padding: 10px 5px 0 5px;
 	margin: 20px 9px 20px 9px;
-	font-size: 10px;"
+	font-size: 10px;
     
 }
 footer p {
@@ -2968,7 +2968,7 @@ img {border:0;}
 
 .popular_jurs .header {
 	padding:15px 0 15px 0;
-	font-size:18px;"
+	font-size:18px;
 }
 
 .popular_jurs .content {
@@ -2985,7 +2985,7 @@ img {border:0;}
 
 .recently_updatd_jurs .header {
 	padding:15px 0 15px 0;
-	font-size:18px;"
+	font-size:18px;
 }
 
 .recently_updatd_jurs .content {
@@ -3056,3 +3056,10 @@ img {border:0;}
 
 }
 
+.sitemap ul {
+  padding: 0;
+}
+
+.sitemap li {
+  list-style-type: none
+}
