@@ -1,0 +1,21 @@
+test "Favorites_and_Quirks_Counting_Incorrectly" covers ticket #1369, #1352, #1361, #1348
+
+test Jurisdiction_with_no_info_rendering_correctly  covers ticket #1353
+
+test "Global_search_for_modesto_retunring_at_least_3_results" covers ticket #1160
+
+test "test/internal_links/Creat_an_Account/privacy_policy"
+cover ticket #420
+
+test "tests/search_function/Dallas_TX.html" covers ticket #899
+
+
+tests "Disclaimer/Privacy_Policy/ Terms_of_Use" cover ticket 
+#924
+
+test "Add_to_Favorites_star" checks for correct image name but still needs to be checked visualy for ticket #1107
+
+test "Prompt_User_to_join_an_Org" covers ticket #1123
+
+test create_an_account_exiting_popup_window covers ticket #1339
+
