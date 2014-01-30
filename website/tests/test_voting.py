@@ -55,57 +55,56 @@ class TestVoting(TestCase):
         self.assertIs(None, commands)
 
         # but once authenticated...
-        logged_in = client.login(username='testuser1',
+        logged_in = client.login(username='testuser0',
                                  password='testuser')
         self.assertTrue(logged_in)
 
         # must be able to vote up
-        self.do_test_vote(client, self.ahj[0], self.questions[0], 'up', 1, 0)
+        self.do_test_vote(client, self.ahj[0], self.answers[0], 'up', 1, 0)
         # but not more than once
-        self.do_test_vote(client, self.ahj[0], self.questions[0], 'up', 1, 0)
+        self.do_test_vote(client, self.ahj[0], self.answers[0], 'up', 1, 0)
 
         # must be able to vote down
-        self.do_test_vote(client, self.ahj[1], self.questions[0], 'down', 0, 1)
+        self.do_test_vote(client, self.ahj[1], self.answers[1], 'down', 0, 1)
         # but not more than once
-        self.do_test_vote(client, self.ahj[1], self.questions[0], 'down', 0, 1)
+        self.do_test_vote(client, self.ahj[1], self.answers[1], 'down', 0, 1)
 
         # votes from other users add up
+        logged_in = client.login(username='testuser1',
+                                 password='testuser')
+        self.assertTrue(logged_in)
+        self.do_test_vote(client, self.ahj[0], self.answers[0], 'down', 1, 1)
+        self.do_test_vote(client, self.ahj[1], self.answers[1], 'up', 1, 1)
+
+        ## votes from other users add up
         logged_in = client.login(username='testuser2',
                                  password='testuser')
         self.assertTrue(logged_in)
-        self.do_test_vote(client, self.ahj[0], self.questions[0], 'down', 1, 1)
-        self.do_test_vote(client, self.ahj[1], self.questions[0], 'up', 1, 1)
-
-        ## votes from other users add up
-        logged_in = client.login(username='testuser3',
-                                 password='testuser')
-        self.assertTrue(logged_in)
-        self.do_test_vote(client, self.ahj[0], self.questions[0], 'up', 2, 1)
-        self.do_test_vote(client, self.ahj[1], self.questions[0], 'down', 1, 2)
+        self.do_test_vote(client, self.ahj[0], self.answers[0], 'up', 2, 1)
+        self.do_test_vote(client, self.ahj[1], self.answers[1], 'down', 1, 2)
 
         ## votes on one question don't get counted for others
-        self.do_test_vote(client, self.ahj[0], self.questions[1], 'up', 1, 0)
-        self.do_test_vote(client, self.ahj[1], self.questions[1], 'down', 0, 1)
+        self.do_test_vote(client, self.ahj[0], self.answers[2], 'up', 1, 0)
+        self.do_test_vote(client, self.ahj[1], self.answers[3], 'down', 0, 1)
 
-    def do_test_vote(self, client, ahj, question, direction, up_votes, down_votes):
-        (status, commands) = vote(client, ahj, question, direction)
+    def do_test_vote(self, client, ahj, answer, direction, up_votes, down_votes):
+        (status, commands) = vote(client, ahj, answer, direction)
         self.assertEqual(status, 200)
         self.assertTrue(len(commands) >= 1)
         val = commands[0]["val"]
-        print(val)
-        self.assertIn(str(question.id),
+        self.assertIn(str(answer.id),
                       val["answers_votes"])
         self.assertEqual(ahj.id,
                          val["jurisdiction_id"])
         self.assertEqual(up_votes,
-                         val["answers_votes"][str(question.id)]["total_up_votes"])
+                         val["answers_votes"][str(answer.id)]["total_up_votes"])
         self.assertEqual(down_votes,
-                         val["answers_votes"][str(question.id)]["total_down_votes"])
+                         val["answers_votes"][str(answer.id)]["total_down_votes"])
 
-def vote(client, ahj, question, direction):
+def vote(client, ahj, answer, direction):
     res = client.post('/jurisdiction/%s/' % ahj.name_for_url,
                       { 'ajax': 'vote',
-                        'entity_id': question.id,
+                        'entity_id': answer.id,
                         'entity_name': 'requirement',
                         'vote': direction,
                         'confirmed': '' })
