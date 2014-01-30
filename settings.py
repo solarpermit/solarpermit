@@ -291,4 +291,7 @@ COMPRESS_JS_FILTERS = ['compressor.filters.closure.ClosureCompilerFilter']
 COMPRESS_CLOSURE_COMPILER_BINARY = '/usr/local/bin/closure'
 COMPRESS_CLOSURE_COMPILER_ARGUMENTS = '--language_in ECMASCRIPT5 --summary_detail_level 3'
 
+# do not run migrations during testing
+SOUTH_TESTS_MIGRATE=False
+
 from settings_local import *
