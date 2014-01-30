@@ -66,6 +66,8 @@
         	{% endfor%}
         {% endif %}
     </div>
+{% compress js %}
 	<script type='text/javascript'>
 {% include 'website/form_fields/org.js' %}   
 	</script>
+{% endcompress %}

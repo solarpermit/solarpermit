@@ -1,6 +1,16 @@
 {% extends "base.html" %}
+
+{% block jsdata %}
+<script type='text/javascript'>
+var CURRENT_JURISDICTION_ID = {{jurisdiction.id}},
+    CURRENT_JURISDICTION_IS_FAVORITE = {{jurisdiction.user_favorite_jurisdiction(user)}},
+    CURRENT_CATEGORY = "{{category}}",
+    SHOW_AHJ_MESSAGE = {{show_ahj_message}}
+</script>
+{% endblock %}
     
 {% block forejs %}
+{% compress js %}
 <script type='text/javascript'>
 $(document).ready(function() {
     $("#form_sign_in_submit_button").click(function (){
@@ -58,11 +68,14 @@ $(document).ready(function() {
     
     $('#favorite-a').tooltip({track: true});
     $(".atooltips").tooltip({track: true});    
-    {% if jurisdiction.user_favorite_jurisdiction(user) %}
-        $('#favorite-a').click(function(){controller.postRequest('/user_favorite/', {ajax:'remove_favorite', entity_id:{{jurisdiction.id}},  entity_name:'Jurisdiction'});return false;});
-    {% else %}
-        $('#favorite-a').click(function(){controller.postRequest('/user_favorite/', {ajax:'add_favorite', entity_id:{{jurisdiction.id}},  entity_name:'Jurisdiction'});return false;});
-    {% endif %}     
+    $('#favorite-a').click(function() {
+                             controller.postRequest('/user_favorite/',
+                                                    { ajax: CURRENT_JURISDICTION_IS_FAVORITE ? 'remove_favorite'
+                                                                                             : 'add_favorite',
+                                                      entity_id: CURRENT_JURISDICTION_ID,
+                                                      entity_name: 'Jurisdiction' });
+                             return false;
+                           });
     
             $('#empty_data_fields_hidden').click(function(event) { //alert('empty_data_fields_hidden');
                 var $target = $(event.target); 
@@ -93,6 +106,7 @@ $(document).ready(function() {
 
 });
 </script>
+{% endcompress %}
 {% endblock %}
 <!-- template jurisdiction_state_browse.html -->
 
@@ -111,11 +125,13 @@ $(document).ready(function() {
 {% endblock %}
 
 
-{% block page_title %}{{jurisdiction.get_jurisdiction_display('page_title')}}        <!-- jurisdiction_id = {{jurisdiction.id}} -->{% endblock %}
+{% block page_title %}{{jurisdiction.get_jurisdiction_display('page_title')}}        <!-- jurisdiction_id = CURRENT_JURISDICTION_ID -->{% endblock %}
 
 
 {% block forestyle %}
-    <link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css{{SOLARPERMIT_VERSION}}" />
+{% compress css %}
+    <link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css" />
+{% endcompress %}
 {% endblock %}
 
 
@@ -204,22 +220,22 @@ $(document).ready(function() {
 {% endblock %}
 
 {% block endjs %}
+{% compress js %}
 <script type='text/javascript'>             
     $(document).ready(function() {
         //console.log(Date.now()-timeStart);
         //$('#pageload_time').html((Date.now()-timerStart));
-        {% if show_ahj_message == True %}
-            controller.postRequest('.', {ajax: 'show_ahj_message', jurisdiction_id: {{jurisdiction.id}} });
-        {% endif %}             
+        if (SHOW_AHJ_MESSAGE)
+            controller.postRequest('.', {ajax: 'show_ahj_message', jurisdiction_id: CURRENT_JURISDICTION_ID });
 
-        controller.postRequest('.', {ajax: 'get_ahj_answers_votes', jurisdiction_id: {{jurisdiction.id}}, category:'{{category}}' });      
-        controller.postRequest('.', {ajax: 'get_ahj_questions_messages', jurisdiction_id: {{jurisdiction.id}}, category:'{{category}}' });  
-        controller.postRequest('.', {ajax: 'get_ahj_questions_actions', jurisdiction_id: {{jurisdiction.id}}, category:'{{category}}' });
-        controller.postRequest('.', {ajax: 'get_ahj_answers_validation_history_and_comments', jurisdiction_id: {{jurisdiction.id}}, category:'{{category}}' });  
-        controller.postRequest('.', {ajax: 'get_ahj_ahj_top_contributors', jurisdiction_id: {{jurisdiction.id}}, category:'{{category}}' });        
-        controller.postRequest('.', {ajax: 'get_ahj_answers_attachments', jurisdiction_id: {{jurisdiction.id}}, category:'{{category}}' });  
-        controller.postRequest('.', {ajax: 'get_ahj_num_quirks_favorites', jurisdiction_id: {{jurisdiction.id}}, category:'{{category}}' }); 
-        controller.postRequest('.', {ajax: 'get_ahj_answers_headings', jurisdiction_id: {{jurisdiction.id}}, category:'{{category}}' });         
+        controller.postRequest('.', {ajax: 'get_ahj_answers_votes', jurisdiction_id: CURRENT_JURISDICTION_ID, category: CURRENT_CATEGORY });      
+        controller.postRequest('.', {ajax: 'get_ahj_questions_messages', jurisdiction_id: CURRENT_JURISDICTION_ID, category: CURRENT_CATEGORY });  
+        controller.postRequest('.', {ajax: 'get_ahj_questions_actions', jurisdiction_id: CURRENT_JURISDICTION_ID, category: CURRENT_CATEGORY });
+        controller.postRequest('.', {ajax: 'get_ahj_answers_validation_history_and_comments', jurisdiction_id: CURRENT_JURISDICTION_ID, category: CURRENT_CATEGORY });  
+        controller.postRequest('.', {ajax: 'get_ahj_ahj_top_contributors', jurisdiction_id: CURRENT_JURISDICTION_ID, category: CURRENT_CATEGORY });        
+        controller.postRequest('.', {ajax: 'get_ahj_answers_attachments', jurisdiction_id: CURRENT_JURISDICTION_ID, category: CURRENT_CATEGORY });  
+        controller.postRequest('.', {ajax: 'get_ahj_num_quirks_favorites', jurisdiction_id: CURRENT_JURISDICTION_ID, category: CURRENT_CATEGORY }); 
+        controller.postRequest('.', {ajax: 'get_ahj_answers_headings', jurisdiction_id: CURRENT_JURISDICTION_ID, category: CURRENT_CATEGORY });         
                             
                                
         var $questionLabel = $('.qasv_content.need_tooltip')
@@ -740,7 +756,7 @@ $(document).ready(function() {
 
     
     function process_ahj_actions(data) {
-        var category = '{{category}}';
+        var category = CURRENT_CATEGORY;
         questions_actions = data['questions_actions'];
         quirk_questions = questions_actions['quirk_questions'];
         favorite_questions = questions_actions['favorite_questions'];
@@ -800,4 +816,5 @@ $(document).ready(function() {
         });
     });
 </script>
+{% endcompress %}
 {% endblock %}

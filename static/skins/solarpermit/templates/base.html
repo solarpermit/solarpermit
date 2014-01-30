@@ -4,33 +4,43 @@
 	<meta charset="utf-8">
 	<title>{% block title %}{% endblock %} - National Solar Permitting Database</title>
 	
-{% include "website/blocks/canonical_url.html" %}
+        {% include "website/blocks/canonical_url.html" %}
 
-{% block forestyle %}
-	
-{% endblock %}
-
-	
-{% include "website/fancybox_stylesheets.html" %}
-
-
-	<link rel="stylesheet" type="text/css" href="/media/style/main.css{{SOLARPERMIT_VERSION}}" />
-	<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css{{SOLARPERMIT_VERSION}}" />
-	<link rel="stylesheet" type="text/css" href="/media/style/jquery-ui-1.10.1.custom.css{{SOLARPERMIT_VERSION}}" />
-	<link href="/media/style/fileuploader.css{{SOLARPERMIT_VERSION}}" rel="stylesheet" type="text/css" />	
+        {% block forestyle %}{% endblock %}
+        {% compress css %}
+        {% include "website/fancybox_stylesheets.html" %}
+	<link rel="stylesheet" type="text/css" href="/media/style/main.css" />
+	<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css" />
+	<link rel="stylesheet" type="text/css" href="/media/style/jquery-ui-1.10.1.custom.css" />
+	<link href="/media/style/fileuploader.css" rel="stylesheet" type="text/css" />	
 	<link rel="shortcut icon" href="/media/images/solarpermit_favicon.png" />
+        {% endcompress %}
 
-	<script src="/media/js/jquery-1.7.2.min.js{{SOLARPERMIT_VERSION}}"></script>	
-	<script src="/media/js/jquery.validate.js{{SOLARPERMIT_VERSION}}"></script>
-	<script src="/media/js/additional-methods.js{{SOLARPERMIT_VERSION}}"></script>
-	<script src="/media/js/jquery.simplemodal.js{{SOLARPERMIT_VERSION}}"></script>
-	<script src="/media/js/jquery.jscroll.custom.js{{SOLARPERMIT_VERSION}}"></script>	
-	<script src="/media/js/controller.js{{SOLARPERMIT_VERSION}}"></script>
-	<script src="/media/js/jquery.dajax.core.js{{SOLARPERMIT_VERSION}}"></script>
-	<script src="/media/js/jquery-ui-1.10.1.custom.min.js{{SOLARPERMIT_VERSION}}"></script>
-	<script src="/media/js/fileuploader.js{{SOLARPERMIT_VERSION}}"></script>			
+        <script type="text/javascript">
+                var True = true, False = false; // admittedly this is a little silly
+                var js_csrf = '{{csrf_token}}',
+                    IS_AUTHENTICATED = {{request.user.is_authenticated()}};
+                    PASSWORD_RESET_KEY = '{{reset_password_key}}',
+                    INVITATION_KEY = '{{invitation_key}}',
+                    CURRENT_ORGID = '{{orgid}}',
+                    SYSTEM_MESSAGE = { type: '{{system_message_type}}',
+                                       text: '{{system_message_text}}' },
+                    ACTION_KEY = '{{action_key}}';
+        </script>
+        {% block jsdata %}{% endblock %}
+
+        {% compress js %}
+	<script src="/media/js/jquery-1.7.2.min.js"></script>	
+	<script src="/media/js/jquery.validate.js"></script>
+	<script src="/media/js/additional-methods.js"></script>
+	<script src="/media/js/jquery.simplemodal.js"></script>
+	<script src="/media/js/jquery.jscroll.custom.js"></script>	
+	<script src="/media/js/controller.js"></script>
+	<script src="/media/js/jquery.dajax.core.js"></script>
+	<script src="/media/js/jquery-ui-1.10.1.custom.min.js"></script>
+	<script src="/media/js/fileuploader.js"></script>			
 	
-	<script type="text/javascript" src="/media/js/flexcomplete/jquery.flexcomplete.js{{SOLARPERMIT_VERSION}}"></script>
+	<script type="text/javascript" src="/media/js/flexcomplete/jquery.flexcomplete.js"></script>
 	
 	<!--[if lt IE 9]>
 		<script>
@@ -44,14 +54,10 @@
 			document.createElement('hgroup');
 		</script>
 	<![endif]-->
-
-{% block forejs %}{% endblock %}
-	
+        {% endcompress %}
+        {% block forejs %}{% endblock %}
+	{% compress js %}
 	<script type="text/javascript">
-		
-		var js_csrf = '{{csrf_token}}';
-
-			
 		function reload_page()
 		{
 			location.reload();
@@ -147,14 +153,14 @@
 		{	
 			if (action_key == 'reset_password')
 			{	
-				controller.postRequest('.', {ajax: 'launch_reset_password', reset_password_key: '{{reset_password_key}}'}); 
+				controller.postRequest('.', {ajax: 'launch_reset_password', reset_password_key: RESET_PASSWORD_KEY}); 
 			}
 
 			if (action_key == 'create_account')
 			{	
-				{% if request.user.is_authenticated() == False %}
-				controller.postRequest('/account/', {ajax: 'create_account', invitation_key: '{{invitation_key}}'});
-				{% endif %} 
+                                if (!IS_AUTHENTICATED) {
+                                        controller.postRequest('/account/', {ajax: 'create_account', invitation_key: INVITATION_KEY});
+                                }
 			}		
 
 			if (action_key == "user_profile")
@@ -164,10 +170,10 @@
 			
 			if (action_key == "request_org")
 			{
-				controller.postRequest('/organization/', {ajax: 'open_org_details', orgid: '{{orgid}}'});
+				controller.postRequest('/organization/', {ajax: 'open_org_details', orgid: CURRENT_ORGID});
 			}
 			
-			controller.showMessage('{{system_message_text}}', '{{system_message_type}}');
+			controller.showMessage(SYSTEM_MESSAGE.text, SYSTEM_MESSAGE.type);
 
 		}
 	</script>
@@ -175,7 +181,7 @@
 	<script type='text/javascript'>
 		
 		$(document).ready(function() {
-			onload('{{action_key}}'); {# // moved from onload attribute in body tag #}
+			onload(ACTION_KEY); {# // moved from onload attribute in body tag #}
 			
 			$('.headRight #create_account_button').click(function() {
 				controller.postRequest('/account/', {ajax: 'create_account'}); return false;
@@ -287,7 +293,7 @@
 		});
 	</script>
 	<!--[if lte IE 9]>
-	<script type="text/javascript" src="/media/js/placeholder_ie_fix.js{{SOLARPERMIT_VERSION}}"></script>
+	<script type="text/javascript" src="/media/js/placeholder_ie_fix.js"></script>
 	<script type='text/javascript'>
 	$(document).ready(function() {
 	    placeholder_ie_fix('#search_field');
@@ -295,6 +301,7 @@
 	});
 	</script>
 	<![endif]-->
+{% endcompress %}
 </head>
 
 <body>
@@ -329,18 +336,10 @@
 	
 {% block body %}{% endblock %}
 
-
-{% block endjs %}{% endblock %}
-	
-
 {% block dialog %}
 {% include "base_message_dialog.html" %}
 {% include "base_info_dialog.html" %}
 {% endblock %}
-
-
-{% include "website/fancybox_scripts.html" %}
-
 
 {% include "website/blocks/system_message.html" %}
 
@@ -353,6 +352,12 @@
 	</div><!-- propper close of main-wrapper -->
 
 {% include "website/footer.html" %}
+
+{% compress js %}
+{% include "website/fancybox_scripts.html" %}
+{% endcompress %}
+{% block endjs %}{% endblock %}
+
 {# close comment tags on lines 340 and 353 to active tracking code #}
 {% if ENABLE_GOOGLE_ANALYTICS %}
 {# Analytics Tracking Code #}
@@ -383,7 +388,7 @@
 		})();
 	</script>
 {# Marketo Tracking Code #}
-	<script type="text/javascript">document.write(unescape("%3Cscript src='" + document.location.protocol + "//munchkin.marketo.net/munchkin.js{{SOLARPERMIT_VERSION}}' type='text/javascript'%3E%3C/script%3E"));</script>
+	<script type="text/javascript">document.write(unescape("%3Cscript src='" + document.location.protocol + "//munchkin.marketo.net/munchkin.js' type='text/javascript'%3E%3C/script%3E"));</script>
 	<script>Munchkin.init('464-OTD-366');</script>
 {% endif %}
 

@@ -106,6 +106,7 @@ STATICFILES_DIRS = (
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
+    'compressor.finders.CompressorFinder',
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
@@ -188,8 +189,10 @@ INSTALLED_APPS = (
     'djkombu',
     'followit',  
     'sorl.thumbnail',
-    'dajax',    
+    'dajax',
     'website',
+    'compressor',
+    'django_extensions',
     #'debug_toolbar',    
 )
 
@@ -278,5 +281,17 @@ MAINTENANCE_MODE = False #set to true to put the whole site into maintenace mode
 PAGE_COLUMNS = 5 #number of columns in multiple column listing page
 
 #EXCLUDED_ORGS_FROM_GOOGLE_ANALYTICS = [1]   # org id numbers
+
+COMPRESS_ENABLED = True
+COMPRESS_URL = '/media/'
+COMPRESS_ROOT = os.path.join(PROJECT_ROOT, 'static/skins/solarpermit/media')
+COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',
+                        'compressor.filters.cssmin.CSSMinFilter']
+COMPRESS_JS_FILTERS = ['compressor.filters.closure.ClosureCompilerFilter']
+COMPRESS_CLOSURE_COMPILER_BINARY = '/usr/local/bin/closure'
+COMPRESS_CLOSURE_COMPILER_ARGUMENTS = '--language_in ECMASCRIPT5 --summary_detail_level 3'
+
+# do not run migrations during testing
+SOUTH_TESTS_MIGRATE=False
 
 from settings_local import *

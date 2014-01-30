@@ -3,8 +3,9 @@
 
 {% block title %}Home{% endblock %}
 {% block forestyle %}
+        {% compress css %}
 {#	<!--link rel="stylesheet" type="text/css" href="/media/style/page.css" /-->
-	<link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css{{SOLARPERMIT_VERSION}}" />
+	<link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css" />
 	<style>
 		{% if login != 'True' %}
 		#carousel { width: 700px; height: 380px; }
@@ -257,9 +258,6 @@
 {# EO hiding unused element #}
 
 {# Modifying existing styling rules #}
-		body {
-			padding: 108px 0 0 0 !important;
-		}
 		#keep_me_signed_in {
 			margin-left: 0;
 		}
@@ -348,12 +346,13 @@
 {# EO home page content #}
 
 	</style>
+        {% endcompress %}
 {% endblock %}
 
 {% block forejs %}
-	<script src="/media/js/raphael.js{{SOLARPERMIT_VERSION}}"></script>
-	<script src="/media/js/color.jquery.js{{SOLARPERMIT_VERSION}}"></script>
-	<script src="/media/js/jquery.usmap.js{{SOLARPERMIT_VERSION}}"></script>
+	<script src="/media/js/raphael.js"></script>
+	<script src="/media/js/color.jquery.js"></script>
+	<script src="/media/js/jquery.usmap.js"></script>
 	<script type="text/javascript">
 			function submit_form(form_id) {   
 				document.getElementById(form_id).submit();
@@ -382,7 +381,7 @@
 #}
 	</script>
 {#	
-	<script type='text/javascript' src="/media/js/jquery.anythingslider.js{{SOLARPERMIT_VERSION}}"></script>
+	<script type='text/javascript' src="/media/js/jquery.anythingslider.js"></script>
 #}
 	<script type="text/javascript">
 	

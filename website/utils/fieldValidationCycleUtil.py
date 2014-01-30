@@ -753,7 +753,6 @@ class FieldValidationCycleUtil():
                         status = 'will_reject'
         except:
             pass
-        print status
         return status
     
     def get_jurisdiction_voting_info_by_category(self, category_name, jurisdiction, entity_category, question = None):
