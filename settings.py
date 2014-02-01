@@ -300,6 +300,6 @@ SOUTH_TESTS_MIGRATE=False
 TRACK_AJAX_REQUESTS = True
 TRACK_ANONYMOUS_USERS = True
 TRACK_PAGEVIEWS = True
-TRACK_IGNORE_URLS = ['tracking']
+TRACK_IGNORE_URLS = ['tracking', 'admin']
 
 from settings_local import *
