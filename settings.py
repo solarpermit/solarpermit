@@ -124,6 +124,7 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
+    'tracking.middleware.VisitorTrackingMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -194,6 +195,7 @@ INSTALLED_APPS = (
     'compressor',
     'django_extensions',
     #'debug_toolbar',    
+    'tracking',
 )
 
 #setup memcached for production use!
@@ -293,5 +295,11 @@ COMPRESS_CLOSURE_COMPILER_ARGUMENTS = '--language_in ECMASCRIPT5 --summary_detai
 
 # do not run migrations during testing
 SOUTH_TESTS_MIGRATE=False
+
+# django-tracking2
+TRACK_AJAX_REQUESTS = True
+TRACK_ANONYMOUS_USERS = True
+TRACK_PAGEVIEWS = True
+TRACK_IGNORE_URLS = ['tracking']
 
 from settings_local import *

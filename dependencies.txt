@@ -33,3 +33,4 @@ compressor
 cssmin
 closure
 coffin
+git+https://github.com/eel/django-tracking2.git
