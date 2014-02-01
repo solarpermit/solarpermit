@@ -2,7 +2,8 @@ from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 import json
 import datetime
-from website.models import UserPageView, Jurisdiction, JurisdictionRating
+from tracking.models import Pageview, Visitor
+from website.models import Jurisdiction
 
 class Command(BaseCommand):
     args = 'No argument needed'
@@ -14,11 +15,11 @@ class Command(BaseCommand):
         jurisdiction_unique_users = {}
         
         #find all the UserPageView for the last 7 days
-        today = datetime.date.today()
-        d = datetime.timedelta(days=-8)
+        today = datetime.datetime.now()
+        d = datetime.timedelta(hours=-24)
         start_date = today + d
-        print 'Updating most popular jurisdictions for days after: ' + str(start_date)
-        user_page_views = UserPageView.objects.filter(last_page_view_date__gt=start_date)
+        #print 'Updating most popular jurisdictions for days after: ' + str(start_date)
+        user_page_views = Pageview.objects.filter(view_time__gt=start_date)
         #print 'Number of user page views: ' + str(len(user_page_views))
         
         for user_page_view in user_page_views:
@@ -44,8 +45,8 @@ class Command(BaseCommand):
                     jurisdiction_unique_users[jurisdiction.id]
                 except:
                     jurisdiction_unique_users[jurisdiction.id] = []
-                if user_page_view.user.id not in jurisdiction_unique_users[jurisdiction.id]:
-                    jurisdiction_unique_users[jurisdiction.id].append(user_page_view.user.id)
+                if user_page_view.visitor.session_key not in jurisdiction_unique_users[jurisdiction.id]:
+                    jurisdiction_unique_users[jurisdiction.id].append(user_page_view.visitor.session_key)
                 #print 'jurisdiction_unique_users' + str(jurisdiction_unique_users)
             
         #find the jurisdiction with most unique users
@@ -56,16 +57,16 @@ class Command(BaseCommand):
         jurisdiction_unique_users_counts = jurisdiction_unique_users_counts[0:10] #only top 10
         
         #save data in JurisdictionRating
-        jurisdiction_ratings = JurisdictionRating.objects.filter(rating_type='V')
-        for jurisdiction_rating in jurisdiction_ratings:
-            jurisdiction_rating.delete()
+        #jurisdiction_ratings = JurisdictionRating.objects.filter(rating_type='V')
+        #for jurisdiction_rating in jurisdiction_ratings:
+        #    jurisdiction_rating.delete()
         rank = 1
         for jid, count in jurisdiction_unique_users_counts:
-            jurisdiction_rating = JurisdictionRating(rating_type='V', rank=rank, value=count)
+        #    jurisdiction_rating = JurisdictionRating(rating_type='V', rank=rank, value=count)
             jurisdiction = Jurisdiction.objects.get(id=jid)
-            jurisdiction_rating.jurisdiction = jurisdiction
-            jurisdiction_rating.create_datetime = today
-            jurisdiction_rating.save()
+        #    jurisdiction_rating.jurisdiction = jurisdiction
+        #    jurisdiction_rating.create_datetime = today
+        #    jurisdiction_rating.save()
             print str(rank) + ': ' +jurisdiction.show_jurisdiction() + ', unique views: ' + str(count)
             rank += 1
         
