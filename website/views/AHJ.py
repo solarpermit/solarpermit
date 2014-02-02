@@ -867,14 +867,15 @@ def view_AHJ_cqa(request, jurisdiction_id, category='all_info'):
                     
             return HttpResponse(dajax.json())      
             
-        
-        
         if (ajax == 'add_to_views'):
             view_obj = None
             user = request.user
-            entity_name = requestProcessor.getParameter('entity_name') 
-            question_id = requestProcessor.getParameter('question_id') 
-          
+            entity_name = requestProcessor.getParameter('entity_name')
+            try:
+                question_id = int(requestProcessor.getParameter('question_id'))
+            except:
+                raise Http404
+
             if entity_name == 'quirks':
                 view_objs = View.objects.filter(view_type = 'q', jurisdiction = jurisdiction)
                 if len(view_objs) > 0:
@@ -886,7 +887,7 @@ def view_AHJ_cqa(request, jurisdiction_id, category='all_info'):
                     view_obj.view_type = 'q'
                     view_obj.jurisdiction_id = jurisdiction.id
                     view_obj.save()
-                        
+
             elif entity_name == 'favorites':
                 view_objs = View.objects.filter(view_type = 'f', user = request.user)
                 if len(view_objs) > 0:
@@ -897,47 +898,47 @@ def view_AHJ_cqa(request, jurisdiction_id, category='all_info'):
                     view_obj.description = 'Favorite Fields'
                     view_obj.view_type = 'f'
                     view_obj.user_id = request.user.id
-                    view_obj.save()            
-                
+                    view_obj.save()
+
             if view_obj != None:
                 view_questions_objs = ViewQuestions.objects.filter(view = view_obj).order_by('-display_order')
                 if len(view_questions_objs) > 0:
                     highest_display_order = view_questions_objs[0].display_order
                 else:
                     highest_display_order = 0
-                        
-                view_questions_obj = ViewQuestions()
-                view_questions_obj.view_id = view_obj.id
-                view_questions_obj.question_id = question_id
-                view_questions_obj.display_order = int(highest_display_order) + 5
-                view_questions_obj.save()
-                
+                if not question_id in [vq.question.id for vq in view_questions_objs]:
+                    view_questions_obj = ViewQuestions()
+                    view_questions_obj.view_id = view_obj.id
+                    view_questions_obj.question_id = question_id
+                    view_questions_obj.display_order = int(highest_display_order) + 5
+                    view_questions_obj.save()
+
             view_questions_obj = ViewQuestions()
             if entity_name == 'quirks':
                 quirks = view_questions_obj.get_jurisdiction_quirks(jurisdiction)
-                    
-                data['quirk_number_of_questions'] = 0    
+
+                data['quirk_number_of_questions'] = 0
                 if 'view_questions' in quirks:
-                    data['quirk_number_of_questions'] = len(quirks['view_questions'])    
-                        
+                    data['quirk_number_of_questions'] = len(quirks['view_questions'])
+
                 # update the quirks or the favorite fields count
-                dajax.assign('#quirkcount','innerHTML', data['quirk_number_of_questions']) 
-                dajax.assign('#quirk_'+str(question_id),'innerHTML', 'Added to quirks')                    
-                            
-            elif entity_name == 'favorites':        
-                data['user_number_of_favorite_fields'] = 0    
+                dajax.assign('#quirkcount','innerHTML', data['quirk_number_of_questions'])
+                dajax.assign('#quirk_'+str(question_id),'innerHTML', 'Added to quirks')
+
+            elif entity_name == 'favorites':
+                data['user_number_of_favorite_fields'] = 0
                 if request.user.is_authenticated():
                     user_obj = User.objects.get(id=request.user.id)
                     if user_obj != None:
                         user_favorite_fields = view_questions_obj.get_user_favorite_fields(user_obj)
                         if 'view_questions' in user_favorite_fields:
-                            data['user_number_of_favorite_fields'] = len(user_favorite_fields['view_questions'])             
-                               
+                            data['user_number_of_favorite_fields'] = len(user_favorite_fields['view_questions'])
+
                     # update the quirks or the favorite fields count
-                    dajax.assign('#favfieldscount','innerHTML', data['user_number_of_favorite_fields']) 
-                    dajax.assign('#favorite_field_'+str(question_id),'innerHTML', 'Added to favorite fields')  
-                
-            return HttpResponse(dajax.json())  
+                    dajax.assign('#favfieldscount','innerHTML', data['user_number_of_favorite_fields'])
+                    dajax.assign('#favorite_field_'+str(question_id),'innerHTML', 'Added to favorite fields')
+
+            return HttpResponse(dajax.json())
             
         if (ajax == 'remove_from_views'):
             view_obj = None
@@ -1423,8 +1424,6 @@ def view_AHJ_cqa(request, jurisdiction_id, category='all_info'):
                 for question_id in question_ids:
                     query_params.append(question_id)
                           
-        print query_str
-        print query_params
         cursor = connections['default'].cursor()
         #try:
         cursor.execute(query_str, query_params)
@@ -3226,8 +3225,6 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
             placeholder += '%s,'
                 
         placeholder = placeholder.rstrip(',')
-        print 'placeholder :: ' + str(placeholder)
-        
             
     if category == 'all_info' or len(question_ids) > 0:
 

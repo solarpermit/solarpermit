@@ -65,7 +65,6 @@ class TestFavoritesAndQuirks(TestCase):
 
         # then it should work
         (status, content) = add_to_favorites(client, self.ahj[0], self.questions[0])
-        print('content=%s' % content)
         self.assertEqual(200, status)
         self.assertEqual("as", content[0]['cmd'])
         self.assertEqual("#favfieldscount", content[0]['id'])
@@ -73,7 +72,6 @@ class TestFavoritesAndQuirks(TestCase):
 
         # but not twice
         (status, content) = add_to_favorites(client, self.ahj[0], self.questions[0])
-        print('content=%s' % content)
         self.assertEqual(200, status)
         self.assertEqual("as", content[0]['cmd'])
         self.assertEqual("#favfieldscount", content[0]['id'])
@@ -81,7 +79,6 @@ class TestFavoritesAndQuirks(TestCase):
 
         # removing them should work
         (status, content) = remove_from_favorites(client, self.ahj[0], self.questions[0])
-        print('content=%s' % content)
         self.assertEqual(200, status)
         self.assertEqual("as", content[0]['cmd'])
         self.assertEqual("#favfieldscount", content[0]['id'])
@@ -89,14 +86,51 @@ class TestFavoritesAndQuirks(TestCase):
 
         # but twice should do no harm
         (status, content) = remove_from_favorites(client, self.ahj[0], self.questions[0])
-        print('content=%s' % content)
         self.assertEqual(200, status)
         self.assertEqual("as", content[0]['cmd'])
         self.assertEqual("#favfieldscount", content[0]['id'])
         self.assertEqual('0', content[0]['val'])
 
     def test_quirks(self):
-        42
+        client = Client()
+
+        # shouldn't work when we're not logged in
+        (status, content) = add_to_quirks(client, self.ahj[0], self.questions[0])
+        self.assertEqual(200, status)
+        self.assertEqual(None, content)
+
+        # but once authenticated...
+        logged_in = client.login(username='testuser0',
+                                 password='testuser')
+        self.assertTrue(logged_in)
+
+        # then it should work
+        (status, content) = add_to_quirks(client, self.ahj[0], self.questions[0])
+        self.assertEqual(200, status)
+        self.assertEqual("as", content[0]['cmd'])
+        self.assertEqual("#quirkcount", content[0]['id'])
+        self.assertEqual('1', content[0]['val'])
+
+        # but not twice
+        (status, content) = add_to_quirks(client, self.ahj[0], self.questions[0])
+        self.assertEqual(200, status)
+        self.assertEqual("as", content[0]['cmd'])
+        self.assertEqual("#quirkcount", content[0]['id'])
+        self.assertEqual('1', content[0]['val'])
+
+        # removing them should work
+        (status, content) = remove_from_quirks(client, self.ahj[0], self.questions[0])
+        self.assertEqual(200, status)
+        self.assertEqual("as", content[0]['cmd'])
+        self.assertEqual("#quirkcount", content[0]['id'])
+        self.assertEqual('0', content[0]['val'])
+
+        # but twice should do no harm
+        (status, content) = remove_from_quirks(client, self.ahj[0], self.questions[0])
+        self.assertEqual(200, status)
+        self.assertEqual("as", content[0]['cmd'])
+        self.assertEqual("#quirkcount", content[0]['id'])
+        self.assertEqual('0', content[0]['val'])
 
 def add_to_favorites(client, ahj, question):
     return add_to_view(client, ahj, question, 'favorites')
@@ -109,9 +143,9 @@ def remove_from_quirks(client, ahj, question):
     return remove_from_view(client, ahj, question, 'quirks')
 
 def add_to_view(client, ahj, question, view_name):
-    return edit_view(client, 'add_to_view', ahj, question, view_name)
+    return edit_view(client, 'add_to_views', ahj, question, view_name)
 def remove_from_view(client, ahj, question, view_name):
-    return edit_view(client, 'remove_from_view', ahj, question, view_name)
+    return edit_view(client, 'remove_from_views', ahj, question, view_name)
 
 def edit_view(client, ajax, ahj, question, view_name):
     res = client.post('/jurisdiction/%s/' % ahj.name_for_url,
