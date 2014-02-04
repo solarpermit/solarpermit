@@ -117,6 +117,11 @@ else:
             
         #### api calls
         (r'^api1/', 'website.views.api.searchState'))
+        
+        #### reporting pages
+        (r'^reporting/$', 'website.views.reporting.report_index'),
+        (r'^reporting/(?P<question_id>\d+)/$', 'website.views.reporting.report_on'),
+        
     ## admin
     urlpatterns += patterns('',
                             url(r'^siteadmin/',
