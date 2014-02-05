@@ -1451,7 +1451,7 @@ qq.extend(qq.UploadHandlerForm.prototype, {
         // Because in this case file won't be attached to request
         var protocol = this._options.demoMode ? "GET" : "POST"
         	
-        if (typeof params['csrfmiddlewaretoken'] !== "undefined"){
+    	if (typeof params['csrfmiddlewaretoken'] !== "undefined"){
         	var form = qq.toElement('<form method="' + protocol + '" enctype="multipart/form-data"><input type="hiddle" name="csrfmiddlewaretoken" value="'+params['csrfmiddlewaretoken']+'"/></form>');
         }else{
         	var form = qq.toElement('<form method="' + protocol + '" enctype="multipart/form-data"></form>');

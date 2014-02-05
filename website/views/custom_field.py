@@ -10,7 +10,6 @@ from django.core.mail.message import EmailMessage
 from django.shortcuts import render, redirect
 
 from website.utils.mathUtil import MathUtil
-from website.utils.paginationUtil import PaginationUtil
 #from website.models import Jurisdiction
 
 from django.contrib.auth.models import User
@@ -29,6 +28,8 @@ from website.utils.messageUtil import MessageUtil
 
 from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
 from django.db.models import Max
+
+from website.views.AHJ import get_question_data, get_ahj_top_contributors
 
 def custom_field(request):
     data = {}
@@ -81,7 +82,7 @@ def custom_field(request):
                     jurisdiction = Jurisdiction.objects.get(id=data['jurisdiction_id'])
                     
                     # look up template CF for this jurisdiction
-                    templates = Template.objects.filter(jurisdiction=jurisdiction, template_type__iexact='CF')
+                    templates = Template.objects.filter(jurisdiction=jurisdiction, template_type__iexact='CF', accepted = 1)
                     if len(templates) > 0:
                         template = templates[0]
                     else:
@@ -90,6 +91,7 @@ def custom_field(request):
                         template.name = 'Jurisdiction Custom Field Template'
                         template.jurisdiction_id = data['jurisdiction_id']
                         #template.create_datetime = datetime.datetime.now()
+                        template.accepted = 1
                         template.save()
                     # create the question
 
@@ -188,12 +190,29 @@ def custom_field(request):
                
                     
                 data_cf['action'] = '/jurisdiction_id/'+str(jurisdiction.id)+'/'+current_category+'/'
-                current_questions = current_questions.split(',')
-                data_cf['custom_questions'] = Question.objects.filter(category=category_obj, accepted=1, qtemplate__in=jurisdiction_templates).exclude(id__in=(current_questions))
+                current_questions = current_questions.strip()
+                current_questions_list = current_questions.split(' ')
+                if len(current_questions_list) > 0:
+                    
+                    questions = Question.objects.filter(category=category_obj, accepted=1, qtemplate__in=jurisdiction_templates).exclude(id__in=(current_questions_list))
+                else:
+                    questions = Question.objects.filter(category=category_obj, accepted=1, qtemplate__in=jurisdiction_templates)
+                
+                '''
+                data_cf['custom_questions'] = Question.objects.filter(category=category_obj, accepted=1, qtemplate__in=jurisdiction_templates).exclude(id__in=(current_questions))                
                 body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_question_content_ajax_call.html', data_cf, '')                        
                 dajax.assign('#div_custom_question_content_'+str(category_obj.id),'innerHTML', body)
                 script = requestProcessor.decode_jinga_template(request, 'website/jurisdictions/AHJ_question_content_ajax_call.js', data_cf, '')
                 dajax.script(script)                                             
+                '''
+                  
+                data_cf = get_question_data(request, jurisdiction, question_obj, data)
+                body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_cqa_qa.html', data_cf, '')
+                script = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_cqa_qa.js' , data, '')
+                dajax.script(script)                                                   
+            
+                dajax.assign('#div_custom_question_content_'+str(data['category_id']),'innerHTML', body)    
+                        
                         ######################################################               
                       
                 #data['custom_questions'] = custom_questions
@@ -206,6 +225,7 @@ def custom_field(request):
                 dajax.script("controller.showMessage('Custom field created.', 'success')") 
                 dajax.script('controller.updateUrlAnchor("#create_custom_field");')
                 
+                data = {}
                 if current_category == 'all_info':
                     question_categories = QuestionCategory.objects.filter(accepted=1)
                     data['category'] = 'All categories'
@@ -215,10 +235,16 @@ def custom_field(request):
 
                 #data['category'] = question_obj.category.name
                 data['jurisdiction'] = jurisdiction
+                '''
                 validation_util_obj = FieldValidationCycleUtil()   
                 data['top_contributors'] = validation_util_obj.get_top_contributors(jurisdiction, question_categories)  
-                body = requestProcessor.decode_jinga_template(request,'website/blocks/top_contributors.html', data, '')   
-                dajax.assign('#top_contributors','innerHTML', body)                
+                body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_top_contributors.html', data, '')   
+                dajax.assign('#top-contributor','innerHTML', body)       
+                '''
+                
+                data['top_contributors'] = get_ahj_top_contributors(jurisdiction, current_category)  
+                body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_top_contributors.html', data, '')   
+                dajax.assign('#top-contributor','innerHTML', body)                           
                 
             return HttpResponse(dajax.json())  
 

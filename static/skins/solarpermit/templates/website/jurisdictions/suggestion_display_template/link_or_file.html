@@ -1,0 +1,19 @@
+			<div>
+			{% if answer_content.get('form_option') == 'link' or answer_content.get('form_option') == None or answer_content.get('form_option') == ''  %}
+				{% if answer_content.get('name_1') != None %}
+					<a href="{{answer_content.get('link_1')}}" target='_blank' >{{answer_content.get('name_1') | truncate(30, True)  }}</a>   
+				{% else %}
+					{% if answer_content.get('link_1') != None %}
+						<a href="{{answer_content.get('link_1')}}" target='_blank' >{{answer_content.get('link_1') | truncate(30, True)  }}</a>   	
+					{% else %}
+					
+					{% endif %}				
+				{% endif %}
+			{% elif answer_content.get('form_option')  == 'upload' %}
+				{% if answer_content.get('name_1') != None %}     
+					{{answer_content.get('name_1') | truncate(30, True)  }}
+				{% else %}
+					
+				{% endif %}
+			{% endif %}                      
+            </div>

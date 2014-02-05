@@ -27,4 +27,15 @@ $('#{{form_id}}_field_field_value').keyup(function() {
 	{{form_id}}_update_buttons();
 });
 
+$('#{{form_id}}_submit_button').click(function() {
+    if($('#{{form_id}}').validate().form()){
+        $('{{form_id}}_submit_button').attr('disabled','disabled');
+    }
+});
+
+$('#{{form_id}}_cancel').click(function() {
+	jQuery.fancybox.close();
+    return false;
+});
+
 controller.setUpFormSubmitModalDialog('#{{form_id}}', '#{{form_id}}_submit_button');

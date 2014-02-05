@@ -3,11 +3,13 @@
 
 {% for item in list %}
 				<tr {% if loop.index is divisibleby(2) %}class="row_even"{% else %}class="row_odd"{% endif %} >    
-					<td style="width:10px;padding-left:10px">
 
 
 {% if item.user_favorite_jurisdiction(user) %}
+					<td style="width:10px;padding-left:1px">
 						<img width="10" src="/media/images/add-to-favorites.png" alt="Add to Favorites" >
+{% else %}
+					<td style="width:10px;padding-left:11px">
 {% endif %}
 
 
@@ -25,7 +27,7 @@
 	{% endif %}
 
 	{% if item.last_contributed_by != None %}					
-					<td style="width:200px;"><a id="id_{{item.id}}" href="#" onmouseover="controller.postRequest('/account/', {ajax: 'user_profile_short', user_id: {{item.last_contributed_by.id}}, unique_list_id: '{{item.id}}'  });" onmouseout="document.getElementById('simple_popup_div_on_page').style.display='none';">{{item.last_contributed_by.get_profile().get_display_name()}}</a></td>
+					<td style="width:200px;"><a class="show_user_profile" id="id_{{item.id}}" data-userid="{{item.last_contributed_by.id}}" data-itmeid="{{item.id}}" href="#">{{item.last_contributed_by.get_profile().get_display_name()}}</a></td>
 	{% else %}       
 					<td style="width:200px;" class="info">No data entered yet</td>
 	{% endif %}

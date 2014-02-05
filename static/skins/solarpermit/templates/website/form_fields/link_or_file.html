@@ -1,0 +1,36 @@
+                <div class="form_field" >  
+                    <div class="label">Please select providing a link or uploading a file:</div>           
+                    <div class="field">
+                       <input type="radio" name="field_form_option" id="field_form_option_link_{{unique_key}}" value="link" {% if form_option == 'link' or form_option == ''  or form_option == None %} checked {% endif %}  >Link to the online {{question.terminology}}
+                       <br/>
+                       <input type="radio" name="field_form_option" id="field_form_option_upload_{{unique_key}}" value="upload" {% if form_option == 'upload'  %} checked {% endif %}   >Upload {{question.terminology}}
+                    </div>                              
+                </div>
+                
+                <div>
+                    <div class="form_field" >
+                        <div class="label">{{question.terminology | capitalize }} name:</div>        
+                        <div class="field">
+                            <input type="text" name="field_name_1" id="field_name_1_{{unique_key}}" value="{{name_1}}" class="" style="width:210px" maxLength="200" >
+                        </div>   
+                        <div class="error_div"></div>               
+                    </div>     
+                    <div class="form_field" id="form_option_link_{{unique_key}}" {% if form_option == 'link'  or form_option == None or form_option == ''  %} style="display:block;"{% else %} style="display:none;" {% endif %}>
+                        <div class="label">{{question.terminology | capitalize }} link:</div>        
+                        <div class="field">
+                            <input type="text" name="field_link_1" id="field_link_1_{{unique_key}}" value="{{link_1}}" class="required" style="width:210px" maxLength="200" >
+                        </div>                 
+                        <div class="error_div"></div>                            
+                    </div> 
+    
+                    <div class="form_field" id="form_option_upload_{{unique_key}}" {% if form_option == 'upload' %} style="display:block;"{% else %} style="display:none;" {% endif %}>    
+                        <div class="label">Please upload your {{question.terminology}}:</div>    
+                        <div class="field">
+                        {% if question.support_attachments | int == 1  %}
+                            {% include 'website/form_fields/file_uploading.html' %}
+                            <input type="hidden" name="has_file_{{answer_id}}" id="has_file_{{answer_id}}" value="{% if form_option == 'upload'  %}Y{% endif %}" >
+                        {% endif %}      
+                        </div>             
+                        <div class="error_div"></div>                            
+                    </div>     
+                </div>            

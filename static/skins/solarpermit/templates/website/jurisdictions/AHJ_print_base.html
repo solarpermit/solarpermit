@@ -8,15 +8,21 @@
 {% include "website/blocks/canonical_url.html" %}
 
 	{% block forestyle %}{% endblock %}
-
-	
+        {% compress css %}
 	{% include "website/fancybox_stylesheets.html" %}
 	<link rel="stylesheet" type="text/css" href="/media/style/main.css" />
 	<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css" />
 	<link rel="stylesheet" type="text/css" href="/media/style/jquery-ui-1.10.1.custom.css" />
 	<link href="/media/style/fileuploader.css" rel="stylesheet" type="text/css" />	
-	
-	
+        {% endcompress %}
+
+        <script type="text/javascript">
+                var js_csrf = '{{csrf_token}}';
+        </script>
+        {% block jsdata %}{% endblock %}
+	{% block forejs %}{% endblock %}
+
+	{% compress js %}	
 	<script type="text/javascript" src="/media/js/jquery-1.7.2.min.js"></script>	
 	<script type="text/javascript" src="/media/js/jquery.validate.js"></script>
 	<script type="text/javascript" src="/media/js/additional-methods.js"></script>
@@ -25,11 +31,8 @@
 	<script type="text/javascript" src="/media/js/controller.js"></script>
 	<script type="text/javascript" src="/media/js/jquery.dajax.core.js"></script>
 	<script type="text/javascript" src="/media/js/jquery-ui-1.10.1.custom.min.js"></script>
-	<script type='text/javascript' src="/media/js/fileuploader.js"></script>	
-	{% block forejs %}{% endblock %}
+	<script type="text/javascript" src="/media/js/fileuploader.js"></script>	
 	<script type="text/javascript">
-		var js_csrf = '{{csrf_token}}';
-		
 		/*$(document).keyup(function(event) {
 		    var keycode = (event.keyCode ? event.keyCode : event.which);
 		    if(keycode == '13') 
@@ -262,6 +265,7 @@
 		}
 
 	</script>
+        {% endcompress %}
 </head>
 
 <body onLoad="onload('{{action_key}}');" style="bakground-color: #fff;">
@@ -282,11 +286,11 @@
 </div>
 {% include "website/jurisdictions/AHJ_print_footer.html" %}
 
-{% block endjs %}
-{% endblock %}
+{% compress js %}
+        {% block endjs %}{% endblock %}
+        {% include "website/fancybox_scripts.html" %}
+{% endcompress %}
 
-
-{% include "website/fancybox_scripts.html" %}
 </div>
 </body>
 </html>

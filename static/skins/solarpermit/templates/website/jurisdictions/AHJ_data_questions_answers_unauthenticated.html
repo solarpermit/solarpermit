@@ -1,0 +1,164 @@
+{% extends "/website/jurisdictions/AHJ_data.html" %}
+{% block category_content %}  
+
+
+    {% for this_category in cateogries %}
+        {% set this_category_questions = categories_questions.get(this_category.id) %}
+        <div class="cssTable tableMarginBottom " style="width:560px">
+            <div class="cssRow">   
+                <div class="cssCell ahj_category_header">{{this_category.description | capitalize }}</div>        
+            </div>
+
+            {% if this_category_questions | length == 0 %}
+            <div class="cssRow">              
+                {% if category == 'quirks' %}
+                <div class='cssCell ahj_page_message' >This tab displays quirky permitting requirements. No one has marked one of the requirements as a quirk, but it's easy to do.</div>
+                <img  style="border:1px blue solid;margin:20px;" src="/media/images/favorites_quirks_howtos.png" alt="favorites_quirks_howtos" >
+                {% elif category == 'attachments' %}
+                <div class='cssCell ahj_page_message' >This tab displays answers with attachments.  No attachments has been uploaded yet.</div>        
+                {% else %}
+                    {% if empty_data_fields_hidden | int == 1 %}
+                        {% if jurisdiction_answers | length == 0 %}
+                            {% if category == 'all_info' %}
+                                {% set category_txt = 'jurisdiction' %}
+                            {% else %}
+                                {% set category_txt = category %}
+                            {% endif %}
+                        <div class='ahj_page_message' >No one has entered in data for this {{ category_txt }} yet. Uncheck the checkbox above to see all data fields.</div>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}            
+            </div>            
+           {% endif %} 
+            
+            
+            
+
+            {% for this_question in this_category_questions %}
+            {% set terminology = this_question.get_terminology() %}
+            <div class="cssRow">
+                <div class="cssCell">
+                    <div style="width:100%" class="cssTable questionTableMargin need_tooltip" id="child_of_div_{{this_question.id}}" data-id="{{this_question.id}}" data-paids="{{pending_editable_answer_ids}}" data-jurid="{{jurisdiction.id}}">            
+                        <div class="cssRow " >    
+                            <div class="cssCell label" >
+                                <span style="float:left;" >{{this_question.get_field_label(jurisdiction) | capitalize }}
+                                </span>
+                            </div>                  
+                        </div> 
+            
+                {% if this_question.description != None and this_question.description != '' %}
+                        <div class="cssRow ">    
+                            <div class="cssCell description" >
+                                {{this_question.description}}
+                            </div>        
+                        </div>              
+                {% endif %} 
+            
+                        
+                {% set this_question_approved_answers = questions_approved_answers.get(this_question.id) %} 
+                {% set this_question_pending_answers = questions_pending_answers.get(this_question.id) %}                               
+                {% if this_question_approved_answers | length == 0 and this_question_pending_answers | length == 0 %}
+                        <div class="cssRow">    
+                            <div class="cssCell prompt" >
+                                Please sign in to suggest {{terminology}}.
+                            </div>        
+                        </div>             
+            
+                {% else %}
+                    {% if this_question_approved_answers | length > 0 %}
+                    <!-- validated answer here -->
+                        {% for this_answer in this_question_approved_answers %}
+                        <div class="cssRow">      
+                            <div class="cssCell">                  
+                                {% set answer_content = answers_contents.get(this_answer.id) %}                
+                                    <div class="field">
+                                        {% if this_question.display_template == '' or this_question.display_template == None %}
+                                            {% set template = 'website/jurisdictions/suggestion_display_template/single_field_display.html' %}
+                                            {% include template %}
+                                        {% else %}
+                                            {% set template = 'website/jurisdictions/suggestion_display_template/'+this_question.display_template %}
+                                            {% include template %}
+                                        {% endif %}   
+                                        
+                                         {% if this_question.support_attachments | int == 1 %}
+                                            {% set attachments = answers_attachments.get(this_answer.id) %}
+                                            {% include 'website/jurisdictions/suggestion_display_template/file_uploading_display.html' %}                       
+                                         {% endif %}                                          
+                                    </div>                                      
+                                    <div class="valhis">
+                                        <div id="validation_history_div_{{this_answer.id}}" style="display:none;"></div>
+                                        <a class="comments need_history need_history_dialog" data-id="{{this_answer.id}}" id="validation_history_{{this_answer.id}}" href="javascript:void(0);" title="" >Validation history</a> - 
+                                        <span class="prompt" >
+                                             Please sign in to add comment
+                                         </span>                                    
+                                    </div>       
+                            </div>
+                        </div>
+                        {% endfor %} 
+                    {% else %}
+                        {% if this_question_pending_answers | length > 0 %}
+                        <div class="cssRow">  <div class="cssCell prompt">There is unverified information available for this field.  Please sign in to see the info and vote on its accuracy.</div></div>
+                        {% endif %}
+                    {% endif %}
+                    
+
+                {% endif %}
+                    </div>
+                </div>
+            </div>           
+            {% endfor %}     
+                       
+  
+        </div>
+    
+
+    
+    {% endfor %}
+
+
+
+{% endblock %}
+
+
+{% block endjs %}
+<script type='text/javascript'>
+    {% if show_ahj_message == True %}
+        controller.postRequest('.', {ajax: 'show_ahj_message', jurisdiction_id: {{jurisdiction.id}} });
+    {% endif %}
+
+            
+	$(document).ready(function() {
+
+        
+        var $historyTooltip = $('.need_history');
+        $historyTooltip.mouseover(function (event) {
+            //alert('validaetion');
+            //var $target = $(this);
+            var $target = $(event.target);
+            //$target.removeClass('need_history');
+            var answerId = $target.data('id');
+            //alert(answerId);
+            controller.postRequest('.', {ajax: 'validation_history', entity_id: answerId, entity_name: 'requirement', destination: '' });
+            $target.tooltip({track: true, 
+                content: function() {
+                    return $('#validation_history_div_'+answerId).html();
+                }
+            });
+        });
+        var $historyDialog = $('.need_history_dialog');
+        $historyDialog.click(function (event) {
+            var $target = $(event.target);
+            //$target.removeClass('need_history_dialog');
+            var answerId = $target.data('id');
+            //alert('history dialog');
+            $target.click(function () {
+                controller.postRequest('.', {ajax: 'validation_history', entity_id: answerId, entity_name: 'requirement', destination: 'dialog' });
+            });
+        });        
+	});
+    
+
+
+</script>
+{% endblock %}
+

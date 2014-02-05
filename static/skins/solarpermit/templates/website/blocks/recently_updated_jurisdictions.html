@@ -1,0 +1,7 @@
+
+    <div class="recently_updatd_jurs" >
+        <div class="header" >Recently Updated</div>
+        {% for jur in recently_updated_jurs %}
+        <div class="content" ><a style="font-weight:bold"  href="/jurisdiction/{{jur.name_for_url}}/" title="View {{ jur.name | title }} {{jur.get_county_equivalent_name() | title }} ">{{ jur.show_jurisdiction()}}</a></div>
+        {% endfor %}
+    </div>

@@ -143,6 +143,7 @@ class Question(models.Model):
     creator = models.ForeignKey(User, blank=True, null=True)
     state_exclusive = models.TextField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
+    support_attachments = models.BooleanField(default=False) # 1 to support file upload    
         
     def __unicode__(self):
         if self.question != None:
@@ -151,6 +152,54 @@ class Question(models.Model):
             return str(self.id)
     class Meta:
         app_label = 'website'
+        
+    def get_addresses_for_map(self, jurisdiction):
+        answers = AnswerReference.objects.filter(question=self, jurisdiction=jurisdiction, approval_status__exact='A').order_by('-status_datetime')
+        if answers != None and len(answers) > 0:
+            answer = answers[0] # only one approved
+            answer_value = json.loads(answer.value)    
+            str_addr = jurisdiction.get_formatted_jurisdiction_address(answer_value)  
+        else:
+            if jurisdiction.jurisdiction_type == 'CI':
+                if jurisdiction.county == None:
+                    str_addr = jurisdiction.city + ', ' + jurisdiction.state
+                else:
+                    str_addr = jurisdiction.city + ', ' + jurisdiction.county
+            elif jurisdiction.jurisdiction_type == 'CO':
+                str_addr = jurisdiction.county + ' county, ' + jurisdiction.state
+            else:
+                str_addr = ''  
+                
+        return str_addr          
+        
+    def get_field_label(self, jurisdiction):
+        if self.label != None and self.label != '':      
+            #if self.id == 6:
+            #   question_label = "Utility companies associated with [AHJ name]"
+            
+            question_label = self.label.replace('[AHJ name]', jurisdiction.name.title())
+        else:
+            question_label = self.question
+            
+        return question_label
+ 
+                    
+    def get_terminology(self):
+        if self.terminology == None or self.terminology == '':
+            question_terminology = 'value'
+        else:
+            question_terminology = self.terminology
+            
+        return question_terminology     
+    
+    def get_question_terminology(self, question_id):
+        question = Question.objects.get(id=question_id)
+        if question.terminology == None or question.terminology == '':
+            question_terminology = 'value'
+        else:
+            question_terminology = question.terminology
+            
+        return question_terminology                    
         
     def migrate_temmplatequestion_to_question(self):
         template_questions = TemplateQuestion.objects.all()
@@ -388,6 +437,7 @@ class AnswerReference(models.Model):
     modify_datetime = models.DateTimeField(auto_now=True, blank=True, null=True)
     status_datetime = models.DateTimeField(blank=True, null=True)    
     migrated_answer_id = models.IntegerField(blank=True, null=True) # to indicate source #not really used, see MigrationHistory!
+    #support_attachments = models.BooleanField(default=False) # 1 to support file upload
     #question_type = models.CharField(max_length=16, db_index=True, default='predefined')   
     def __unicode__(self):
         return self.value
@@ -1076,6 +1126,7 @@ class UserCommentView(models.Model):
     
 class View(models.Model):
     VIEW_TYPE_CHOICES = (
+        ('a', 'Attachments'),                         
         ('f', 'Favorite Fields'),
         ('q', 'Quirks'),
         ('v', 'Views'),        
@@ -1159,5 +1210,87 @@ class ViewQuestions(models.Model):
             user_fav_fields['view_questions'] = view_question_objs
 
         return user_fav_fields
+    
+    def get_jurisdiction_attachments(self, jurisdiction):
+        attachments = {}
+        view_objs = View.objects.filter(jurisdiction = jurisdiction, view_type__exact='a')
+        if len(view_objs) > 0:
+            view_obj = view_objs[0]
+            
+            view_question_objs = ViewQuestions.objects.filter(view = view_obj).order_by('display_order')
+            attachments['view_id'] = view_obj.id
+            attachments['view_questions'] = view_question_objs
 
-                       
+        return attachments    
+    
+    def add_question_to_view(self, view_type, question, jurisdiction):
+        '''
+        if view_type == 'q':
+            view_objs = View.objects.filter(view_type = 'q', jurisdiction = jurisdiction)
+            if len(view_objs) > 0:
+                view_obj = view_objs[0]
+            else:
+                view_obj = View()
+                view_obj.name = 'quirks'
+                view_obj.description = 'Quirks'
+                view_obj.view_type = 'q'
+                view_obj.jurisdiction_id = jurisdiction.id
+                view_obj.save()
+                    
+        elif view_type == 'f':
+            view_objs = View.objects.filter(view_type = 'f', user = user)
+            if len(view_objs) > 0:
+                view_obj = view_objs[0]
+            else:
+                view_obj = View()
+                view_obj.name = 'Favorite Fields'
+                view_obj.description = 'Favorite Fields'
+                view_obj.view_type = 'f'
+                view_obj.user_id = request.user.id
+                view_obj.save()  
+            
+        el
+        '''
+        view_obj = None
+        
+        if view_type == 'a':
+            view_objs = View.objects.filter(view_type = 'a', jurisdiction = jurisdiction)
+            if len(view_objs) > 0:
+                view_obj = view_objs[0]
+            else:
+                view_obj = View()
+                view_obj.name = 'attachments'
+                view_obj.description = 'Attachments'
+                view_obj.view_type = 'a'
+                view_obj.jurisdiction_id = jurisdiction.id
+                view_obj.save()                      
+            
+        if view_obj != None:
+            view_questions_objs = ViewQuestions.objects.filter(view = view_obj, question = question)
+            if len(view_questions_objs) == 0:
+                view_questions_objs = ViewQuestions.objects.filter(view = view_obj).order_by('-display_order')                
+                if len(view_questions_objs) > 0:
+                    highest_display_order = view_questions_objs[0].display_order
+                else:
+                    highest_display_order = 0
+                        
+                view_questions_obj = ViewQuestions()
+                view_questions_obj.view_id = view_obj.id
+                view_questions_obj.question_id = question.id
+                view_questions_obj.display_order = int(highest_display_order) + 5
+                view_questions_obj.save()
+        
+        return True        
+    
+    def remmove_question_from_view(self, view_type, question, jurisdiction):
+            view_objs = View.objects.filter(view_type = 'a', jurisdiction = jurisdiction)
+            if len(view_objs) > 0:
+                view_obj = view_objs[0]
+                view_questions_objs = ViewQuestions.objects.filter(view = view_obj, question = question)
+                if len(view_questions_objs) > 0:               
+                    answers = AnswerReference.objects.filter(jurisdiction = jurisdiction, question = question, approval_status__in=('A', 'P'), value__icontains='upload')
+                    if len(answers) == 0:
+                        for view_question_obj in view_questions_objs:
+                            view_question_obj.delete()
+                            
+                        

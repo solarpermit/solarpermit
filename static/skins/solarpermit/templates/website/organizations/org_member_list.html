@@ -32,8 +32,8 @@
 		{% else %}
 			<td style="width: 120px;">{% if member.requested_date %}{{member.requested_date.strftime('%m/%d/%y %I:%M%p')}}{% else %} &nbsp; {% endif%}</div>
 			<td id="action_dev_{{member.id}}">
-				<span><a id="id_approve_btn" href="#" onclick="controller.postRequest('/organization/', {ajax: 'handle_pending_request', type: 'approve', mid: {{member.id}}});return false;" class="smallbutton">Approve</a></span>
-				<span><a id="id_deny_btn" href="#" onclick="controller.postRequest('/organization/', {ajax: 'handle_pending_request', type: 'deny',mid: {{member.id}}});return false;" class="smallbutton">Deny</a></span>
+				<span><a id="id_approve_btn" href="#" data-mid="{{member.id}}" class="smallbutton approve_btn">Approve</a></span>
+				<span><a id="id_deny_btn" href="#" data-mid="{{member.id}}"  class="smallbutton deny_btn">Deny</a></span>
 			</td>
 		{% endif %}
 		</tr></table>

@@ -11,13 +11,83 @@
 
 var controller = new function () {
 	var self = this;
+/* for forum bridge integration
+	//LSS: Change lssSMFUrl to your SMF installation with a trailing slash
+	this.lssSMFUrl = 'http://test.solarpermit.org/forum/';
+	
+	//LSS:
+	//hotfix 8-29-13
+	this.lsslogin1 = function(usn, pass, data)
+	{
+		var datastr ='';
+                user = usn;
+                passwrd = pass;
+                datastr = "user="+user+"&passwrd="+passwrd;
+                cookieneverexp = 'on';
+                datastr += "&cookielength=60&cookieneverexp=";
+                $.ajax({type:'post',
+                      data: datastr,
+         	      //LSS: Change this to your SMF url
+                      url:controller.lssSMFUrl + 'index.php?action=login2&lssajax=1',
+                      dataType: 'json',
+			success: function() {
+				controller.handleResponse(data);
+			},
+				error: function() {
+				controller.handleResponse(data);
+			}
+                });
+	}
+	this.lssLogin = function() {
+		var datastr ='';
+		user = $('#username').val();
+		passwrd = $('#password').val();
+		datastr = "user="+user+"&passwrd="+passwrd;
+		cookieneverexp = 'on';
+		if ($('#keep_me_signed_in').is(':checked')) {
+			datastr += "&cookieneverexp=on";
+		} else {
+			datastr += "&cookielength=60&cookieneverexp=";
+		}
+		$.ajax({type:'post',
+			data: datastr,
+			//LSS: Change this to your SMF url
+			url:controller.lssSMFUrl + 'index.php?action=login2&lssajax=1',
+			dataType: 'json',
+			success:function(data,textStatus) {
+				console.log(data);
+			}
+		});
+        controller.submitForm('#form_sign_in');
+	}
+	this.lsslogout = function(url) {
+		$.ajax({
+			type: 'post',
+			url: this.lssSMFUrl + 'index.php?action=logout',
+			data: '',
+			dataType: 'json',
+			success: function(a, b) {
+				document.location = url;
+			},
+			error: function(a, b) {
+				document.location = url;
+			}
+		});
+	}
+	//LSS: End
+*/
 	// submit form to server, with optional callbacks for success and error
+/* for forum bridge imtegration
+	//LSS: hotfix 8-29-13
+	this.submitForm = function (formSelector, success, error, lsslogin) {
+*/ 		
 	this.submitForm = function (formSelector, success, error) {
 		$(formSelector).find('input.url').each(function(index){
 			var tValue = $(this).val();
 			$(this).val(self.urlValidScheme(tValue));
 		});
         //this.showMessage('Please wait...', false);
+        
 		if ($(formSelector).validate().form()) {  //do validation first
 			params = $(formSelector).serialize();
 			if (typeof js_csrf !== "undefined") {
@@ -29,6 +99,17 @@ var controller = new function () {
 				url:$(formSelector).attr('action'),
 				dataType: 'json',
 				success:function(data,textStatus){
+					/* for forum bridge integration
+					if (lsslogin) {
+						success(data);
+					} else {
+						controller.handleResponse(data);
+						if (typeof success !== "undefined") {
+							success();
+						}
+					}
+// replaces next four lines						
+*/
 					controller.handleResponse(data);
 					if (typeof success !== "undefined") {
 						success();
@@ -38,7 +119,8 @@ var controller = new function () {
 					if (typeof error !== "undefined") {
 						error();
 					} else {
-						alert(textStatus + ' - ' + errorThrown);
+                        if (errorThrown !== '')
+                            alert(textStatus + ' - ' + errorThrown);
 					}
 				}
 			});
@@ -193,6 +275,7 @@ var controller = new function () {
 			}
 		}, options);
 		$.fancybox(selector, settings);
+		$('#fancybox_close').click(function (){$.fancybox.close();});
 	}
 	this.closeModalDialog = function () {
 		$.fancybox.close();
@@ -621,11 +704,11 @@ var controller = new function () {
     	});
     }
     this.suggestionField = {};
-    this.suggestionField.clickEditBt = function(answer_id,terminology,jurisdiction_id,question_id,answer_id){
+    this.suggestionField.clickEditBt = function(answer_id,terminology,jurisdiction_id,question_id){
 	    	if (typeof isPrint != 'undefined' && isPrint){
 	    		return false;
 	    	}
-    		set_entity(answer_id, terminology);
+    		//set_entity(answer_id, terminology);
     		controller.postRequest('.', {ajax: 'get_edit_form', jurisdiction_id: jurisdiction_id, question_id: question_id, answer_id: answer_id });
     		controller.openSuggestionEditAnswer(answer_id);
     		//$("#edit_btn_"+answer_id).css('visibility','hidden'); //no need to hide the button
@@ -729,7 +812,8 @@ var controller = new function () {
     		}
     	);
     }    
-    
+
+
     this.openSuggestion = function(questionId){
     	$('#qa_'+questionId+'_data div.prompt').hide();
     	$('#qa_'+questionId+'_add').show('slow');
@@ -750,7 +834,7 @@ var controller = new function () {
     }	
     
     this.urlValidScheme = function(url){
-    	if (url.indexOf('http://')!=0){
+    	if (url.indexOf('http://')!=0 && url.indexOf('https://')!=0){
     	    url = 'http://'+url;
     	}
 
@@ -787,4 +871,88 @@ var controller = new function () {
     		window.history.replaceState({}, '', new_path);
     	}
     }
+    
+    /************** FORM ***************/
+    //set up ajax form submit, includes IE8 fix, for ahj question forms.
+    this.setUpFormSubmit = function(form_selector, button_selector) {
+        $(button_selector).removeAttr('disabled');
+        $(button_selector).unbind('click');
+        $(form_selector).removeAttr('onsubmit'); //remove previous inline script, not needed
+        $(form_selector).unbind('submit');
+        $(form_selector).submit(function (event) {
+            var $button = $(button_selector);
+            var $form = $(form_selector);
+            event.preventDefault(); //prevent non-ajax form post in IE8
+            return controller.submitActions($form, $button, 1);
+        });
+    }
+    
+    this.submitHandler = function(event, submitCount) {
+        var $button = $(event.target);
+        var $form = $button.closest('form');
+        event.preventDefault();
+      
+        return controller.submitActions($form, $button, submitCount);
+    }   
+
+    this.submitActions = function($form, $button, submitCount) {
+    	//alert('submitCount '+submitCount);
+        $button.attr('disabled','disabled');
+		$form.keypress(function(e){
+			  if ( e.which == 13 && submitCount > 1) {return false;} 
+		});
+        if ($form.validate().form()) {     
+            controller.submitForm('#'+$form.attr('id'));
+            return true;
+        } else {
+            $button.removeAttr('disabled');
+            return false;
+        }
+    }
+
+    this.validateFormAndActivateSubmit = function(form_selector, button_selector) {
+        if ($(form_selector).validate({
+        	/*
+            showErrors: function(errorMap, errorList) {
+            // Do nothing here
+            }
+            */
+        
+        }).form()) {
+	        $(button_selector).removeAttr('disabled');
+	        $(button_selector).removeClass('disabled');              
+        }
+        else
+        {
+            $(button_selector).attr('disabled'); 
+            $(button_selector).addClass('disabled');          
+        }
+        
+
+        
+        
+        return false;
+    }
+    
+    
+    
+    this.processUrlField = function(id) {
+        var value = $('#'+id).val();
+        value = controller.urlValidScheme(value);
+        $('#'+id).val(value);
+        $('#'+id).addClass('url');
+    }
+    
+    this.activateButton = function(button_selector) {
+	    $(button_selector).removeAttr('disabled');
+	    $(button_selector).removeClass('disabled');     
+    }
+    
+    this.disableButton = function(button_selector) {
+	    $(button_selector).attr('disabled');
+	    $(button_selector).addClass('disabled');     
+    }    
+	
+
+    
 }

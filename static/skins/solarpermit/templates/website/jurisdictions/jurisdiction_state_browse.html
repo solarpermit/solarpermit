@@ -23,7 +23,9 @@
 			<input type="hidden" id="state" name="state" value="">
 		</form>
 	</div>
+{% endblock %}
 
+{% block endjs %}
 <script type='text/javascript'>
 function go_to_state(state)
 {
@@ -75,6 +77,8 @@ $(function(){
       showLabels: true,
     });
 });
+
+
 </script>
 
 {% endblock %}

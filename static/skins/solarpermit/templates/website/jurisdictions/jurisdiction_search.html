@@ -4,7 +4,7 @@
 {% block title %}Jurisdiction - Search{% endblock %}
 {% block top_main_content %}
 <span style="padding-left: 20px;color: #333333;font-family:'Times New Roman',Times,serif;font-size: 24px;font-weight: normal;">
-<input name="search_back" id="search_back" type="image" onClick="history.back();"  src="/media/images/Back.png" style="height:25px;width:25px;" title="Back" alt="Back" >&nbsp;&nbsp;
+<input name="search_back" id="search_back" type="image"   src="/media/images/Back.png" style="height:25px;width:25px;" title="Back" alt="Back" >&nbsp;&nbsp;
     {% if search_by == 'search_by_zip' %}Jurisdictions near {% else %}Results for {% endif %} "{{jurisdiction_search_str}}"</span>
 {% endblock %}
 {% block body %}
@@ -23,6 +23,10 @@ Your search could not be processed. Please try a more detailed search.
 <script type='text/javascript'>
 $(document).ready(function() {
 	$('#jurisdiction_list').jscroll();
+    $('#search_back').click(function(){
+        history.back();
+    });                         
+                                   
 });
 </script>
 {% endblock %}

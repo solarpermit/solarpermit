@@ -1,0 +1,29 @@
+                            <span class="vote_panel">   
+                                {% if this_answer.creator_id != user.id %}
+                                    {% set class_cannot_vote = '' %}   
+                                    {% set class_canvoteup = 'canvoteup' %} 
+                                    {% set class_canvotedown = 'canvotedown' %}                                            
+                                    {% set class_disabled = '' %}
+                                    
+                                {% else %}
+                                    {% set class_cannot_vote = 'cannot_vote' %}    
+                                    {% set class_canvoteup = '' %}                                      
+                                    {% set class_canvotedown = '' %}                                         
+                                    {% set class_disabled = 'disabled' %}                                
+                                {% endif %}
+                                <span class="{{class_cannot_vote}}" id="up_vote_{{this_answer.id}}"> 
+                                    <span id="up_vote_num_{{this_answer.id}}">0</span>
+                                    <input type="button" id="voteup_{{this_answer.id}}" name="voteup_{{this_answer.id}}" value="Approve" class="voteup {{class_canvoteup}} {{class_disabled}}" data-answerid="{{this_answer.id}}" data-terminology="{{this_question.get_terminology()}}" data-canvotedown="" >  
+                                </span> 
+
+                                <input type="button" id="votedown_{{this_answer.id}}" name="votedown_{{this_answer.id}}" value=" " class="votedown {{class_canvotedown}} {{class_disabled}}" data-answerid="{{this_answer.id}}" data-terminology="{{terminology}}" data-canvoteup="" title="Reject" >
+                                <span class="{{class_cannot_vote}}" id="down_vote_{{this_answer.id}}" id="down_vote_last_{{this_answer.id}}"  data-last="" data-date="" title="{{this_question.get_terminology()}}" >                         
+                                    <span id="down_vote_num_{{this_answer.id}}">0</span>
+                                </span>                                
+                             
+                            <div id="vote_confirmation_{{this_answer.id}}" class="vote_confirmation_msg" >
+                                <img width="15" height="15" src="/media/images/checkmark2.png" style="padding-right:5px" alt="success" >Your vote has been recorded
+                            </div>
+                            
+                            
+        

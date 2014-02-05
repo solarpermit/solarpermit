@@ -9,7 +9,8 @@ $('#form_reset_password').validate({
 
 $('#form_reset_password_submit_button').click(function (event)
 {
-	return submitHandler(event);
+	controller.submitForm('#form_reset_password');
+	return false;
 });
 
 $('#form_reset_password_field_password').keyup(function() {

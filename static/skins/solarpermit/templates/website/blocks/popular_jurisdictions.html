@@ -1,0 +1,7 @@
+
+    <div class="popular_jurs" >
+        <div class="header" >Popular Jurisdictions</div>
+        {% for jur in popular_jurs %}
+        <div class="content" ><a style="font-weight:bold" href="/jurisdiction/{{jur.name_for_url}}/" title="View {{ jur.name | title }} {{jur.get_county_equivalent_name() | title }} ">{{ jur.show_jurisdiction()}}</a></div>
+        {% endfor %}
+    </div>

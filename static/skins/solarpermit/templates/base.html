@@ -4,22 +4,32 @@
 	<meta charset="utf-8">
 	<title>{% block title %}{% endblock %} - National Solar Permitting Database</title>
 	
-{% include "website/blocks/canonical_url.html" %}
+        {% include "website/blocks/canonical_url.html" %}
 
-{% block forestyle %}
-	
-{% endblock %}
-
-	
-{% include "website/fancybox_stylesheets.html" %}
-
-
+        {% block forestyle %}{% endblock %}
+        {% compress css %}
+        {% include "website/fancybox_stylesheets.html" %}
 	<link rel="stylesheet" type="text/css" href="/media/style/main.css" />
 	<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css" />
 	<link rel="stylesheet" type="text/css" href="/media/style/jquery-ui-1.10.1.custom.css" />
 	<link href="/media/style/fileuploader.css" rel="stylesheet" type="text/css" />	
 	<link rel="shortcut icon" href="/media/images/solarpermit_favicon.png" />
+        {% endcompress %}
 
+        <script type="text/javascript">
+                var True = true, False = false; // admittedly this is a little silly
+                var js_csrf = '{{csrf_token}}',
+                    IS_AUTHENTICATED = {{request.user.is_authenticated()}};
+                    PASSWORD_RESET_KEY = '{{reset_password_key}}',
+                    INVITATION_KEY = '{{invitation_key}}',
+                    CURRENT_ORGID = '{{orgid}}',
+                    SYSTEM_MESSAGE = { type: '{{system_message_type}}',
+                                       text: '{{system_message_text}}' },
+                    ACTION_KEY = '{{action_key}}';
+        </script>
+        {% block jsdata %}{% endblock %}
+
+        {% compress js %}
 	<script src="/media/js/jquery-1.7.2.min.js"></script>	
 	<script src="/media/js/jquery.validate.js"></script>
 	<script src="/media/js/additional-methods.js"></script>
@@ -28,7 +38,7 @@
 	<script src="/media/js/controller.js"></script>
 	<script src="/media/js/jquery.dajax.core.js"></script>
 	<script src="/media/js/jquery-ui-1.10.1.custom.min.js"></script>
-	<script src="/media/js/fileuploader.js"></script>	
+	<script src="/media/js/fileuploader.js"></script>			
 	
 	<script type="text/javascript" src="/media/js/flexcomplete/jquery.flexcomplete.js"></script>
 	
@@ -44,13 +54,16 @@
 			document.createElement('hgroup');
 		</script>
 	<![endif]-->
-
-{% block forejs %}{% endblock %}
-	
+        {% endcompress %}
+        {% block forejs %}{% endblock %}
+	{% compress js %}
 	<script type="text/javascript">
-		
-		var js_csrf = '{{csrf_token}}';
-		
+		function reload_page()
+		{
+			location.reload();
+			return false;
+		}
+				
 		function set_error_class() {
 		    document.getElementById('username').style.backgroundColor="#FCC";
 		    document.getElementById('password').style.backgroundColor="#FCC"; 
@@ -93,64 +106,10 @@
 			controller.postRequest('/organization/', {ajax: 'cancel_org_request', orgid: org_id, caller:'user_profile'});
 		}
 
-		function cancel_my_request (org_name, org_id)
-		{
-		        controller.showConfirm({
-		            title: 'Do you want to cancel your request to join  '+org_name+'?',
-		            message: '<br>',
-		            proceedText: 'Yes, cancel my request',
-		            cancelText: 'No, do not cancel my request',
-		            callback: cancel_request
-		        });
-		}
 
-		function remove_request()
-		{
-			controller.postRequest('/organization/', {ajax: 'remove_from_my_profile', mid: member_id, caller:'user_profile'});
-		}
 
-		function remove_from_my_profile (org_name, org_id)
-		{
-		        controller.showConfirm({
-		            title: 'Do you want to remove  '+org_name+' from your profile?',
-		            message: '<br>',
-		            proceedText: 'Remove from My Profile ',
-		            cancelText: 'Cancel',
-		            callback: remove_request
-		        });
-		}	
 
-		function accept_invitation()
-		{
-			controller.postRequest('/organization/', {ajax: 'accept_invite', mid: member_id, caller:'user_profile'});
-		}
-
-		function accept_invite (org_name, org_id)
-		{
-		        controller.showConfirm({
-		            title: 'Do you want to accept the invitation to join  '+org_name+'?',
-		            message: '<br>',
-		            proceedText: 'I accept ',
-		            cancelText: 'Cancel',
-		            callback: accept_invitation
-		        });
-		}			
-
-		function decline_invitation()
-		{
-			controller.postRequest('/organization/', {ajax: 'decline_invite', mid: member_id, caller:'user_profile'});
-		}
-
-		function decline_invite (org_name, org_id)
-		{
-		        controller.showConfirm({
-		            title: 'Do you want to decline the invitation to join  '+org_name+'?',
-		            message: '<br>',
-		            proceedText: 'I decline ',
-		            cancelText: 'Cancel',
-		            callback: decline_invitation
-		        });
-		}					
+		
 
 		function show_data(data_obj_id, edit_option_id)
 		{   
@@ -194,14 +153,14 @@
 		{	
 			if (action_key == 'reset_password')
 			{	
-				controller.postRequest('.', {ajax: 'launch_reset_password', reset_password_key: '{{reset_password_key}}'}); 
+				controller.postRequest('.', {ajax: 'launch_reset_password', reset_password_key: RESET_PASSWORD_KEY}); 
 			}
 
 			if (action_key == 'create_account')
 			{	
-				{% if request.user.is_authenticated() == False %}
-				controller.postRequest('/account/', {ajax: 'create_account', invitation_key: '{{invitation_key}}'});
-				{% endif %} 
+                                if (!IS_AUTHENTICATED) {
+                                        controller.postRequest('/account/', {ajax: 'create_account', invitation_key: INVITATION_KEY});
+                                }
 			}		
 
 			if (action_key == "user_profile")
@@ -211,10 +170,10 @@
 			
 			if (action_key == "request_org")
 			{
-				controller.postRequest('/organization/', {ajax: 'open_org_details', orgid: '{{orgid}}'});
+				controller.postRequest('/organization/', {ajax: 'open_org_details', orgid: CURRENT_ORGID});
 			}
 			
-			controller.showMessage('{{system_message_text}}', '{{system_message_type}}');
+			controller.showMessage(SYSTEM_MESSAGE.text, SYSTEM_MESSAGE.type);
 
 		}
 	</script>
@@ -222,8 +181,54 @@
 	<script type='text/javascript'>
 		
 		$(document).ready(function() {
-			onload('{{action_key}}'); {# // moved from onload attribute in body tag #}
+			onload(ACTION_KEY); {# // moved from onload attribute in body tag #}
+			
+			$('.headRight #create_account_button').click(function() {
+				controller.postRequest('/account/', {ajax: 'create_account'}); return false;
+			});
+			
+			$('.searchfielddev a.search-a').click(function(){
+				$('#search_form').submit();return false;
+			});
+			
 			$('#update_org_info_link').tooltip({track: true});
+			$('#update_org_info_link').click(
+					function(event) {
+							
+							$target = $(event.target);
+							var ajaxVal = $target.data('ajax');
+							var orgId = $target.data('orgid');
+							controller.postRequest('/organization/', {ajax: ajaxVal, orgid: orgId}); 			
+
+							return false;
+					}
+			);
+			$('#send_feedback').click(
+					function(event) {
+							
+							$target = $(event.target);
+							controller.postRequest('/info/', {ajax: 'send_feedback'});		
+
+							return false;
+					}
+			);
+			$('#give_feedback').click(
+					function(event) {
+							
+							$target = $(event.target);
+							controller.postRequest('/info/', {ajax: 'send_feedback'});		
+
+							return false;
+					}
+			);	
+			$('#logout_with_forum').click(
+					function(event) {
+							
+							$target = $(event.target);
+							controller.lsslogout('/logout');	
+					}
+			);								
+			
 {#			// profile menu #} 
 			$('.profile_header_link').hover(
 					function(){
@@ -281,28 +286,10 @@
 	    	    footer: 'Press Enter to search'
 		    }); 
 													
-			$('#empty_data_fields_hidden').click(function(event) {
-				var $target = $(event.target); 
-				if ($('#empty_data_fields_hidden').is(':checked'))
-					query_string = 'empty_data_fields_hidden=' + 1;
-				else
-					query_string = 'empty_data_fields_hidden=' + 0;
-					
-				if (document.URL.search(/empty_data_fields_hidden=/i) < 0)
-				{
-					if (document.URL.search('/=/') < 0)
-						url = document.URL + '?' + query_string
-					else
-						url = document.URL + '&' + query_string
-				}
-				else
-				{
-					url = document.URL.replace(/empty_data_fields_hidden=1/i, query_string)				
-					url = url.replace(/empty_data_fields_hidden=0/i, query_string)
-				}
-																
-				location.href= url
-			});										                                     
+			$('#fancybox_close').click(function(){
+				$.fancybox.close();
+				return false;
+			}); 																						                                     
 		});
 	</script>
 	<!--[if lte IE 9]>
@@ -310,9 +297,11 @@
 	<script type='text/javascript'>
 	$(document).ready(function() {
 	    placeholder_ie_fix('#search_field');
+	    placeholder_ie_fix('#jurisdiction_search #text_2');	    
 	});
 	</script>
 	<![endif]-->
+{% endcompress %}
 </head>
 
 <body>
@@ -347,18 +336,10 @@
 	
 {% block body %}{% endblock %}
 
-
-{% block endjs %}{% endblock %}
-	
-
 {% block dialog %}
 {% include "base_message_dialog.html" %}
 {% include "base_info_dialog.html" %}
 {% endblock %}
-
-
-{% include "website/fancybox_scripts.html" %}
-
 
 {% include "website/blocks/system_message.html" %}
 
@@ -371,6 +352,12 @@
 	</div><!-- propper close of main-wrapper -->
 
 {% include "website/footer.html" %}
+
+{% compress js %}
+{% include "website/fancybox_scripts.html" %}
+{% endcompress %}
+{% block endjs %}{% endblock %}
+
 {# close comment tags on lines 340 and 353 to active tracking code #}
 {% if ENABLE_GOOGLE_ANALYTICS %}
 {# Analytics Tracking Code #}

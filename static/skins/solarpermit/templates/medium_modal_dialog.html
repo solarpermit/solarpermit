@@ -1,0 +1,25 @@
+<div class="modal_dialog medium">
+	<div class="modal_dialog_top_block">
+		<div class="modal_dialog_close"><a href="#" onclick="fancybox_close" >&nbsp;&nbsp;&nbsp;x&nbsp;&nbsp;&nbsp;</a></div>
+	</div>
+	{% block modal_dialog_form_top %}{% endblock %}
+	<div class="modal_dialog_info_block" >
+		<div class="modal_dialog_title">
+			{% block modal_dialog_title %}{% endblock %}
+		</div>
+		<div class="modal_dialog_header">
+			{% block modal_dialog_header %}{% endblock %}
+		</div>		
+		<div class="modal_dialog_message">{% block modal_dialog_message %}{% endblock %}</div>	
+		{% block body_modal_dialog %}
+		{% endblock %}
+	</div>
+
+	<div class="modal_dialog_bottom_block" >
+		<div class="modal_dialog_bottom_message">{% block modal_dialog_bottom_message %}{% endblock %}</div>
+		<div class="modal_dialog_button_bottom">{% block modal_dialog_action %}{% endblock %}</div>
+	</div>
+	{% block modal_dialog_form_bottom %}{% endblock %}
+</div>
+<div id="simple_popup_div_on_dialog" style="position:absolute;left:200px;top:200px;width:300px;height:200px;display:none;z-index:3000;display:none;visibility:visible;">User Profile</div> 
+

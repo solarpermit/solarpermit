@@ -24,7 +24,6 @@ class AutoVivification(dict):
             value = self[item] = type(self)()
             return value
 
-
 def searchState(request):
     conn = MySQLdb.connect (host=settings.DATABASES['default']['HOST'],
                            user=settings.DATABASES['default']['USER'],

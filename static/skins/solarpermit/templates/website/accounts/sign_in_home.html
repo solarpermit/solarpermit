@@ -1,40 +1,38 @@
-  <span class="title">Sign in</span><br><br>
+  <div class="" style="font-size:20px;padding:5px 0 10px 0;" >Sign in</div>
   <form id="form_sign_in" name="form_sign_in" action="/account/" method="post" accept-charset="utf-8">
         <input type="hidden" name="caller" value="{{caller}}" >
         <input type="hidden" name="next" value="{{next}}" >
-    	<input type='hidden' name="ajax" value='login' >
-    	<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        <input type='hidden' name="ajax" value='login' >
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    	
     	{% if action_key == 'request_org'%}
     		<input type='hidden' name="action_key" value='{{action_key}}' >
     		<input type='hidden' name="orgid" value='{{orgid}}' >
     	{% endif %}
-        <div class="form_field">
-            <div class="label">Username or email address:</div>
-            <div class="field">
-            	<input type="text" name="username" id="username" value="{{username}}" class="required" style="width:300px; height:20px;" >
+        <div class="form_field" style="height:20px;">
+            <div class="">
+            	<input type="text" name="username" id="username" value="{{username}}" class="required" style="width:320px; height:20px;" placeholder="Username or Email Address" >
             </div>
-            <div class="field_help_text"></div>
             <div class="error_div">{{form_sign_in_username}}</div>
         </div>
-        <div class="form_field">
-            <div class="label">Password:</div>
-            <div class="field">
-            	<input type="password" name="password" id="password" value="" class="required" style="width:300px; height:20px;" >
+        <div class="form_field" style="height:20px;">
+            <div class="">
+            	<input type="password" name="password" id="password" value="" class="required" style="width:320px; height:20px;" placeholder="Password">
             </div>
-            <div class="field_help_text"></div>
             <div class="error_div">{{form_sign_in_password}}</div>
         </div>  
-        <div class="form_field" >
-            <div class="field" ><input type="checkbox" name="keep_me_signed_in" id="keep_me_signed_in" value="1" class="" >Keep me signed in <div style="float:right;"><a style="" href="#" onClick="controller.postRequest('/account/', {ajax: 'trouble_signing_in'}); return false;" >Trouble signing in?</a></div></div>
+        <div class="form_field" style="height:20px;">
+            <div class="" ><input type="checkbox" name="keep_me_signed_in" id="keep_me_signed_in" value="1" class="" >Keep me signed in <div style="float:right;"><a id="trouble_signing_in_a" style="" href="#"  >Trouble signing in?</a></div></div>
             <div class="field_help_text"></div>
         </div>               
-        <div class="form_error_div">
-            <span class="form_field_error_message" >{{form_sign_in_fail_reason}}</span>
+        <div class="form_field_error_message" >
+            {{form_sign_in_fail_reason}}
         </div>    
       
-  <div style="padding:10px 0 0 0;">
-    <!--a href="#" name="sign_in"  class="mainbutton" onClick="controller.submitForm('#form_sign_in');return false;"  title="Sign in" >Sign in</a-->
-    <input type="submit" id="form_sign_in_submit_button" class="mainbutton" onClick="controller.submitForm('#form_sign_in');return false;" value="Sign in" title="Sign in">
+  <div>
+
+    <input type="submit" id="form_sign_in_submit_button" class="mainbutton" value="Sign in" title="Sign in">    
+
   </div>
   </form>
   

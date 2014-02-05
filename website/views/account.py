@@ -10,7 +10,6 @@ from django.core.mail.message import EmailMessage
 from django.shortcuts import render, redirect
 
 from website.utils.mathUtil import MathUtil
-from website.utils.paginationUtil import PaginationUtil
 #from website.models import Jurisdiction
 
 from django.contrib.auth.models import User
@@ -38,6 +37,8 @@ RECENT_UPDATES_PAGE_SIZE = 25
 def log_out(request):
     url = request.META.get('HTTP_REFERER')
     logout(request)
+    if url == None:
+        url = '/'
     return redirect(url)
 
 def sign_in_shell(request):
@@ -139,6 +140,7 @@ def account(request):
         if (ajax == 'create_account'):
             
             data = {}
+            data['email'] = None
             form_id = 'form_create_account'      
             data['form_create_account_id'] = form_id            
             invitation_key = requestProcessor.getParameter('invitation_key')
@@ -146,7 +148,8 @@ def account(request):
             if invitation_key != None:
                 org_members = OrganizationMember.objects.filter(invitation_key__exact=invitation_key)
                 if org_members:
-                    data['invitation_key'] = invitation_key                     
+                    data['invitation_key'] = invitation_key 
+                    data['email'] = str(org_members[0].email)                    
                 else:
                     data[form_name+'_fail_reason'] = 'The invitation is no longer valid.  You are still welcome to sign up with SolarPermit.org.'   
                     data['invitation_key'] = ''   
@@ -159,11 +162,12 @@ def account(request):
             data['display_as'] = requestProcessor.getParameter('display_as')             
                                                 
             data['username'] = requestProcessor.getParameter('username')    
-            data['email'] = requestProcessor.getParameter('email')  
+            if data['email'] == None:  # this is to avoid overide the email of the invited nonmember
+                data['email'] = requestProcessor.getParameter('email')  
             #data['password'] = requestProcessor.getParameter('password')  
             #data['verify_password'] = requestProcessor.getParameter('verify_password')  
             #data['accept_tou'] = requestProcessor.getParameter('accept_tou')      
-            
+                        
             if data['username'] == None:
                 data['username'] = ''   
             if data['email'] == None:
@@ -268,7 +272,7 @@ def account(request):
                                 else:
                                  
                                     add_system_message(request, 'success_create_account')
-                                    url = request.META.get('HTTP_REFERER')
+                                    url = request.META.get('HTTP_REFERER') or ''
                                     if '?' in url:
                                         url = url + '&reload=true#registered'                                        
                                     else:
@@ -399,18 +403,27 @@ def account(request):
         if (ajax == 'terms_of_use'):
             body = requestProcessor.decode_jinga_template(request,'website/info/terms_of_use_second.html', data, '') 
             dajax.assign('#secondDialogDiv','innerHTML', body)
+            script = requestProcessor.decode_jinga_template(request, 'website/info/second_dialog.js', data, '')
+            dajax.script(script)              
+            
             dajax.script('controller.showSecondDialog("#secondDialogDiv");')
             return HttpResponse(dajax.json())             
 
         if (ajax == 'privacy_policy'):
             body = requestProcessor.decode_jinga_template(request,'website/info/privacy_policy_second.html', data, '') 
             dajax.assign('#secondDialogDiv','innerHTML', body)
+            script = requestProcessor.decode_jinga_template(request, 'website/info/second_dialog.js', data, '')
+            dajax.script(script)    
+                        
             dajax.script('controller.showSecondDialog("#secondDialogDiv");')
             return HttpResponse(dajax.json()) 
         
         if (ajax == 'disclaimer'):
             body = requestProcessor.decode_jinga_template(request,'website/info/disclaimer_second.html', data, '') 
             dajax.assign('#secondDialogDiv','innerHTML', body)
+            script = requestProcessor.decode_jinga_template(request, 'website/info/second_dialog.js', data, '')
+            dajax.script(script)    
+                        
             dajax.script('controller.showSecondDialog("#secondDialogDiv");')
             return HttpResponse(dajax.json())         
                 
@@ -460,12 +473,18 @@ def account(request):
                                 reset_failed_login_attemps(request)
                             else:
                                 error_message[form_name+'_fail_reason'] = 'Disabled Account!'
+                                status = manage_failed_login(request, user)
                         else:
                             error_message[form_name+'_fail_reason'] = 'Invalid credentials.  Please try again.'
                             status = manage_failed_login(request, user)
                     else:
-                        error_message[form_name+'_fail_reason'] = 'Invalid credentials.  Please try again..'
-                        status = manage_failed_login(request)
+                        error_message[form_name+'_fail_reason'] = 'Invalid credentials.  Please try again.'                        
+                        users = User.objects.filter(username__exact=str(data['username']))
+                        if users:
+                            user = users[0]
+                            status = manage_failed_login(request, user)
+                        else:
+                            status = manage_failed_login(request)
            
                     if status == 'account_locked' or status == 'trouble_signing_in':
                         data['login_status'] = status
@@ -494,6 +513,7 @@ def account(request):
                         request.session.set_expiry(0)                        
                    
                     #dajax.script("location.reload();")
+                    
                     if data['caller'] == 'sign_in_shell':
                         if next == '':
                             dajax.script("location.href='" + settings.SITE_URL + "';")
@@ -502,12 +522,22 @@ def account(request):
                             if action_key == 'request_org':
                                 orgid = requestProcessor.getParameter('orgid')
                                 next_url = settings.SITE_URL + next + '?action_key='+action_key+'&orgid='+str(orgid)
+                            
                                 dajax.script("location.href='" + next_url + "';")
                             else:
                                 dajax.script("location.href='" + settings.SITE_URL + next + "';")
+                            
                     else:
-                        dajax.script("location.href='" + request.META['HTTP_REFERER'] + "';")
+                        #dajax.script("alert('" + request.META['HTTP_REFERER'] + "');");
+                        #print request.META['HTTP_REFERER'] + 'xxx'
+                        #dajax.script("window.location ='" + request.META['HTTP_REFERER'] + "';")
+                        dajax.script("reload_page();")
+                        #print request.META['HTTP_REFERER'] + 'yyy'
+                        #return redirect(request.META['HTTP_REFERER'])
+                        
+                    #print 'zzzzzzzzzzzzzzzzzz'
                     return HttpResponse(dajax.json()) 
+                    
                 else:
                     error_message[form_name+'_fail_reason'] = 'Logged out.  Please try again.'            
         
@@ -516,19 +546,21 @@ def account(request):
  
             if data['caller'] == "sign_in_home":
                 body = requestProcessor.decode_jinga_template(request,'website/accounts/sign_in_home.html', data, '') 
+                script = requestProcessor.decode_jinga_template(request, 'website/accounts/sign_in_home.js', data, '')
                 dajax.assign('#signincontainer','innerHTML', body) 
- 
+                dajax.script(script) 
             elif data['caller'] == 'sign_in_shell':
                 body = requestProcessor.decode_jinga_template(request,'website/accounts/sign_in_home.html', data, '') 
+                script = requestProcessor.decode_jinga_template(request, 'website/accounts/sign_in_home.js', data, '')
                 dajax.assign('#sign_in_shell_container','innerHTML', body)   
-                                 
+                dajax.script(script)                  
             else:
                 body = requestProcessor.decode_jinga_template(request,'website/accounts/sign_in.html', data, '') 
-                #script = requestProcessor.decode_jinga_template(request, 'website/accounts/sign_in.js', data, '')
+                script = requestProcessor.decode_jinga_template(request, 'website/accounts/sign_in.js', data, '')
                 dajax.assign('#sign_in_block','innerHTML', body)     
-                #dajax.script(script) 
+                dajax.script(script) 
 
-
+            #print 'aaaaaaaaaaaaaaaaaaaaaaa'
             dajax.script("set_error_class()")            
                    
             return HttpResponse(dajax.json()) 
@@ -648,6 +680,8 @@ def account(request):
             else:
                 body = requestProcessor.decode_jinga_template(request,'website/accounts/trouble_signing_in_result.html', data, '') 
                 dajax.assign('#fancyboxformDiv','innerHTML', body)
+                script = requestProcessor.decode_jinga_template(request,'website/accounts/trouble_signing_in.js', data, '')
+                dajax.script(script)                
      
             #dajax.script("controller.showMessage('Please check your email.', 'success')")    example
                 
@@ -1259,10 +1293,12 @@ def user_favorite(request):
                     jurisdiction = None
                     dajax.script("controller.showMessage('Save success.', 'success', 3)")
                 dajax.assign('#favorite-a', 'innerHTML', 'Remove from favorites')
+                dajax.assign('#favorite-a-image', 'innerHTML', '<img width="12" height="12" src="/media/images/add-to-favorites.png" alt="Remove From Favorites">')
                 #dajax.script('("#favorite-a-'+entity_id+'").attr("title","Remove '+jurisdiction.show_jurisdiction('long')+' to your favorite jurisdictions");')
                 dajax.script('$("#favorite-a").tooltip("option", "content", "Remove '+jurisdiction.show_jurisdiction('long')+' from your favorite jurisdictions");')
                 dajax.script('$("#favorite-a").unbind("click");')
                 dajax.script('$("#favorite-a").bind("click", function (){controller.postRequest("/user_favorite/", {ajax:"remove_favorite", entity_id:'+entity_id+',  entity_name:"Jurisdiction"});return false;});')
+                #dajax.script('$("#favorite-a-image").attr("scr", "/media/images/add-to-favorites.png");')
             else:
                 dajax.script("controller.showMessage('Save success.', 'success', 3)")   
             
@@ -1282,6 +1318,8 @@ def user_favorite(request):
                     jurisdiction = None
                     dajax.script("controller.showMessage('Remove success.', 'success', 3)")
                 if ajax == 'remove_favorite':
+                    #dajax.script('$("#favorite-a-image").attr("scr", "/media/images/add-to-favorites-hollow.png");')
+                    dajax.assign('#favorite-a-image', 'innerHTML', '<img width="12" height="12" src="/media/images/add-to-favorites-hollow.png" alt="Add to Favorites">')
                     dajax.assign('#favorite-a', 'innerHTML', 'Add to favorites')
                     dajax.script('$("#favorite-a").tooltip("option", "content", "Add '+jurisdiction.show_jurisdiction('long')+' to your favorite jurisdictions");')
                     dajax.script('$("#favorite-a").unbind("click");')

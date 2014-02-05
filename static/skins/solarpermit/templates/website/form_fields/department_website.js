@@ -1,42 +1,29 @@
-{% include 'website/form_fields/common_form_utils.js' %}
+controller.setUpFormSubmit('#form_{{question_id}}', '#save_{{question_id}}');
+controller.setUpFormSubmit('#form_edit_{{answer_id}}', '#save_edit_{{answer_id}}');
 
+var submitCount_q_{{question_id}} = 0;
+var submitCount_a_{{answer_id}} = 0;
 
+$('#save_{{question_id}}').click(function(event) {
+	if (++submitCount_q_{{question_id}} == 1)
+	{
+		controller.processUrlField('id_{{question_id}}');	
+		var success = controller.submitHandler(event, submitCount_q_{{question_id}});	
+		if (success == false)
+			submitCount_q_{{question_id}} = 0;
+	}
 
-$('#save_{{question_id}}').click(function(event) 
-{
-	var value = $('#'+'id_3').val();
-	value = controller.urlValidScheme(value);
-	$('#'+'id_3').val(value);
-	$('#'+'id_3').addClass('url');
-	return submitHandler(event);
-	
+	return false;
 });
 
-$('#save_edit_{{answer_id}}').click(function(event) 
-{
-	var value = $('#'+'id_3').val();
+$('#save_edit_{{answer_id}}').click(function(event) {
+	if (++submitCount_a_{{answer_id}} == 1)
+	{
+		controller.processUrlField('id_{{question_id}}');	
+		var success = controller.submitHandler(event, submitCount_a_{{answer_id}});	
+		if (success == false)
+			submitCount_a_{{answer_id}} = 0;
+	}
 	
-	value = urlValidScheme(value);
-	$('#'+'id_3').val(value);
-	$('#'+'id_3').addClass('url');
-	return submitHandler(event);
-
+	return false;
 });
-
-function encode(url) {
-    url = url.replace(/!/g, '%21')
-    url = url.replace(/'/g, '%27')
-    url = url.replace(/\(/g, '%28')
-    url = url.replace(/\)/g, '%29')
-    url = url.replace(/\*/g, '%2A')
-    url = url.replace(/\{/g, '%7B')
-    url = url.replace(/\}/g, '%7D')
-    url = url.replace(/\</g, '%3C')
-    url = url.replace(/\>/g, '%3E');    
-        
-    /*
-    	# % & * { } \ : < > ? / +
-    */
-    
-    return url
-}

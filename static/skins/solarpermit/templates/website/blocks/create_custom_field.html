@@ -33,7 +33,7 @@
 {% endblock %}
 
 {% block modal_dialog_action %}
-    <input type="submit" id="{{form_id}}_submit_button" class="mainbutton" value="Create field" title="Complete the form above to create the custom field." onClick="if($('#{{form_id}}').validate().form()){$('{{form_id}}_submit_button').attr('disabled','disabled');}">
-    <input type="button" id="{{form_id}}_cancel" class="mainbutton" onClick="jQuery.fancybox.close();return false;" value="Cancel" title="Cancel">    
+    <input type="submit" id="{{form_id}}_submit_button" class="mainbutton" value="Create field" title="Complete the form above to create the custom field.">
+    <input type="button" id="{{form_id}}_cancel" class="mainbutton"  value="Cancel" title="Cancel">    
 {% endblock %}
 

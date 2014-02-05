@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+
+
+{% block title %}{% endblock %}
+
+
+
+{% block forestyle %}
+<style>
+	table, td, th {
+		max-width: 960px;
+		text-align:left;
+		font-size: 14px;
+		border-top: 1px solid #bdbdbd;
+		border-right: 1px solid #bdbdbd;
+	}
+	.graphing {
+		border: 1px solid #6f6;
+		max-width: 960px;
+		min-height: 200px;
+		display: none;
+	}
+	.data_table {
+		min-width: 480px;
+	}
+	td, th {
+		padding: 4px;
+		border: 1px solid #bdbdbd;
+		border-top: 0 none;
+		border-right: 0 none;
+	}
+	th {
+		font-weight: normal;
+	}
+	td {
+		text-align: right;
+		color: #000;
+		border-left: 2px solid #999;
+	}
+	.even {
+		background-color: #ebf1fe;
+	}
+	.header_row_right {
+		border-left: 2px solid #999;
+		border-bottom: 2px solid #999;
+		text-align: right;
+		color: #333;
+		font-weight: bold;
+	}
+	.header_row {
+		border-bottom: 2px solid #999;
+		color: #333;
+		font-weight: bold;
+	}
+	hr {
+		border: 0;
+    	height: 1px;
+    	background: #333;
+    	background-image: -webkit-linear-gradient(left, #ccc, #333, #ccc); 
+    	background-image:    -moz-linear-gradient(left, #ccc, #333, #ccc); 
+    	background-image:     -ms-linear-gradient(left, #ccc, #333, #ccc); 
+    	background-image:      -o-linear-gradient(left, #ccc, #333, #ccc); 
+	}
+</style>
+{% endblock %}
+
+
+
+{% block forejs %}{% endblock %}
+
+
+
+{% block body %}
+<div class="contentOnlyPage">
+	<h1>{{ report_name }} - Field Answer Reporting</h1>
+	<hr />
+{% if question_instruction %}
+	<h2>Question's Instrucion: {{ question_instruction }}</h2>
+{% endif %}	
+	<div class="graphing">Graphic</div>
+	<hr />
+	<h3>Current Approved Values in the Database</h3>
+	<table class="data_table">
+		<tr class="even">
+			<th class="header_row">Value</th>
+			<th class="header_row_right">Jurisdictions</th>
+		</tr>
+{% for row in table %}
+		<tr class="{{ loop.cycle('odd', 'even') }}">
+			<th>{{ row['key'] }}</th>
+			<td>{{ row['value'] }}</td>
+		</tr>
+{% endfor %}
+	</table>
+</div>
+{% endblock %}
+
+
+
+
+{% block endjs %}{% endblock %}

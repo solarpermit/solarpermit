@@ -1,0 +1,15 @@
+
+			
+			<div style="padding-top:5px;">
+				{% if answer_attachment != None %}
+					{# for attach in attachments #}
+						<div>
+						<a href="/media{{answer_attachment.get('file_upload')}}" target=_blank><img width="48" alt="pdf_files" src="/media/images/pdf.png"></a>
+						</div>
+						<div style="text-align: left;">
+						<a href="/media{{answer_attachment.get('file_upload')}}" target=_blank>{{answer_attachment.get('file_name') | truncate(5, True)}}</a>
+						</div>
+					{# endfor #}
+				{% endif %}
+			</div>
+            			

@@ -11,4 +11,8 @@
             </div>
     </div>
 
-        
+{% if question is defined %}
+{% if question.support_attachments | int == 1  %}
+    {% include 'website/form_fields/file_uploading.html' %}  
+{% endif %}        
+{% endif %}   

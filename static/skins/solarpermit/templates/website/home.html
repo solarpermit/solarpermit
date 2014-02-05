@@ -3,6 +3,7 @@
 
 {% block title %}Home{% endblock %}
 {% block forestyle %}
+        {% compress css %}
 {#	<!--link rel="stylesheet" type="text/css" href="/media/style/page.css" /-->
 	<link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css" />
 	<style>
@@ -191,7 +192,59 @@
 			font-weight: bold;
 			color: #333;
 		}
+		
+		.getInvolvedToday {
+			font-size:18px;
+			padding:15px 0 15px 0
+		}
+		
+		.getInvolvedDetails {
+			width:100%;
+			border-top:1px #E0E0E0  solid;
+			border-bottom:1px #E0E0E0  solid;
+		}
+		
+		.getInvolvedSteps {
+			color:#27b473;
+			{# font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue"; #}
+			font-size: 24px;
+		}	
+		
+		.getInvolvedSteps1 {
+			width:50%
+		}
 
+		.getInvolvedSteps2 {
+			width:50%;
+			border-left:1px #E0E0E0  solid;
+		}
+				
+		.verbose1 {
+			width:50%;
+			padding:10px 35px 15px 0px;		
+		}
+
+		.verbose2 {
+			width:50%;
+			border-left:1px #E0E0E0  solid;
+			padding:10px 15px 15px 25px;				
+		}
+		
+		.verbose {
+			{# font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue"; #}
+			font-size:13px;			
+		}
+		
+		.homeRight {
+			width: 284px;
+		}
+
+		.homeLeft {
+			width: 676px;
+		}	
+		
+				
+		
 {# hiding unused element #}
 		.breadcrum {
 			display: none;
@@ -205,9 +258,6 @@
 {# EO hiding unused element #}
 
 {# Modifying existing styling rules #}
-		body {
-			padding: 108px 0 0 0 !important;
-		}
 		#keep_me_signed_in {
 			margin-left: 0;
 		}
@@ -272,12 +322,13 @@
 			margin: 0 0 12px 0;
 		}
 		.welcome_content {
-				padding-left: 10px;
+				<!--padding-left: 10px;-->
+			{#font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue";#}
 		}
 		.welcome_content h2 {
 			font-size: 16px;
 			font-weight: 600;
-			color: #27b473;;
+			color: #27b473;
 		}
 		.welcome_content p {
 			font-size: 14px;
@@ -295,6 +346,7 @@
 {# EO home page content #}
 
 	</style>
+        {% endcompress %}
 {% endblock %}
 
 {% block forejs %}
@@ -373,7 +425,15 @@
 			});			
 		}
 		$(document).ready(function(){
-
+			$("#trouble_signing_in_a").click(function (){
+				controller.postRequest('/account/', {ajax: 'trouble_signing_in'}); return false;
+			});
+			
+			
+			$("#form_sign_in_submit_button").click(function (){
+				controller.submitForm('#form_sign_in');
+				return false;
+			});
 {#
 			$('#homemore').bind('click', function (){
 				$('#carousel').data('AnythingSlider').gotoPage(2, true);
@@ -510,14 +570,14 @@
 
 {% block body %}
 {#
-<div class="contentOnlyPage">
+<div class="contentOnlyPage" style="border:3px red solid;">
 	<div class="cssTable fullWidth" style="padding-bottom: 42px;">
 		<div class="cssRow">
 			<div class="cssCell" style="width: 704px; height: 384px; background-color:#ccf;">
 				<div style="width: 704px; height: 432px; overflow: hidden">
-					<div id="carouselcontainer">
-						<ul id="carousel">
-							<li>
+					<div id="carouselcontainer" >
+						<ul id="carousel" >
+							<li style="border:1px red solid">
 								<img src="/media/images/Slide1_Image.jpg" alt="slides">
 								<div id="about_slide">
 									<span class="about_header">Welcome to SolarPermit.org</span>
@@ -528,17 +588,17 @@
 									<span class="about_green">FREE</span>
 									<span class="about_text"> and active community-based database that compiles solar permitting requirements around the nation into one single &amp; easy-to-use website.</span>
 									<br /><br /><br />
-									<a class="mainbutton" href="http://solarpermit.org/jurisdiction/browse/" >Browse the Data Now</a>
+									<a class="mainbutton" href="/jurisdiction/browse/" >Browse the Data Now</a>
 								</div>
 							</li>
-							<li>
+							<li style="border:1px red solid">
 								<br>
 								<span class="carousel_title" id="mapTitle">Find your solar permitting requirements here. <strong>Click on a state.</strong></span>
 								<br><br><br>
 								<div id="map_wrapper"><div id="us_states_map"></div></div>
 								<span class="sub-title-centered">Find solar permitting requirements by state</span>
 							</li>
-							<li id="news_slide">
+							<li id="news_slide" style="border:1px red solid">
 								<br><span class="news_header">Solar Permitting Study</span>
 								<div id="w-container" >
 									<div class="des">
@@ -552,7 +612,7 @@
 									</div>
 								</div>
 							</li>
-							<li class="home-contributors">
+							<li class="home-contributors" style="border:1px red solid">
 								<div class="carousel_title">Contributors</div>
 									<div class="sub-title">We're working with respected industry partners
 										<br />to simplify solar permitting. <strong>Together.</strong>
@@ -577,11 +637,14 @@
 						</div>
 					</div>
 				</div>
-			<div class="cssCell" style="min-width: 308px;">
+			</div>
+			
+			<div class="cssCell" style="min-width: 284px;">
 {% if login != 'True' %}
 				<div id="signincontainer">
 {% include "website/accounts/sign_in_home.html" %}
 				</div>
+				
 {% else %}&nbsp;{% endif %}
 			</div>
 		</div>
@@ -595,119 +658,155 @@
 
 {# new carousel #}
 <div class="cssTable smallCarousel">
-	<div class="cssCell" style="width: 676px;">
-		<div class="cssTable carouselWrap">
-			<div class="cssRow">
-				<div class="cssCell">
-					<div class="slideContainer">
-						<div class="slideWrap">
-							<div id="slide_0" class="slide">
-								<h2>Welcome to SolarPermit.org</h2>
-								<p>At SolarPermit.org, you can access the <span>National Solar Permitting Database</span>,
-									<br />a <span>FREE</span> and active community-based database that compiles solar permitting
-									<br />requirements around the nation into one single & easy-to-use website.</p>
-								<a class="mainbutton" href="http://solarpermit.org/jurisdiction/browse/">Browse the Data Now</a>
+	<div class="cssRow">
+		<div class="cssCell homeLeft" >
+			<div class="cssTable">
+				<div class="cssRow">	
+					<div class="cssCell">
+						<div class="cssTable carouselWrap">
+							<div class="cssRow">
+								<div class="cssCell">
+									<div class="slideContainer">
+										<div class="slideWrap">
+											<div id="slide_0" class="slide">
+												<h2>Welcome to SolarPermit.org</h2>
+												<p>At SolarPermit.org, you can access the <span>National Solar Permitting Database</span>,
+													<br />a <span>FREE</span> and active community-based database that compiles solar permitting
+													<br />requirements around the nation into one single & easy-to-use website.</p>
+												<a class="mainbutton" href="/jurisdiction/browse/">Browse the Data Now</a>
+											</div>
+											<div id="slide_1" class="slide">
+												<h2><span>Find your solar permitting requirements here.</span> <strong>Click on a state.</strong></h2>
+												<div id="map_wrapper"><div id="us_states_map" ></div></div>
+												
+												<p>Find solar permitting requirements by state</p>
+											</div>
+											<div id="slide_2" class="slide">
+												<h2>Solar Permitting Study</h2>
+												<p>Get the Facts on solar permitting from our nationwide study of 273 installers.</p>
+												<a target="_blank" href="/media/upfiles/CPF-DOE_Permitting_Study_Dec2012_Final.pdf" class="mainbutton">Read More</a>
+											</div>
+											<div id="slide_3" class="slide" style="background-color:#0ff;">
+												<h2>Contributors</h2>
+												<p>We're working with respected industry partners 
+													<br />to simplify solar permitting. <strong>Together.</strong></p>
+												<ul>
+													<li><a href="http://www.allearthrenewables.com/" target="_blank">AllEarth Renewables</a></li>
+													<li><a href="http://www.besolarenergy.com/" target="_blank">BE Solar</a></li>
+													<li><a href="http://burnhamnationwide.com/" target="_blank">Burnham Energy</a></li>
+													<li><a href="http://www.growsolar.org/" target="_blank">Grow Solar Wisconsin</a></li>
+													<li><a href="http://heliopower.com/" target="_blank">HelioPower</a></li>
+													<li><a href="http://nextstepliving.com/" target="_blank">Next Step Living</a></li>
+													<li><a href="http://www.paramountsolar.com/" target="_blank">Paramount Solar</a></li>
+													<li><a href="http://www.petersendean.com/" target="_blank">PetersenDean</a></li>
+													<li><a href="http://positiveenergysolar.com/" target="_blank">Positive Energy</a></li>
+													<li><a href="http://solarpermits.net/" target="_blank">PvPermits</a></li>
+													<li><a href="http://realgoodssolar.com/" target="_blank">Real Goods Solar</a></li>
+													<li><a href="http://www.sunwize.com/" target="_blank">SunWize</a></li>
+													<li><a href="http://votesolar.org/" target="_blank">Vote Solar</a></li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
-							<div id="slide_1" class="slide">
-								<h2><span>Find your solar permitting requirements here.</span> <strong>Click on a state.</strong></h2>
-								<div id="map_wrapper"><div id="us_states_map" ></div></div>
-								
-								<p>Find solar permitting requirements by state</p>
-							</div>
-							<div id="slide_2" class="slide">
-								<h2>Solar Permitting Study</h2>
-								<p>Get the Facts on solar permitting from our nationwide study of 273 installers.</p>
-								<a target="_blank" href="/media/upfiles/CPF-DOE_Permitting_Study_Dec2012_Final.pdf" class="mainbutton">Read More</a>
-							</div>
-							<div id="slide_3" class="slide" style="background-color:#0ff;">
-								<h2>Contributors</h2>
-								<p>We're working with respected industry partners 
-									<br />to simplify solar permitting. <strong>Together.</strong></p>
-								<ul>
-									<li><a href="http://www.allearthrenewables.com/" target="_blank">AllEarth Renewables</a></li>
-									<li><a href="http://www.besolarenergy.com/" target="_blank">BE Solar</a></li>
-									<li><a href="http://burnhamnationwide.com/" target="_blank">Burnham Energy</a></li>
-									<li><a href="http://www.growsolar.org/" target="_blank">Grow Solar Wisconsin</a></li>
-									<li><a href="http://heliopower.com/" target="_blank">HelioPower</a></li>
-									<li><a href="http://nextstepliving.com/" target="_blank">Next Step Living</a></li>
-									<li><a href="http://www.paramountsolar.com/" target="_blank">Paramount Solar</a></li>
-									<li><a href="http://www.petersendean.com/" target="_blank">PetersenDean</a></li>
-									<li><a href="http://positiveenergysolar.com/" target="_blank">Positive Energy</a></li>
-									<li><a href="http://solarpermits.net/" target="_blank">PvPermits</a></li>
-									<li><a href="http://realgoodssolar.com/" target="_blank">Real Goods Solar</a></li>
-									<li><a href="http://www.sunwize.com/" target="_blank">SunWize</a></li>
-									<li><a href="http://votesolar.org/" target="_blank">Vote Solar</a></li>
-								</ul>
+							<div class="cssRow">
+								<div class="cssTable" style="width: 100%;">
+									<div class="cssCell slideLeft">&nbsp;</div>
+									<div id="slideGo_0" class="cssCell slideThumb">&nbsp;</div>
+									<div id="slideGo_1" class="cssCell slideThumb" style="background-color: #0f0;">&nbsp;</div>
+									<div class="cssCell autoPlay" style="background-color: #c0f;">&nbsp;</div>
+									<div id="slideGo_2" class="cssCell slideThumb">&nbsp;</div>
+									<div id="slideGo_3" class="cssCell slideThumb" style="background-color: #0ff;">&nbsp;</div>
+									<div class="cssCell slideRight">&nbsp;</div>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="cssRow">
-				<div class="cssTable" style="width: 100%;">
-					<div class="cssCell slideLeft">&nbsp;</div>
-					<div id="slideGo_0" class="cssCell slideThumb">&nbsp;</div>
-					<div id="slideGo_1" class="cssCell slideThumb" style="background-color: #0f0;">&nbsp;</div>
-					<div class="cssCell autoPlay" style="background-color: #c0f;">&nbsp;</div>
-					<div id="slideGo_2" class="cssCell slideThumb">&nbsp;</div>
-					<div id="slideGo_3" class="cssCell slideThumb" style="background-color: #0ff;">&nbsp;</div>
-					<div class="cssCell slideRight">&nbsp;</div>
+
+				<div class="cssRow">
+					<div class="cssCell getInvolvedToday" >Two Ways to Get Involved Today!</div>
 				</div>
-			</div>
+				<div class="cssRow">		
+					<div class="cssCell">
+						<div class="cssTable getInvolvedDetails" >
+							<div class="cssRow getInvolvedSteps" >
+								<div class="cssCell getInvolvedSteps1" > <!-- left top side -->
+									<div class="cssTable" >
+										<div class="cssRow" >	
+											<div class="cssCell numCol" style="padding:15px 0 0px 0px;">
+												<img src="/media/images/1.png" alt="1" />
+											</div>
+											<div class="cssCell padRight " style="padding:15px 0 0px 5px;width:200px;">
+												Get Permitting Data
+											</div>							
+										</div>
+									</div>
+								</div>	
+								
+								<div class="cssCell getInvolvedSteps2" >  <!-- right top side -->
+									<div class="cssTable" >
+										<div class="cssRow" >	
+											<div class="cssCell numCol" style="padding:15px 0 0px 25px;">
+												<img src="/media/images/2.png" alt="2" />
+											</div>
+											<div class="cssCell padRight" style="padding:15px 0 0px 15px;">
+												Participate in the Community
+											</div>							
+										</div>
+									</div>
+								</div>				
+							</div>
+							<div class="cssRow verbose" >
+								<div class="cssCell verbose1" >  <!-- left bototm side -->
+									Save time and money by utilizing up-to-date permitting requirements from across the country.  Simply search for, or browse to, the city or county you are doing business in and retreive the information you need.										
+								</div>	
+								
+								<div class="cssCell verbose2" >  <!-- right bottom side -->
+									Contribute to the database and share best permitting practices with information you already collect today.  Join other industry leaders - together we can reduce headaches and the cost of installing solar for our industry.									
+								</div>				
+							</div>					
+						</div> 
+					</div> <!-- cell -->
+				</div> <!-- row-->
+			</div> <!-- table -->
+		</div> <!-- cell -->
+	
+		<div class="cssCell homeRight" >
+		{% if login != 'True' %}		
+			<div id="signIn" >
+
+				<div id="signincontainer">
+					{% include "website/accounts/sign_in_home.html" %}
+				</div>
+				<div class="welcome_content" >
+					<div >To learn more about the features available to you, access our <a href="/getting-started/">Getting Started</a> page.</div>
+				</div>
+			</div>				
+		{% else %}
+				<div>
+					<div class="welcome_content" >
+						<div class="header" >Thanks for joining the SolarPermit.org Community!</div>
+						<div >To learn more about the features available to you, access our <a href="/getting-started/">Getting Started</a> page.</div>
+					</div>
+				</div>
+		
+		{% endif %}
+	
+	{% include "website/blocks/recently_updated_jurisdictions.html" %}
+	{% include "website/blocks/popular_jurisdictions.html" %}
+				<div id="upload_box">
+				<p class="upload-box-p"> <a class="" href="/upload/">Upload your data</a> to SolarPermit.org today!</p>	
+				<p style="padding-top:10px">Send the SolarPermit.org team your <a class="" href="/upload/">data</a>, and receive recognition for your contribution.</p>
+				{#<p style="text-align: right;"><a target="_top" href="https://app.box.com/"><img title="Box" alt="Box" src="https://s5.boxcdn.net/_assets/img/powered_by_box-0976bf4098270717aa006c69a16cbe28.png"></a></p>#}
+				</div>
+				
 		</div>
-	</div>
-	<div class="cssCell" style="width: 282px; padding-left: 10px;">
-		<div id="signIn">
-{% if login != 'True' %}
-			<div id="signincontainer">
-{% include "website/accounts/sign_in_home.html" %}
-			</div>
-{% else %}
-			<div class="welcome_content">
 
-<h2>Thanks for joining the SolarPermit.org Community!</h2>
-<p>As a registered user, you can:</p>
- <ul>
- 	<li>Add, edit and vote on the accuracy of permitting requirements</li>
-	<li>Easily track changes to permitting requirements in jurisdictions where you often work using our Favorite Jurisdictions tracking tool</li>
-	<li>Gain recognition for your submissions and improve your company's search engine rankings</li>
- </ul>
-<p>To learn more about the features available to you, access our <a href="/getting-started/">Getting Started</a> page.</p>
-
-
-
-
-			</div>
-{% endif %}
-		</div>
 	</div>
 </div>
 {# EO new carousel #}
-<div class="homeContent">
-	<h2>2 Ways to Get Involved Today!</h2>
-	<div class="cssTable">
-		<div class="cssRow">
-			<div class="cssCell numCol">
-				<img src="/media/images/1.png" alt="1" />
-			</div>
-			<div class="cssCell padRight">
-				<h3>Get Permitting Data</h3>
-				<p>- Save time and money by utilizing up-to-date permitting requirements from across the country.  Simply search for, or browse to, the city or county you are doing business in and retreive the information you need.</p>
-			</div>
-		</div>
-		<div class="cssRow">
-			<div class="cssCell numCol">
-				<img src="/media/images/2.png" alt="2" />
-			</div>
-			<div class="cssCell padRight">
-				<h3>Participate in the Community</h3>
-				<p>- Contribute to the database and share best permitting practices with information you already collect today.  Join other industry leaders - together we can help reduce permitting headaches and the cost of installing solar for our industry.</p>
-			</div>
-		</div>
-	</div>
-</div>
-
-
 
 {% endblock %}
 

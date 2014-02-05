@@ -28,15 +28,32 @@ $('#cleara').bind('click', function(){
 $('#search_org_sort').click(function (event) {
 	var searchText = $('#search_org').val()
 	var sort_dir = $('#sort_dir').val()
-	if (sort_dir == 'asc'){
-		$('#sort_dir').val('desc');
-		$('.sort-up').addClass('sort-down').removeClass('sort-up');
-	}else{
+	if (sort_dir == 'desc'){
 		$('#sort_dir').val('asc');
-		$('.sort-down').addClass('sort-up').removeClass('sort-down');
+		$('#search_org_sort_dir').addClass('sort-down').removeClass('sort-up');
+	}else{
+		$('#sort_dir').val('desc');
+		$('#search_org_sort_dir').addClass('sort-up').removeClass('sort-down');
 	}
-		        
+		 
+    $('#search_org_sort_by_date_added_dir').removeClass('sort-up').removeClass('sort-down');
     controller.postRequest('/organization/', {ajax: 'search_org', text: searchText, sort_dir: sort_dir});
+
+});
+
+$('#search_org_sort_by_date_added').click(function (event) {
+	var searchText = $('#search_org').val()
+	var sort_by_date_added_dir = $('#sort_by_date_added_dir').val()
+	if (sort_by_date_added_dir == 'desc'){
+		$('#sort_by_date_added_dir').val('asc');
+		$('#search_org_sort_by_date_added_dir').addClass('sort-down').removeClass('sort-up');
+	}else{
+		$('#sort_by_date_added_dir').val('desc');
+		$('#search_org_sort_by_date_added_dir').addClass('sort-up').removeClass('sort-down');
+	}
+		
+    $('#search_org_sort_dir').removeClass('sort-up').removeClass('sort-down');
+    controller.postRequest('/organization/', {ajax: 'search_org', text: searchText, sort_by_date_added_dir: sort_by_date_added_dir});
 
 });
 
@@ -101,3 +118,8 @@ $('#test_alert_btn').click(function () {
 		message: 'Click anywhere on the page to close.'
 	});
 });
+
+if (typeof placeholder_ie_fix != 'undefined'){
+	placeholder_ie_fix('#organization_select_search_form #search_org');
+}
+

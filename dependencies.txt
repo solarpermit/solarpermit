@@ -9,8 +9,8 @@
 #
 # Be advised that the only dependency listed hear that is version dependent is
 # django-dajax.  This is caused by changes in the way dajax is called in later
-# versions.  These are the versions currently in use on several servers.
-# This file is formatted for use with pip for quickly installing python
+# versions.  These are the versions currently in use in our production server,
+# and this file is formatted for use with pip for quickly installing python
 # package dependencies
 #
 Django==1.5.1
@@ -29,3 +29,7 @@ nose==1.3.0
 PIL==1.1.7
 sorl-thumbnail==11.12
 South==0.8.1
+compressor
+cssmin
+closure
+coffin

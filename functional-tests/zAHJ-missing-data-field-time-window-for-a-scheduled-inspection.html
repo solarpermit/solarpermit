@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://solarpermit.org/" />
+<title>zAHJ-missing-data-field-time-window-for-a-scheduled-inspection</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">zAHJ-missing-data-field-time-window-for-a-scheduled-inspection</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>sendKeys</td>
+	<td>id=search_field</td>
+	<td>Abbott, TX</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a.search-a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>//div[@id='child_of_div_107']/div</td>
+	<td>Time window for a scheduled inspection</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='child_of_div_107']/div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>mouseOver</td>
+	<td>id=child_of_div_107</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>css=#qa_107_fields &gt; div.form_field &gt; div.field</td>
+	<td>Exact Time Given <br />2 hours (or less) <br />Half Day (2-4 hours) <br />Full day (greater than 4 hours)</td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>name=field_time_window</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>document.name_107.field_time_window[1]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>document.name_107.field_time_window[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>document.name_107.field_time_window[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=form_107_field_note</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=save_107</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

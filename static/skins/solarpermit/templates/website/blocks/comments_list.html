@@ -11,8 +11,8 @@
 	{% if c.approval_status != 'F' and c.approval_status != 'R' %}
 	<p>{{c.comment}}</p>
 	<div id="button-div-{{c.id}}" >
-		<a class="smallbutton" href="#" onClick="controller.postRequest('/jurisdiction_comment/', {ajax: 'reply_comment', cid: {{c.id}}});return false;">Reply</a>
-		<a class="smallbutton" href="#" onClick="controller.postRequest('/jurisdiction_comment/', {ajax: 'flag_comment', cid: {{c.id}}});return false;">Flag</a>
+		<a class="smallbutton commentReplayBtn" data-cid="{{c.id}}" href="#" >Reply</a>
+		<a class="smallbutton commentFlagBtn" data-cid="{{c.id}}" href="#" >Flag</a>
 	</div>
 	{% else %}
 	<p>This comment had been flagged as inappropriate and is hidden pending review.</p>
@@ -33,8 +33,8 @@
 				{% if c1.approval_status != 'F' and c1.approval_status != 'R' %}
 				<p>{{c1.comment}}</p>
 				<div id="button-div-{{c1.id}}" >
-					<a class="smallbutton" href="#" onClick="controller.postRequest('/jurisdiction_comment/', {ajax: 'reply_comment', cid: {{c1.id}}});return false;">Reply</a> 
-					<a class="smallbutton" href="#" onClick="controller.postRequest('/jurisdiction_comment/', {ajax: 'flag_comment', cid: {{c1.id}}});return false;">Flag</a>
+					<a class="smallbutton commentReplayBtn" data-cid="{{c1.id}}" href="#">Reply</a> 
+					<a class="smallbutton commentFlagBtn" data-cid="{{c1.id}}" href="#">Flag</a>
 				</div>
 				{% else %}
 				<p>This comment had been flagged as inappropriate and is hidden pending review.</p>
@@ -54,8 +54,8 @@
 						{% if c2.approval_status != 'F' and c2.approval_status != 'R' %}
 						<p>{{c2.comment}}</p>
 						<div id="button-div-{{c2.id}}" >
-							<a class="smallbutton" href="#" onClick="controller.postRequest('/jurisdiction_comment/', {ajax: 'reply_comment', cid: {{c2.id}}});return false;">Reply</a> 
-							<a class="smallbutton" href="#" onClick="controller.postRequest('/jurisdiction_comment/', {ajax: 'flag_comment', cid: {{c2.id}}});return false;">Flag</a>
+							<a class="smallbutton commentReplayBtn" data-cid="{{c2.id}}" href="#" >Reply</a> 
+							<a class="smallbutton commentFlagBtn" data-cid="{{c2.id}}" href="#">Flag</a>
 						</div>
 						{% else %}
 						<p>This comment had been flagged as inappropriate and is hidden pending review.</p>
@@ -76,7 +76,7 @@
 									{% if c3.approval_status != 'F' and c3.approval_status != 'R' %}
 									<p>{{c3.comment}}</p>
 									<div id="button-div-{{c3.id}}" >
-										<a class="smallbutton" href="#" onClick="controller.postRequest('/jurisdiction_comment/', {ajax: 'flag_comment', cid: {{c3.id}}});return false;">Flag</a>
+										<a class="smallbutton commentFlagBtn" data-cid="{{c3.id}}" href="#">Flag</a>
 									</div>
 									{% else %}
 									<p>This comment had been flagged as inappropriate and is hidden pending review.</p>

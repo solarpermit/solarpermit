@@ -1,33 +1,100 @@
 			{% if user.is_authenticated() %}
-				<div id="all_info" class="left_nav{{favorite_fields}}" onClick="onclick_ahj_nav('favorite_fields');" >Favorite Fields <img style="vertical-align:bottom" src="/media/images/favorite_icon.png" alt="favorite fields"> <span id="favfieldscount">{{user_number_of_favorite_fields}}</span></div>
+				<div id="favorite_fields" class="left_nav{{favorite_fields}}"  >Favorite Fields <img style="vertical-align:bottom" src="/media/images/favorite_icon.png" alt="favorite fields"> <span id="favfieldscount">{{user_number_of_favorite_fields}}</span></div>
 			{% endif %}
-				<div id="general" class="left_nav{{quirks}}" onClick="onclick_ahj_nav('quirks');">Quirks <img style="vertical-align:bottom" src="/media/images/exception_icon.png" alt="quirks"> <span id="quirkcount">{{quirk_number_of_questions}}</span></div>
-				<div id="all_info" class="left_nav{{all_info}}" onClick="onclick_ahj_nav('all_info');" >All Info</div>
-				<div id="general" class="left_nav{{general}}" onClick="onclick_ahj_nav('general');">General</div>
-				<div id="building" class="left_nav{{building}}" onClick="onclick_ahj_nav('building');">Building</div>
-				<div id="clerical" class="left_nav{{clerical}}" onClick="onclick_ahj_nav('clerical');">Clerical</div>
-				<div id="electrical" class="left_nav{{electrical}}" onClick="onclick_ahj_nav('electrical');">Electrical</div>
-				<div id="fire" class="left_nav{{fire}}" onClick="onclick_ahj_nav('fire');">Fire</div>
-				<div id="inspections_requirements" class="left_nav{{inspection_requirements}}" onClick="onclick_ahj_nav('inspection_requirements');">Inspection Requirements</div>
-				<div id="inspection_process" class="left_nav{{inspection_process}}" onClick="onclick_ahj_nav('inspection_process');">Inspection Process</div>
-				<div id="utility" class="left_nav{{utility}}" onClick="return onclick_ahj_nav('utility')">Utility</div>
-				<div id="zoning" class="left_nav{{zoning}}" onClick="return onclick_ahj_nav('zoning')">Zoning</div>
+				<div id="quirks" class="left_nav{{quirks}}"  >Quirks <img style="vertical-align:bottom" src="/media/images/exception_icon.png" alt="quirks"> <span id="quirkcount">{{quirk_number_of_questions}}</span></div>
+				<div id="attachments" class="left_nav{{attachments}}"  >Attachments</div>
+				<div id="all_info" class="left_nav{{all_info}}"   >All Info</div>
+				<div id="general" class="left_nav{{general}}" >General</div>
+				<div id="building" class="left_nav{{building}}"  >Building</div>
+				<div id="clerical" class="left_nav{{clerical}}"  >Clerical</div>
+				<div id="electrical" class="left_nav{{electrical}}"  >Electrical</div>
+				<div id="fire" class="left_nav{{fire}}"  >Fire</div>
+				<div id="inspections_requirements" class="left_nav{{inspection_requirements}}"  >Inspection Requirements</div>
+				<div id="inspection_process" class="left_nav{{inspection_process}}"  >Inspection Process</div>
+				<div id="utility" class="left_nav{{utility}}"  >Utility</div>
+				<div id="zoning" class="left_nav{{zoning}}"  >Zoning</div>
 				{% if user.is_staff == 1 or user.is_superuser == 1 or 'projectpermit' in accessible_views %}
-				<div id="projectpermit" class="left_nav{{projectpermit}}" onClick="return onclick_ahj_nav('projectpermit')">ProjectPermit.org</div>
+				<div id="projectpermit" class="left_nav{{projectpermit}}" >ProjectPermit.org</div>
 				{% endif %}
 				{% if user.is_staff == 1 or user.is_superuser == 1 %}				
-					<a href="/jurisdiction/migration/result/{{jurisdiction_id}}/" target="_blank"><div class="left_nav{{zoning}}">Migration Result</div></a>
+				<div id="migrationresult" class="left_nav{{migrationresult}}" ><a href="/jurisdiction/migration/result/{{jurisdiction_id}}/" target="_blank">Migration Result</a></div>
 				{% endif %}
 				<script type="text/javascript">{# note to self: redesign markup to use standard a href -RG #}
-					function onclick_ahj_nav(id)
-					{
-                        if (id == 'all_info')
-                            location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/";
-                        else
-						    location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/"+id+"/";
-						return false;
-					}
-				</script>
+
+
+$(document).ready(function() {
+    $('#favorite_fields').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/favorite_fields/";
+        return false;
+    });                         
+ 
+    $('#quirks').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/quirks/";
+        return false;
+    });     
+    
+    $('#attachments').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/attachments/";
+        return false;
+    });     
+
+    $('#all_info').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/";
+        return false;
+    });     
+    
+    $('#general').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/general/";
+        return false;
+    });     
+
+    $('#building').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/building/";
+        return false;
+    });     
+    
+    $('#clerical').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/clerical/";
+        return false;
+    });     
+    
+    $('#electrical').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/electrical/";
+        return false;
+    });     
+    
+    $('#fire').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/fire/";
+        return false;
+    });     
+    
+    $('#inspections_requirements').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/inspection_requirements/";
+        return false;
+    });
+    
+    $('#inspection_process').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/inspection_process/";
+        return false;
+    });      
+    
+    $('#utility').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/utility/";
+        return false;
+    });      
+
+    $('#zoning').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/zoning/";
+        return false;
+    });      
+        
+    $('#projectpermit').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/projectpermit/";
+        return false;
+    });                                                         
+});
+</script>
+           
 
 <!-- temporary fix to address menu overlapping footer on jurisdiction page -->
 <style>

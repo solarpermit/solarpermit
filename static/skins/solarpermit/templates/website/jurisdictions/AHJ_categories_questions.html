@@ -1,15 +1,18 @@
 {% extends layout %}
 {% block category_content %}  
 
-{% if question_categories == None or question_categories | length == 0 %}
-        <h3 class="title" style="float:left;width:800px;">{{view_title}}</h3>
+
+{% if view == True and vquestions | length == 0 %}
+        <h3 class="ahj_category_header" >{{view_title}}</h3>
         
         {% if category == 'favorite_fields' %}
         <div class='ahj_page_message' >This tab displays your favorite data fields. This allows you to easily track the permitting requirements that you care about. Adding a field to the favorites tab is easy.</div>
-        <img  style="border:1px blue solid;margin:20px;float:left" src="/media/images/favorites_quirks_howtos.png" alt="favorites_quirks_howtos" >
+        <img  style="border:1px blue solid;margin:20px;" src="/media/images/favorites_quirks_howtos.png" alt="favorites_quirks_howtos" >
         {% elif category == 'quirks' %}
         <div class='ahj_page_message' >This tab displays quirky permitting requirements. No one has marked one of the requirements as a quirk, but it's easy to do.</div>
-        <img  style="border:1px blue solid;margin:20px;float:left" src="/media/images/favorites_quirks_howtos.png" alt="favorites_quirks_howtos" >
+        <img  style="border:1px blue solid;margin:20px;" src="/media/images/favorites_quirks_howtos.png" alt="favorites_quirks_howtos" >
+        {% elif category == 'attachments' %}
+        <div class='ahj_page_message' >This tab displays answers with attachments.  No attachments has been uploaded yet.</div>        
         {% else %}
         No category
         {% endif %}
@@ -30,10 +33,10 @@
         {% set question_category_obj = this_question_category.get('question_category') %}
         {% set question_objs = this_question_category.get('questions') %}
         {% set questions_with_answers = this_question_category.get('questions_with_answers') %}
-        
+        <h3 class="ahj_category_header" >{{question_category_obj.description}}</h3>        
         {% if category != 'all_info' %}
         
-                <h3 class="title" style="float:left;width:800px;">{{question_category_obj.description}}</h3>
+
                 {% if category != 'favorite_fields' and category != 'quirks' %}  
                 {% if empty_data_fields_hidden | int == 1 %}       
                     {% if question_category_obj.id not in categories_with_answers.keys() %}  
@@ -43,14 +46,14 @@
                 {% endif %}
         {% else %}
                 {% if empty_data_fields_hidden | int == 0 or question_category_obj.id in categories_with_answers.keys() %}  
-                <h3 class="title" style="float:left;width:800px;">{{question_category_obj.description}}</h3>
+                
                 {% endif %}        
         {% endif %}
         
     
     
-        <div class="ahj_general" >
-                <span class="ahj_general_left" style="vertical-align:top;">
+        <div class="ahj_general cssRow" style="width:100%">
+                <span {% if show_google_map == True and loop.first == True %}class="ahj_general_left cssCell"{% else %} class="ahj_general_no_right cssCell"{% endif %} >
                 {% for this_question in question_objs %} 
                     {% if empty_data_fields_hidden | int == 0 or (empty_data_fields_hidden | int == 1 and this_question.id in questions_with_answers) %}
                         {% if this_question.state_exclusive == None or this_question.state_exclusive == '' %}
@@ -90,14 +93,15 @@
                         {% endif %}
                     {% endif %}
                 {% endfor %}    
-                  
+                   &nbsp;
                 </span>
-                <span class="ahj_general_right">
-                {% if show_google_map == True and loop.first == True %}
+                {% if show_google_map == True and loop.first == True %}                
+                <span class="ahj_general_right cssCell">
+
                     {% include 'website/blocks/google_map.html' %}
-                {% endif %}
-        
+         
                 </span>
+                {% endif %}               
         </div>
     
         
@@ -106,7 +110,7 @@
         {% else %}
         
         
-            <div id="div_custom_question_content_{{question_category_obj.id}}" style="float:left"></div>
+            <div id="div_custom_question_content_{{question_category_obj.id}}" style="width:100%"></div>
             {% if request.user.is_authenticated() == True and enable_custom_questions == True %}  
                 {# if empty_data_fields_hidden | int == 0 or (empty_data_fields_hidden | int == 1 and question_category_obj.id in categories_with_answers.keys()) #}     
                   
@@ -114,7 +118,7 @@
                         <div class="label">Don't see the info you're looking for here?</div>
                         <div>Check out the other sections to the left or create a custom field to share more info with the community.</div>
                         <div style="padding-top:15px;">
-                        <input type="button" id="create_custom_field_btn"  name="create_custom_field_btn" value="Create a custom field..." class="smallbutton" onClick="controller.postRequest('/custom_field/', {ajax: 'create_custom_field', jurisdiction_id:'{{jurisdiction.id}}', category_id:'{{question_category_obj.id}}' , current_category:'{{category}}' , current_questions: '{{this_question_category.get('current_questions') | join(',') }}' }); return false;" >
+                        <input type="button"  id="create_custom_field_btn_{{question_category_obj.id}}"  name="create_custom_field_btn" value="Create a custom field..." class="smallbutton create_custom_field_btn" data-jurisdiction_id='{{jurisdiction.id}}' data-category_id='{{question_category_obj.id}}' data-current_category='{{category}}'  data-current_questions='{{this_question_category.get('current_questions') | join(',') }}' >
                         </div>
                     </div>
           
@@ -131,6 +135,10 @@
 
 {% block endjs %}
 <script type='text/javascript'>
+    {% if show_ahj_message == True %}
+        controller.postRequest('.', {ajax: 'show_ahj_message', jurisdiction_id: {{jurisdiction.id}} });
+    {% endif %}
+    
     {% for this_question_category in question_categories %}
         {% set question_objs = this_question_category.get('questions') %}     
         {% set questions_with_answers = this_question_category.get('questions_with_answers') %}          
@@ -190,7 +198,7 @@
             });  
         return false;
     }
-    
+
     function vote_up(can_vote_down)
     {
         if (can_vote_down == 'false')
@@ -210,7 +218,7 @@
         }
         return false;
     }
-    
+
     function vote_down(can_vote_up)
     {
         if (can_vote_up == 'false')
@@ -230,14 +238,14 @@
         }
         return false;
     }
-    
+  
     function send_up_vote()
     {
         $('#voteup_'+entity_id).attr('disabled','disabled');
         controller.postRequest('.', {ajax: 'vote', vote: 'up', entity_name: 'requirement', entity_id: entity_id});
         return false;
     }
-    
+
     function send_down_vote()
     {
         $('#votedown_'+entity_id).attr('disabled','disabled');

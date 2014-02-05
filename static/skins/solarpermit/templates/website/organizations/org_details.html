@@ -10,7 +10,7 @@
 
 {% block modal_dialog_header %}
 {% if ajax == 'choose_org_details' %}
-	<a href="#" class="overview_link" onclick="controller.postRequest('/organization/', {ajax: 'choose_org'}); return false;" >Overview</a> &gt; Details
+	<a href="#" class="overview_link" id="choose_org"  >Overview</a> &gt; Details
 {% else %}
 {% if access == 'Admin' and (ajax == 'org_details' or ajax == 'open_org_details') %}
 {% else %}
@@ -25,8 +25,8 @@
 {% if access == 'Admin' and (ajax == 'org_details' or ajax == 'open_org_details') %}
 <div id="tabs" class="org_details">
 <ul>
-<li><a href="#tabs-1" onclick="controller.postRequest('/organization/', {ajax: 'org_details', orgid: {{orgid}}});">Details</a></li>
-<li><a href="#tabs-2" onclick="controller.postRequest('/organization/', {ajax: 'pending_request', orgid: {{orgid}}});">Pending Requests</a></li>
+<li><a id="tabs1_a" data-orgid="{{orgid}}" href="#tabs-1" >Details</a></li>
+<li><a id="tabs2_a" data-orgid="{{orgid}}" href="#tabs-2" >Pending Requests</a></li>
 </ul>
 <div id="tabs-1">
 {% endif %}
@@ -105,10 +105,8 @@
 			<div class="field_help_text"></div>
 			<div class="error_div">{{error_orgname}}</div>    
 			{% if mode == 'individual' %}
-			<div>
-				<!--a name="save_orgname" value="Save" id="save_orgname" class="mainbutton" onClick="controller.submitForm('#form_org_details_orgname');"  title="" >Save</a>
-				<a name="Cancel" value="Cancel" id="cancel_orgname" class="mainbutton" onClick="return switch_to_data('form_field_data_orgname', 'form_field_edit_orgname')"  title="" >Cancel</a-->				
-				<input type="submit" name="save_orgname" value="Save" id="save_orgname" class="smallbutton" onClick="controller.submitForm('#form_org_details_orgname');return false;"  title="" value="Save">
+			<div>				
+				<input type="submit" name="save_orgname" value="Save" id="save_orgname" class="smallbutton"  title="" value="Save">
 				<input type="button" name="Cancel" value="Cancel" id="cancel_orgname" class="smallbutton cancel"  title="" value="Cancel">
 			</div>
 			{% endif %}  
@@ -125,7 +123,7 @@
     <div class="form_field show_data"  {% if access == 'Admin'%}onmouseover="controller.initOrgEditFieldEvent(this);"{% endif %}>
         <div class="label">Logo:</div>
         <div id="form_field_data_logo" class="show_data data" > 
-            {% if thum == '' or thum == None %}
+            {% if organization.get_logo_thumbnail('32x32') == '' or organization.get_logo_thumbnail('32x32') == None %}
                 No logo available
             {% else %}
                 <a href="{{organization.get_clickable_website()}}" target="_blank" ><img src="{{organization.get_logo_thumbnail('32x32')}}" alt="{{orgname}}" ></a>
@@ -144,7 +142,7 @@
             </div>
             {% if mode == 'individual' %}
             <div>
-                <a name="save_logo" value="Save" id="save_logo" class="smallbutton" onClick="controller.submitForm('#form_org_details_logo');"  title="" >Save</a>
+                <a name="save_logo" value="Save" id="save_logo" class="smallbutton" title="" >Save</a>
                 <a name="Cancel" value="Cancel" id="cancel_logo" class="smallbutton cancel" title="" >Cancel</a>
             </div>
             {% endif %}  
@@ -173,17 +171,15 @@
       
         <div id="form_field_edit_website" style="display:none" class="form">
             <div class="field">
-                <input type="text" name="website" id="form_org_details_website_field_website" value="{% if website != None %}{{website}}{% endif %}" class="required url" style="width:210px" maxLength="200" >
+                <input type="text" name="website" id="form_org_details_website_field_website" value="{% if website != None %}{{website}}{% endif %}" class="required domainOrUrl" style="width:210px" maxLength="200" >
             </div>        
             <div class="field_help_text">
-                Enter the URL of the website
+                Enter the domain name or URL of the website
             </div>
 			<div class="error_div">{{error_website}}</div>              
             {% if mode == 'individual' %}
             <div>
-                <!--a name="save_website" value="Save" id="save_website" class="mainbutton" onClick="controller.submitForm('#form_org_details_website');"  title="" >Save</a>
-                <a name="Cancel" value="Cancel" id="cancel_website" class="mainbutton" onClick="return switch_to_data('form_field_data_website', 'form_field_edit_website')"  title="" >Cancel</a-->
-                <input type="submit" name="save_website" value="Save" id="save_website" class="smallbutton" onClick="controller.submitForm('#form_org_details_website'); return false;"  title="" value="Save">
+                <input type="submit" name="save_website" value="Save" id="save_website" class="smallbutton"  title="" value="Save">
                 <input type="button" name="Cancel" value="Cancel" id="cancel_website" class="smallbutton cancel"  title="" value="Cancel">
             </div>
             {% endif %}  
@@ -203,7 +199,7 @@
 	</div>
 </div>	
     
-   	<h3 class="mlabel">Members: {% if access == 'Admin'  or access == 'Member' %}<span><a href="#" class="smallbutton" onclick="controller.postRequest('/organization/', {ajax: 'select_users', orgid: {{organization.id}}}); return false;">Invite new members...</a></span>{% endif %}</h3>
+   	<h3 class="mlabel">Members: {% if access == 'Admin'  or access == 'Member' %}<span><a id="invite_btn" data-orgid="{{organization.id}}" href="#" class="smallbutton" id="select_users" data-orgid='{{organization.id}}' >Invite new members...</a></span>{% endif %}</h3>
 <form id="form_org_details_members" name="form_org_details_members" action="/organization/" method="post" accept-charset="utf-8">
 	<input type="hidden" name="ajax" value="org_details_members_change" >
 	<input type="hidden" id="userid" name="userid" value="{{user.id}}" > 
@@ -243,8 +239,8 @@
 		<input type="button" id="save_members_btn" class="smallbutton unbind" style="display:none;" title="Save" value="Save">
 	{% endif %}
 	{% if ajax == 'choose_org_details' %}
-		<input type="button" class="smallbutton" onclick="return controller.postRequest('/organization/', {ajax: 'choose_org'});" title="Cancel" value="Cancel">
+		<input type="button" id="org_details_cancel_btn" class="smallbutton" title="Cancel" value="Cancel">
 	{% else %}
-		<input type="button" id="org_details_close_btn" class="smallbutton" onclick="$.fancybox.close();" title="Close" value="Close">
+		<input type="button" id="org_details_close_btn" class="smallbutton"  title="Close" value="Close">
 	{% endif %}
 {% endblock %}

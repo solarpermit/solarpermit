@@ -27,3 +27,11 @@ class UserDetailAdmin(admin.ModelAdmin):
     ordering = ['user']
 
 admin.site.register(UserDetail, UserDetailAdmin)
+
+class NewsAdmin(admin.ModelAdmin):
+    list_display = ['published', 'title']
+    date_heirarchy = 'published'
+
+admin.site.register(PressRelease, NewsAdmin)
+admin.site.register(Article, NewsAdmin)
+admin.site.register(Event, NewsAdmin)

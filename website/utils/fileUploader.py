@@ -24,11 +24,14 @@ class qqFileUploader(object):
         except:
             isHtx = True
         fileName = djangoRequest.REQUEST.get('qqfile')
+        if len(fileName) > 65:
+            fileName = fileName[0:20]+fileName[(len(fileName) -30):len(fileName)]
         #if fileName == None:
         #    fileName = djangoRequest.FILES['qqfile'].name
         #    isHtx = False
         valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
         file_store_name = str(time.time())+'_'+''.join(c for c in fileName if c in valid_chars)
+        #print len(file_store_name)
         #check first for allowed file extensions
         if self._getExtensionFromFileName(fileName).lower() in self.allowedExtensions:
             #check file size
@@ -47,7 +50,7 @@ class qqFileUploader(object):
                 for chunk in f.chunks():
                     file.write(chunk)
                 file.close()
-            return {"success": True, "filename": fileName,  "store_name":file_store_name,  "json": '{"success": true,"store_name":"'+file_store_name+'"}'}
+            return {"success": True, "filename": fileName,  "store_name":file_store_name,  "json": '{"success": true,"store_name":"'+file_store_name+'", "fileName":"'+fileName+'"}'}
 
 
                 

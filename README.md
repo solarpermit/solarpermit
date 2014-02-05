@@ -1,8 +1,9 @@
-solarpermit-1.3.30
+solarpermit-1.3.37
 ===============
 
 Web Based Tool for Tracking Solar Permitting Requirements in The United States
 
+Please see the wiki for additional documentaiton - [https://github.com/solarpermit/solarpermit/wiki](https://github.com/solarpermit/solarpermit/wiki)
 
 Initial Source Release
 ================
@@ -36,7 +37,10 @@ Install Instructions
         a.  replace "/path/to/software" on line 3.
     B. Change settings... do not edit settings.py, use settings_local.py to
        override
-5. Load SQL to database
+5. Configure Database
+    A. CREATE DATABASE solarpermit;
+    B. ./manage.py syncdb (if this fails due to a missing SQL table, run migrate website)
+    C. ./manage.py migrate website
 6. Restart Apache
       
 Need help?  Have questions?

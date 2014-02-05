@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://solarpermit.org/" />
+<title>zAHJ-missing-data-field-permit-fee</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">zAHJ-missing-data-field-permit-fee</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>sendKeys</td>
+	<td>id=search_field</td>
+	<td>Abbott, TX</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a.search-a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>//div[@id='child_of_div_16']/div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>mouseOver</td>
+	<td>id=child_of_div_16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='child_of_div_16']/div</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>css=#qa_16_fields &gt; div.field_help_text</td>
+	<td>exact:What is the fee structure for solar permits in this jurisdiction?</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=add_another_fee_item_btn_1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=select_fee_formula_1_2</td>
+	<td>label=Percentage of total system cost</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=add_another_fee_item_btn_1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=select_fee_formula_1_3</td>
+	<td>label=Fee per component</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=add_another_fee_item_btn_1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=select_fee_formula_1_4</td>
+	<td>label=Jurisdiction cost recovery</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=add_another_fee_item_btn_1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>id=select_fee_formula_1_5</td>
+	<td>label=Other</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=add_another_fee_item_btn_1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=select_fee_formula_1_1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=form_16_field_fee_flat_rate_1_1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=form_16_field_fee_percentage_of_total_system_cost_1_2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=form_16_field_fee_percentage_of_total_system_cost_cap_1_2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=form_16_field_fee_percentage_of_total_system_cost_cap_amt_1_2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=form_16_field_fee_per_inverter_1_3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=form_16_field_fee_per_module_1_3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=form_16_field_fee_per_major_components_1_3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=form_16_field_fee_per_component_cap_cap_amt_1_3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=form_16_field_fee_per_component_cap_1_3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=form_16_field_fee_jurisdiction_cost_recovery_notes_1_4</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=form_16_field_fee_other_1_5</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

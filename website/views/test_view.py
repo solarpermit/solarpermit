@@ -12,7 +12,7 @@ from django.shortcuts import render
 
 from django.shortcuts import render_to_response
 from website.utils.mathUtil import MathUtil
-from website.utils.paginationUtil import PaginationUtil
+
 from website.utils.datetimeUtil import DatetimeHelper
 from website.models import Jurisdiction, Organization, OrganizationMember, AnswerReference, Question
 
@@ -23,51 +23,7 @@ from website.utils.datetimeUtil import DatetimeHelper
 import json
 from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
 
-@csrf.csrf_protect
-def get_state_jurisdictions(request, state='', sort_by='', sort_dir='', page_num=''):
-    requestProcessor = HttpRequestProcessor(request)
-    sort_desc_img = django_settings.SORT_DESC_IMG
-    sort_asc_img = django_settings.SORT_ASC_IMG
-    sort_class = django_settings.SORT_CLASS
-    sort_columns = {}
-    sort_columns['name'] = 'asc'
-    sort_columns['county'] = 'asc'
 
-    if sort_by == '':
-        sort_by = 'name'
-    if sort_dir == '':
-        sort_dir = 'asc'
-    
-    href = '/jurisdiction/browse/?state=' + state
-
-    search_params = {}
-    pagingation_obj = PaginationUtil('get', search_params, href)
-    pagingation_obj.set_up_sorting_by_columns(sort_columns, sort_desc_img, sort_asc_img, sort_class)
-
-    data = {}
-    data['page_title'] = "Browse Jurisdiction: " + state
-
-    if state == '':
-        state = 'CA'
-        
-    type = 'CI'
-
-    if sort_by == '' or sort_by == None:
-        objects = Jurisdiction.objects.filter(state__iexact=state, jurisdiction_type__iexact=type).order_by('name', 'county')
-    else:                        
-        order_by_str = pagingation_obj.get_order_by_str(sort_by, sort_dir) 
-        objects = Jurisdiction.objects.filter(state__iexact=state, jurisdiction_type__iexact=type).order_by(order_by_str)   
-                
-    pagingation_obj.set_up_pagination(objects, page_num, django_settings.MAX_REC_PER_PAGE)   
-    data['city_list'] = pagingation_obj.getCurrentPageItems()
-    data['pagination'] = pagingation_obj.getPaginationData()
-    data['sort'] = pagingation_obj.get_sorting_html_all_columns()   
-
-    data['system_message_type'] = 'success'
-    data['system_message_text'] = 'A lot of data found for your consumption'    
-
-    #return render(request,'website/jurisdictions/jurisdiction_browse.html', data)
-    return requestProcessor.render_to_response(request,'website/jurisdictions/jurisdiction_browse.html', data, '')
 
 def jurisdiction_browse_by_states(request):
     data = {}
