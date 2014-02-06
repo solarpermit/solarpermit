@@ -297,4 +297,6 @@ COMPRESS_CLOSURE_COMPILER_ARGUMENTS = '--language_in ECMASCRIPT5 --summary_detai
 # do not run migrations during testing
 SOUTH_TESTS_MIGRATE=False
 
+FORUM_INTEGRATION=False
+
 from settings_local import *
