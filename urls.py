@@ -49,11 +49,6 @@ else:
         #(r'^jurisdiction_id/(?P<id>.*)/$', 'website.views.AHJ.view_AHJ'), 
               
         #(r'^set_up_data_sprint_19', 'website.views.data_migration.set_up_data_sprint_19'),
-                
-        #(r'^test_newsite/', test_view.test_newsite),
-        #(r'^test_add/', test_view.test_add),
-        #(r'^test_edit/', test_view.test_edit),    
-        #(r'^test_ie/', test_view.test_ie),    
             
         url( # TODO: replace with django.conf.urls.static ?
             r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:], 
@@ -67,7 +62,6 @@ else:
         (r'^organization/user/search/', 'website.views.organization.organization_user_search'),
         (r'^organization/members/', 'website.views.organization.organization_members'),
         (r'^organization/', 'website.views.organization.organization'),             
-        (r'^whitepapers/', 'website.views.whitepaper.papers'),   
         (r'^logout', account.log_out),      
         (r'^reset_password/(?P<reset_password_key>.*)/$', home.reset_password),       
         (r'^info/', info.get_info),  
@@ -85,15 +79,6 @@ else:
         #services
         (r'^s/search/general/$', 'website.services.jurisdiction_services.search_general'),
         url(r'^runCron/(?P<forceRun>.*)/$', 'website.cron.cron.run_cron'),
-        #unit tests and other tests
-        #(r'^test/search/$', test_view.test_search),  
-        #(r'^test/org/$', test_view.test_org),  
-        #(r'^test/timezone/$', test_view.test_timezone),  
-        #(r'^test/ahj/(?P<id>.*)/$', jurisdiction.view_AHJ),      
-        #(r'^unittest/(?P<test>.*)/$', unittest.run_test),  
-        #(r'^unittest/$', unittest.run_test),  
-        (r'^test/cron_validate_answers/', test_view.test_cron_validate_answers),    
-                
         (r'^sign_in', account.sign_in_shell),     
     
         (r'^profile/(?P<id>.*)/$', account.user_profile),

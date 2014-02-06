@@ -1082,23 +1082,6 @@ def organization(request):
             #except:
             #    org_member = OrganizationMember()
             
-        '''
-        if (ajax == 'view_org_details'):
-            org_id = requestProcessor.getParameter('orgid')
-            org = Organization.objects.get(id = org_id)
-            org_members = OrganizationMember.objects.filter(organization = org, status = 'A')
-            
-            data['organization'] = org
-            data['org_members'] = org_members
-            data['owners'] = org.get_owners()
-            body = requestProcessor.decode_jinga_template(request,'website/organizations/organization_details_view.html', data, '')
-            dajax.assign('#fancyboxformDiv','innerHTML', body)
-            script = requestProcessor.decode_jinga_template(request, 'website/organizations/organization_details_view.js', data, '')
-            dajax.script(script)
-            dajax.script('controller.showModalDialog("#fancyboxformDiv");')
-            return HttpResponse(dajax.json())
-        '''    
-        
         #add script to open fancybox if command starts with 'open'
         if ajax.startswith('open'):
             dajax.script('controller.showModalDialog("#fancyboxformDiv");')

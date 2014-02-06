@@ -307,9 +307,8 @@ def send_email(data, to_mail, subject='Flag Comment', template='flag_comment.htm
     msg.content_subtype = "html"   
     msg.send()
     
-def view_sc_AHJ(request, id):
+def view_sc_AHJ(request, jurisdiction):
     requestProcessor = HttpRequestProcessor(request)   
-    jurisdiction = Jurisdiction.objects.get(id=id)  
              
     data = {}
     data['home'] = '/'     
@@ -328,12 +327,11 @@ def view_sc_AHJ(request, id):
     data['scfo_jurisdictions'] = scfo_jurisdictions
     return requestProcessor.render_to_response(request,'website/jurisdictions/AHJ_sc.html', data, '')     
     
-def view_unincorporated_AHJ(request, id):
+def view_unincorporated_AHJ(request, jurisdiction):
     requestProcessor = HttpRequestProcessor(request)   
     dajax = Dajax()
     ajax = requestProcessor.getParameter('ajax')
     user = request.user
-    jurisdiction = Jurisdiction.objects.get(id=id)  
              
     data = {}
     data['authenticated_page_message'] = ''
@@ -466,9 +464,9 @@ def view_AHJ_by_name(request, name, category='all_info'):
         id = jurisdiction.id
         
         if jurisdiction.jurisdiction_type == 'U' or jurisdiction.jurisdiction_type == 'CONP' or jurisdiction.jurisdiction_type == 'CINP':
-            return view_unincorporated_AHJ(request, id)
+            return view_unincorporated_AHJ(request, jurisdiction)
         elif jurisdiction.jurisdiction_type == 'SC':
-            return view_sc_AHJ(request, id)
+            return view_sc_AHJ(request, jurisdiction)
         else:
             user = request.user
             ## the following to make sure the user has access to the view from the url
@@ -499,12 +497,7 @@ def view_AHJ_by_name(request, name, category='all_info'):
             if layout == 'print':
                 return view_AHJ_cqa_print(request, jurisdiction, category)   
             else:
-                if user.is_authenticated():       
-                    return view_AHJ_cqa(request, id, category)
-                else:                               
-                    return view_AHJ_data_unauthenticated(request, id, category)      
-
-        
+                return view_AHJ_cqa(request, jurisdiction, category)
     else:
         raise Http404
     
@@ -525,7 +518,9 @@ def view_AHJ_cqa_print(request, jurisdiction, category='all_info'):
     else:
         empty_data_fields_hidden = 0
     
-    records = get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user)
+    (question_ids, view) = get_questions_in_category(user, jurisdiction, category)
+    data['view'] = view
+    records = get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, question_ids)
 
     answers_contents = {}
     questions_have_answers = {}
@@ -567,7 +562,7 @@ def view_AHJ_cqa_print(request, jurisdiction, category='all_info'):
                 
     return requestProcessor.render_to_response(request,'website/jurisdictions/AHJ_cqa_print.html', data, '')     
 
-def view_AHJ_cqa(request, jurisdiction_id, category='all_info'):
+def view_AHJ_cqa(request, jurisdiction, category='all_info'):
     #print "at beginning of view view_AHJ_data :: " + str(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S .%f %p")) 
     dajax = Dajax()   
     validation_util_obj = FieldValidationCycleUtil()      
@@ -577,33 +572,27 @@ def view_AHJ_cqa(request, jurisdiction_id, category='all_info'):
     data = {}
     data['time'] = []
 
+    data['category'] = category
     if category == 'all_info':
         data['category_name'] = 'All Categories'
     else:
         data['category_name'] = category
-        
-    data['category'] = category
-    jurisdiction = Jurisdiction.objects.get(id=jurisdiction_id)
-    data['jurisdiction_id'] = jurisdiction.id
 
+    empty_data_fields_hidden = True
     if category != 'favorite_fields' and category != 'quirks':
-        empty_data_fields_hidden = 1
-        empty_data_fields_hidden = requestProcessor.getParameter('empty_data_fields_hidden')        
-        if empty_data_fields_hidden != None:
-            data['empty_data_fields_hidden'] = int(empty_data_fields_hidden)
+        if jurisdiction.last_contributed_by == None:
+            empty_data_fields_hidden = False
         else:
-            if jurisdiction.last_contributed_by == None:
-                data['empty_data_fields_hidden'] = 0
-            else:        
-                if 'empty_data_fields_hidden' in request.session:
-                    data['empty_data_fields_hidden'] = request.session['empty_data_fields_hidden']
-                else:
-                    data['empty_data_fields_hidden'] = 1     # to be determineed by various factors in susbsequent codes
+            if 'empty_data_fields_hidden' in request.session:
+                empty_data_fields_hidden = request.session['empty_data_fields_hidden']
     else:
-        data['empty_data_fields_hidden'] = 0
-            
-    ajax = requestProcessor.getParameter('ajax')  
+        empty_data_fields_hidden = False
+    param = requestProcessor.getParameter('empty_data_fields_hidden')
+    if param != None:
+        empty_data_fields_hidden = param == "1"
+    data['empty_data_fields_hidden'] = 1 if empty_data_fields_hidden else 0
 
+    ajax = requestProcessor.getParameter('ajax')
     if ajax != None and ajax != '':
         if (ajax == 'get_ahj_answers_headings'):
             questions_answers = {}
@@ -795,7 +784,6 @@ def view_AHJ_cqa(request, jurisdiction_id, category='all_info'):
             data['user'] = user      
             data['jurisdiction'] = jurisdiction           
             field_prefix = 'field_'
-            jurisdiction = Jurisdiction.objects.get(id=jurisdiction_id)    
             question_id = requestProcessor.getParameter('question_id')        
             question = Question.objects.get(id=question_id)                  
             answers = requestProcessor.get_form_field_values(field_prefix)
@@ -832,7 +820,6 @@ def view_AHJ_cqa(request, jurisdiction_id, category='all_info'):
             data['user'] = user        
             answer_id = requestProcessor.getParameter('answer_id')
             field_prefix = 'field_'
-            jurisdiction = Jurisdiction.objects.get(id=jurisdiction_id) 
             answer = AnswerReference.objects.get(id=answer_id)   
             questions = Question.objects.filter(id=answer.question.id)      # done on purpose.
             question = questions[0]          
@@ -870,11 +857,10 @@ def view_AHJ_cqa(request, jurisdiction_id, category='all_info'):
         if (ajax == 'add_to_views'):
             view_obj = None
             user = request.user
-            entity_name = requestProcessor.getParameter('entity_name')
-            try:
-                question_id = int(requestProcessor.getParameter('question_id'))
-            except:
-                raise Http404
+            if not user.is_authenticated():
+                raise Http401
+            entity_name = requestProcessor.getParameter('entity_name') 
+            question_id = requestProcessor.getParameter('question_id') 
 
             if entity_name == 'quirks':
                 view_objs = View.objects.filter(view_type = 'q', jurisdiction = jurisdiction)
@@ -943,6 +929,8 @@ def view_AHJ_cqa(request, jurisdiction_id, category='all_info'):
         if (ajax == 'remove_from_views'):
             view_obj = None
             user = request.user
+            if not user.is_authenticated():
+                raise Http401
             entity_name = requestProcessor.getParameter('entity_name') 
             question_id = requestProcessor.getParameter('question_id') 
                   
@@ -1071,128 +1059,66 @@ def view_AHJ_cqa(request, jurisdiction_id, category='all_info'):
             return HttpResponse(dajax.json())         
         
         if (ajax == 'vote'):
-            if True:    # copy and paste, and too much work to move all to the left.
-                #data = {}
-                requestProcessor = HttpRequestProcessor(request)
-                dajax = Dajax()
-                      
-                ajax = requestProcessor.getParameter('ajax')
-                if (ajax != None):
-                    if (ajax == 'vote'):
-                        user = request.user
-                        entity_id = requestProcessor.getParameter('entity_id') 
-                        entity_name = requestProcessor.getParameter('entity_name') 
-                        vote = requestProcessor.getParameter('vote')             
-                        confirmed = requestProcessor.getParameter('confirmed')                     
-                        if confirmed == None:
-                            confirmed = 'not_yet'                            
-                            
-                        feedback = validation_util_obj.process_vote(user, vote, entity_name, entity_id, confirmed)
-                        #data['user'] = user 
-                        if feedback == 'registered':
-                            if entity_name == 'requirement':
-                                answer = AnswerReference.objects.get(id=entity_id)     
-                                question = answer.question
-                                answer_ids = [answer.id]
-                                category_name = 'VoteRequirement'   
-                                data['answers_votes'] = get_answer_voting_info(category_name, answer.jurisdiction, user, answer_ids)
-                                dajax.add_data(data, 'process_ahj_answers_votes')
-                                dajax.script("show_hide_vote_confirmation('"+entity_id+"');")
-                                            
-                        elif feedback == 'registered_with_changed_status':
-                            
-                            if entity_name == 'requirement':
-                                
-                                answer = AnswerReference.objects.get(id=entity_id)   
-                                question = answer.question
-                                dajax = get_question_answers_dajax(request, jurisdiction, question, data)                           
-                                
-                                terminology = question.get_terminology()           
-                                  
-                                if answer.approval_status == 'A':                          
-                                    dajax.script("controller.showMessage('"+str(terminology)+" approved.  Thanks for voting.', 'success');")  
-                                elif answer.approval_status == 'R':
-                                    dajax.script("controller.showMessage('"+str(terminology)+" rejected. Thanks for voting.', 'success');") 
-                                dajax.script("show_hide_vote_confirmation('"+entity_id+"');") 
-                                    
-                                if answer.approval_status == 'A': 
-                                    category_obj = question.category   
-                                    category = category_obj.name                                                            
-                                    data['top_contributors'] = get_ahj_top_contributors(data['jurisdiction'], category)  
-                                    body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_top_contributors.html', data, '')   
-                                    dajax.assign('#top-contributor','innerHTML', body)                                  
-    
-    
-                        elif feedback == 'will_approve':
-                            
-                            # prompt confirmation
-                            answer = AnswerReference.objects.get(id=entity_id)   
-                            answers = AnswerReference.objects.filter(question=answer.question, jurisdiction=answer.jurisdiction)
-                            if len(answers) > 1 and answer.question.has_multivalues == 0:
-                                dajax.script("confirm_approved('yes');")
-                            else:
-                                dajax.script("confirm_approved('no');")
-                        elif feedback == 'will_reject':
-                            # prompt confirmation
-                            answer = AnswerReference.objects.get(id=entity_id) 
-                            question = answer.question
-                            question_terminology = question.get_terminology()
-                            dajax.script("confirm_rejected("+str(entity_id)+",'"+question_terminology+"');")
-                        #dajax.script("controller.showMessage('Your feedback has been sent and will be carefully reviewed.', 'success');")                 
-                
-            return HttpResponse(dajax.json()) 
+            requestProcessor = HttpRequestProcessor(request)
+            dajax = Dajax()
+            ajax = requestProcessor.getParameter('ajax')
+            user = request.user
+            entity_id = requestProcessor.getParameter('entity_id')
+            entity_name = requestProcessor.getParameter('entity_name')
+            vote = requestProcessor.getParameter('vote')
+            confirmed = requestProcessor.getParameter('confirmed')
+            if confirmed == None:
+                confirmed = 'not_yet'
+
+            feedback = validation_util_obj.process_vote(user, vote, entity_name, entity_id, confirmed)
+
+            if feedback == 'registered':
+                if entity_name == 'requirement':
+                    answer = AnswerReference.objects.get(id=entity_id)
+                    question = answer.question
+                    answer_ids = [answer.id]
+                    category_name = 'VoteRequirement'
+                    data['answers_votes'] = get_answer_voting_info(category_name, answer.jurisdiction, user, answer_ids)
+                    dajax.add_data(data, 'process_ahj_answers_votes')
+                    dajax.script("show_hide_vote_confirmation('"+entity_id+"');")
+            elif feedback == 'registered_with_changed_status':
+                if entity_name == 'requirement':
+                    answer = AnswerReference.objects.get(id=entity_id)
+                    question = answer.question
+                    dajax = get_question_answers_dajax(request, jurisdiction, question, data)
+                    terminology = question.get_terminology()
+
+                    if answer.approval_status == 'A':
+                        dajax.script("controller.showMessage('"+str(terminology)+" approved.  Thanks for voting.', 'success');")
+                    elif answer.approval_status == 'R':
+                        dajax.script("controller.showMessage('"+str(terminology)+" rejected. Thanks for voting.', 'success');")
+                    dajax.script("show_hide_vote_confirmation('"+entity_id+"');")
+
+                    if answer.approval_status == 'A':
+                        category_obj = question.category
+                        category = category_obj.name
+                        data['top_contributors'] = get_ahj_top_contributors(data['jurisdiction'], category)
+                        body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_top_contributors.html', data, '')
+                        dajax.assign('#top-contributor','innerHTML', body)
+            elif feedback == 'will_approve':
+                # prompt confirmation
+                answer = AnswerReference.objects.get(id=entity_id)
+                answers = AnswerReference.objects.filter(question=answer.question, jurisdiction=answer.jurisdiction)
+                if len(answers) > 1 and answer.question.has_multivalues == 0:
+                    dajax.script("confirm_approved('yes');")
+                else:
+                    dajax.script("confirm_approved('no');")
+            elif feedback == 'will_reject':
+                # prompt confirmation
+                answer = AnswerReference.objects.get(id=entity_id)
+                question = answer.question
+                question_terminology = question.get_terminology()
+                dajax.script("confirm_rejected("+str(entity_id)+",'"+question_terminology+"');")
+            #dajax.script("controller.showMessage('Your feedback has been sent and will be carefully reviewed.', 'success');")
+            return HttpResponse(dajax.json())
     
     ######################################### END OF AJAX #######################################################    
-    placeholder = ''      
-    question_ids = []  
-    ############### look up question category based on the passed category ########################################
-    view = False        # to indicate whether it's a quirks, favorites, special view like projectpermit.org, etc....
-    category_objs = []
-    original_categories = []
-    if category == 'all_info':
-        category_objs = QuestionCategory.objects.filter(accepted__exact=1).order_by('display_order')
-        for category_obj in category_objs:
-            original_categories.append(category_obj.id)
-    else:
-        category_objs = QuestionCategory.objects.filter(name__iexact=category, accepted__exact=1)
-        if len(category_objs) > 0:
-            original_categories.append(category_objs[0].id)
-        
-        if len(category_objs) == 0:  # view
-            view = True
-            if category == 'favorite_fields':
-                category_objs = View.objects.filter(user = user, view_type__exact='f')        
-            elif category == 'quirks':
-                category_objs = View.objects.filter(jurisdiction = jurisdiction, view_type__exact='q')
-            elif category == 'attachments':
-                category_objs = View.objects.filter(jurisdiction = jurisdiction, view_type__exact='a')         
-            else:
-                category_objs = View.objects.filter(name__iexact=category)  # we work with one view per ahj content, not like muliple categories in all_info            
-
-                    
-            
-            view_questions = ViewQuestions.objects.filter(view__in=category_objs).order_by('display_order').values('question_id').distinct()
-            for view_question in view_questions:
-                question_ids.append(view_question.get('question_id'))
-        else:
-            category_questions = Question.objects.filter(accepted=1, category__in=category_objs).values('id').distinct()             
-            for category_question in category_questions:
-                question_ids.append(category_question.get('id'))
-
-        for question_id in question_ids:
-            placeholder += '%s,'
-                
-        placeholder = placeholder.rstrip(',')
-        print 'placeholder :: ' + str(placeholder)
-            
-            
-    data['view'] = view
-    data['original_categories'] = original_categories
-    
-
-    
     ############## to determine the last contributor's organization
-    
     organization = None
     try:
         contributor = jurisdiction.last_contributed_by
@@ -1201,6 +1127,9 @@ def view_AHJ_cqa(request, jurisdiction_id, category='all_info'):
 
     data['last_contributed_by']  = contributor       
     ###################################################
+
+    data['jurisdiction'] = jurisdiction
+    data['jurisdiction_id'] = jurisdiction.id
 
     data['nav'] = 'no'   
     data['current_nav'] = 'browse'    
@@ -1214,275 +1143,47 @@ def view_AHJ_cqa(request, jurisdiction_id, category='all_info'):
     ###############################################################################################################
     
     #jurisdiction_templates = get_jurisdiction_templates(jurisdiction)
-
-    if category == 'all_info' or len(question_ids) > 0:
-
-        query_str = '''SELECT * FROM   (
-                SELECT
-                       website_answerreference.id,
-                       website_answerreference.question_id,
-                       website_answerreference.value,
-                       website_answerreference.file_upload,
-                       website_answerreference.create_datetime,
-                       website_answerreference.modify_datetime,
-                       website_answerreference.jurisdiction_id,
-                       website_answerreference.is_current,
-                        website_answerreference.is_callout,
-                        website_answerreference.approval_status,
-                        website_answerreference.creator_id,
-                        website_answerreference.status_datetime,
-                        website_answerreference.organization_id,
-                        website_question.form_type,
-                        website_question.answer_choice_group_id,
-                        website_question.display_order,
-                        website_question.default_value,
-                        website_question.reviewed,
-                        website_question.accepted,
-                        website_question.instruction,
-                        website_question.category_id,
-                        website_question.applicability_id,
-                        website_question.question,
-                        website_question.label,
-                        website_question.template,
-                        website_question.validation_class,
-                        website_question.js,
-                        website_question.field_attributes,
-                        website_question.terminology,
-                        website_question.has_multivalues,
-                        website_question.qtemplate_id,
-                        website_question.display_template,
-                        website_question.field_suffix,
-                        website_question.migration_type,
-                        website_question.state_exclusive,
-                        website_question.description,
-                        website_question.support_attachments,
-                        website_questioncategory.name,
-                        website_questioncategory.description AS cat_description,
-                        website_questioncategory.accepted AS cat_accepted,
-                        website_questioncategory.display_order AS cat_display_order,
-                        auth_user.username,
-                        auth_user.first_name,
-                        auth_user.last_name,
-                        auth_user.is_staff,
-                        auth_user.is_active,
-                        auth_user.is_superuser,
-                        website_userdetail.display_preference
-                FROM
-                        website_answerreference,
-                        website_question,
-                        website_questioncategory,
-                        auth_user,
-                        website_userdetail
-                WHERE
-                        website_answerreference.jurisdiction_id = %s
-                '''
-        
-        if placeholder != '':
-            query_str += '''AND website_question.id IN ('''+ placeholder + ''')'''
-    
-        query_str += '''
-                        AND website_question.id = website_answerreference.question_id
-                        AND website_questioncategory.id = website_question.category_id
-                        AND auth_user.id = website_answerreference.creator_id
-                        AND website_userdetail.user_id = website_answerreference.creator_id
-                        AND website_question.accepted = '1'
-                        AND (
-                                (
-                                        (
-                                                website_answerreference.approval_status = 'A'
-                                                AND website_question.has_multivalues = '0'
-                                                AND website_answerreference.create_datetime = (
-                                                        SELECT
-                                                                MAX(create_datetime)
-                                                        FROM
-                                                                website_answerreference AS temp_table
-                                                        WHERE
-                                                                temp_table.question_id = website_answerreference.question_id
-                                                                AND temp_table.jurisdiction_id = website_answerreference.jurisdiction_id
-                                                                AND temp_table.approval_status = 'A'
-                                                )
-                                        ) OR (
-                                                website_answerreference.approval_status = 'P'
-                                                AND website_question.has_multivalues = '0'
-                                                AND website_answerreference.create_datetime != (
-                                                        SELECT
-                                                                MAX(create_datetime)
-                                                        FROM
-                                                                website_answerreference AS temp_table
-                                                        WHERE
-                                                                temp_table.question_id = website_answerreference.question_id
-                                                                AND temp_table.jurisdiction_id = website_answerreference.jurisdiction_id
-                                                                AND temp_table.approval_status = 'A'
-                                                )
-                                        )
-                                ) OR (
-                                        (
-                                                website_question.has_multivalues = '1'
-                                                AND (
-                                                        website_answerreference.approval_status = 'A'
-                                                        OR website_answerreference.approval_status = 'P'
-                                                )
-                                        )
-                                ) OR (
-                                        website_answerreference.approval_status = 'P'
-                                        AND (
-                                                SELECT
-                                                        MAX(create_datetime)
-                                                FROM
-                                                        website_answerreference AS temp_table
-                                                WHERE
-                                                        temp_table.question_id = website_answerreference.question_id
-                                                        AND temp_table.jurisdiction_id = website_answerreference.jurisdiction_id
-                                                        AND temp_table.approval_status = 'A'
-                                        ) IS NULL
-                                )
-                        )
-                ) AS sorting_table
-                '''
-        if data['empty_data_fields_hidden'] != 1:
-            query_str += '''
-        UNION SELECT
-                       NULL AS id,
-                       website_question.id AS question_id,
-                       NULL AS value,
-                       NULL AS file_upload,
-                       NULL AS create_datetime,
-                       NULL AS modify_datetime,
-                       NULL AS jurisdiction_id,
-                       NULL AS is_current,
-                        NULL AS is_callout,
-                        NULL AS approval_status,
-                        NULL AS creator_id,
-                        NULL AS status_datetime,
-                        NULL AS organization_id,
-                        website_question.form_type,
-                        website_question.answer_choice_group_id,
-                        website_question.display_order,
-                        website_question.default_value,
-                        website_question.reviewed,
-                        website_question.accepted,
-                        website_question.instruction,
-                        website_question.category_id,
-                        website_question.applicability_id,
-                        website_question.question,
-                        website_question.label,
-                        website_question.template,
-                        website_question.validation_class,
-                        website_question.js,
-                        website_question.field_attributes,
-                        website_question.terminology,
-                        website_question.has_multivalues,
-                        website_question.qtemplate_id,
-                        website_question.display_template,
-                        website_question.field_suffix,
-                        website_question.migration_type,
-                        website_question.state_exclusive,
-                        website_question.description,
-                        website_question.support_attachments,
-                        website_questioncategory.name,
-                        website_questioncategory.description AS cat_description,
-                        website_questioncategory.accepted AS cat_accepted,
-                        website_questioncategory.display_order AS cat_display_order,
-                        NULL AS username,
-                        NULL AS first_name,
-                        NULL AS last_name,
-                        NULL AS is_staff,
-                        NULL AS is_active,
-                        NULL AS is_superuser,
-                        NULL AS display_preference
-        FROM
-                website_question,
-                website_questioncategory
-        WHERE
-                website_questioncategory.id = website_question.category_id
-                '''
-                  
-            if placeholder != '':
-                query_str += '''AND website_question.id IN ('''+ placeholder + ''') '''
-        
-            query_str += '''                
-                        AND website_questioncategory.accepted = '1' 
-                        AND website_question.accepted = '1'
-                '''
-                    
-        query_str +='''
-        ORDER BY
-                cat_display_order ASC,
-                category_id ASC,
-                display_order ASC,
-                question_id ASC,
-                approval_status ASC,
-                create_datetime DESC,
-                id DESC;
-        '''
-        query_params = []
-        query_params.append(jurisdiction.id)
-        if len(question_ids) > 0:
-            for question_id in question_ids:
-                query_params.append(question_id)
-            if data['empty_data_fields_hidden'] != 1:                
-                for question_id in question_ids:
-                    query_params.append(question_id)
-                          
-        cursor = connections['default'].cursor()
-        #try:
-        cursor.execute(query_str, query_params)
-        records = dictfetchall(cursor) 
-        #except:
-        #    records = []
-        #print query_str
-        
-   
-    
-        data['cqa'] = records
-        
-    else:
-        records = []
-        data['cqa'] = records
         
     data['jurisdiction'] = jurisdiction
-    '''         
-    data['questions_answers'] = questions_answers    
-    data['answers_contents'] = answers_contents
-
-    data['questions_pending_editable_answer_ids_array'] = questions_pending_editable_answer_ids_array         
-    data['categories_current_questions'] = categories_current_questions     
-    data['questions_login_user_suggested_a_value'] = questions_login_user_suggested_a_value     
-    data['view'] = view
-    
-    data['categories'] = category_objs 
-    data['jurisdiction_answers'] = jurisdiction_answers
-    data['categories_questions'] = categories_questions
-    data['categories_answers'] = categories_answers          
-    '''
         
     if 'accessible_views' in request.session:
         data['accessible_views'] = request.session['accessible_views']
     else:
         data['accessible_views'] = []
 
+    (question_ids, view) = get_questions_in_category(user, jurisdiction, category)
+    data['view'] = view
+    records = get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, question_ids = question_ids)
 
     answers_contents = {}
     #data_answer = {}
     #answers_html = {}
     show_google_map = False
-    questions_pending_editable_answer_ids_array = {}    
-    questions_login_user_suggested_a_value = {}
-    questions_have_answers = {}
-    questions_terminology = {}
+    records_by_category = {}
     for rec in records:
-        if rec['question_id'] not in questions_pending_editable_answer_ids_array:
-            questions_pending_editable_answer_ids_array[rec['question_id']] = []
-                
-        if rec['question_id'] not in questions_login_user_suggested_a_value:
-            questions_login_user_suggested_a_value[rec['question_id']] = False
+        cid = rec['category_id']
+        if not cid in records_by_category:
+            records_by_category[cid] = { 'cat_description': rec['cat_description'],
+                                         'sorted_question_ids': [],
+                                         'questions': {} }
+        qid = rec['question_id']
+        if not rec['id']: # this is a question
+            assert(rec['question_id'] not in records_by_category[cid]['questions']) # shouldn't get duplicate questions
+            records_by_category[cid]['sorted_question_ids'].append(qid)
+            rec['answers'] = []
+            rec['logged_in_user_suggested_a_value'] = False
+            rec['terminology'] = Question().get_question_terminology(qid)
+            rec['pending_answer_ids'] = []
+            records_by_category[cid]['questions'][qid] = rec
+        else: # it's an answer
+            assert(rec['question_id'] in records_by_category[cid]['questions'])
+            question = records_by_category[cid]['questions'][qid]
+            question['answers'].append(rec)
+            if rec['creator_id'] == user.id and rec['approval_status'] == 'P':
+                question['pending_answer_ids'].append(rec['id'])
+            rec['content'] = json.loads(rec['value'])
+            question['logged_in_user_suggested_a_value'] = rec['creator_id'] == user.id
 
-        if rec['question_id'] not in questions_have_answers:
-            questions_have_answers[rec['question_id']] = False
-                
-        if rec['question_id'] not in questions_terminology:
-            questions_terminology[rec['question_id']] = Question().get_question_terminology(rec['question_id'])
-                
         if rec['question_id'] == 4:
             show_google_map = True
                   
@@ -1491,43 +1192,15 @@ def view_AHJ_cqa(request, jurisdiction_id, category='all_info'):
                 fee_info = validation_util_obj.process_fee_structure(json.loads(rec['value']) )                   
                 for key in fee_info.keys():
                     data[key] = fee_info.get(key)               
-        
-            answer_content = json.loads(rec['value'])    
-            answers_contents[rec['id']] = answer_content                  
-            
-            if rec['creator_id'] == user.id:
-                questions_login_user_suggested_a_value[rec['question_id']] = True                 
-                if rec['approval_status'] == 'P' :  # how about vote?
-                    questions_pending_editable_answer_ids_array[rec['question_id']].append(rec['id'])
-
-                
-            questions_have_answers[rec['question_id']] = True                                   
-
-            '''
-            data_answer['answer_content'] = answer_content
-            data_answer['field_suffix'] = rec['field_suffix']
-            if rec['display_template'] == '' or rec['display_template'] == None:
-                rec['display_template'] = 'single_field_display.html'
-            
-            answer_html = requestProcessor.decode_jinga_template(request,'website/jurisdictions/suggestion_display_template/'+rec['display_template'], data_answer, '') 
-            answers_html[rec['id']] = answer_html
-            
-    data['answers_html'] = answers_html      
-    '''  
-            
     if category == 'all_info' or show_google_map == True:
         data['show_google_map'] = show_google_map
         ################# get the correct address for google map #################### 
         question = Question.objects.get(id=4)      
         data['str_address'] = question.get_addresses_for_map(jurisdiction)  
         data['google_api_key'] = django_settings.GOOGLE_API_KEY     
-                            
-    data['questions_terminology'] = questions_terminology
-    data['questions_have_answers'] = questions_have_answers
-    data['questions_login_user_suggested_a_value'] = questions_login_user_suggested_a_value                
-    data['questions_pending_editable_answer_ids_array'] = questions_pending_editable_answer_ids_array
+
+    data['cqa'] = records_by_category
     data['answers_contents'] = answers_contents   
- 
         
     if category != 'favorite_fields' and category != 'quirks':           
         request.session['empty_data_fields_hidden'] = data['empty_data_fields_hidden']    
@@ -1538,8 +1211,9 @@ def view_AHJ_cqa(request, jurisdiction_id, category='all_info'):
                 
     data['user'] = user
     ################# save_recent_search #################### 
-    user_obj = User.objects.get(id=user.id)
-    save_recent_search(user_obj, jurisdiction)                
+    if user.is_authenticated():
+        user_obj = User.objects.get(id=user.id)
+        save_recent_search(user_obj, jurisdiction)                
                 
     message_data = get_system_message(request) #get the message List
     data =  dict(data.items() + message_data.items())   #merge message list to data  
@@ -1596,1001 +1270,6 @@ def get_questions_with_answers(self, jurisdiction, jurisdiction_questions):
     questions_with_answers = jurisdiction_questions.filter(id__in=answer_question_ids)   
    
     return questions_with_answers 
-
-def view_AHJ_data(request, jurisdiction_id, category='all_info'):
-    print "at beginning of view view_AHJ_data :: " + str(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S %p")) 
-    dajax = Dajax()   
-    validation_util_obj = FieldValidationCycleUtil()      
-    requestProcessor = HttpRequestProcessor(request)    
-    user = request.user
-         
-    data = {}
-        
-    if category == 'all_info':
-        data['category_name'] = 'All Categories'
-    else:
-        data['category_name'] = category
-        
-    data['category'] = category
-    jurisdiction = Jurisdiction.objects.get(id=jurisdiction_id)
-    data['jurisdiction_id'] = jurisdiction.id
-
-    empty_data_fields_hidden = 1
-    empty_data_fields_hidden = requestProcessor.getParameter('empty_data_fields_hidden')        
-    if empty_data_fields_hidden != None:
-        data['empty_data_fields_hidden'] = int(empty_data_fields_hidden)
-    else:
-        if 'empty_data_fields_hidden' in request.session:
-            data['empty_data_fields_hidden'] = request.session['empty_data_fields_hidden']
-        else:
-            data['empty_data_fields_hidden'] = 1     # to be determineed by various factors in susbsequent codes
-            
-
-    ############### look up question category based on the passed category ########################################
-    view = False        # to indicate whether it's a quirks, favorites, special view like projectpermit.org, etc....
-    category_objs = []
-    if category == 'all_info':
-        category_objs = QuestionCategory.objects.filter(accepted__exact=1).order_by('display_order')
-    else:
-        category_objs = QuestionCategory.objects.filter(name__iexact=category, accepted__exact=1)
-        
-        if len(category_objs) == 0:  # view
-            view = True
-            if category == 'favorite_fields':
-                category_objs = View.objects.filter(user = user, view_type__exact='f')          
-            elif category == 'quirks':
-                category_objs = View.objects.filter(jurisdiction = jurisdiction, view_type__exact='q')
-            elif category == 'attachments':
-                category_objs = View.objects.filter(jurisdiction = jurisdiction, view_type__exact='a')         
-            else:
-                category_objs = View.objects.filter(name__iexact=category)  # we work with one view per ahj content, not like muliple categories in all_info            
-                
-            #if len(category_objs) == 0:
-            #    return requestProcessor.render_to_response(request,'website/jurisdictions/AHJ_data_questions_answers.html', data, '') 
-            
-    data['view'] = view
-    ###############################################################################################################
-    
-    jurisdiction_templates = get_jurisdiction_templates(jurisdiction)
-
-    ajax = requestProcessor.getParameter('ajax')  
-    
-    if (ajax == 'get_ahj_questions_messages'):
-        jurisdiction_questions = get_jurisdiction_questions(jurisdiction, jurisdiction_templates, user, category)        
-        jurisdiction_answers = get_jurisdiction_answers(jurisdiction, jurisdiction_templates, jurisdiction_questions) 
-        answer_question_ids = jurisdiction_answers.values_list('question_id').distinct()
-        questions_with_answers = jurisdiction_questions.filter(id__in=answer_question_ids)  
-        
-        data['questions_messages'] = get_ahj_questions_messages(questions_with_answers, jurisdiction_answers, user)      
-
-        dajax.add_data(data, 'process_ahj_questions_messages')
-        return HttpResponse(dajax.json())  
-    
-        
-    if (ajax == 'get_ahj_questions_actions'):
-        data['questions_actions'] = get_ahj_actions( jurisdiction, user)
-         
-        dajax.add_data(data, 'process_ahj_actions')
-        return HttpResponse(dajax.json())      
-    
-    if (ajax == 'get_ahj_answers_validation_history_and_comments'):
-        jurisdiction_questions = get_jurisdiction_questions(jurisdiction, jurisdiction_templates, user, category)        
-        jurisdiction_answers = get_jurisdiction_answers(jurisdiction, jurisdiction_templates, jurisdiction_questions) 
-
-        data['answers_comments'] = get_answers_comments( jurisdiction, jurisdiction_answers, user)
-
-        dajax.add_data(data, 'process_ahj_comments')
-        return HttpResponse(dajax.json())      
-    
-    if (ajax == 'get_ahj_ahj_top_contributors'):              
-                
-        data_top_contributors = {}          
-        data_top_contributors['top_contributors'] = get_ahj_top_contributors(jurisdiction, category)
-        data['top_contributors'] = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_top_contributors.html', data_top_contributors, '')  
-         
-        dajax.add_data(data, 'process_ahj_top_contributors')
-        return HttpResponse(dajax.json())    
-    
-    if (ajax == 'get_ahj_answers_attachments'):    
-        data['answers_attachments'] = get_ahj_answers_attachments(jurisdiction)
-
-        dajax.add_data(data, 'process_ahj_answers_attachments')
-        return HttpResponse(dajax.json())      
-
-    if (ajax == 'get_ahj_num_quirks_favorites'):        
-        view_questions_obj = ViewQuestions()
-        quirks = view_questions_obj.get_jurisdiction_quirks(jurisdiction)
-        
-        data['quirk_number_of_questions'] = 0    
-        if 'view_id' in quirks:
-            data['quirk_number_of_questions'] = len(quirks['view_questions']) 
-            
-        data['user_number_of_favorite_fields'] = 0    
-        user_obj = User.objects.get(id=user.id)
-        if user_obj != None:
-            user_favorite_fields = view_questions_obj.get_user_favorite_fields(user_obj)
-            if 'view_id' in user_favorite_fields:
-                data['view_id'] = user_favorite_fields['view_id']
-                data['user_number_of_favorite_fields'] = len(user_favorite_fields['view_questions'])               
-                
-        dajax.add_data(data, 'process_ahj_qirks_user_favorites')
-     
-        return HttpResponse(dajax.json())      
-    
-    if (ajax == 'get_ahj_answers_headings'):
-        jurisdiction_questions = get_jurisdiction_questions(jurisdiction, jurisdiction_templates, user, category)        
-        jurisdiction_answers = get_jurisdiction_answers(jurisdiction, jurisdiction_templates, jurisdiction_questions) 
-
-        data['answers_headings'] = get_answers_headings(jurisdiction_answers, user)
-
-        dajax.add_data(data, 'process_ahj_answers_headings')
-        return HttpResponse(dajax.json())        
-    
-    if (ajax == 'get_ahj_answers_votes'):
-        jurisdiction_questions = get_jurisdiction_questions(jurisdiction, jurisdiction_templates, user, category)        
-        jurisdiction_answers = get_jurisdiction_answers(jurisdiction, jurisdiction_templates, jurisdiction_questions) 
-        category_name = 'VoteRequirement'          
-        data['answers_votes'] = get_jurisdiction_voting_info(category_name, jurisdiction, user, jurisdiction_answers)
-        dajax.add_data(data, 'process_ahj_answers_votes')
-        return HttpResponse(dajax.json())      
-    
-    
-    
-    
-            
-            
-    if (ajax == 'get_ahj_action_html'):
-        jurisdiction_questions = get_jurisdiction_questions(jurisdiction, jurisdiction_templates, user, category)         
-        data['questions_action_html'] = get_ahj_action_html(request, jurisdiction, jurisdiction_questions, user, category)  
-        #script = requestProcessor.decode_jinga_template(request, "website/jurisdictions/ahj_actions.js", data, '')
-        #dajax.script(script)            
-        dajax.add_data(data, 'process_ahj_action_html')
-        return HttpResponse(dajax.json())      
-    
-    if (ajax == 'get_ahj_votes_html'):
-        jurisdiction_questions = get_jurisdiction_questions(jurisdiction, jurisdiction_templates, user, category)       
-        jurisdiction_answers = get_jurisdiction_answers(jurisdiction, jurisdiction_templates, jurisdiction_questions)           
-        data['answers_votes_html'] = get_ahj_votes_html(request, jurisdiction, jurisdiction_answers, user)  
-        #script = requestProcessor.decode_jinga_template(request, "website/jurisdictions/ahj_actions.js", data, '')
-        #dajax.script(script)
-        #print data['answers_votes_html']           
-        dajax.add_data(data, 'process_ahj_votes_html')
-        return HttpResponse(dajax.json())                  
-        
-    if (ajax == 'get_ahj_data_upon_pageload'):
-        jurisdiction_questions = get_jurisdiction_questions(jurisdiction, jurisdiction_templates, user, category)        
-        jurisdiction_answers = get_jurisdiction_answers(jurisdiction, jurisdiction_templates, jurisdiction_questions) 
-        answer_question_ids = jurisdiction_answers.values_list('question_id').distinct()
-        questions_with_answers = jurisdiction_questions.filter(id__in=answer_question_ids)    
-        
-        '''
-        questions_with_no_answers_list = []
-        questions_with_no_answers = jurisdiction_questions.exclude(id__in=answer_question_ids).values_list('id')
-        for question_id in questions_with_no_answers:
-            questions_with_no_answers_list.append(question_id)
-        '''
-        data['answers_comments'] = get_answers_comments( jurisdiction, jurisdiction_answers, user)
-        data['questions_actions'] = get_ahj_actions( jurisdiction, user)
-        category_name = 'VoteRequirement'          
-        #data['answers_votes'] = get_jurisdiction_voting_info(category_name, jurisdiction, user, jurisdiction_answers)
-        data['questions_messages'] = get_ahj_questions_messages(questions_with_answers, jurisdiction_answers, user)      
-        data['answers_attachments'] = get_ahj_answers_attachments(jurisdiction)
-        #data['questions_with_no_answers'] = questions_with_no_answers_list
-        
-        view_questions_obj = ViewQuestions()
-        quirks = view_questions_obj.get_jurisdiction_quirks(jurisdiction)
-        
-        data['quirk_number_of_questions'] = 0    
-        if 'view_id' in quirks:
-            data['quirk_number_of_questions'] = len(quirks['view_questions']) 
-            
-        data['user_number_of_favorite_fields'] = 0    
-        user_obj = User.objects.get(id=user.id)
-        if user_obj != None:
-            user_favorite_fields = view_questions_obj.get_user_favorite_fields(user_obj)
-            if 'view_id' in user_favorite_fields:
-                data['view_id'] = user_favorite_fields['view_id']
-                data['user_number_of_favorite_fields'] = len(user_favorite_fields['view_questions'])               
-                
-        data_top_contributors = {}          
-        data_top_contributors['top_contributors'] = get_ahj_top_contributors(jurisdiction, category)
-        data['top_contributors'] = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_top_contributors.html', data_top_contributors, '')  
-         
-        dajax.add_data(data, 'process_ahj_post_pageload_data')
-        return HttpResponse(dajax.json())  
-    
-    if (ajax == 'get_add_form'):  
-        data['mode'] = 'add'
-        data['user'] = user        
-        data['jurisdiction'] = jurisdiction         
-        question_id = requestProcessor.getParameter('question_id')               
-        data['unique_key'] = data['mode'] + str(question_id)
-        data['form_field'] = {}
-        question = Question.objects.get(id=question_id)
-        form_field_data = validation_util_obj.get_form_field_data(jurisdiction, question)
-            
-        for key in form_field_data:
-            data[key] = form_field_data[key]        
-
-        data['default_values'] = {}
-        if question.default_value != None and question.default_value != '':
-            answer = json.loads(question.default_value) 
-            for key in answer:
-                data[key] = str(answer[key])     
-                
-        data['city'] =  jurisdiction.city
-        data['state'] = jurisdiction.state           
-        if 'question_template' in data and data['question_template'] != None and data['question_template'] != '':
-            if form_field_data['question_id'] == 16:
-                data['fee_answer'] = answer
-                fee_info = validation_util_obj.process_fee_structure(answer)
-                for key in fee_info.keys():
-                    data[key] = fee_info.get(key)    
-                                  
-            
-            body = requestProcessor.decode_jinga_template(request,'website/form_fields/'+data['question_template'], data, '')    
-        else:
-            body = ''
- 
-        dajax.assign('#qa_'+str(question_id) + '_fields','innerHTML', body)
-
-        #if 'js' in data and data['js'] != None and data['js'] != '':
-        for js in data['js']:
-            script ="var disable_pre_validation = false;" #set open pre validation by default, we can overwrite it under each field js file. 
-            script += requestProcessor.decode_jinga_template(request, "website/form_fields/"+js, data, '')
-            script +=";if ((!disable_pre_validation)&&!$('#form_"+question_id+"').checkValidWithNoError({formValidCallback:function(el){$('#save_"+question_id+"').removeAttr('disabled').removeClass('disabled');},formNotValidCallback:function(el){$('#save_"+question_id+"').attr('disabled','disabled').addClass('disabled');;}})){$('#save_"+question_id+"').attr('disabled','disabled').addClass('disabled');};"
-            dajax.script(script)
-
-        if question.support_attachments == 1:
-            script = requestProcessor.decode_jinga_template(request, "website/form_fields/file_uploading.js", data, '')
-            dajax.script(script)
-                                
-        return HttpResponse(dajax.json()) 
-    
-    if (ajax == 'get_edit_form'):
-        data['mode'] = 'edit'
-        answer_id = requestProcessor.getParameter('answer_id')    
-        data['unique_key'] = data['mode'] + str(answer_id)       
-        answer_for_edit = AnswerReference.objects.get(id=answer_id)       
-        question = answer_for_edit.question
-        data['jurisdiction'] = answer_for_edit.jurisdiction
-        
-        data['values'] = {} 
-        form_field_data = validation_util_obj.get_form_field_data(jurisdiction, question)
-        for key in form_field_data:
-            data[key] = form_field_data[key]    
-                
-        data['values'] = {}                
-        answer = json.loads(answer_for_edit.value) 
-        for key in answer:
-            data[key] = answer[key]  
-                         
-        data['answer_id'] = answer_id   
-        if 'question_template' in data and data['question_template'] != None and data['question_template'] != '':
-            if form_field_data['question_id'] == 16:
-                data['fee_answer'] = answer
-                fee_info = validation_util_obj.process_fee_structure(answer)
-                for key in fee_info.keys():
-                    data[key] = fee_info.get(key) 
-                                    
-            body = requestProcessor.decode_jinga_template(request,'website/form_fields/'+data['question_template'], data, '')    
-        else:
-            body = ''
-
-        dajax.assign('#qa_'+str(answer_id) + '_edit_fields','innerHTML', body)
-
-        for js in data['js']:
-            script = requestProcessor.decode_jinga_template(request, "website/form_fields/"+js, data, '')
-            dajax.script(script)         
-                
-        if question.support_attachments == 1:
-            script = requestProcessor.decode_jinga_template(request, "website/form_fields/file_uploading.js", data, '')
-            dajax.script(script)                
-   
-        return HttpResponse(dajax.json())         
-            
-    if (ajax == 'suggestion_submit'):     
-        answers = {} 
-        data['user'] = user      
-        data['jurisdiction'] = jurisdiction           
-        field_prefix = 'field_'
-        jurisdiction = Jurisdiction.objects.get(id=jurisdiction_id)    
-        question_id = requestProcessor.getParameter('question_id')        
-        question = Question.objects.get(id=question_id)                  
-        answers = requestProcessor.get_form_field_values(field_prefix)
-
-        for key, answer in answers.items():
-            if answer == '':
-                del answers[key]
- 
-        acrf = process_answer(answers, question, jurisdiction, request.user)
-            
-        file_names = requestProcessor.getParameter('filename') 
-        file_store_names = requestProcessor.getParameter('file_store_name') 
-        if (file_names != '' and file_names != None) and (file_store_names != '' and file_store_names != None):
-            file_name_list = file_names.split(',')
-            file_store_name_list = file_store_names.split(',')
-            for i in range(0, len(file_name_list)):
-                aac = AnswerAttachment()
-                aac.answer_reference = acrf
-                aac.file_name = file_name_list[i]
-                store_file = '/upfiles/answer_ref_attaches/'+file_store_name_list[i]
-                aac.file_upload = store_file
-                aac.creator = user
-                aac.save()
-                    
-                view_question_obj = ViewQuestions()
-                view_question_obj.add_question_to_view('a', question, jurisdiction)
-                        
-        dajax = get_question_answers_dajax(request, jurisdiction, question, data)
-                
-        return HttpResponse(dajax.json())      
-    
-    if (ajax == 'suggestion_edit_submit'):     
-        answers = {} 
-        data['user'] = user        
-        answer_id = requestProcessor.getParameter('answer_id')
-        field_prefix = 'field_'
-        jurisdiction = Jurisdiction.objects.get(id=jurisdiction_id) 
-        answer = AnswerReference.objects.get(id=answer_id)   
-        questions = Question.objects.filter(id=answer.question.id)      # done on purpose.
-        question = questions[0]          
-        answers = requestProcessor.get_form_field_values(field_prefix)
-
-        for key, answer in answers.items():
-            if answer == '':
-                del answers[key]
-                    
-        acrf = process_answer(answers, question, jurisdiction, request.user, answer_id)
-            
-        file_names = requestProcessor.getParameter('filename') 
-        file_store_names = requestProcessor.getParameter('file_store_name') 
-        if (file_names != '' and file_names != None) and (file_store_names != '' and file_store_names != None):
-            AnswerAttachment.objects.filter(answer_reference = acrf).delete()
-                
-            file_name_list = file_names.split(',')
-            file_store_name_list = file_store_names.split(',')
-            for i in range(0, len(file_name_list)):
-                aac = AnswerAttachment()
-                aac.answer_reference = acrf
-                aac.file_name = file_name_list[i]
-                store_file = '/upfiles/answer_ref_attaches/'+file_store_name_list[i]
-                aac.file_upload = store_file
-                aac.creator = user
-                aac.save()
-                    
-                view_question_obj = ViewQuestions()
-                view_question_obj.add_question_to_view('a', question, jurisdiction)
-                                    
-        dajax = get_question_answers_dajax(request, jurisdiction, question, data)
-                
-        return HttpResponse(dajax.json())      
-    
-    if (ajax == 'add_to_views'):
-        view_obj = None
-        user = request.user
-        entity_name = requestProcessor.getParameter('entity_name') 
-        question_id = requestProcessor.getParameter('question_id') 
-      
-        if entity_name == 'quirks':
-            view_objs = View.objects.filter(view_type = 'q', jurisdiction = jurisdiction)
-            if len(view_objs) > 0:
-                    view_obj = view_objs[0]
-            else:
-                view_obj = View()
-                view_obj.name = 'quirks'
-                view_obj.description = 'Quirks'
-                view_obj.view_type = 'q'
-                view_obj.jurisdiction_id = jurisdiction.id
-                view_obj.save()
-                    
-        elif entity_name == 'favorites':
-            view_objs = View.objects.filter(view_type = 'f', user = request.user)
-            if len(view_objs) > 0:
-                view_obj = view_objs[0]
-            else:
-                view_obj = View()
-                view_obj.name = 'Favorite Fields'
-                view_obj.description = 'Favorite Fields'
-                view_obj.view_type = 'f'
-                view_obj.user_id = request.user.id
-                view_obj.save()            
-            
-        if view_obj != None:
-            view_questions_objs = ViewQuestions.objects.filter(view = view_obj).order_by('-display_order')
-            if len(view_questions_objs) > 0:
-                highest_display_order = view_questions_objs[0].display_order
-            else:
-                highest_display_order = 0
-                    
-            view_questions_obj = ViewQuestions()
-            view_questions_obj.view_id = view_obj.id
-            view_questions_obj.question_id = question_id
-            view_questions_obj.display_order = int(highest_display_order) + 5
-            view_questions_obj.save()
-            
-        view_questions_obj = ViewQuestions()
-        if entity_name == 'quirks':
-            quirks = view_questions_obj.get_jurisdiction_quirks(jurisdiction)
-                
-            data['quirk_number_of_questions'] = 0    
-            if 'view_questions' in quirks:
-                data['quirk_number_of_questions'] = len(quirks['view_questions'])    
-                    
-            # update the quirks or the favorite fields count
-            dajax.assign('#quirkcount','innerHTML', data['quirk_number_of_questions']) 
-            dajax.assign('#quirk_'+str(question_id),'innerHTML', 'Added to quirks')                    
-                        
-        elif entity_name == 'favorites':        
-            data['user_number_of_favorite_fields'] = 0    
-            if request.user.is_authenticated():
-                user_obj = User.objects.get(id=request.user.id)
-                if user_obj != None:
-                    user_favorite_fields = view_questions_obj.get_user_favorite_fields(user_obj)
-                    if 'view_questions' in user_favorite_fields:
-                        data['user_number_of_favorite_fields'] = len(user_favorite_fields['view_questions'])             
-                           
-                # update the quirks or the favorite fields count
-                dajax.assign('#favfieldscount','innerHTML', data['user_number_of_favorite_fields']) 
-                dajax.assign('#favorite_field_'+str(question_id),'innerHTML', 'Added to favorite fields')  
-            
-        return HttpResponse(dajax.json())  
-        
-    if (ajax == 'remove_from_views'):
-        view_obj = None
-        user = request.user
-        entity_name = requestProcessor.getParameter('entity_name') 
-        question_id = requestProcessor.getParameter('question_id') 
-              
-        if entity_name == 'quirks':
-            view_objs = View.objects.filter(view_type = 'q', jurisdiction = jurisdiction)
-            if len(view_objs) > 0:
-                view_obj = view_objs[0]
-                    
-        elif entity_name == 'favorites':
-            view_objs = View.objects.filter(view_type = 'f', user = request.user)
-            if len(view_objs) > 0:
-                view_obj = view_objs[0]          
-            
-        if view_obj != None:
-            question = Question.objects.get(id=question_id)
-            view_questions_objs = ViewQuestions.objects.filter(view = view_obj, question = question)
-            if len(view_questions_objs) > 0:
-                for view_questions_obj in view_questions_objs:
-                    view_questions_obj.delete()
-            
-            view_questions_obj = ViewQuestions()
-            if entity_name == 'quirks':
-                quirks = view_questions_obj.get_jurisdiction_quirks(jurisdiction)
-                    
-                data['quirk_number_of_questions'] = 0    
-                if 'view_questions' in quirks:
-                    data['quirk_number_of_questions'] = len(quirks['view_questions'])    
-                        
-                # update the quirks or the favorite fields count
-                dajax.assign('#quirkcount','innerHTML', data['quirk_number_of_questions'])                    
-                            
-            elif entity_name == 'favorites':        
-                data['user_number_of_favorite_fields'] = 0    
-                if request.user.is_authenticated():
-                    user_obj = User.objects.get(id=request.user.id)
-                    if user_obj != None:
-                        user_favorite_fields = view_questions_obj.get_user_favorite_fields(user_obj)
-                        if 'view_questions' in user_favorite_fields:
-                            data['user_number_of_favorite_fields'] = len(user_favorite_fields['view_questions'])             
-                               
-                    # update the quirks or the favorite fields count
-                    dajax.assign('#favfieldscount','innerHTML', data['user_number_of_favorite_fields']) 
-                        
-            dajax.assign('#div_question_content_'+str(question_id),'innerHTML', '') 
-            
-        return HttpResponse(dajax.json())
-    
-    if (ajax == 'validation_history'):
-        caller = requestProcessor.getParameter('caller')
-        entity_name = requestProcessor.getParameter('entity_name')              
-        entity_id = requestProcessor.getParameter('entity_id')   
-        data = validation_util_obj.get_validation_history(entity_name, entity_id)
-        data['destination'] = requestProcessor.getParameter('destination')   
-            
-        if caller == None:
-            params = 'zIndex: 8000'
-        elif caller == 'dialog':
-            params = 'zIndex: 12000'
-                
-        if data['destination'] == None:
-            data['destination']  = ''
-                            
-        if data['destination'] == 'dialog':
-            body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/validation_history_dialog.html', data, '') 
-            dajax.assign('#fancyboxformDiv','innerHTML', body)
-            dajax.script('$("#fancybox_close").click(function(){$.fancybox.close();return false;});')       
-            dajax.script('controller.showModalDialog("#fancyboxformDiv");')                
-        else:
-            body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/validation_history.html', data, '')                 
-            dajax.assign('#validation_history_div_'+entity_id,'innerHTML', body)
-            #dajax.assign('.info_content','innerHTML', body)
-            #dajax.script("controller.showInfo({target: '#validation_history_"+entity_id+"', "+params+"});")          
-                        
-        return HttpResponse(dajax.json())     
-    
-    if (ajax == 'vote'):
-        if True:
-            #data = {}
-            requestProcessor = HttpRequestProcessor(request)
-            dajax = Dajax()
-                  
-            ajax = requestProcessor.getParameter('ajax')
-            if (ajax != None):
-                if (ajax == 'vote'):
-                    user = request.user
-                    entity_id = requestProcessor.getParameter('entity_id') 
-                    entity_name = requestProcessor.getParameter('entity_name') 
-                    vote = requestProcessor.getParameter('vote')             
-                    confirmed = requestProcessor.getParameter('confirmed')                     
-                    if confirmed == None:
-                        confirmed = 'not_yet'                            
-                        
-                    feedback = validation_util_obj.process_vote(user, vote, entity_name, entity_id, confirmed)
-                    data['user'] = user 
-                    if feedback == 'registered':
-                        if entity_name == 'requirement':
-                            answer = AnswerReference.objects.get(id=entity_id)     
-                            question = answer.question
-                            #dajax = get_question_answers_dajax(request, jurisdiction, question, data, dajax)
-                            dajax.script("show_hide_vote_confirmation('"+entity_id+"');")
-                                        
-                    elif feedback == 'registered_with_changed_status':
-                        
-                        if entity_name == 'requirement':
-                            
-                            answer = AnswerReference.objects.get(id=entity_id)   
-                            question = answer.question
-                            dajax = get_question_answers_dajax(request, jurisdiction, question, data)                           
-                            
-                            terminology = question.get_terminology()           
-                              
-                            if answer.approval_status == 'A':                          
-                                dajax.script("controller.showMessage('"+str(terminology)+" approved.  Thanks for voting.', 'success');")  
-                            elif answer.approval_status == 'R':
-                                dajax.script("controller.showMessage('"+str(terminology)+" rejected. Thanks for voting.', 'success');") 
-                            dajax.script("show_hide_vote_confirmation('"+entity_id+"');") 
-                                
-                            if answer.approval_status == 'A':                                    
-                                if category == 'all_info':          
-                                    question_categories = QuestionCategory.objects.filter(accepted=1)
-                                else:
-                                    question_categories = QuestionCategory.objects.filter(name__iexact=category)                             
-                
-                                data['top_contributors'] = get_ahj_top_contributors(data['jurisdiction'], question_categories)  
-                                body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_top_contributors.html', data, '')   
-                                dajax.assign('#top-contributor','innerHTML', body)                                  
-
-
-                    elif feedback == 'will_approve':
-                        
-                        # prompt confirmation
-                        answer = AnswerReference.objects.get(id=entity_id)   
-                        answers = AnswerReference.objects.filter(question=answer.question, jurisdiction=answer.jurisdiction)
-                        if len(answers) > 1 and answer.question.has_multivalues == 0:
-                            dajax.script("confirm_approved('yes');")
-                        else:
-                            dajax.script("confirm_approved('no');")
-                    elif feedback == 'will_reject':
-                        # prompt confirmation
-                        answer = AnswerReference.objects.get(id=entity_id) 
-                        question = answer.question
-                        question_terminology = question.get_terminology()
-                        dajax.script("confirm_rejected("+str(entity_id)+",'"+question_terminology+"');")
-                    #dajax.script("controller.showMessage('Your feedback has been sent and will be carefully reviewed.', 'success');")                 
-            
-        return HttpResponse(dajax.json()) 
-    
-    if (ajax == 'cancel_suggestion'):
-        user = request.user
-        data['user'] = user        
-        entity_id = requestProcessor.getParameter('entity_id') 
-
-        answer = AnswerReference.objects.get(id=entity_id) 
-        answer_prev_status = answer.approval_status        
-        answer.approval_status = 'C'
-        answer.status_datetime = datetime.datetime.now()
-        answer.save()
-        
-        jurisdiction = answer.jurisdiction
-        question = answer.question
-        dajax = get_question_answers_dajax(request, jurisdiction, question, data)
-        
-        if answer_prev_status == 'A':
-            if category == 'all_info':          
-                question_categories = QuestionCategory.objects.filter(accepted=1)
-            else:
-                question_categories = QuestionCategory.objects.filter(name__iexact=category)               
-    
-            data['top_contributors'] = get_ahj_top_contributors(jurisdiction, question_categories)  
-            body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_top_contributors.html', data, '')   
-            dajax.assign('#top-contributor','innerHTML', body)                
-            
-                
-        if question.support_attachments == 1:
-            view_question_obj = ViewQuestions()
-            view_question_obj.remmove_question_from_view('a', question, jurisdiction)                    
-            
-        return HttpResponse(dajax.json())           
-    
-    if (ajax == 'approve_suggestion'):
-        
-        user = request.user
-        data['user'] = user
-        entity_id = requestProcessor.getParameter('entity_id') 
-        print ajax + str(entity_id)
-        answer = AnswerReference.objects.get(id=entity_id) 
-        answer.approval_status = 'A'
-        answer.status_datetime = datetime.datetime.now()
-        answer.save()
-   
-        validation_util_obj.on_approving_a_suggestion(answer)
-        jurisdiction = answer.jurisdiction
-        question = answer.question
-        dajax = get_question_answers_dajax(request, jurisdiction, question, data)
-        
-        if category == 'all_info':          
-            question_categories = QuestionCategory.objects.filter(accepted=1)
-        else:
-            question_categories = QuestionCategory.objects.filter(name__iexact=category)   
-
-        data['top_contributors'] = get_ahj_top_contributors(jurisdiction, question_categories)  
-        body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_top_contributors.html', data, '')   
-        dajax.assign('#top-contributor','innerHTML', body)                
-    
-                           
-        return HttpResponse(dajax.json())         
-     
-    
-    ######################################### END OF AJAX #######################################################
-    
-    # to determine the last contributor's organization
-    organization = None
-    try:
-        contributor = jurisdiction.last_contributed_by
-    except:
-        contributor = None
-
-    data['last_contributed_by']  = contributor       
-    ###################################################
-
-    data['time'] = []
-    data['nav'] = 'no'   
-    data['current_nav'] = 'browse'    
-    data['home'] = '/'       
-    data['page'] = 'AHJ'
-    data['unauthenticated_page_message'] = "The information on this page is available to all visitors of the National Solar Permitting Database.  If you would like to add information to the database and interact with the solar community, please sign in below or "
-    data['authenticated_page_message'] = 'See missing or incorrect information? Mouse over a field and click the blue pencil to add or edit the information.'
-    data[category] = ' active'      # to set the active category in the left nav     
-    data['show_google_map'] = False    
-    data['str_address'] = ''     
-
-    categories_questions = {}
-    categories_answers = {}    
-    categories_current_questions = {}              
-    data['time'].append( "at beginning of category looping :: " + str(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S %p"))    )        
-    for category_obj in category_objs:
-        categories_questions[category_obj.id] = []
-        categories_answers[category_obj.id] = []
-        categories_current_questions[category_obj.id] = []
-
-    questions_categories = {}
-    questions_answers = {}
-
-    questions_login_user_suggested_a_value = {}     
-    questions_pending_editable_answer_ids_array = {}  
-    data['time'].append( "at end of category looping :: " + str(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S %p"))    )
-    data['time'].append( "at beginning of 2 q&a queries :: " + str(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S %p")) )
-    
-    
-    jurisdiction_questions = get_jurisdiction_questions(jurisdiction, jurisdiction_templates, user, category)
-    jurisdiction_answers = get_jurisdiction_answers(jurisdiction, jurisdiction_templates, jurisdiction_questions)    
-    
-    data['time'].append( "at beginning of 2 q&a queries :: " + str(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S %p")) )    
-    data['time'].append( "at beginning of question looping :: " + str(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S %p"))  )           
-    for question in jurisdiction_questions:
-        questions_login_user_suggested_a_value[question.id] = False
-        questions_pending_editable_answer_ids_array[question.id] = []  
-        if view == False:
-            this_question_category = question.category
-            categories_questions[this_question_category.id].append(question)    # to build list of questions per category
-            categories_current_questions[this_question_category.id].append(question.id)   # necessary of custom fields
-            questions_categories[question.id] = this_question_category  # for later use to avoid hitting the db again.
-        else:
-            categories_questions[category_objs[0].id].append(question)                         
-                    
-        questions_answers[question.id] = []
-                                            
-        if question.id == 4:
-            #print "google map disabled."
-            data['show_google_map'] = True
-            ################# get the correct address for google map ####################         
-            data['str_address'] = question.get_addresses_for_map(jurisdiction)  
-            data['google_api_key'] = django_settings.GOOGLE_API_KEY 
-            #############################################################################
-    data['time'].append( "at end of  question looping :: " + str(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S %p"))        )             
-    data['time'].append( "at beginning of  answer looping for content :: " + str(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S %p"))       )  
-    answers_contents = {}    
-    answers_attachments = {}
-
-    for answer in jurisdiction_answers:
-        this_answer_question = answer.question
-        questions_answers[this_answer_question.id].append(answer)   # to build list of answers for each question
-        categories_answers[questions_categories[this_answer_question.id].id].append(answer)
-        
-        if this_answer_question.id == 16:
-            fee_info = validation_util_obj.process_fee_structure(json.loads(answer.value) )                   
-            for key in fee_info.keys():
-                data[key] = fee_info.get(key)               
-            
-        answer_content = json.loads(answer.value)    
-        answers_contents[answer.id] = answer_content        
-        
-        if answer.creator_id == user.id: 
-            questions_login_user_suggested_a_value[this_answer_question.id] = True
-        
-        if answer.approval_status == 'P':
-            questions_pending_editable_answer_ids_array[this_answer_question.id].append(answer.id)     
-            
-    #print questions_answers
-    data['time'].append( "at end of  answer looping for content :: " + str(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S %p"))       )       
-
-    data['time'].append( "at beginning of flattening out :: " + str(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S %p"))       )  
-    '''
-    flat_list = []
-    for category_obj in category_objs: 
-        item = {}
-        item['obj_type'] = 'category'
-        item['obj'] = category_obj   
-        flat_list.append(item)
-        
-        for question in categories_questions.get(category_obj.id):
-            item = {}
-            item['obj_type'] = 'question'
-            item['obj'] = question  
-            if len(questions_answers[question.id]) > 0:
-                item['has_answers'] = True
-            else:
-                item['has_answers'] = False
-            flat_list.append(item) 
-            for answer in questions_answers.get(question.id):
-                item = {}
-                item['obj_type'] = 'answer'
-                item['obj'] = answer   
-                flat_list.append(item)   
-
-    data['time'].append( "at end of  flattening :: " + str(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S %p"))       )                 
-    data['objs'] = flat_list 
-    '''
-    data['jurisdiction'] = jurisdiction
-             
-    data['questions_answers'] = questions_answers    
-    data['answers_contents'] = answers_contents
-
-    data['questions_pending_editable_answer_ids_array'] = questions_pending_editable_answer_ids_array         
-    data['categories_current_questions'] = categories_current_questions     
-    data['questions_login_user_suggested_a_value'] = questions_login_user_suggested_a_value     
-    data['view'] = view
-    
-    data['categories'] = category_objs 
-    data['jurisdiction_answers'] = jurisdiction_answers
-    data['categories_questions'] = categories_questions
-    data['categories_answers'] = categories_answers          
-
-        
-    if 'accessible_views' in request.session:
-        data['accessible_views'] = request.session['accessible_views']
-    else:
-        data['accessible_views'] = []
-    
-
-                
-    if empty_data_fields_hidden != None:
-        request.session['empty_data_fields_hidden'] = data['empty_data_fields_hidden']    
-      
-    ################# Show the message in the yellow box on top of the ahj page ####################         
-    data['show_ahj_message'] = False     
-    ################################################################################################             
-                
-    data['user'] = user
-    ################# save_recent_search #################### 
-    user_obj = User.objects.get(id=user.id)
-    save_recent_search(user_obj, jurisdiction)                
-                
-    message_data = get_system_message(request) #get the message List
-    data =  dict(data.items() + message_data.items())   #merge message list to data  
-    
-    data['time'].append( "at end of data gathering before rendering" + str(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S %p")) )
-    
-    return requestProcessor.render_to_response(request,'website/jurisdictions/AHJ_data_questions_answers.html', data, '') 
-
-def view_AHJ_data_unauthenticated(request, jurisdiction_id, category='all_info'): 
-    print "at beginning of view view_AHJ_data :: " + str(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S %p")) 
-    dajax = Dajax()   
-    validation_util_obj = FieldValidationCycleUtil()      
-    requestProcessor = HttpRequestProcessor(request)    
-    user = request.user
-         
-    data = {}
-        
-    if category == 'all_info':
-        data['category_name'] = 'All Categories'
-    else:
-        data['category_name'] = category
-        
-    data['category'] = category
-    jurisdiction = Jurisdiction.objects.get(id=jurisdiction_id)
-    data['jurisdiction_id'] = jurisdiction.id
-
-    empty_data_fields_hidden = None
-    empty_data_fields_hidden = requestProcessor.getParameter('empty_data_fields_hidden')        
-    if empty_data_fields_hidden != None:
-        data['empty_data_fields_hidden'] = int(empty_data_fields_hidden)
-    else:
-        if 'empty_data_fields_hidden' in request.session:
-            data['empty_data_fields_hidden'] = request.session['empty_data_fields_hidden']
-        else:
-            data['empty_data_fields_hidden'] = None     # to be determineed by various factors in susbsequent codes
-
-        
-    # to determine the last contributor's organization
-    organization = None
-    try:
-        contributor = jurisdiction.last_contributed_by
-    except:
-        contributor = None
-
-    data['last_contributed_by']  = contributor       
-    ###################################################
-
-    data['nav'] = 'no'   
-    data['current_nav'] = 'browse'    
-    data['home'] = '/'       
-    data['page'] = 'AHJ'
-    data['unauthenticated_page_message'] = "The information on this page is available to all visitors of the National Solar Permitting Database.  If you would like to add information to the database and interact with the solar community, please sign in below or "
-    data[category] = ' active'      # to set the active category in the left nav     
-    data['show_google_map'] = False    
-    data['str_address'] = ''     
-
-    ############### look up question category based on the passed category ########################################
-    view = False        # to indicate whether it's a quirks, favorites, special view like projectpermit.org, etc....
-    category_objs = []
-    if category == 'all_info':
-        category_objs = QuestionCategory.objects.filter(accepted__exact=1).order_by('display_order')
-    else:
-        category_objs = QuestionCategory.objects.filter(name__iexact=category, accepted__exact=1)
-        
-        if len(category_objs) == 0:  # view
-            view = True    
-            if category == 'quirks':
-                category_objs = View.objects.filter(jurisdiction = jurisdiction, view_type__exact='q')
-            elif category == 'attachments':
-                category_objs = View.objects.filter(jurisdiction = jurisdiction, view_type__exact='a')         
-            else:
-                category_objs = View.objects.filter(name__iexact=category)  # we work with one view per ahj content, not like muliple categories in all_info            
-                
-            #if len(category_objs) == 0:
-            #    return requestProcessor.render_to_response(request,'website/jurisdictions/AHJ_data_questions_answers.html', data, '') 
-    ###############################################################################################################
-        
-
-    categories_with_answers = []
-    categories_questions = {}
-
-    for category_obj in category_objs:
-        categories_questions[category_obj.id] = []
-
-    questions_categories = {}
-    
-    questions_approved_answers = {} 
-    questions_pending_answers = {}       
-    
-    jurisdiction_templates = get_jurisdiction_templates(jurisdiction)   
-    jurisdiction_questions = get_jurisdiction_questions(jurisdiction, jurisdiction_templates, user, category)
-    jurisdiction_approved_answers = get_jurisdiction_answers(jurisdiction, jurisdiction_templates, jurisdiction_questions, answer_status = 'A')      
-    jurisdiction_pending_answers = get_jurisdiction_answers(jurisdiction, jurisdiction_templates, jurisdiction_questions, answer_status = 'P')    
-            
-    for question in jurisdiction_questions:
-        if view == False:
-            this_question_category = question.category
-            categories_questions[this_question_category.id].append(question)    # to build list of questions per category
-            questions_categories[question.id] = this_question_category  # for later use to avoid hitting the db again.
-        else:
-            categories_questions[category_objs[0].id].append(question)                         
-                    
-        questions_approved_answers[question.id] = []
-        questions_pending_answers[question.id] = []        
-                                            
-        if question.id == 4:
-            data['show_google_map'] = True
-            ################# get the correct address for google map ####################         
-            data['str_address'] = question.get_addresses_for_map(jurisdiction)  
-            data['google_api_key'] = django_settings.GOOGLE_API_KEY 
-            #############################################################################         
-        
-    answers_contents = {}    
-    answers_attachments = {}
-    answers_with_attachments = []
-    
-    for answer in jurisdiction_approved_answers:
-        this_answer_question = answer.question
-        questions_approved_answers[this_answer_question.id].append(answer) 
-        categories_with_answers.append(questions_categories[this_answer_question.id].id)    # to determine if the category has any answer suggested.
-        if this_answer_question.id == 16:
-            fee_info = validation_util_obj.process_fee_structure(json.loads(answer.value) )                   
-            for key in fee_info.keys():
-                data[key] = fee_info.get(key)               
-            
-        answer_content = json.loads(answer.value)    
-        answers_contents[answer.id] = answer_content        
-            
-        if this_answer_question.support_attachments == 1:
-            answers_with_attachments.append(answer)
-            
-        if this_answer_question.has_multivalues == 0:
-            break;            
-            
-    for answer in jurisdiction_pending_answers:
-        questions_pending_answers[answer.question.id].append(answer)            
-            
-    if len(answers_with_attachments) > 0:
-        attachments = AnswerAttachment.objects.filter(answer_reference__in=answers_with_attachments)    # to gather all the attachments for all the answers.
-        for attachment in attachments:
-            answers_attachments[attachment.answer_reference.id] = attachment    # to build dict of attachment per answer, for ease of retrival                         
-    
-    data['jurisdiction'] = jurisdiction      
-    data['cateogries'] = category_objs
-    data['categories_questions'] = categories_questions
-    data['questions_approved_answers'] = questions_approved_answers
-    data['questions_pending_answers'] = questions_pending_answers       
-    data['categories_with_answers'] = categories_with_answers
-    data['answers_contents'] = answers_contents  
-    data['answers_attachments'] = answers_attachments       
-    data['view'] = view
-    data['user'] = user
-    
-    if 'accessible_views' in request.session:
-        data['accessible_views'] = request.session['accessible_views']
-    else:
-        data['accessible_views'] = []
-    
-    ################# Number of quirks for the jurisdition ####################
-    view_questions_obj = ViewQuestions()
-    quirks = view_questions_obj.get_jurisdiction_quirks(jurisdiction)
-    
-    data['quirk_number_of_questions'] = 0    
-    if 'view_id' in quirks:
-        data['view_id'] = quirks['view_id']
-        data['quirk_number_of_questions'] = len(quirks['view_questions']) 
-    else:
-        data['view_id'] = None     
-    ############################################################################
-
-    if empty_data_fields_hidden != None:
-        request.session['empty_data_fields_hidden'] = data['empty_data_fields_hidden']    
-      
-    ################# Show the message in the yellow box on top of the ahj page ####################         
-    data['show_ahj_message'] = False
-    if 'ahj_message_showed' not in request.session:
-        data['show_ahj_message'] = True
-    elif 'ahj_message_showed'  in request.session:
-        if request.session['ahj_message_showed'] == '1':
-            data['show_ahj_message'] = False
-        else:
-            data['show_ahj_message'] = True        
-    ################################################################################################                            
-                
-    message_data = get_system_message(request) #get the message List
-    data =  dict(data.items() + message_data.items())   #merge message list to data  
-    
-    print "at end of data gathering before rendering" + str(datetime.datetime.now().strftime("%d %b %Y %I:%M:%S %p")) 
-
-    return requestProcessor.render_to_response(request,'website/jurisdictions/AHJ_data_questions_answers_unauthenticated.html', data, '') 
 
 def get_ahj_votes_html(request, jurisdiction, answers, login_user, category='all_info', questions=None):
     requestProcessor = HttpRequestProcessor(request)       
@@ -3191,17 +1870,12 @@ def dictfetchall(cursor):
         for row in cursor.fetchall()
     ]
 
-
-def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, question_ids = []):
-    records = []
-    placeholder = ''
-    question_ids = []
-    
-    if category != 'all_info':
+def get_questions_in_category(user, jurisdiction, category):
+    if category == 'all_info':
+        return (None, False) # we really mean all questions
+    else:
         category_objs = QuestionCategory.objects.filter(name__iexact=category, accepted__exact=1)
-        
         if len(category_objs) == 0:  # view
-            view = True
             if category == 'favorite_fields':
                 category_objs = View.objects.filter(user = user, view_type__exact='f')        
             elif category == 'quirks':
@@ -3210,234 +1884,224 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
                 category_objs = View.objects.filter(jurisdiction = jurisdiction, view_type__exact='a')         
             else:
                 category_objs = View.objects.filter(name__iexact=category)  # we work with one view per ahj content, not like muliple categories in all_info            
-
-                    
-            
             view_questions = ViewQuestions.objects.filter(view__in=category_objs).order_by('display_order').values('question_id').distinct()
-            for view_question in view_questions:
-                question_ids.append(view_question.get('question_id'))
+            return ([q.get('question_id') for q in view_questions], True)
         else:
             category_questions = Question.objects.filter(accepted=1, category__in=category_objs).values('id').distinct()             
-            for category_question in category_questions:
-                question_ids.append(category_question.get('id'))
+            return ([q.get('id') for q in category_questions], False)
 
-        for question_id in question_ids:
-            placeholder += '%s,'
-                
-        placeholder = placeholder.rstrip(',')
-            
-    if category == 'all_info' or len(question_ids) > 0:
+def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, question_ids = []):
+    placeholder = ",".join(["%s" for id in question_ids]) if question_ids else None
+    query_str = '''SELECT * FROM   (
+            SELECT
+                   website_answerreference.id,
+                   website_answerreference.question_id,
+                   website_answerreference.value,
+                   website_answerreference.file_upload,
+                   website_answerreference.create_datetime,
+                   website_answerreference.modify_datetime,
+                   website_answerreference.jurisdiction_id,
+                   website_answerreference.is_current,
+                    website_answerreference.is_callout,
+                    website_answerreference.approval_status,
+                    website_answerreference.creator_id,
+                    website_answerreference.status_datetime,
+                    website_answerreference.organization_id,
+                    website_question.form_type,
+                    website_question.answer_choice_group_id,
+                    website_question.display_order,
+                    website_question.default_value,
+                    website_question.reviewed,
+                    website_question.accepted,
+                    website_question.instruction,
+                    website_question.category_id,
+                    website_question.applicability_id,
+                    website_question.question,
+                    website_question.label,
+                    website_question.template,
+                    website_question.validation_class,
+                    website_question.js,
+                    website_question.field_attributes,
+                    website_question.terminology,
+                    website_question.has_multivalues,
+                    website_question.qtemplate_id,
+                    website_question.display_template,
+                    website_question.field_suffix,
+                    website_question.migration_type,
+                    website_question.state_exclusive,
+                    website_question.description,
+                    website_question.support_attachments,
+                    website_questioncategory.name,
+                    website_questioncategory.description AS cat_description,
+                    website_questioncategory.accepted AS cat_accepted,
+                    website_questioncategory.display_order AS cat_display_order,
+                    auth_user.username,
+                    auth_user.first_name,
+                    auth_user.last_name,
+                    auth_user.is_staff,
+                    auth_user.is_active,
+                    auth_user.is_superuser,
+                    website_userdetail.display_preference
+            FROM
+                    website_answerreference,
+                    website_question,
+                    website_questioncategory,
+                    auth_user,
+                    website_userdetail
+            WHERE
+                    website_answerreference.jurisdiction_id = %s
+            '''
 
-        query_str = '''SELECT * FROM   (
-                SELECT
-                       website_answerreference.id,
-                       website_answerreference.question_id,
-                       website_answerreference.value,
-                       website_answerreference.file_upload,
-                       website_answerreference.create_datetime,
-                       website_answerreference.modify_datetime,
-                       website_answerreference.jurisdiction_id,
-                       website_answerreference.is_current,
-                        website_answerreference.is_callout,
-                        website_answerreference.approval_status,
-                        website_answerreference.creator_id,
-                        website_answerreference.status_datetime,
-                        website_answerreference.organization_id,
-                        website_question.form_type,
-                        website_question.answer_choice_group_id,
-                        website_question.display_order,
-                        website_question.default_value,
-                        website_question.reviewed,
-                        website_question.accepted,
-                        website_question.instruction,
-                        website_question.category_id,
-                        website_question.applicability_id,
-                        website_question.question,
-                        website_question.label,
-                        website_question.template,
-                        website_question.validation_class,
-                        website_question.js,
-                        website_question.field_attributes,
-                        website_question.terminology,
-                        website_question.has_multivalues,
-                        website_question.qtemplate_id,
-                        website_question.display_template,
-                        website_question.field_suffix,
-                        website_question.migration_type,
-                        website_question.state_exclusive,
-                        website_question.description,
-                        website_question.support_attachments,
-                        website_questioncategory.name,
-                        website_questioncategory.description AS cat_description,
-                        website_questioncategory.accepted AS cat_accepted,
-                        website_questioncategory.display_order AS cat_display_order,
-                        auth_user.username,
-                        auth_user.first_name,
-                        auth_user.last_name,
-                        auth_user.is_staff,
-                        auth_user.is_active,
-                        auth_user.is_superuser,
-                        website_userdetail.display_preference
-                FROM
-                        website_answerreference,
-                        website_question,
-                        website_questioncategory,
-                        auth_user,
-                        website_userdetail
-                WHERE
-                        website_answerreference.jurisdiction_id = %s
-                '''
-        
-        if placeholder != '':
-            query_str += '''AND website_question.id IN ('''+ placeholder + ''')'''
+    if placeholder:
+        query_str += '''AND website_question.id IN ('''+ placeholder + ''')'''
     
+    query_str += '''
+                    AND website_question.id = website_answerreference.question_id
+                    AND website_questioncategory.id = website_question.category_id
+                    AND auth_user.id = website_answerreference.creator_id
+                    AND website_userdetail.user_id = website_answerreference.creator_id
+                    AND website_question.accepted = '1'
+                    AND (
+                            (
+                                    (
+                                            website_answerreference.approval_status = 'A'
+                                            AND website_question.has_multivalues = '0'
+                                            AND website_answerreference.create_datetime = (
+                                                    SELECT
+                                                            MAX(create_datetime)
+                                                    FROM
+                                                            website_answerreference AS temp_table
+                                                    WHERE
+                                                            temp_table.question_id = website_answerreference.question_id
+                                                            AND temp_table.jurisdiction_id = website_answerreference.jurisdiction_id
+                                                            AND temp_table.approval_status = 'A'
+                                            )
+                                    ) OR (
+                                            website_answerreference.approval_status = 'P'
+                                            AND website_question.has_multivalues = '0'
+                                            AND website_answerreference.create_datetime != (
+                                                    SELECT
+                                                            MAX(create_datetime)
+                                                    FROM
+                                                            website_answerreference AS temp_table
+                                                    WHERE
+                                                            temp_table.question_id = website_answerreference.question_id
+                                                            AND temp_table.jurisdiction_id = website_answerreference.jurisdiction_id
+                                                            AND temp_table.approval_status = 'A'
+                                            )
+                                    )
+                            ) OR (
+                                    (
+                                            website_question.has_multivalues = '1'
+                                            AND (
+                                                    website_answerreference.approval_status = 'A'
+                                                    OR website_answerreference.approval_status = 'P'
+                                            )
+                                    )
+                            ) OR (
+                                    website_answerreference.approval_status = 'P'
+                                    AND (
+                                            SELECT
+                                                    MAX(create_datetime)
+                                            FROM
+                                                    website_answerreference AS temp_table
+                                            WHERE
+                                                    temp_table.question_id = website_answerreference.question_id
+                                                    AND temp_table.jurisdiction_id = website_answerreference.jurisdiction_id
+                                                    AND temp_table.approval_status = 'A'
+                                    ) IS NULL
+                            )
+                    )
+            ) AS sorting_table
+            '''
+    if empty_data_fields_hidden != 1:
         query_str += '''
-                        AND website_question.id = website_answerreference.question_id
-                        AND website_questioncategory.id = website_question.category_id
-                        AND auth_user.id = website_answerreference.creator_id
-                        AND website_userdetail.user_id = website_answerreference.creator_id
-                        AND website_question.accepted = '1'
-                        AND (
-                                (
-                                        (
-                                                website_answerreference.approval_status = 'A'
-                                                AND website_question.has_multivalues = '0'
-                                                AND website_answerreference.create_datetime = (
-                                                        SELECT
-                                                                MAX(create_datetime)
-                                                        FROM
-                                                                website_answerreference AS temp_table
-                                                        WHERE
-                                                                temp_table.question_id = website_answerreference.question_id
-                                                                AND temp_table.jurisdiction_id = website_answerreference.jurisdiction_id
-                                                                AND temp_table.approval_status = 'A'
-                                                )
-                                        ) OR (
-                                                website_answerreference.approval_status = 'P'
-                                                AND website_question.has_multivalues = '0'
-                                                AND website_answerreference.create_datetime != (
-                                                        SELECT
-                                                                MAX(create_datetime)
-                                                        FROM
-                                                                website_answerreference AS temp_table
-                                                        WHERE
-                                                                temp_table.question_id = website_answerreference.question_id
-                                                                AND temp_table.jurisdiction_id = website_answerreference.jurisdiction_id
-                                                                AND temp_table.approval_status = 'A'
-                                                )
-                                        )
-                                ) OR (
-                                        (
-                                                website_question.has_multivalues = '1'
-                                                AND (
-                                                        website_answerreference.approval_status = 'A'
-                                                        OR website_answerreference.approval_status = 'P'
-                                                )
-                                        )
-                                ) OR (
-                                        website_answerreference.approval_status = 'P'
-                                        AND (
-                                                SELECT
-                                                        MAX(create_datetime)
-                                                FROM
-                                                        website_answerreference AS temp_table
-                                                WHERE
-                                                        temp_table.question_id = website_answerreference.question_id
-                                                        AND temp_table.jurisdiction_id = website_answerreference.jurisdiction_id
-                                                        AND temp_table.approval_status = 'A'
-                                        ) IS NULL
-                                )
-                        )
-                ) AS sorting_table
-                '''
-        if empty_data_fields_hidden != 1:
-            query_str += '''
-        UNION SELECT
-                       NULL AS id,
-                       website_question.id AS question_id,
-                       NULL AS value,
-                       NULL AS file_upload,
-                       NULL AS create_datetime,
-                       NULL AS modify_datetime,
-                       NULL AS jurisdiction_id,
-                       NULL AS is_current,
-                        NULL AS is_callout,
-                        NULL AS approval_status,
-                        NULL AS creator_id,
-                        NULL AS status_datetime,
-                        NULL AS organization_id,
-                        website_question.form_type,
-                        website_question.answer_choice_group_id,
-                        website_question.display_order,
-                        website_question.default_value,
-                        website_question.reviewed,
-                        website_question.accepted,
-                        website_question.instruction,
-                        website_question.category_id,
-                        website_question.applicability_id,
-                        website_question.question,
-                        website_question.label,
-                        website_question.template,
-                        website_question.validation_class,
-                        website_question.js,
-                        website_question.field_attributes,
-                        website_question.terminology,
-                        website_question.has_multivalues,
-                        website_question.qtemplate_id,
-                        website_question.display_template,
-                        website_question.field_suffix,
-                        website_question.migration_type,
-                        website_question.state_exclusive,
-                        website_question.description,
-                        website_question.support_attachments,
-                        website_questioncategory.name,
-                        website_questioncategory.description AS cat_description,
-                        website_questioncategory.accepted AS cat_accepted,
-                        website_questioncategory.display_order AS cat_display_order,
-                        NULL AS username,
-                        NULL AS first_name,
-                        NULL AS last_name,
-                        NULL AS is_staff,
-                        NULL AS is_active,
-                        NULL AS is_superuser,
-                        NULL AS display_preference
-        FROM
-                website_question,
-                website_questioncategory
-        WHERE
-                website_questioncategory.id = website_question.category_id
-                '''
-                  
-            if placeholder != '':
-                query_str += '''AND website_question.id IN ('''+ placeholder + ''') '''
-        
-            query_str += '''                
-                        AND website_questioncategory.accepted = '1' 
-                        AND website_question.accepted = '1'
-                '''
-                    
-        query_str +='''
-        ORDER BY
-                cat_display_order ASC,
-                category_id ASC,
-                display_order ASC,
-                question_id ASC,
-                approval_status ASC,
-                create_datetime DESC,
-                id DESC;
-        '''
-        query_params = []
-        query_params.append(jurisdiction.id)
-        if len(question_ids) > 0:
+    UNION SELECT
+                   NULL AS id,
+                   website_question.id AS question_id,
+                   NULL AS value,
+                   NULL AS file_upload,
+                   NULL AS create_datetime,
+                   NULL AS modify_datetime,
+                   NULL AS jurisdiction_id,
+                   NULL AS is_current,
+                    NULL AS is_callout,
+                    NULL AS approval_status,
+                    NULL AS creator_id,
+                    NULL AS status_datetime,
+                    NULL AS organization_id,
+                    website_question.form_type,
+                    website_question.answer_choice_group_id,
+                    website_question.display_order,
+                    website_question.default_value,
+                    website_question.reviewed,
+                    website_question.accepted,
+                    website_question.instruction,
+                    website_question.category_id,
+                    website_question.applicability_id,
+                    website_question.question,
+                    website_question.label,
+                    website_question.template,
+                    website_question.validation_class,
+                    website_question.js,
+                    website_question.field_attributes,
+                    website_question.terminology,
+                    website_question.has_multivalues,
+                    website_question.qtemplate_id,
+                    website_question.display_template,
+                    website_question.field_suffix,
+                    website_question.migration_type,
+                    website_question.state_exclusive,
+                    website_question.description,
+                    website_question.support_attachments,
+                    website_questioncategory.name,
+                    website_questioncategory.description AS cat_description,
+                    website_questioncategory.accepted AS cat_accepted,
+                    website_questioncategory.display_order AS cat_display_order,
+                    NULL AS username,
+                    NULL AS first_name,
+                    NULL AS last_name,
+                    NULL AS is_staff,
+                    NULL AS is_active,
+                    NULL AS is_superuser,
+                    NULL AS display_preference
+    FROM
+            website_question,
+            website_questioncategory
+    WHERE
+            website_questioncategory.id = website_question.category_id
+            '''
+              
+        if placeholder:
+            query_str += '''AND website_question.id IN ('''+ placeholder + ''') '''
+    
+        query_str += '''                
+                    AND website_questioncategory.accepted = '1' 
+                    AND website_question.accepted = '1'
+            '''
+                
+    query_str +='''
+    ORDER BY
+            cat_display_order ASC,
+            category_id ASC,
+            display_order ASC,
+            question_id ASC,
+            approval_status ASC,
+            create_datetime DESC,
+            id DESC;
+    '''
+    #print(empty_data_fields_hidden)
+    query_params = []
+    query_params.append(jurisdiction.id)
+    if question_ids:
+        for question_id in question_ids:
+            query_params.append(question_id)
+        if empty_data_fields_hidden != 1:                
             for question_id in question_ids:
                 query_params.append(question_id)
-            if empty_data_fields_hidden != 1:                
-                for question_id in question_ids:
-                    query_params.append(question_id)
-                          
-        cursor = connections['default'].cursor()
-        cursor.execute(query_str, query_params)
-        records = dictfetchall(cursor) 
-        
+                      
+    cursor = connections['default'].cursor()
+    cursor.execute(query_str, query_params)
+    records = dictfetchall(cursor)
 
     return records

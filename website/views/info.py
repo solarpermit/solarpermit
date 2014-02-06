@@ -85,19 +85,6 @@ def get_info(request):
           
     ajax = requestProcessor.getParameter('ajax')
     if (ajax != None):
-        if (ajax == 'getting_started'):
-            body = requestProcessor.decode_jinga_template(request,'website/info/getting_started.html', data, '')  
-            dajax.assign('#fancyboxformDiv','innerHTML', body)  
-            dajax.script('controller.showModalDialog("#fancyboxformDiv");')
-            return HttpResponse(dajax.json())  
-                
-        if (ajax == 'about'):
-            body = requestProcessor.decode_jinga_template(request,'website/blocks/about.html', data, '') 
-            #dajax.assign('#main_content','innerHTML', body)    
-            dajax.assign('#fancyboxformDiv','innerHTML', body)  
-            dajax.script('controller.showModalDialog("#fancyboxformDiv");')
-            return HttpResponse(dajax.json())
-    
         if (ajax == 'privacy_policy'):
             body = requestProcessor.decode_jinga_template(request,'website/info/privacy_policy_modal.html', data, '') 
             #dajax.assign('#main_content','innerHTML', body)    
@@ -112,14 +99,6 @@ def get_info(request):
             #dajax.assign('#fancyboxformDiv','innerHTML', body)  
             #dajax.script('controller.showModalDialog("#fancyboxformDiv");')    
             return HttpResponse(dajax.json())  
-        
-    
-        if (ajax == 'disclaimer'):
-            body = requestProcessor.decode_jinga_template(request,'website/info/disclaimer_modal.html', data, '') 
-            #dajax.assign('#main_content','innerHTML', body)    
-            dajax.assign('#fancyboxformDiv','innerHTML', body)  
-            dajax.script('controller.showModalDialog("#fancyboxformDiv");')
-            return HttpResponse(dajax.json()) 
         
         if (ajax == 'doe_grant'):
             body = requestProcessor.decode_jinga_template(request,'website/blocks/text_doe_grant.html', data, '') 
