@@ -11,6 +11,9 @@ TEMPLATE_DEBUG = DEBUG
 INTERNAL_IPS = ('127.0.0.1',)
 #SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
+SOLARPERMIT_VERSION = '1.3.37'
+SAMPLE_JURISDICTIONS=['1', '101105']
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
