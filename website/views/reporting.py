@@ -125,7 +125,7 @@ def report_index(request):
     data = {}
     data['current_nav'] = 'reporting'
 
-    questions = Question.objects.filter(accepted='1').exclude(form_type="CF")
+    questions = Question.objects.filter(accepted='1').exclude(form_type="CF").order_by("category", "display_order")
 
     reports_index = []
     category_last_encountered = ''
