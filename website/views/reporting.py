@@ -14,6 +14,7 @@ from jinja2 import FileSystemLoader, Environment
 import hashlib
 from website.models import Question, QuestionCategory
 from django.db import connection
+from collections import OrderedDict
 
 def build_query(question, field_map):
     # note: we're substituting directly into the query because the
@@ -43,26 +44,26 @@ def not_null_match():
     return 'value IS NOT NULL'
 
 def yes_no_field(field_name):
-    return { "Yes": json_match(field_name, "yes"),
-             "No": json_match(field_name, "no"),
-             "Total": None }
+    return OrderedDict([("Yes", json_match(field_name, "yes")),
+                        ("No", json_match(field_name, "no")),
+                        ("Total", None)])
 
 def yes_no_exception_field(field_name):
-    return { "Yes": json_match(field_name, "yes"),
-             "Yes, with exceptions": json_match(field_name, "yes, with exceptions"),
-             "No": json_match(field_name, "no"),
-             "Total": None }
+    return OrderedDict([("Yes", json_match(field_name, "yes")),
+                        ("Yes, with exceptions", json_match(field_name, "yes, with exceptions")),
+                        ("No", json_match(field_name, "no")),
+                        ("Total", None)])
 
 def answered_field():
-    return { "Answered": not_null_match() }
+    return OrderedDict([("Answered", not_null_match())])
 
 reports_by_type = {
     "available_url_display.html": yes_no_field("available"),
     "radio_with_exception_display.html": yes_no_exception_field("required"),
-    "plan_check_service_type_display.html": { "Over the Counter": json_match("plan_check_service_type", "over the counter"),
-                                              "In-House (not same day)": json_match("plan_check_service_type", "in-house"),
-                                              "Outsourced": json_match("plan_check_service_type", "outsourced"),
-                                              "Total": None },
+    "plan_check_service_type_display.html": OrderedDict([("Over the Counter", json_match("plan_check_service_type", "over the counter")),
+                                                         ("In-House (not same day)", json_match("plan_check_service_type", "in-house")),
+                                                         ("Outsourced", json_match("plan_check_service_type", "outsourced")),
+                                                         ("Total", None)]),
     "radio_compliant_sb1222_with_exception.html": yes_no_exception_field("compliant"),
     "inspection_checklists_display.html": yes_no_field("value"),
     "radio_has_training_display.html": yes_no_field("value"),
@@ -79,26 +80,26 @@ reports_by_type = {
     "radio_required_display.html": yes_no_field("required"),
     "radio_covered_with_exception_display.html": yes_no_exception_field("required"),
     "radio_studer_vent_rules_with_exception_display.html": yes_no_exception_field("required"),
-    "radio_module_drawings_display.html": { "Yes": json_match("value", "must draw individual modules"),
-                                            "No": json_match("value", "n in series in a rectangle allowed"),
-                                            "Total": None },
+    "radio_module_drawings_display.html": OrderedDict([("Yes", json_match("value", "must draw individual modules")),
+                                                       ("No", json_match("value", "n in series in a rectangle allowed")),
+                                                       ("Total", None)]),
     "radio_allowed_with_exception_display.html": yes_no_exception_field("allowed"),
     "required_spec_sheets_display.html": answered_field(),
     "homeowner_requirements_display.html": answered_field(), # two yes/no answers in one
     "fire_setbacks_display.html": yes_no_exception_field("enforced"),
-    "radio_inspection_approval_copies_display.html": { "In person": json_match("apply", "in person"),
-                                                       "Remotely": json_match("apply", "remotley"),
-                                                       "Total": None },
+    "radio_inspection_approval_copies_display.html": OrderedDict([("In person", json_match("apply", "in person")),
+                                                                  ("Remotely", json_match("apply", "remotley")),
+                                                                  ("Total", None)]),
     "signed_inspection_approval_delivery_display.html": answered_field(),
     "radio_vent_spanning_rules_with_exception_display.html": yes_no_exception_field("allowed"),
     "solar_permitting_checklists_display.html": answered_field(),
     "radio_available_with_exception_display.html": yes_no_exception_field("available"),
-    "time_window_display.html": { "Exact time given": json_match("time_window", "0"),
-                                  "2 hours (or less)": json_match("time_window", "2"),
-                                  "Half Day (2 to 4 hours)": json_match("time_window", "4"),
-                                  "Full Day (greater than 4 hours)": json_match("time_window", "8"),
-                                  "Other": regexp_match("time_window\".*\"[^0248]"),
-                                  "Total": None },
+    "time_window_display.html": OrderedDict([("Exact time given", json_match("time_window", "0")),
+                                             ("2 hours (or less)", json_match("time_window", "2")),
+                                             ("Half Day (2 to 4 hours)", json_match("time_window", "4")),
+                                             ("Full Day (greater than 4 hours)", json_match("time_window", "8")),
+                                             ("Other", regexp_match("time_window\".*\"[^0248]")),
+                                             ("Total", None)]),
     "radio_has_training_display.html": yes_no_field("value"),
     "radio_licensing_required_display.html": yes_no_field("required"),
     "online_forms.html": answered_field(),
