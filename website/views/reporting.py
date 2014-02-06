@@ -31,7 +31,7 @@ def build_query(question, field_map):
     return u"SELECT %s from website_answerreference LIMIT 1" % ", ".join(counts)
 
 def json_match(field_name, value):
-    return 'value LIKE \'%%%%%(name)s"%%%%"%(value)s\'' % { "name": field_name, "value": value }
+    return 'value LIKE \'%%%%%(name)s"%%%%"%(value)s"%%%%\'' % { "name": field_name, "value": value }
 
 def regexp_match(regexp):
     return 'value REGEXP \'%(regexp)s\'' % { "regexp": regexp }
