@@ -98,7 +98,7 @@ reports_by_type = {
                                              ("2 hours (or less)", json_match("time_window", "2")),
                                              ("Half Day (2 to 4 hours)", json_match("time_window", "4")),
                                              ("Full Day (greater than 4 hours)", json_match("time_window", "8")),
-                                             ("Other", regexp_match("time_window\".*\"[^0248]")),
+                                             ("Other", regexp_match("time_window\"[^\"]*\"[^0248]")),
                                              ("Total", None)]),
     "radio_has_training_display.html": yes_no_field("value"),
     "radio_licensing_required_display.html": yes_no_field("required"),
