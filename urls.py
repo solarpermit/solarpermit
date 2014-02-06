@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.conf.urls.defaults import patterns, include, handler404, handler500, url
 from django.conf import settings
-from website.views import home, account, unittest, info, jurisdiction, organization, custom_field, maintenance, siteadmin
+from website.views import home, account, info, jurisdiction, organization, custom_field, maintenance, siteadmin
 from website.views.news import *
 
 from django.contrib import admin
