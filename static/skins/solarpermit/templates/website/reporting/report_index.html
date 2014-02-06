@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+
+
+{% block title %}{% endblock %}
+
+
+
+{% block forestyle %}
+<style>
+.report_categories {
+	list-style-type: none;
+	padding-left: 20px;
+}
+.reports {
+	list-style-type: disc;
+}
+</style>
+{% endblock %}
+
+
+
+{% block forejs %}{% endblock %}
+
+
+
+{% block body %}
+<div class="contentOnlyPage">
+<h1>Available Reports</h1>
+<ul class="report_categories">
+{% for item in reports_index %}
+	<li><h2>{{ item['category'] }}</h2>
+		<ul class="reports">
+	{% for report in item['reports_in_category'] %}
+		{% if report['link_to'] %}
+			<li><a href="/reporting/{{ report['id'] }}/">{{ report['label'] }}</a></li>
+		{% else %}
+			<li>{{ report['label'] }} - pending</li>
+		{% endif %}
+	{% endfor %}
+		</ul>
+	</li>
+{% endfor %}
+</ul>
+
+	
+</div>
+{% endblock %}
+
+
+
+
+{% block endjs %}{% endblock %}

@@ -2,6 +2,7 @@ from django.http import HttpResponseRedirect
 from django.conf.urls.defaults import patterns, include, handler404, handler500, url
 from django.conf import settings
 from website.views import home, test_view, account, unittest, info, jurisdiction, organization, custom_field, maintenance, siteadmin
+from website.views.news import *
 
 from django.contrib import admin
 admin.autodiscover()
@@ -44,8 +45,8 @@ else:
         #(r'^jurisdiction/(?P<id>.*)/$', 'website.views.AHJ.view_AHJ'),
         (r'^jurisdiction/(?P<name>.*)/(?P<category>.*)/$', 'website.views.AHJ.view_AHJ_by_name'),    
         (r'^jurisdiction/(?P<name>.*)/$', 'website.views.AHJ.view_AHJ_by_name'),          
-        (r'^jurisdiction_id/(?P<id>.*)/(?P<category>.*)/$', 'website.views.AHJ.view_AHJ'), 
-        (r'^jurisdiction_id/(?P<id>.*)/$', 'website.views.AHJ.view_AHJ'), 
+        #(r'^jurisdiction_id/(?P<id>.*)/(?P<category>.*)/$', 'website.views.AHJ.view_AHJ'), 
+        #(r'^jurisdiction_id/(?P<id>.*)/$', 'website.views.AHJ.view_AHJ'), 
               
         #(r'^set_up_data_sprint_19', 'website.views.data_migration.set_up_data_sprint_19'),
             
@@ -64,14 +65,11 @@ else:
         (r'^logout', account.log_out),      
         (r'^reset_password/(?P<reset_password_key>.*)/$', home.reset_password),       
         (r'^info/', info.get_info),  
-        (r'^news/', info.news),   
+        (r'^news/', info.news_static),
+        (r'^news2/', info.news_dynamic),
         (r'^about/', info.about),
         (r'^getting-started/', info.getting_started_page),  
         
-        ## admin
-        (r'^siteadmin/$', siteadmin.task_list),          
-        (r'^siteadmin/user_page_views/$', siteadmin.user_page_views),   
-                
         #data migrations
         #(r'^util/import/unincorporated/$', 'website.views.data_migration.migrate_unincorporated'),
         (r'^util/import/jurisdictions/$', 'website.views.data_migration.migrate_jurisdiction_data'),
@@ -105,11 +103,17 @@ else:
         #### api calls
         (r'^api1/', 'website.views.api.searchState'),
         
+        #### reporting pages
+        (r'^reporting/$', 'website.views.reporting.report_index'),
+        (r'^reporting/(?P<question_id>\d+)/$', 'website.views.reporting.report_on'),
         
-           
     )
-
+    ## admin
+    urlpatterns += patterns('',
+                            url(r'^siteadmin/',
+                                include(patterns('',
+                                                 (r'^$', siteadmin.task_list),
+                                                 (r'^user_page_views/$', siteadmin.user_page_views)))))
     if 'rosetta' in settings.INSTALLED_APPS:
         urlpatterns += patterns('',
-                        url(r'^rosetta/', include('rosetta.urls')),
-                    )
+                                url(r'^rosetta/', include('rosetta.urls')))

@@ -9,6 +9,7 @@ from jinja2.ext import WithExtension
 from compressor.contrib.jinja2ext import CompressorExtension
 from django.template import RequestContext, Template, Context
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 from website.models import UserFavorite, UserSearch
 
@@ -79,6 +80,7 @@ class HttpRequestProcessor():
             mimetype = settings.DEFAULT_CONTENT_TYPE
         env = Environment(loader=FileSystemLoader(template_dirs),
                           extensions=[CompressorExtension, WithExtension])
+        env.globals['url'] = lambda view, **kwargs: reverse(view, kwargs=kwargs)
         
         request_context = RequestContext(request, context)
         csrf = request_context.get('csrf_token')
@@ -96,6 +98,7 @@ class HttpRequestProcessor():
             mimetype = settings.DEFAULT_CONTENT_TYPE
         env = Environment(loader=FileSystemLoader(template_dirs),
                           extensions=[CompressorExtension, WithExtension])
+        env.globals['url'] = lambda view, **kwargs: reverse(view, kwargs=kwargs)
         
         context['INTERNAL_IPS'] = settings.INTERNAL_IPS  
         context['ENABLE_GOOGLE_ANALYTICS'] = settings.ENABLE_GOOGLE_ANALYTICS   

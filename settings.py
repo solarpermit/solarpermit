@@ -11,6 +11,9 @@ TEMPLATE_DEBUG = DEBUG
 INTERNAL_IPS = ('127.0.0.1',)
 #SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
+SOLARPERMIT_VERSION = '1.3.37'
+SAMPLE_JURISDICTIONS=['1', '101105']
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -290,5 +293,8 @@ COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',
 COMPRESS_JS_FILTERS = ['compressor.filters.closure.ClosureCompilerFilter']
 COMPRESS_CLOSURE_COMPILER_BINARY = '/usr/local/bin/closure'
 COMPRESS_CLOSURE_COMPILER_ARGUMENTS = '--language_in ECMASCRIPT5 --summary_detail_level 3'
+
+# do not run migrations during testing
+SOUTH_TESTS_MIGRATE=False
 
 from settings_local import *
