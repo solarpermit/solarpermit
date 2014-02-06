@@ -120,9 +120,8 @@ else:
         
         #### reporting pages
         (r'^reporting/$', 'website.views.reporting.report_index'),
-        (r'^reporting/(?P<question_id>\d+)/$', 'website.views.reporting.report_on'),
-        
-    )
+        (r'^reporting/(?P<question_id>\d+)/$', 'website.views.reporting.report_on'))
+
     ## admin
     urlpatterns += patterns('',
                             url(r'^siteadmin/',
