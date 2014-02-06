@@ -23,7 +23,7 @@ def build_query(question, field_map):
     counts = []
     for name, match in field_map.items():
         if match:
-            counts.append(u"(SELECT count(*) FROM (SELECT value FROM website_answerreference WHERE question_id = '%(qid)s' AND jurisdiction_id NOT IN ('1','101105') AND approval_status LIKE 'A' GROUP BY jurisdiction_id ASC, create_datetime DESC) AS tmp%(i)s WHERE value LIKE '%(match)s') as `%(name)s`" % {"qid": question.id, "name": name, "match": match, "i": i})
+            counts.append(u"(SELECT count(*) FROM (SELECT value FROM website_answerreference WHERE question_id = '%(qid)s' AND jurisdiction_id NOT IN ('1','101105') AND approval_status LIKE 'A' GROUP BY jurisdiction_id ASC, create_datetime DESC) AS tmp%(i)s WHERE %(match)s) as `%(name)s`" % {"qid": question.id, "name": name, "match": match, "i": i})
         else:
             counts.append(u"(SELECT count(*) FROM (SELECT value FROM website_answerreference WHERE question_id = '%(qid)s' AND jurisdiction_id NOT IN ('1','101105') AND approval_status LIKE 'A' GROUP BY jurisdiction_id ASC, create_datetime DESC) AS tmp%(i)s) as `%(name)s`" % {"qid": question.id, "name": name, "match": match, "i": i})
         i += 1
@@ -31,32 +31,80 @@ def build_query(question, field_map):
     return u"SELECT %s from website_answerreference LIMIT 1" % ", ".join(counts)
 
 def json_match(field_name, value):
-    return '%%%%%(name)s"%%%%"%(value)s' % { "name": field_name, "value": value }
+    return 'value LIKE \'%%%%%(name)s"%%%%"%(value)s\'' % { "name": field_name, "value": value }
+
+def regexp_match(regexp):
+    return 'value REGEXP \'%(regexp)s\'' % { "regexp": regexp }
+
+def null_match():
+    return 'value IS NULL'
+
+def not_null_match():
+    return 'value IS NOT NULL'
 
 def yes_no_field(field_name):
     return { "Yes": json_match(field_name, "yes"),
              "No": json_match(field_name, "no"),
              "Total": None }
 
-def yes_no_except_field(field_name):
+def yes_no_exception_field(field_name):
     return { "Yes": json_match(field_name, "yes"),
              "Yes, with exceptions": json_match(field_name, "yes, with exceptions"),
              "No": json_match(field_name, "no"),
              "Total": None }
 
-def yes_no_url_field(field_name):
-    42
+def answered_field():
+    return { "Answered": not_null_match(),
+             "Unanswered": null_match(),
+             "Total": None }
 
 reports_by_type = {
     "available_url_display.html": yes_no_field("available"),
-    "radio_with_exception_display.html": yes_no_except_field("required"),
+    "radio_with_exception_display.html": yes_no_exception_field("required"),
     "plan_check_service_type_display.html": { "Over the Counter": json_match("plan_check_service_type", "over the counter"),
                                               "In-House (not same day)": json_match("plan_check_service_type", "in-house"),
                                               "Outsourced": json_match("plan_check_service_type", "outsourced"),
                                               "Total": None },
-    "radio_compliant_sb1222_with_exception.html": yes_no_except_field("compliant"),
-    "inspection_checklists_display.html": yes_no_url_field("value"),
+    "radio_compliant_sb1222_with_exception.html": yes_no_exception_field("compliant"),
+    "inspection_checklists_display.html": yes_no_field("value"),
     "radio_has_training_display.html": yes_no_field("value"),
+    "phone_display.html": answered_field(),
+    "url.html": answered_field(),
+    "address_display.html": answered_field(),
+    "radio_submit_PE_stamped_structural_letter_with_exception_display.html": yes_no_exception_field("required"),
+    "hours_display.html": answered_field(),
+    "turn_around_time_display.html": answered_field(), # check spec, can do more here
+    "available_url_display.html": answered_field(),
+    "permit_cost_display.html": answered_field(), # check the spec, probably needs histograms and stuff
+    "radio_required_for_page_sizes_display.html": yes_no_field("required"), # should do more for the required values
+    "radio_required_for_scales_display.html": yes_no_field("required"), # likewise
+    "radio_required_display.html": yes_no_field("required"),
+    "radio_covered_with_exception_display.html": yes_no_exception_field("required"),
+    "radio_studer_vent_rules_with_exception_display.html": yes_no_exception_field("required"),
+    "radio_module_drawings_display.html": { "Yes": json_match("value", "must draw individual modules"),
+                                            "No": json_match("value", "n in series in a rectangle allowed"),
+                                            "Total": None },
+    "radio_allowed_with_exception_display.html": yes_no_exception_field("allowed"),
+    "required_spec_sheets_display.html": answered_field(),
+    "homeowner_requirements_display.html": answered_field(), # two yes/no answers in one
+    "fire_setbacks_display.html": yes_no_exception_field("enforced"),
+    "radio_inspection_approval_copies_display.html": { "In person": json_match("apply", "in person"),
+                                                       "Remotely": json_match("apply", "remotley"),
+                                                       "Total": None },
+    "signed_inspection_approval_delivery_display.html": answered_field(),
+    "radio_vent_spanning_rules_with_exception_display.html": yes_no_exception_field("allowed"),
+    "solar_permitting_checklists_display.html": answered_field(),
+    "radio_available_with_exception_display.html": yes_no_exception_field("available"),
+    "time_window_display.html": { "Exact time given": json_match("time_window", "0"),
+                                  "2 hours (or less)": json_match("time_window", "2"),
+                                  "Half Day (2 to 4 hours)": json_match("time_window", "4"),
+                                  "Full Day (greater than 4 hours)": json_match("time_window", "8"),
+                                  "Other": regexp_match("time_window\".*\"[^0248]"),
+                                  "Total": None },
+    "radio_has_training_display.html": yes_no_field("value"),
+    "radio_licensing_required_display.html": yes_no_field("required"),
+    "online_forms.html": answered_field(),
+    None: answered_field()
 }
 
 reports_by_qid = {
