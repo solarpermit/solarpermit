@@ -13,10 +13,7 @@ from django.conf import settings
 from jinja2 import FileSystemLoader, Environment
 import hashlib
 from website.models import Question, QuestionCategory
-
-# specific to api
-import MySQLdb # database
-import MySQLdb.cursors
+from django.db import connection
 
 def build_query(question, field_map):
     # note: we're substituting directly into the query because the
@@ -26,15 +23,15 @@ def build_query(question, field_map):
     counts = []
     for name, match in field_map.items():
         if match:
-            counts.append("(SELECT count(*) FROM (SELECT value FROM website_answerreference WHERE question_id = '%(qid)s' AND jurisdiction_id NOT IN ('1','101105') AND approval_status LIKE 'A' GROUP BY jurisdiction_id ASC, create_datetime DESC) AS tmp%(i)s WHERE value LIKE '%(match)s') as `%(name)s`" % {"qid": question.id, "name": name, "match": match, "i": i})
+            counts.append(u"(SELECT count(*) FROM (SELECT value FROM website_answerreference WHERE question_id = '%(qid)s' AND jurisdiction_id NOT IN ('1','101105') AND approval_status LIKE 'A' GROUP BY jurisdiction_id ASC, create_datetime DESC) AS tmp%(i)s WHERE value LIKE '%(match)s') as `%(name)s`" % {"qid": question.id, "name": name, "match": match, "i": i})
         else:
-            counts.append("(SELECT count(*) FROM (SELECT value FROM website_answerreference WHERE question_id = '%(qid)s' AND jurisdiction_id NOT IN ('1','101105') AND approval_status LIKE 'A' GROUP BY jurisdiction_id ASC, create_datetime DESC) AS tmp%(i)s) as `%(name)s`" % {"qid": question.id, "name": name, "match": match, "i": i})
+            counts.append(u"(SELECT count(*) FROM (SELECT value FROM website_answerreference WHERE question_id = '%(qid)s' AND jurisdiction_id NOT IN ('1','101105') AND approval_status LIKE 'A' GROUP BY jurisdiction_id ASC, create_datetime DESC) AS tmp%(i)s) as `%(name)s`" % {"qid": question.id, "name": name, "match": match, "i": i})
         i += 1
 
-    return "SELECT %s from website_answerreference LIMIT 1" % ", ".join(counts)
+    return u"SELECT %s from website_answerreference LIMIT 1" % ", ".join(counts)
 
 def json_match(field_name, value):
-    return '%%%(name)s"%%"%(value)s' % { "name": field_name, "value": value }
+    return '%%%%%(name)s"%%%%"%(value)s' % { "name": field_name, "value": value }
 
 def yes_no_field(field_name):
     return { "Yes": json_match(field_name, "yes"),
@@ -119,22 +116,13 @@ def report_on(request, question_id):
     report = (question.id in reports_by_qid and reports_by_qid[question_id]) or (question.display_template in reports_by_type and reports_by_type[question.display_template])
     query = build_query(question, report)
 
-    conn = MySQLdb.connect(host=settings.DATABASES['default']['HOST'],
-                           user=settings.DATABASES['default']['USER'],
-                           passwd=settings.DATABASES['default']['PASSWORD'],
-                           db=settings.DATABASES['default']['NAME'],
-                           cursorclass=MySQLdb.cursors.DictCursor)
-    cursor = conn.cursor()
+    cursor = connection.cursor()
     cursor.execute(query)
-    row = cursor.fetchone()
+    result = dict(zip([col[0] for col in cursor.description], cursor.fetchone()))
 
     data['table'] = []
     for key in report.keys():
-        data['table'].append({'key': key,'value': row[key]})
+        data['table'].append({'key': key,'value': result[key]})
 
-    #finish up
-    if 'conn' in locals() and conn.open:
-        cursor.close()
-        conn.close()
     requestProcessor = HttpRequestProcessor(request)
     return requestProcessor.render_to_response(request,'website/reporting/report_on.html', data, '')
