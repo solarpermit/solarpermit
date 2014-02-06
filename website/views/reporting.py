@@ -54,9 +54,7 @@ def yes_no_exception_field(field_name):
              "Total": None }
 
 def answered_field():
-    return { "Answered": not_null_match(),
-             "Unanswered": null_match(),
-             "Total": None }
+    return { "Answered": not_null_match() }
 
 reports_by_type = {
     "available_url_display.html": yes_no_field("available"),
