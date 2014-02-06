@@ -1,3 +1,4 @@
+{% if user.is_authenticated() %}
        <div class="q_action_link" id="q_action_link_{{current_question_id}}" data-id="{{current_question_id}}" >
             <img class="q_more_actions" id="more_{{current_question_id}}"   src="/media/images/more_off.png" alt="more_inactive" data-id="{{current_question_id}}" style="margin:opx;padding:0px">
 
@@ -26,3 +27,4 @@
                 </li>
         </ul>
     </div>
+{% endif %}
