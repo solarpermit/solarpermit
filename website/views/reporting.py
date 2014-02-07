@@ -79,7 +79,7 @@ reports_by_type = {
     "radio_required_for_scales_display.html": yes_no_field("required"), # likewise
     "radio_required_display.html": yes_no_field("required"),
     "radio_covered_with_exception_display.html": yes_no_exception_field("required"),
-    "radio_studer_vent_rules_with_exception_display.html": yes_no_exception_field("required"),
+    "radio_studer_vent_rules_with_exception_display.html": yes_no_exception_field("allowed"),
     "radio_module_drawings_display.html": OrderedDict([("Yes", json_match("value", "must draw individual modules")),
                                                        ("No", json_match("value", "n in series in a rectangle allowed")),
                                                        ("Total", None)]),
