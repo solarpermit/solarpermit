@@ -3,48 +3,45 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Login Test: Correct user name Incorrect Password</title>
+<link rel="selenium.base" href="http://dev.solarpermit.org/" />
+<title>Search-No-Results</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Login Test: Correct user name Incorrect Password</td></tr>
+<tr><td rowspan="1" colspan="3">Search-No-Results</td></tr>
 </thead><tbody>
 <tr>
 	<td>open</td>
-	<td>/?reload=true</td>
+	<td>/</td>
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>id=username</td>
+	<td>waitForElementPresent</td>
+	<td>id=search_field</td>
 	<td></td>
 </tr>
 <tr>
-	<td>sendKeys</td>
-	<td>id=username</td>
-	<td>xp3</td>
+	<td>type</td>
+	<td>id=search_field</td>
+	<td>asdfjh adjshf</td>
 </tr>
 <tr>
-	<td>sendKeys</td>
-	<td>id=password</td>
-	<td>1234</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>id=form_sign_in_submit_button</td>
+	<td>clickAndWait</td>
+	<td>css=a.search-a</td>
 	<td></td>
 </tr>
 <tr>
-	<td>waitForText</td>
-	<td>css=div.form_field_error_message</td>
-	<td>Invalid credentials. Please try again.</td>
+	<td>waitForElementPresent</td>
+	<td>css=div.jscroll-inner</td>
+	<td></td>
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>css=div.form_field_error_message</td>
-	<td>Invalid credentials. Please try again.</td>
+	<td>css=div.jscroll-inner</td>
+	<td>Your search could not be processed. Please try a more detailed search.</td>
 </tr>
+
 </tbody></table>
 </body>
 </html>
