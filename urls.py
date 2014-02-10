@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.conf.urls.defaults import patterns, include, handler404, handler500, url
 from django.conf import settings
-from website.views import home, test_view, account, unittest, info, jurisdiction, organization, custom_field, maintenance, siteadmin
+from website.views import home, account, info, jurisdiction, organization, custom_field, maintenance, siteadmin
 from website.views.news import *
 
 from django.contrib import admin
@@ -105,9 +105,8 @@ else:
         
         #### reporting pages
         (r'^reporting/$', 'website.views.reporting.report_index'),
-        (r'^reporting/(?P<question_id>\d+)/$', 'website.views.reporting.report_on'),
-        
-    )
+        (r'^reporting/(?P<question_id>\d+)/$', 'website.views.reporting.report_on'))
+
     ## admin
     urlpatterns += patterns('',
                             url(r'^siteadmin/',
