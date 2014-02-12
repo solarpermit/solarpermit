@@ -779,7 +779,9 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
        
             return HttpResponse(dajax.json())         
                 
-        if (ajax == 'suggestion_submit'):     
+        if (ajax == 'suggestion_submit'):
+            if not user.is_authenticated():
+                return HttpResponse(status=401)
             answers = {} 
             data['user'] = user      
             data['jurisdiction'] = jurisdiction           
@@ -1223,24 +1225,19 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
 
 
 def get_jurisdiction_templates(jurisdiction):
-    cf_template_objs = Template.objects.filter(jurisdiction = jurisdiction, template_type__iexact='CF', accepted=1)
-    rt_template_objs = Template.objects.filter(template_type__iexact='RT', accepted=1)
-    
-    template_objs = rt_template_objs | cf_template_objs    
-    
-    return template_objs
-    
-def get_jurisdiction_answers(jurisdiction, jurisdiction_templates, jurisdiction_questions, answer_status=None):
+    return Template.objects.filter(jurisdiction = jurisdiction, template_type__iexact='CF', accepted=1) | \
+           Template.objects.filter(template_type__iexact='RT', accepted=1)
 
-    if answer_status == None:
-        jurisdiction_answer_objs = AnswerReference.objects.filter(jurisdiction = jurisdiction, approval_status__in=('A', 'P'), question__accepted__exact=1, question__qtemplate__in=jurisdiction_templates, question__in=jurisdiction_questions).order_by('question__category__name','question__display_order','approval_status','create_datetime') 
-    elif answer_status == 'A':
-        jurisdiction_answer_objs = AnswerReference.objects.filter(jurisdiction = jurisdiction, approval_status__in=('A'), question__accepted__exact=1, question__qtemplate__in=jurisdiction_templates, question__in=jurisdiction_questions).order_by('question__category__name','question__display_order','approval_status','create_datetime') 
-    elif answer_status == 'P':
-        jurisdiction_answer_objs = AnswerReference.objects.filter(jurisdiction = jurisdiction, approval_status__in=('P'), question__accepted__exact=1, question__qtemplate__in=jurisdiction_templates, question__in=jurisdiction_questions).order_by('question__category__name','question__display_order','approval_status','create_datetime') 
-        
-       
-    return jurisdiction_answer_objs
+def get_jurisdiction_answers(jurisdiction, jurisdiction_templates, jurisdiction_questions, answer_status = None):
+    return AnswerReference.objects.filter(jurisdiction = jurisdiction,
+                                          approval_status__in = answer_status or ('A', 'P'),
+                                          question__accepted__exact = 1,
+                                          question__qtemplate__in = jurisdiction_templates,
+                                          question__in = jurisdiction_questions) \
+                                  .order_by('question__category__name',
+                                            'question__display_order',
+                                            'approval_status',
+                                            'create_datetime') 
 
 def get_jurisdiction_questions(jurisdiction, jurisdiction_templates, user, category='all_info'):
     jurisdiction_question_objs = None
@@ -1698,7 +1695,6 @@ def get_question_data(request, jurisdiction, question, data):
     validation_util_obj = FieldValidationCycleUtil()      
     requestProcessor = HttpRequestProcessor(request)    
     user = request.user
-    questions = Question.objects.filter(id=question.id)
     
     display_answers = []    
     answers_headings = {}   
@@ -1707,67 +1703,28 @@ def get_question_data(request, jurisdiction, question, data):
     answers_with_attachments = []   
     answers_comments_text = {} 
     
-    template_ids = TemplateQuestion.objects.filter(question = questions).values_list('template_id')  
-    templates = Template.objects.filter(id__in=template_ids)
-    question_answers = get_jurisdiction_answers(jurisdiction, templates, questions) 
-    
+    templates = get_jurisdiction_templates(jurisdiction)
+    question_answers = get_jurisdiction_answers(jurisdiction, templates, [question])
+
     data['jurisdiction'] = jurisdiction      
     data['question'] = question       
     data['user'] = user       
  
     if len(question_answers) > 0:     
-        question_approved_answers = question_answers.filter(approval_status = 'A')     
-        question_pending_answers = question_answers.filter(approval_status = 'P')
-        
-        '''                                         
-        if question.id == 4:
-            data['show_google_map'] = True
-            ################# get the correct address for google map ####################         
-            data['str_address'] = question.get_addresses_for_map(jurisdiction)  
-            data['google_api_key'] = django_settings.GOOGLE_API_KEY 
-            #############################################################################         
-        '''             
         answers_contents = {}    
         answers_attachments = {}
-
-    
-        for answer in question_approved_answers:
-            this_answer_question = answer.question
+        for answer in question_answers:
             display_answers.append(answer)
 
-            if this_answer_question.id == 16:
+            if answer.question.id == 16:
                 fee_info = validation_util_obj.process_fee_structure(json.loads(answer.value) )                   
                 for key in fee_info.keys():
                     data[key] = fee_info.get(key)               
                 
-            answer_content = json.loads(answer.value)    
+            answer_content = json.loads(answer.value)  
             answers_contents[answer.id] = answer_content        
                 
-            if this_answer_question.support_attachments == 1:
-                answers_with_attachments.append(answer)
-                #answers_attachments[answer.id] = []  
-                
-            answers_comments_text[answer.id] = get_answer_comment_txt(jurisdiction, answer, user)
-            
-            if answer.creator_id == user.id: 
-                login_user_suggested_a_value = True            
-                
-            if this_answer_question.has_multivalues == 0:
-                break;                       
-                
-        for answer in question_pending_answers:
-            this_answer_question = answer.question
-            display_answers.append(answer)
-
-            if this_answer_question.id == 16:
-                fee_info = validation_util_obj.process_fee_structure(json.loads(answer.value) )                   
-                for key in fee_info.keys():
-                    data[key] = fee_info.get(key)               
-                
-            answer_content = json.loads(answer.value)    
-            answers_contents[answer.id] = answer_content        
-                
-            if this_answer_question.support_attachments == 1:
+            if answer.question.support_attachments == 1:
                 answers_with_attachments.append(answer)        
                 #answers_attachments[answer.id] = []        
                 
@@ -1777,8 +1734,8 @@ def get_question_data(request, jurisdiction, question, data):
                 login_user_suggested_a_value = True
             
             if answer.approval_status == 'P':
-                pending_editable_answer_ids_array.append(answer.id)                      
-                     
+                pending_editable_answer_ids_array.append(answer.id)
+
         if len(answers_with_attachments) > 0:
             attachments = AnswerAttachment.objects.filter(answer_reference__in=answers_with_attachments)    # to gather all the attachments for all the answers.
             for attachment in attachments:
