@@ -542,7 +542,7 @@
     }, 
     {
         "fields": {
-            "accepted": false, 
+            "accepted": true, 
             "create_datetime": null, 
             "description": "Standard Callouts Template", 
             "jurisdiction": null, 
@@ -556,7 +556,7 @@
     }, 
     {
         "fields": {
-            "accepted": false, 
+            "accepted": true, 
             "create_datetime": null, 
             "description": "Standard Requirements Template", 
             "jurisdiction": null, 
@@ -570,7 +570,7 @@
     }, 
     {
         "fields": {
-            "accepted": false, 
+            "accepted": true, 
             "create_datetime": null, 
             "description": "Standard Information Template", 
             "jurisdiction": null, 
