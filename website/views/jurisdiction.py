@@ -308,24 +308,18 @@ def exclude(search_str):
     return exclude
 
 def scrub_text_search_str(search_str):
-    search_str_only_a_z = re.sub("[^A-Za-z]", ' ', search_str)
-    #print "search_str_only_a_z :: " + str(search_str_only_a_z)
-    search_str_only_a_z = search_str_only_a_z.lower().replace('borough', '')    
-    search_str_only_a_z = search_str_only_a_z.lower().replace('borough of', '')    
-    search_str_only_a_z = search_str_only_a_z.lower().replace('parish', '')    
-    search_str_only_a_z = search_str_only_a_z.lower().replace('parish of', '')
-    search_str_only_a_z = search_str_only_a_z.lower().replace('county', '')    
-    search_str_only_a_z = search_str_only_a_z.lower().replace('county of', '')
-    search_str_only_a_z = search_str_only_a_z.lower().replace('city and county of', '')  
-    search_str_only_a_z = search_str_only_a_z.lower().replace('state of', '')       
-    search_str_only_a_z = search_str_only_a_z.lower().replace('of', '')      
-    search_str_only_a_z = search_str_only_a_z.lower().replace('state', '')  
-    search_str_only_a_z = search_str_only_a_z.lower().replace('city', '')              
-        
-    search_str_only_a_z_no_space_either_side = search_str_only_a_z.strip()
-    
-    return search_str_only_a_z_no_space_either_side
-
+    search_str_only_a_z = re.sub("[^A-Za-z]", ' ', search_str).lower()
+    search_str_only_a_z = search_str_only_a_z.replace('borough of', '')
+    search_str_only_a_z = search_str_only_a_z.replace('borough', '')
+    search_str_only_a_z = search_str_only_a_z.replace('parish of', '')
+    search_str_only_a_z = search_str_only_a_z.replace('parish', '')
+    search_str_only_a_z = search_str_only_a_z.replace('county of', '')
+    search_str_only_a_z = search_str_only_a_z.replace('county', '')
+    search_str_only_a_z = search_str_only_a_z.replace('city and county of', '')
+    search_str_only_a_z = search_str_only_a_z.replace('state of', '')
+    search_str_only_a_z = search_str_only_a_z.replace('state', '')
+    search_str_only_a_z = search_str_only_a_z.replace('city', '')
+    return search_str_only_a_z.strip()
 
 #get the nearby jurisdictions given a center point and starting distance range
 def getNearbyJs(geoHelper, center, distance, iteration):
@@ -383,37 +377,11 @@ def jurisdiction_autocomplete(request):
     output += '<div>' #a div to enclose everything
     output += '<ul id="search_results">'
     
-    jurisdiction_ids = []
+    jurisdictions = []
     
     mathUtil = MathUtil()
     if mathUtil.is_number(text) == False:
-    
-        #county j name starts with text
-        jurisdiction_ids1 = Jurisdiction.objects.filter(county__istartswith=text, jurisdiction_type__in=('CO', 'CC')).order_by('county', 'state').values_list('id', flat=True)[:MAX_RESULT_COUNT]
-        for id in jurisdiction_ids1:
-            jurisdiction_ids.append(id)    
-        
-        if len(jurisdiction_ids) < MAX_RESULT_COUNT:
-            count_needed = MAX_RESULT_COUNT - len(jurisdiction_ids)
-            #city j name starts with text
-            jurisdiction_ids2 = Jurisdiction.objects.filter(city__istartswith=text, jurisdiction_type__in=('CI', 'U', 'CC')).exclude(id__in=jurisdiction_ids).order_by('city', 'state').values_list('id', flat=True)[:MAX_RESULT_COUNT]
-            for id in jurisdiction_ids2:
-                jurisdiction_ids.append(id)
-            
-            if len(jurisdiction_ids) < MAX_RESULT_COUNT:
-                count_needed = MAX_RESULT_COUNT - len(jurisdiction_ids)
-                #county j name contains text
-                jurisdiction_ids3 = Jurisdiction.objects.filter(county__icontains=text, jurisdiction_type__in=('CO', 'CC')).exclude(id__in=jurisdiction_ids).order_by('county', 'state').values_list('id', flat=True)[:count_needed]
-                for id in jurisdiction_ids3:
-                    jurisdiction_ids.append(id)
-        
-                if len(jurisdiction_ids) < MAX_RESULT_COUNT:
-                    count_needed = MAX_RESULT_COUNT - len(jurisdiction_ids)
-                    #city j name contains text
-                    jurisdiction_ids4 = Jurisdiction.objects.filter(city__icontains=text, jurisdiction_type__in=('CI', 'U', 'CC')).exclude(id__in=jurisdiction_ids).order_by('city', 'state').values_list('id', flat=True)[:count_needed]
-                    for id in jurisdiction_ids4:
-                        jurisdiction_ids.append(id)
-    
+        jurisdictions = jurisdiction_text_search(text, scrub_text_search_str(text), "", 'all', 'name', 0, MAX_RESULT_COUNT, exclude(text), '')
     else:
         #is number, so zipcode based search
         zipcodes = Zipcode.objects.filter(zip_code__startswith=text)[0:1]
@@ -429,7 +397,7 @@ def jurisdiction_autocomplete(request):
             geoHelper.initialDistance = 1 #km, initial distance to use for nearby search
             geoHelper.maxDistance = 50 #km, max distance for nearby search
             geoHelper.maxIteration = 10 #max number of iteration to get nearby items
-            geoHelper.targetCount = MAX_RESULT_COUNT - 2 #target number of nearby items to get
+            geoHelper.targetCount = MAX_RESULT_COUNT #target number of nearby items to get
             geoHelper.targetMargin = 2 #+ and - this number of items from the target number to stop
             
             center = {}
@@ -438,13 +406,9 @@ def jurisdiction_autocomplete(request):
             #zip code data problem - longitude needs to be inverted:
             center['lon'] = float(-center['lon'])
             
-            nearbyJs = getNearbyJs(geoHelper, center, geoHelper.initialDistance, 1)
-            nearbyJs = nearbyJs[:MAX_RESULT_COUNT]
-            for nearbyJ in nearbyJs:
-                jurisdiction_ids.append(nearbyJ.id)
-    
-    #sort by query again
-    jurisdictions = Jurisdiction.objects.filter(id__in=jurisdiction_ids).order_by('city', 'county', 'state')[:MAX_RESULT_COUNT]
+            jurisdictions = getNearbyJs(geoHelper, center, geoHelper.initialDistance, 1)
+            jurisdictions = sortNearbyJs(geoHelper, center, jurisdictions)
+            jurisdictions = jurisdictions[:MAX_RESULT_COUNT]
     
     for jurisdiction in jurisdictions:
         output += '<li><a href="/jurisdiction/'+str(jurisdiction.id)+'">'+jurisdiction.show_jurisdiction()+'</a></li>'
@@ -587,9 +551,7 @@ def jurisdiction_search_improved(request):
         #print 'sec_exclude :: ' + str(sec_exclude)    
             
         if primary_search_str.__len__() >= 2:
-            
-
-            objects_all_types = jurisdiction_text_search(primary_search_str,scrubbed_primary_search_str, secondary_search_str,filter, order_by_str, range_start, range_end, primary_exclude, sec_exclude )
+            objects_all_types = jurisdiction_text_search(primary_search_str, scrubbed_primary_search_str, secondary_search_str,filter, order_by_str, range_start, range_end, primary_exclude, sec_exclude)
             redirect_url = '/jurisdiction/'
                 
             if len(objects_all_types) == 1 and ajax == None: #don't redirect if ajax
@@ -597,8 +559,6 @@ def jurisdiction_search_improved(request):
                 return redirect(redirect_url)
             else:
                 data['list'] = objects_all_types
-                                
-
         else:
             data['message'] = 'This search field requires at least 2 alphabetic (a-z) characters.';
     else:
