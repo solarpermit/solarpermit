@@ -1952,12 +1952,10 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
                            website_question.id = website_answerreference.question_id AND
                            website_questioncategory.id = website_question.category_id AND
                            auth_user.id = website_answerreference.creator_id AND
-                           website_userdetail.user_id = website_answerreference.creator_id AND
-    '''
+                           website_userdetail.user_id = website_answerreference.creator_id AND'''
     if placeholder:
-        query_str += '''AND website_question.id IN ('''+ placeholder +''')'''
-    query_str += '''
-                           website_question.accepted = '1' AND
+        query_str += '''   website_question.id IN ('''+ placeholder +''') AND'''
+    query_str += '''       website_question.accepted = '1' AND
                            ((website_answerreference.approval_status = 'A' AND
                              website_question.has_multivalues = '0' AND
                              website_answerreference.create_datetime = (
@@ -2031,8 +2029,9 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
                                     NULL AS is_staff,
                                     NULL AS is_active,
                                     NULL AS is_superuser,
-                                    NULL AS display_preference,
-                                    (SELECT count(*)
+                                    NULL AS display_preference,'''
+    if empty_data_fields_hidden:
+        query_str += '''            (SELECT count(*)
                                      FROM website_answerreference as temp_answers LEFT OUTER JOIN
                                           website_question
                                      ON website_question.id = temp_answers.question_id
@@ -2062,17 +2061,19 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
                                                FROM website_answerreference AS temp_table
                                                WHERE temp_table.question_id = temp_answers.question_id AND
                                                      temp_table.jurisdiction_id = temp_answers.jurisdiction_id AND
-                                                     temp_table.approval_status = 'A') IS NULL))) AS count_of_answers
-                             FROM website_question LEFT OUTER JOIN
+                                                     temp_table.approval_status = 'A') IS NULL))) AS count_of_answers'''
+    else:
+        query_str += '''            0 as count_of_answers'''
+    query_str += '''         FROM website_question LEFT OUTER JOIN
                                   website_questioncategory
                              ON website_questioncategory.id = website_question.category_id
                              WHERE website_questioncategory.accepted = '1' AND
-                                   website_question.accepted = '1'
-    '''
+                                   website_question.accepted = '1' AND'''
     if placeholder:
-        query_str += '''AND website_question.id IN ('''+ placeholder +''')'''
-    query_str += '''
-                             HAVING count_of_answers > 0)
+        query_str += '''           website_question.id IN ('''+ placeholder +''')'''
+    else:
+        query_str += '''           1'''
+    query_str += '''         HAVING count_of_answers > 0)
                     ORDER BY cat_display_order ASC,
                              category_id ASC,
                              display_order ASC,
@@ -2080,16 +2081,18 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
                              approval_status ASC,
                              create_datetime DESC,
                              id DESC;'''
-
+    print(query_str)
     query_params = [jurisdiction.id]
     if question_ids:
         for question_id in question_ids:
             query_params.append(question_id)
-        query_params.append(jurisdiction.id)
+        if empty_data_fields_hidden:
+            query_params.append(jurisdiction.id)
         for question_id in question_ids:
             query_params.append(question_id)
     else:
-        query_params.append(jurisdiction.id)
+        if empty_data_fields_hidden:
+            query_params.append(jurisdiction.id)
 
     cursor = connections['default'].cursor()
     cursor.execute(unicode(query_str), query_params)
