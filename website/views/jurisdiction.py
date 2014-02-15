@@ -291,8 +291,6 @@ def check_search_level(search_str):
         search_level = 'county' 
     elif search_str.find('city') > -1:  
         search_level = 'city'
-    elif search_str.find('state') > -1:  
-        search_level = 'state'
     else:
         search_level = ''
     
@@ -402,9 +400,6 @@ def jurisdiction_autocomplete(request):
             zipcode = zipcodes[0] #should be only one anyway
             
             geoHelper = GeoHelper()
-            geoHelper.initialDistance = 1 #km, initial distance to use for nearby search
-            geoHelper.maxDistance = 50 #km, max distance for nearby search
-            geoHelper.maxIteration = 10 #max number of iteration to get nearby items
             geoHelper.targetCount = MAX_RESULT_COUNT #target number of nearby items to get
             geoHelper.targetMargin = 2 #+ and - this number of items from the target number to stop
             
