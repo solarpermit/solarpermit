@@ -1892,216 +1892,209 @@ def get_questions_in_category(user, jurisdiction, category):
 
 def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, question_ids = []):
     placeholder = ",".join(["%s" for id in question_ids]) if question_ids else None
-    query_str = '''SELECT * FROM   (
-            SELECT
-                   website_answerreference.id,
-                   website_answerreference.question_id,
-                   website_answerreference.value,
-                   website_answerreference.file_upload,
-                   website_answerreference.create_datetime,
-                   website_answerreference.modify_datetime,
-                   website_answerreference.jurisdiction_id,
-                   website_answerreference.is_current,
-                    website_answerreference.is_callout,
-                    website_answerreference.approval_status,
-                    website_answerreference.creator_id,
-                    website_answerreference.status_datetime,
-                    website_answerreference.organization_id,
-                    website_question.form_type,
-                    website_question.answer_choice_group_id,
-                    website_question.display_order,
-                    website_question.default_value,
-                    website_question.reviewed,
-                    website_question.accepted,
-                    website_question.instruction,
-                    website_question.category_id,
-                    website_question.applicability_id,
-                    website_question.question,
-                    website_question.label,
-                    website_question.template,
-                    website_question.validation_class,
-                    website_question.js,
-                    website_question.field_attributes,
-                    website_question.terminology,
-                    website_question.has_multivalues,
-                    website_question.qtemplate_id,
-                    website_question.display_template,
-                    website_question.field_suffix,
-                    website_question.migration_type,
-                    website_question.state_exclusive,
-                    website_question.description,
-                    website_question.support_attachments,
-                    website_questioncategory.name,
-                    website_questioncategory.description AS cat_description,
-                    website_questioncategory.accepted AS cat_accepted,
-                    website_questioncategory.display_order AS cat_display_order,
-                    auth_user.username,
-                    auth_user.first_name,
-                    auth_user.last_name,
-                    auth_user.is_staff,
-                    auth_user.is_active,
-                    auth_user.is_superuser,
-                    website_userdetail.display_preference
-            FROM
-                    website_answerreference,
-                    website_question,
-                    website_questioncategory,
-                    auth_user,
-                    website_userdetail
-            WHERE
-                    website_answerreference.jurisdiction_id = %s
-            '''
-
+    query_str = '''(SELECT website_answerreference.id,
+                            website_answerreference.question_id as question_id,
+                            website_answerreference.value,
+                            website_answerreference.file_upload,
+                            website_answerreference.create_datetime,
+                            website_answerreference.modify_datetime,
+                            website_answerreference.jurisdiction_id,
+                            website_answerreference.is_current,
+                            website_answerreference.is_callout,
+                            website_answerreference.approval_status,
+                            website_answerreference.creator_id,
+                            website_answerreference.status_datetime,
+                            website_answerreference.organization_id,
+                            website_question.form_type,
+                            website_question.answer_choice_group_id,
+                            website_question.display_order,
+                            website_question.default_value,
+                            website_question.reviewed,
+                            website_question.accepted,
+                            website_question.instruction,
+                            website_question.category_id,
+                            website_question.applicability_id,
+                            website_question.question,
+                            website_question.label,
+                            website_question.template,
+                            website_question.validation_class,
+                            website_question.js,
+                            website_question.field_attributes,
+                            website_question.terminology,
+                            website_question.has_multivalues,
+                            website_question.qtemplate_id,
+                            website_question.display_template,
+                            website_question.field_suffix,
+                            website_question.migration_type,
+                            website_question.state_exclusive,
+                            website_question.description,
+                            website_question.support_attachments,
+                            website_questioncategory.name,
+                            website_questioncategory.description AS cat_description,
+                            website_questioncategory.accepted AS cat_accepted,
+                            website_questioncategory.display_order AS cat_display_order,
+                            auth_user.username,
+                            auth_user.first_name,
+                            auth_user.last_name,
+                            auth_user.is_staff,
+                            auth_user.is_active,
+                            auth_user.is_superuser,
+                            website_userdetail.display_preference,
+                            0 as count_of_answers
+                     FROM website_answerreference,
+                          website_question,
+                          website_questioncategory,
+                          auth_user,
+                          website_userdetail
+                     WHERE website_answerreference.jurisdiction_id = %s AND
+                           website_question.id = website_answerreference.question_id AND
+                           website_questioncategory.id = website_question.category_id AND
+                           auth_user.id = website_answerreference.creator_id AND
+                           website_userdetail.user_id = website_answerreference.creator_id AND'''
     if placeholder:
-        query_str += '''AND website_question.id IN ('''+ placeholder + ''')'''
-    
-    query_str += '''
-                    AND website_question.id = website_answerreference.question_id
-                    AND website_questioncategory.id = website_question.category_id
-                    AND auth_user.id = website_answerreference.creator_id
-                    AND website_userdetail.user_id = website_answerreference.creator_id
-                    AND website_question.accepted = '1'
-                    AND (
-                            (
-                                    (
-                                            website_answerreference.approval_status = 'A'
-                                            AND website_question.has_multivalues = '0'
-                                            AND website_answerreference.create_datetime = (
-                                                    SELECT
-                                                            MAX(create_datetime)
-                                                    FROM
-                                                            website_answerreference AS temp_table
-                                                    WHERE
-                                                            temp_table.question_id = website_answerreference.question_id
-                                                            AND temp_table.jurisdiction_id = website_answerreference.jurisdiction_id
-                                                            AND temp_table.approval_status = 'A'
-                                            )
-                                    ) OR (
-                                            website_answerreference.approval_status = 'P'
-                                            AND website_question.has_multivalues = '0'
-                                            AND website_answerreference.create_datetime != (
-                                                    SELECT
-                                                            MAX(create_datetime)
-                                                    FROM
-                                                            website_answerreference AS temp_table
-                                                    WHERE
-                                                            temp_table.question_id = website_answerreference.question_id
-                                                            AND temp_table.jurisdiction_id = website_answerreference.jurisdiction_id
-                                                            AND temp_table.approval_status = 'A'
-                                            )
-                                    )
-                            ) OR (
-                                    (
-                                            website_question.has_multivalues = '1'
-                                            AND (
-                                                    website_answerreference.approval_status = 'A'
-                                                    OR website_answerreference.approval_status = 'P'
-                                            )
-                                    )
-                            ) OR (
-                                    website_answerreference.approval_status = 'P'
-                                    AND (
-                                            SELECT
-                                                    MAX(create_datetime)
-                                            FROM
-                                                    website_answerreference AS temp_table
-                                            WHERE
-                                                    temp_table.question_id = website_answerreference.question_id
-                                                    AND temp_table.jurisdiction_id = website_answerreference.jurisdiction_id
-                                                    AND temp_table.approval_status = 'A'
-                                    ) IS NULL
-                            )
-                    )
-            ) AS sorting_table
-            '''
-    if empty_data_fields_hidden != 1:
-        query_str += '''
-    UNION SELECT
-                   NULL AS id,
-                   website_question.id AS question_id,
-                   NULL AS value,
-                   NULL AS file_upload,
-                   NULL AS create_datetime,
-                   NULL AS modify_datetime,
-                   NULL AS jurisdiction_id,
-                   NULL AS is_current,
-                    NULL AS is_callout,
-                    NULL AS approval_status,
-                    NULL AS creator_id,
-                    NULL AS status_datetime,
-                    NULL AS organization_id,
-                    website_question.form_type,
-                    website_question.answer_choice_group_id,
-                    website_question.display_order,
-                    website_question.default_value,
-                    website_question.reviewed,
-                    website_question.accepted,
-                    website_question.instruction,
-                    website_question.category_id,
-                    website_question.applicability_id,
-                    website_question.question,
-                    website_question.label,
-                    website_question.template,
-                    website_question.validation_class,
-                    website_question.js,
-                    website_question.field_attributes,
-                    website_question.terminology,
-                    website_question.has_multivalues,
-                    website_question.qtemplate_id,
-                    website_question.display_template,
-                    website_question.field_suffix,
-                    website_question.migration_type,
-                    website_question.state_exclusive,
-                    website_question.description,
-                    website_question.support_attachments,
-                    website_questioncategory.name,
-                    website_questioncategory.description AS cat_description,
-                    website_questioncategory.accepted AS cat_accepted,
-                    website_questioncategory.display_order AS cat_display_order,
-                    NULL AS username,
-                    NULL AS first_name,
-                    NULL AS last_name,
-                    NULL AS is_staff,
-                    NULL AS is_active,
-                    NULL AS is_superuser,
-                    NULL AS display_preference
-    FROM
-            website_question,
-            website_questioncategory
-    WHERE
-            website_questioncategory.id = website_question.category_id
-            '''
-              
-        if placeholder:
-            query_str += '''AND website_question.id IN ('''+ placeholder + ''') '''
-    
-        query_str += '''                
-                    AND website_questioncategory.accepted = '1' 
-                    AND website_question.accepted = '1'
-            '''
-                
-    query_str +='''
-    ORDER BY
-            cat_display_order ASC,
-            category_id ASC,
-            display_order ASC,
-            question_id ASC,
-            approval_status ASC,
-            create_datetime DESC,
-            id DESC;
-    '''
-    #print(empty_data_fields_hidden)
-    query_params = []
-    query_params.append(jurisdiction.id)
+        query_str += '''   website_question.id IN ('''+ placeholder +''') AND'''
+    query_str += '''       website_question.accepted = '1' AND
+                           ((website_answerreference.approval_status = 'A' AND
+                             website_question.has_multivalues = '0' AND
+                             website_answerreference.create_datetime = (
+                                 SELECT MAX(create_datetime)
+                                 FROM website_answerreference AS temp_table
+                                 WHERE temp_table.question_id = website_answerreference.question_id AND
+                                       temp_table.jurisdiction_id = website_answerreference.jurisdiction_id AND
+                                       temp_table.approval_status = 'A')) OR
+                            (website_answerreference.approval_status = 'P' AND
+                             website_question.has_multivalues = '0' AND
+                             website_answerreference.create_datetime != (
+                                 SELECT MAX(create_datetime)
+                                 FROM website_answerreference AS temp_table
+                                 WHERE temp_table.question_id = website_answerreference.question_id AND
+                                       temp_table.jurisdiction_id = website_answerreference.jurisdiction_id AND
+                                       temp_table.approval_status = 'A')) OR
+                             (website_question.has_multivalues = '1' AND
+                              (website_answerreference.approval_status = 'A' OR
+                               website_answerreference.approval_status = 'P')) OR
+                             (website_answerreference.approval_status = 'P' AND
+                              (SELECT MAX(create_datetime)
+                               FROM website_answerreference AS temp_table
+                               WHERE temp_table.question_id = website_answerreference.question_id AND
+                                     temp_table.jurisdiction_id = website_answerreference.jurisdiction_id AND
+                                     temp_table.approval_status = 'A') IS NULL)))
+                    UNION ALL
+                    (SELECT NULL AS id,
+                                    website_question.id AS the_question_id,
+                                    NULL AS value,
+                                    NULL AS file_upload,
+                                    NULL AS create_datetime,
+                                    NULL AS modify_datetime,
+                                    NULL AS jurisdiction_id,
+                                    NULL AS is_current,
+                                    NULL AS is_callout,
+                                    NULL AS approval_status,
+                                    NULL AS creator_id,
+                                    NULL AS status_datetime,
+                                    NULL AS organization_id,
+                                    website_question.form_type,
+                                    website_question.answer_choice_group_id,
+                                    website_question.display_order,
+                                    website_question.default_value,
+                                    website_question.reviewed,
+                                    website_question.accepted,
+                                    website_question.instruction,
+                                    website_question.category_id,
+                                    website_question.applicability_id,
+                                    website_question.question,
+                                    website_question.label,
+                                    website_question.template,
+                                    website_question.validation_class,
+                                    website_question.js,
+                                    website_question.field_attributes,
+                                    website_question.terminology,
+                                    website_question.has_multivalues,
+                                    website_question.qtemplate_id,
+                                    website_question.display_template,
+                                    website_question.field_suffix,
+                                    website_question.migration_type,
+                                    website_question.state_exclusive,
+                                    website_question.description,
+                                    website_question.support_attachments,
+                                    website_questioncategory.name,
+                                    website_questioncategory.description AS cat_description,
+                                    website_questioncategory.accepted AS cat_accepted,
+                                    website_questioncategory.display_order AS cat_display_order,
+                                    NULL AS username,
+                                    NULL AS first_name,
+                                    NULL AS last_name,
+                                    NULL AS is_staff,
+                                    NULL AS is_active,
+                                    NULL AS is_superuser,
+                                    NULL AS display_preference,'''
+    if empty_data_fields_hidden:
+        query_str += '''            (SELECT count(*)
+                                     FROM website_answerreference as temp_answers LEFT OUTER JOIN
+                                          website_question
+                                     ON website_question.id = temp_answers.question_id
+                                     WHERE temp_answers.jurisdiction_id = %s AND
+                                           temp_answers.question_id = the_question_id AND
+                                           ((temp_answers.approval_status = 'A' AND
+                                             website_question.has_multivalues = '0' AND
+                                             temp_answers.create_datetime = (
+                                                 SELECT MAX(create_datetime)
+                                                 FROM website_answerreference AS temp_table
+                                                 WHERE temp_table.question_id = temp_answers.question_id AND
+                                                       temp_table.jurisdiction_id = temp_answers.jurisdiction_id AND
+                                                       temp_table.approval_status = 'A')) OR
+                                            (temp_answers.approval_status = 'P' AND
+                                             website_question.has_multivalues = '0' AND
+                                             temp_answers.create_datetime != (
+                                                 SELECT MAX(create_datetime)
+                                                 FROM website_answerreference AS temp_table
+                                                 WHERE temp_table.question_id = temp_answers.question_id AND
+                                                       temp_table.jurisdiction_id = temp_answers.jurisdiction_id AND
+                                                       temp_table.approval_status = 'A')) OR
+                                             (website_question.has_multivalues = '1' AND
+                                              (temp_answers.approval_status = 'A' OR
+                                               temp_answers.approval_status = 'P')) OR
+                                             (temp_answers.approval_status = 'P' AND
+                                              (SELECT MAX(create_datetime)
+                                               FROM website_answerreference AS temp_table
+                                               WHERE temp_table.question_id = temp_answers.question_id AND
+                                                     temp_table.jurisdiction_id = temp_answers.jurisdiction_id AND
+                                                     temp_table.approval_status = 'A') IS NULL))) AS count_of_answers'''
+    else:
+        query_str += '''            0 as count_of_answers'''
+    query_str += '''         FROM website_question LEFT OUTER JOIN
+                                  website_questioncategory
+                             ON website_questioncategory.id = website_question.category_id
+                             WHERE website_questioncategory.accepted = '1' AND
+                                   website_question.accepted = '1' AND'''
+    if placeholder:
+        query_str += '''           website_question.id IN ('''+ placeholder +''')'''
+    else:
+        query_str += '''           1'''
+    if empty_data_fields_hidden:
+        query_str += '''         HAVING count_of_answers > 0)'''
+    else:
+        query_str += ''')'''
+    query_str += '''ORDER BY cat_display_order ASC,
+                             category_id ASC,
+                             display_order ASC,
+                             question_id ASC,
+                             approval_status ASC,
+                             create_datetime DESC,
+                             id DESC;'''
+    print(query_str)
+    query_params = [jurisdiction.id]
     if question_ids:
         for question_id in question_ids:
             query_params.append(question_id)
-        if empty_data_fields_hidden != 1:                
-            for question_id in question_ids:
-                query_params.append(question_id)
-                      
-    cursor = connections['default'].cursor()
-    cursor.execute(query_str, query_params)
-    records = dictfetchall(cursor)
+        if empty_data_fields_hidden:
+            query_params.append(jurisdiction.id)
+        for question_id in question_ids:
+            query_params.append(question_id)
+    else:
+        if empty_data_fields_hidden:
+            query_params.append(jurisdiction.id)
 
-    return records
+    cursor = connections['default'].cursor()
+    cursor.execute(unicode(query_str), query_params)
+    return dictfetchall(cursor)
