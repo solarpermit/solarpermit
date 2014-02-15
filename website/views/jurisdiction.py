@@ -291,7 +291,7 @@ def check_search_level(search_str):
         search_level = 'county' 
     elif search_str.find('city') > -1:  
         search_level = 'city'
-    elif search_str.find('county') > -1:  
+    elif search_str.find('state') > -1:  
         search_level = 'state'
     else:
         search_level = ''
