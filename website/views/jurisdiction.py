@@ -291,7 +291,7 @@ def check_search_level(search_str):
         search_level = 'county' 
     elif search_str.find('city') > -1:  
         search_level = 'city'
-    elif search_str.find('county') > -1:  
+    elif search_str.find('state') > -1:  
         search_level = 'state'
     else:
         search_level = ''
@@ -381,7 +381,15 @@ def jurisdiction_autocomplete(request):
     
     mathUtil = MathUtil()
     if mathUtil.is_number(text) == False:
-        jurisdictions = jurisdiction_text_search(text, scrub_text_search_str(text), "", 'all', 'name', 0, MAX_RESULT_COUNT, exclude(text), '')
+        jurisdictions = jurisdiction_text_search(text,
+                                                 scrub_text_search_str(text),
+                                                 "",
+                                                 check_search_level(text) or 'all',
+                                                 'name',
+                                                 0,
+                                                 MAX_RESULT_COUNT,
+                                                 exclude(text),
+                                                 '')
     else:
         #is number, so zipcode based search
         zipcodes = Zipcode.objects.filter(zip_code__startswith=text)[0:1]
