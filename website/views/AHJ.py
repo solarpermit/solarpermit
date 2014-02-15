@@ -2073,8 +2073,11 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
         query_str += '''           website_question.id IN ('''+ placeholder +''')'''
     else:
         query_str += '''           1'''
-    query_str += '''         HAVING count_of_answers > 0)
-                    ORDER BY cat_display_order ASC,
+    if empty_data_fields_hidden:
+        query_str += '''         HAVING count_of_answers > 0)'''
+    else:
+        query_str += ''')'''
+    query_str += '''ORDER BY cat_display_order ASC,
                              category_id ASC,
                              display_order ASC,
                              question_id ASC,
