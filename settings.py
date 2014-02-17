@@ -300,4 +300,8 @@ SOUTH_TESTS_MIGRATE=False
 
 FORUM_INTEGRATION=False
 
+INTRO_VIDEO = False
+INTRO_VIDEO_TYPES = [('video/ogg', '/media/foo.ogv'),
+                     ('video/mp4', '/media/foo.mp4')]
+
 from settings_local import *

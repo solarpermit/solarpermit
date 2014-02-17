@@ -74,6 +74,8 @@ class HttpRequestProcessor():
         context['ENABLE_GOOGLE_ANALYTICS'] = settings.ENABLE_GOOGLE_ANALYTICS   
         context['SOLARPERMIT_VERSION'] = "?v="+str(settings.SOLARPERMIT_VERSION)                 
         context['FORUM_INTEGRATION'] = settings.FORUM_INTEGRATION   
+        context['INTRO_VIDEO'] = settings.INTRO_VIDEO
+        context['INTRO_VIDEO_TYPES'] = settings.INTRO_VIDEO_TYPES
                 
         template_dirs = settings.TEMPLATE_DIRS
         if mimetype == '':
