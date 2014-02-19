@@ -17,7 +17,7 @@
                 display: none;
         }
         .data_table {
-                min-width: 480px;
+                min-width: 320px;
         }
         td, th {
                 padding: 4px;
@@ -57,10 +57,25 @@
         background-image:     -ms-linear-gradient(left, #ccc, #333, #ccc);
         background-image:      -o-linear-gradient(left, #ccc, #333, #ccc);
         }
+        .legend-dot {
+          border-radius: 50%;
+          width: .8em;
+          height: .8em;
+          display: inline-block;
+          margin: .1em .4em 0 .2em;
+          background-color: red;
+        }
 </style>
 {% endblock %}
 
-{% block forejs %}{% endblock %}
+{% block forejs %}
+{% compress js %}
+<script src="/media/js/raphael.js"></script>
+<script src="/media/js/g.raphael-min.js"></script>
+<script src="/media/js/g.pie.js"></script>
+<script src="/media/js/g.bar.js"></script>
+{% endcompress %}
+{% endblock %}
 
 {% block body %}
   <div class="contentOnlyPage">
@@ -72,6 +87,7 @@
     <div class="graphing">Graphic</div>
     <hr/>
     <h3>Current Approved Values in the Database</h3>
+    <div id="graph"></div>
     <table class="data_table">
       <tr class="even">
         <th class="header_row">Value</th>
@@ -79,7 +95,7 @@
       </tr>
       {% for row in table %}
         <tr class="{{ loop.cycle('odd', 'even') }}">
-          <th>{{ row['key'] }}</th>
+          <th><span class="legend-dot"></span>{{ row['key'] }}</th>
           <td>{{ row['value'] }}</td>
         </tr>
       {% endfor %}
@@ -87,4 +103,33 @@
   </div>
 {% endblock %}
 
-{% block endjs %}{% endblock %}
+{% block endjs %}
+  <script>
+    var data = {{table_json}};
+    function select(field) {
+      return function (elem) {
+               if (elem.key != 'Total')
+                 return elem[field];
+             };
+    }
+    function defined(val) {
+      return typeof val != "undefined"
+    }
+    $(document).ready(function () {
+                        var r = Raphael("graph"),
+                            pie = r.piechart(160, 160, 150,
+                                             data.map(select("value")).filter(defined)),
+                            pathmap = [];
+                        $.each(pie.series,
+                               function(k, v) {
+                                 if (v.value)
+                                   pathmap[v.value.order] = k;
+                               })
+                        $(".legend-dot").each(function (n, elem) {
+                                                $(elem).css("background-color",
+                                                            ($(elem).parent().text() != "Total") ? $($("path").get(pathmap[n])).css("fill")
+                                                                                                 : "transparent");
+                                              });
+                      })
+  </script>
+{% endblock %}

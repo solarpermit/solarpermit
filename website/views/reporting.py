@@ -15,6 +15,7 @@ import hashlib
 from website.models import Question, QuestionCategory
 from django.db import connection
 from collections import OrderedDict
+import json
 
 def build_query(question, field_map):
     # note: we're substituting directly into the query because the
@@ -169,7 +170,8 @@ def report_on(request, question_id):
 
     data['table'] = []
     for key in report.keys():
-        data['table'].append({'key': key,'value': result[key]})
+        data['table'].append({'key': key, 'value': result[key]})
+    data['table_json'] = json.dumps(data['table'])
 
     requestProcessor = HttpRequestProcessor(request)
     return requestProcessor.render_to_response(request,'website/reporting/report_on.html', data, '')
