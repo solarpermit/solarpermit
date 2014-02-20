@@ -63,7 +63,7 @@
           height: .8em;
           display: inline-block;
           margin: .1em .4em 0 .2em;
-          background-color: red;
+          background-color: transparent;
         }
 </style>
 {% endblock %}
@@ -116,9 +116,13 @@
       return typeof val != "undefined"
     }
     $(document).ready(function () {
+                        var values = data.map(select("value")).filter(defined),
+                            sum = values.reduce(function (a, b) { return a+b; });
+                        if (sum <= 0)
+                          return;
                         var r = Raphael("graph"),
                             pie = r.piechart(160, 160, 150,
-                                             data.map(select("value")).filter(defined)),
+                                             values),
                             pathmap = [];
                         $.each(pie.series,
                                function(k, v) {
