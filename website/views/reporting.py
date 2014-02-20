@@ -25,15 +25,16 @@ def build_query(question, field_map):
     counts = []
     for name, match in field_map.items():
         if match:
-            counts.append(u"(SELECT count(*) FROM (SELECT value FROM website_answerreference WHERE question_id = '%(qid)s' AND jurisdiction_id NOT IN ('1','101105') AND approval_status LIKE 'A' GROUP BY jurisdiction_id ASC, create_datetime DESC) AS tmp%(i)s WHERE %(match)s) as `%(name)s`" % {"qid": question.id, "name": name, "match": match, "i": i})
+            counts.append(u"(SELECT count(*) FROM (SELECT value FROM website_answerreference WHERE question_id = '%(qid)s' AND jurisdiction_id NOT IN ('1','101105') AND approval_status LIKE 'A') AS tmp%(i)s WHERE %(match)s) as `%(name)s`" % {"qid": question.id, "name": name, "match": match, "i": i})
         else:
-            counts.append(u"(SELECT count(*) FROM (SELECT value FROM website_answerreference WHERE question_id = '%(qid)s' AND jurisdiction_id NOT IN ('1','101105') AND approval_status LIKE 'A' GROUP BY jurisdiction_id ASC, create_datetime DESC) AS tmp%(i)s) as `%(name)s`" % {"qid": question.id, "name": name, "match": match, "i": i})
+            counts.append(u"(SELECT count(*) FROM (SELECT value FROM website_answerreference WHERE question_id = '%(qid)s' AND jurisdiction_id NOT IN ('1','101105') AND approval_status LIKE 'A') AS tmp%(i)s) as `%(name)s`" % {"qid": question.id, "name": name, "match": match, "i": i})
         i += 1
 
     return u"SELECT %s from website_answerreference LIMIT 1" % ", ".join(counts)
 
 def json_match(field_name, value):
-    return 'value LIKE \'%%%%%(name)s"%%%%"%(value)s"%%%%\'' % { "name": field_name, "value": value }
+    #return regexp_match('"%(name)s": *"%(value)s"' % { "name": field_name, "value": value })
+    return 'LOWER(value) LIKE \'%%%%"%(name)s"%%%%"%(value)s"%%%%\'' % { "name": field_name, "value": value }
 
 def regexp_match(regexp):
     return 'value REGEXP \'%(regexp)s\'' % { "regexp": regexp }
@@ -89,7 +90,7 @@ reports_by_type = {
     "homeowner_requirements_display.html": answered_field(), # two yes/no answers in one
     "fire_setbacks_display.html": yes_no_exception_field("enforced"),
     "radio_inspection_approval_copies_display.html": OrderedDict([("In person", json_match("apply", "in person")),
-                                                                  ("Remotely", json_match("apply", "remotley")),
+                                                                  ("Remotely", json_match("apply", "remotely")),
                                                                   ("Total", None)]),
     "signed_inspection_approval_delivery_display.html": answered_field(),
     "radio_vent_spanning_rules_with_exception_display.html": yes_no_exception_field("allowed"),
@@ -99,7 +100,6 @@ reports_by_type = {
                                              ("2 hours (or less)", json_match("time_window", "2")),
                                              ("Half Day (2 to 4 hours)", json_match("time_window", "4")),
                                              ("Full Day (greater than 4 hours)", json_match("time_window", "8")),
-                                             ("Other", regexp_match("time_window\"[^\"]*\"[^0248]")),
                                              ("Total", None)]),
     "radio_has_training_display.html": yes_no_field("value"),
     "radio_licensing_required_display.html": yes_no_field("required"),
@@ -168,9 +168,17 @@ def report_on(request, question_id):
     cursor.execute(query)
     result = dict(zip([col[0] for col in cursor.description], cursor.fetchone()))
 
+    other = 0
+    for key in result.keys():
+        if key == 'Total':
+            other += result[key]
+        else:
+            other -= result[key]
+
     data['table'] = []
     for key in report.keys():
         data['table'].append({'key': key, 'value': result[key]})
+    data['table'].insert(-1, {'key': 'Other', 'value': other})
     data['table_json'] = json.dumps(data['table'])
 
     requestProcessor = HttpRequestProcessor(request)
