@@ -123,15 +123,15 @@
                         var r = Raphael("graph"),
                             pie = r.piechart(160, 160, 150,
                                              values),
-                            pathmap = [];
+                            paths = [];
                         $.each(pie.series,
                                function(k, v) {
                                  if (v.value)
-                                   pathmap[v.value.order] = k;
+                                   paths[v.value.order] = v.node;
                                })
                         $(".legend-dot").each(function (n, elem) {
                                                 $(elem).css("background-color",
-                                                            ($(elem).parent().text() != "Total") ? $($("path").get(pathmap[n])).css("fill")
+                                                            ($(elem).parent().text() != "Total") ? $(paths[n]).css("fill")
                                                                                                  : "transparent");
                                               });
                       })
