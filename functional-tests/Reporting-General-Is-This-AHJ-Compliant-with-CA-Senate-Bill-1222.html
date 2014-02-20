@@ -27,22 +27,12 @@
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/th</td>
+	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[6]/th</td>
 	<td>Total</td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>class=data_table</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>class=header_row_right</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>class=header_row</td>
+	<td>css=tr.odd &gt; th</td>
 	<td></td>
 </tr>
 <tr>
@@ -52,7 +42,22 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>css=tr.odd &gt; th</td>
+	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[6]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=th.header_row_right</td>
 	<td></td>
 </tr>
 <tr>
@@ -67,17 +72,7 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[3]/th</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/th</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/th</td>
+	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/td</td>
 	<td></td>
 </tr>
 <tr>
@@ -86,14 +81,24 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/th</td>
-	<td>Total</td>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[6]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=th.header_row</td>
+	<td></td>
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/th</td>
-	<td>No</td>
+	<td>css=th.header_row</td>
+	<td>Value</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=tr.odd &gt; th</td>
+	<td>Yes</td>
 </tr>
 <tr>
 	<td>verifyText</td>
@@ -102,32 +107,52 @@
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>css=tr.odd &gt; th</td>
-	<td>Yes</td>
+	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/th</td>
+	<td>No</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/th</td>
+	<td>Other</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[6]/th</td>
+	<td>Total</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=th.header_row_right</td>
+	<td>Jurisdictions</td>
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>css=td</td>
+	<td>css=tr.odd:nth-child(2) &gt; td:nth-child(2)</td>
 	<td>yes</td>
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>css=tr.even &gt; td</td>
+	<td>css=tr.even:nth-child(3) &gt; td:nth-child(2)</td>
 	<td>yes_with_exceptions</td>
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/td</td>
+	<td>css=tr.odd:nth-child(4) &gt; td:nth-child(2)</td>
 	<td>no</td>
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/td</td>
+	<td>css=tr.even:nth-child(5) &gt; td:nth-child(2)</td>
+	<td>other</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.odd:nth-child(6) &gt; td:nth-child(2)</td>
 	<td>total</td>
 </tr>
 <tr>
 	<td>verifyEval</td>
-	<td>parseInt(storedVars['yes']) + parseInt(storedVars['no']) + parseInt(storedVars['yes_with_exceptions'])</td>
+	<td>parseInt(storedVars['yes']) + parseInt(storedVars['no']) + parseInt(storedVars['yes_with_exceptions']) + parseInt(storedVars['other'])</td>
 	<td>${total}</td>
 </tr>
 </tbody></table>

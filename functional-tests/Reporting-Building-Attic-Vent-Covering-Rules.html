@@ -57,8 +57,13 @@
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/th</td>
+	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[6]/th</td>
 	<td>Total</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/th</td>
+	<td>Other</td>
 </tr>
 <tr>
 	<td>verifyText</td>
@@ -133,11 +138,16 @@
 <tr>
 	<td>storeText</td>
 	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/td</td>
+	<td>other</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.odd:nth-child(6) &gt; td:nth-child(2)</td>
 	<td>total</td>
 </tr>
 <tr>
 	<td>verifyEval</td>
-	<td>parseInt(storedVars['yes']) + parseInt(storedVars['no']) + parseInt(storedVars['yes_with_exceptions'])</td>
+	<td>parseInt(storedVars['yes']) + parseInt(storedVars['no']) + parseInt(storedVars['yes_with_exceptions']) + parseInt(storedVars['other'])</td>
 	<td>${total}</td>
 </tr>
 </tbody></table>
