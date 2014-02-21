@@ -10,12 +10,6 @@
                 border-top: 1px solid #bdbdbd;
                 border-right: 1px solid #bdbdbd;
         }
-        .graphing {
-                border: 1px solid #6f6;
-                max-width: 960px;
-                min-height: 200px;
-                display: none;
-        }
         .data_table {
                 min-width: 320px;
         }
@@ -65,6 +59,11 @@
           margin: .1em .4em 0 .2em;
           background-color: transparent;
         }
+        .report {
+          max-width: 320px;
+          display: inline-block;
+          margin-left: 25px;
+        }
 </style>
 {% endblock %}
 
@@ -84,28 +83,31 @@
       <hr/>
       <h2>Question's Instruction: {{ question_instruction }}</h2>
     {% endif %}
-    <div class="graphing">Graphic</div>
     <hr/>
     <h3>Current Approved Values in the Database</h3>
-    <div id="graph"></div>
-    <table class="data_table">
-      <tr class="even">
-        <th class="header_row">Value</th>
-        <th class="header_row_right">Jurisdictions</th>
-      </tr>
-      {% for row in table %}
-        <tr class="{{ loop.cycle('odd', 'even') }}">
-          <th><span class="legend-dot"></span>{{ row['key'] }}</th>
-          <td>{{ row['value'] }}</td>
-        </tr>
-      {% endfor %}
-    </table>
+    {% for report in reports %}
+      <div class="report" id="report{{report.idx}}">
+        <div class="graph" id="graph{{report.idx}}"></div>
+        <table class="data_table">
+          <tr class="even">
+            <th class="header_row">Value</th>
+            <th class="header_row_right">Jurisdictions</th>
+          </tr>
+          {% for row in report.table %}
+            <tr class="{{ loop.cycle('odd', 'even') }}">
+              <th><span class="legend-dot"></span>{{ row['key'] }}</th>
+              <td>{{ row['value'] }}</td>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+    {% endfor %}
   </div>
 {% endblock %}
 
 {% block endjs %}
   <script>
-    var data = {{table_json}};
+    var reports = {{reports_json}};
     function select(field) {
       return function (elem) {
                if (elem.key != 'Total')
@@ -115,25 +117,29 @@
     function defined(val) {
       return typeof val != "undefined"
     }
-    $(document).ready(function () {
-                        var values = data.map(select("value")).filter(defined),
-                            sum = values.reduce(function (a, b) { return a+b; });
-                        if (sum <= 0)
-                          return;
-                        var r = Raphael("graph"),
-                            pie = r.piechart(160, 160, 150,
-                                             values),
-                            paths = [];
-                        $.each(pie.series,
-                               function(k, v) {
-                                 if (v.value)
-                                   paths[v.value.order] = v.node;
-                               })
-                        $(".legend-dot").each(function (n, elem) {
-                                                $(elem).css("background-color",
-                                                            ($(elem).parent().text() != "Total") ? $(paths[n]).css("fill")
-                                                                                                 : "transparent");
-                                              });
+    function draw_graphs() {
+      $.each(reports,
+             function (idx, report) {
+               var values = report.table.map(select("value")).filter(defined),
+                   sum = values.reduce(function (a, b) { return a+b; });
+               if (sum <= 0)
+                 return;
+               var r = Raphael("graph"+ idx),
+                   pie = r.piechart(160, 160, 150,
+                                    values),
+                   paths = [];
+               $.each(pie.series,
+                      function(k, v) {
+                        if (v.value)
+                          paths[v.value.order] = v.node;
                       })
+               $(".legend-dot").each(function (n, elem) {
+                                       $(elem).css("background-color",
+                                                   ($(elem).parent().text() != "Total") ? $(paths[n]).css("fill")
+                                                                                        : "transparent");
+                                     });
+             });
+    }
+    $(document).ready(draw_graphs())
   </script>
 {% endblock %}
