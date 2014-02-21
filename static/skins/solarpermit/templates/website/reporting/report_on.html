@@ -133,11 +133,13 @@
                         if (v.value)
                           paths[v.value.order] = v.node;
                       })
-               $(".legend-dot").each(function (n, elem) {
-                                       $(elem).css("background-color",
-                                                   ($(elem).parent().text() != "Total") ? $(paths[n]).css("fill")
-                                                                                        : "transparent");
-                                     });
+               $("#report"+ idx +" .legend-dot").each(function (n, elem) {
+                                                        if ($(elem).parent().text() != "Total") {
+                                                          $(elem).css("background-color",
+                                                                      $(paths[n]).css("fill"));
+                                                          console.log($(paths[n]).css("fill"))
+                                                        }
+                                                      });
              });
     }
     $(document).ready(draw_graphs())
