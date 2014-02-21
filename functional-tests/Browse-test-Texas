@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>New Test</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">New Test</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Browse</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>css=h1.page_title</td>
+	<td>Browse Solar Permitting Requirements by State</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=#us_states_map &gt; svg:nth-child(1) &gt; path:nth-child(123)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>css=h1.page_title</td>
+	<td>Jurisdictions in Texas</td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='jurisdiction_list']/div/div/table/tbody/tr/td[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//div[@id='jurisdiction_list']/div/div/table/tbody/tr/td[2]</td>
+	<td>search_result_one</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.row_even:nth-child(2) &gt; td:nth-child(2)</td>
+	<td>search_result_two</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.row_odd:nth-child(3) &gt; td:nth-child(2)</td>
+	<td>search_result_three</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.row_even:nth-child(4) &gt; td:nth-child(2)</td>
+	<td>search_result_four</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.row_odd:nth-child(5) &gt; td:nth-child(2)</td>
+	<td>search_result_five</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.row_even:nth-child(6) &gt; td:nth-child(2)</td>
+	<td>search_result_six</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>'Abbott, TX'</td>
+	<td>expected_result_one</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>'Abernathy, TX'</td>
+	<td>expected_result_two</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>'Abilene, TX'</td>
+	<td>expected_result_three</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>'Abram, TX'</td>
+	<td>expected_result_four</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>'Academy, TX'</td>
+	<td>expected_result_five</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>'Ace, TX'</td>
+	<td>expected_result_six</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>storedVars['expected_result_one']==storedVars['search_result_one']</td>
+	<td>true</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>storedVars['expected_result_two']==storedVars['search_result_two']</td>
+	<td>true</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>storedVars['expected_result_three']==storedVars['search_result_three']</td>
+	<td>true</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>storedVars['expected_result_four']==storedVars['search_result_four']</td>
+	<td>true</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>storedVars['expected_result_five']==storedVars['search_result_five']</td>
+	<td>true</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>storedVars['expected_result_six']==storedVars['search_result_six']</td>
+	<td>true</td>
+</tr>
+</tbody></table>
+</body>
+</html>
