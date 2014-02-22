@@ -25,13 +25,18 @@ def build_query(question, field_map):
     for name, match in field_map.items():
         fields.append("CONVERT(%(match)s, UNSIGNED) AS '%(name)s'" % { "name": name, "match": match })
     return '''SELECT %(fields)s
-              FROM website_jurisdiction LEFT OUTER JOIN website_answerreference
-              ON website_jurisdiction.id = website_answerreference.jurisdiction_id
-              WHERE (question_id = %(question_id)s OR question_id IS NULL) AND
-                    website_jurisdiction.id NOT IN (1, 101105) AND
-                    website_jurisdiction.jurisdiction_type != 'u' AND
-                    (approval_status = 'A' OR approval_status IS NULL);''' % { "question_id": question.id,
-                                                                               "fields": ", ".join(fields) }
+              FROM (SELECT (SELECT value
+                            FROM website_answerreference
+                            WHERE id = (SELECT MAX(id)
+                                        FROM website_answerreference
+                                        WHERE website_answerreference.jurisdiction_id = website_jurisdiction.id AND
+                                        approval_status = 'A' AND
+                                        question_id = %(question_id)s)) AS value
+                    FROM website_jurisdiction
+                    WHERE website_jurisdiction.id NOT IN (1, 101105) AND
+                          website_jurisdiction.jurisdiction_type != 'u') AS temp
+           ''' % { "question_id": question.id,
+                   "fields": ", ".join(fields) }
 
 def json_match(field_name, value):
     return 'value LIKE \'%%%%"%(name)s"%%%%"%(value)s"%%%%\' COLLATE utf8_general_ci' % { "name": field_name,
