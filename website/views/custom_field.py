@@ -46,7 +46,6 @@ def custom_field(request):
             data['jurisdiction_id'] = requestProcessor.getParameter('jurisdiction_id') 
             data['category_id'] = requestProcessor.getParameter('category_id')   
             data['current_category'] = requestProcessor.getParameter('current_category')      
-            data['current_questions'] = requestProcessor.getParameter('current_questions')                                            
             
             if data['field_title'] == None:
                 data['field_title'] = ''   
@@ -149,62 +148,19 @@ def custom_field(request):
                 for msg_key in error_message.keys():
                     data[msg_key] = error_message.get(msg_key)  
                     
-                    body = requestProcessor.decode_jinga_template(request,'website/blocks/create_custom_fields.html', data, '')     
+                    body = requestProcessor.decode_jinga_template(request,'website/blocks/create_custom_field.html', data, '')
                     dajax.assign('#fancyboxformDiv','innerHTML', body)
-                    script = requestProcessor.decode_jinga_template(request, 'website/blocks/create_custom_fields.js', data, '')
+                    script = requestProcessor.decode_jinga_template(request, 'website/blocks/create_custom_field.js', data, '')
                     dajax.script(script)
             else:
                 data_cf = {}
                 jurisdiction = Jurisdiction.objects.get(id=data['jurisdiction_id'])
                 data_cf['jurisdiction'] = jurisdiction
-                '''
-                question_category_obj = QuestionCategory.objects.get(id=data['category_id'])  
-                data['question_categories'] = QuestionCategory.objects.filter(id=data['category_id'])
-                
-                question_class_obj = Question()
-                custom_questions = question_class_obj.get_custom_fields_by_jurisdiction_by_category(jurisdiction, data['category_id'])
-                print custom_questions
-                validation_util_obj = FieldValidationCycleUtil()
-                data['action'] = 'refresh_ahj_qa'               
-
-                if custom_questions != None and len(custom_questions) > 0:
-                    for question in custom_questions:
-                        data['question_content'][question_category_obj.id][question.id] = validation_util_obj.get_AHJ_question_data(request, jurisdiction, question, data)                
-                '''
-                
-                '''
-                validation_util_obj = FieldValidationCycleUtil()                        
-                data_cf['this_question'] = question_obj               
-                question_content = validation_util_obj.get_AHJ_question_data(request, jurisdiction, question_obj, data_cf)            
-                for key in question_content.keys():
-                    data_cf[key] = question_content.get(key)               
-                                        
-                body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_question_content_authenticated.html', data_cf, '')
-
-                dajax.assign('#div_custom_question_content_'+str(category_obj.id),'innerHTML', body)
-                script = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_question_content.js', data, '')
-                dajax.script(script)                        
-                '''
                 template_obj = Template()
                 jurisdiction_templates = template_obj.get_jurisdiction_question_templates(jurisdiction)
                
                     
                 data_cf['action'] = '/jurisdiction_id/'+str(jurisdiction.id)+'/'+current_category+'/'
-                current_questions = current_questions.strip()
-                current_questions_list = current_questions.split(' ')
-                if len(current_questions_list) > 0:
-                    
-                    questions = Question.objects.filter(category=category_obj, accepted=1, qtemplate__in=jurisdiction_templates).exclude(id__in=(current_questions_list))
-                else:
-                    questions = Question.objects.filter(category=category_obj, accepted=1, qtemplate__in=jurisdiction_templates)
-                
-                '''
-                data_cf['custom_questions'] = Question.objects.filter(category=category_obj, accepted=1, qtemplate__in=jurisdiction_templates).exclude(id__in=(current_questions))                
-                body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_question_content_ajax_call.html', data_cf, '')                        
-                dajax.assign('#div_custom_question_content_'+str(category_obj.id),'innerHTML', body)
-                script = requestProcessor.decode_jinga_template(request, 'website/jurisdictions/AHJ_question_content_ajax_call.js', data_cf, '')
-                dajax.script(script)                                             
-                '''
                   
                 data_cf = get_question_data(request, jurisdiction, question_obj, data)
                 body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_cqa_qa.html', data_cf, '')
@@ -235,12 +191,6 @@ def custom_field(request):
 
                 #data['category'] = question_obj.category.name
                 data['jurisdiction'] = jurisdiction
-                '''
-                validation_util_obj = FieldValidationCycleUtil()   
-                data['top_contributors'] = validation_util_obj.get_top_contributors(jurisdiction, question_categories)  
-                body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_top_contributors.html', data, '')   
-                dajax.assign('#top-contributor','innerHTML', body)       
-                '''
                 
                 data['top_contributors'] = get_ahj_top_contributors(jurisdiction, current_category)  
                 body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_top_contributors.html', data, '')   

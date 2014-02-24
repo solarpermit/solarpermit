@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>New Test</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">New Test</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>sendKeys</td>
+	<td>id=search_field</td>
+	<td>bristol county</td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>5000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//form[@id='search_form']/div/div/ul[2]/li</td>
+	<td>auto_complete_one</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//form[@id='search_form']/div/div/ul[2]/li[2]</td>
+	<td>auto_complete_two</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//form[@id='search_form']/div/div/ul[2]/li[3]</td>
+	<td>auto_complete_three</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>//form[@id='search_form']/div/div/ul[2]/li[4]</td>
+	<td>auto_complete_four</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a.search-a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>css=span</td>
+	<td>Results for &quot;bristol county&quot;</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.row_odd:nth-child(1) &gt; td:nth-child(2)</td>
+	<td>search_result_one</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.row_even:nth-child(2) &gt; td:nth-child(2) &gt; a:nth-child(1)</td>
+	<td>search_result_two</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.row_odd:nth-child(3) &gt; td:nth-child(2) &gt; a:nth-child(1)</td>
+	<td>search_result_three</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.row_even:nth-child(4) &gt; td:nth-child(2) &gt; a:nth-child(1)</td>
+	<td>search_result_four</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>storedVars['auto_complete_one']==storedVars['search_result_one']</td>
+	<td>true</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>storedVars['auto_complete_two']==storedVars['search_result_two']</td>
+	<td>true</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>storedVars['auto_complete_three']==storedVars['search_result_three']</td>
+	<td>true</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>storedVars['auto_complete_four']==storedVars['search_result_four']</td>
+	<td>true</td>
+</tr>
+</tbody></table>
+</body>
+</html>

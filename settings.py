@@ -11,6 +11,9 @@ TEMPLATE_DEBUG = DEBUG
 INTERNAL_IPS = ('127.0.0.1',)
 #SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
+SOLARPERMIT_VERSION = '1.3.37'
+SAMPLE_JURISDICTIONS=['1', '101105']
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -285,6 +288,7 @@ PAGE_COLUMNS = 5 #number of columns in multiple column listing page
 #EXCLUDED_ORGS_FROM_GOOGLE_ANALYTICS = [1]   # org id numbers
 
 COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = True
 COMPRESS_URL = '/media/'
 COMPRESS_ROOT = os.path.join(PROJECT_ROOT, 'static/skins/solarpermit/media')
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',
@@ -295,6 +299,8 @@ COMPRESS_CLOSURE_COMPILER_ARGUMENTS = '--language_in ECMASCRIPT5 --summary_detai
 
 # do not run migrations during testing
 SOUTH_TESTS_MIGRATE=False
+
+FORUM_INTEGRATION=False
 
 # django-tracking2
 TRACK_AJAX_REQUESTS = True

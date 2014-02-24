@@ -1,7 +1,8 @@
 from django.http import HttpResponseRedirect
 from django.conf.urls.defaults import patterns, include, handler404, handler500, url
 from django.conf import settings
-from website.views import home, test_view, account, unittest, info, jurisdiction, organization, custom_field, maintenance, siteadmin
+from website.views import home, account, info, jurisdiction, organization, custom_field, maintenance, siteadmin
+from website.views.news import *
 
 from django.contrib import admin
 admin.autodiscover()
@@ -44,15 +45,10 @@ else:
         #(r'^jurisdiction/(?P<id>.*)/$', 'website.views.AHJ.view_AHJ'),
         (r'^jurisdiction/(?P<name>.*)/(?P<category>.*)/$', 'website.views.AHJ.view_AHJ_by_name'),    
         (r'^jurisdiction/(?P<name>.*)/$', 'website.views.AHJ.view_AHJ_by_name'),          
-        (r'^jurisdiction_id/(?P<id>.*)/(?P<category>.*)/$', 'website.views.AHJ.view_AHJ'), 
-        (r'^jurisdiction_id/(?P<id>.*)/$', 'website.views.AHJ.view_AHJ'), 
+        #(r'^jurisdiction_id/(?P<id>.*)/(?P<category>.*)/$', 'website.views.AHJ.view_AHJ'), 
+        #(r'^jurisdiction_id/(?P<id>.*)/$', 'website.views.AHJ.view_AHJ'), 
               
         #(r'^set_up_data_sprint_19', 'website.views.data_migration.set_up_data_sprint_19'),
-                
-        #(r'^test_newsite/', test_view.test_newsite),
-        #(r'^test_add/', test_view.test_add),
-        #(r'^test_edit/', test_view.test_edit),    
-        #(r'^test_ie/', test_view.test_ie),    
             
         url( # TODO: replace with django.conf.urls.static ?
             r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:], 
@@ -66,18 +62,14 @@ else:
         (r'^organization/user/search/', 'website.views.organization.organization_user_search'),
         (r'^organization/members/', 'website.views.organization.organization_members'),
         (r'^organization/', 'website.views.organization.organization'),             
-        (r'^whitepapers/', 'website.views.whitepaper.papers'),   
         (r'^logout', account.log_out),      
         (r'^reset_password/(?P<reset_password_key>.*)/$', home.reset_password),       
         (r'^info/', info.get_info),  
-        (r'^news/', info.news),   
+        (r'^news/', info.news_static),
+        (r'^news2/', info.news_dynamic),
         (r'^about/', info.about),
         (r'^getting-started/', info.getting_started_page),  
         
-        ## admin
-        (r'^siteadmin/$', siteadmin.task_list),          
-        (r'^siteadmin/user_page_views/$', siteadmin.user_page_views),   
-                
         #data migrations
         #(r'^util/import/unincorporated/$', 'website.views.data_migration.migrate_unincorporated'),
         (r'^util/import/jurisdictions/$', 'website.views.data_migration.migrate_jurisdiction_data'),
@@ -87,15 +79,6 @@ else:
         #services
         (r'^s/search/general/$', 'website.services.jurisdiction_services.search_general'),
         url(r'^runCron/(?P<forceRun>.*)/$', 'website.cron.cron.run_cron'),
-        #unit tests and other tests
-        #(r'^test/search/$', test_view.test_search),  
-        #(r'^test/org/$', test_view.test_org),  
-        #(r'^test/timezone/$', test_view.test_timezone),  
-        #(r'^test/ahj/(?P<id>.*)/$', jurisdiction.view_AHJ),      
-        #(r'^unittest/(?P<test>.*)/$', unittest.run_test),  
-        #(r'^unittest/$', unittest.run_test),  
-        (r'^test/cron_validate_answers/', test_view.test_cron_validate_answers),    
-                
         (r'^sign_in', account.sign_in_shell),     
     
         (r'^profile/(?P<id>.*)/$', account.user_profile),
@@ -122,10 +105,17 @@ else:
         
         #### django-tracking2
         (r'^tracking/', include('tracking.urls')),
-           
-    )
 
+        #### reporting pages
+        (r'^reporting/$', 'website.views.reporting.report_index'),
+        (r'^reporting/(?P<question_id>\d+)/$', 'website.views.reporting.report_on'))
+
+    ## admin
+    urlpatterns += patterns('',
+                            url(r'^siteadmin/',
+                                include(patterns('',
+                                                 (r'^$', siteadmin.task_list),
+                                                 (r'^user_page_views/$', siteadmin.user_page_views)))))
     if 'rosetta' in settings.INSTALLED_APPS:
         urlpatterns += patterns('',
-                        url(r'^rosetta/', include('rosetta.urls')),
-                    )
+                                url(r'^rosetta/', include('rosetta.urls')))

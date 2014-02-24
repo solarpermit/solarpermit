@@ -1,3 +1,4 @@
+from datetime import datetime
 import math
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template.loader import get_template
@@ -15,6 +16,7 @@ from website.utils.mathUtil import MathUtil
 from website.utils.messageUtil import MessageUtil
 
 from website.models import Jurisdiction, UserDetail, OrganizationMember
+from website.models import UserDetail, OrganizationMember, news
 from website.utils.messageUtil import MessageUtil,add_system_message,get_system_message
 
 def states(request):
@@ -83,19 +85,6 @@ def get_info(request):
           
     ajax = requestProcessor.getParameter('ajax')
     if (ajax != None):
-        if (ajax == 'getting_started'):
-            body = requestProcessor.decode_jinga_template(request,'website/info/getting_started.html', data, '')  
-            dajax.assign('#fancyboxformDiv','innerHTML', body)  
-            dajax.script('controller.showModalDialog("#fancyboxformDiv");')
-            return HttpResponse(dajax.json())  
-                
-        if (ajax == 'about'):
-            body = requestProcessor.decode_jinga_template(request,'website/blocks/about.html', data, '') 
-            #dajax.assign('#main_content','innerHTML', body)    
-            dajax.assign('#fancyboxformDiv','innerHTML', body)  
-            dajax.script('controller.showModalDialog("#fancyboxformDiv");')
-            return HttpResponse(dajax.json())
-    
         if (ajax == 'privacy_policy'):
             body = requestProcessor.decode_jinga_template(request,'website/info/privacy_policy_modal.html', data, '') 
             #dajax.assign('#main_content','innerHTML', body)    
@@ -110,14 +99,6 @@ def get_info(request):
             #dajax.assign('#fancyboxformDiv','innerHTML', body)  
             #dajax.script('controller.showModalDialog("#fancyboxformDiv");')    
             return HttpResponse(dajax.json())  
-        
-    
-        if (ajax == 'disclaimer'):
-            body = requestProcessor.decode_jinga_template(request,'website/info/disclaimer_modal.html', data, '') 
-            #dajax.assign('#main_content','innerHTML', body)    
-            dajax.assign('#fancyboxformDiv','innerHTML', body)  
-            dajax.script('controller.showModalDialog("#fancyboxformDiv");')
-            return HttpResponse(dajax.json()) 
         
         if (ajax == 'doe_grant'):
             body = requestProcessor.decode_jinga_template(request,'website/blocks/text_doe_grant.html', data, '') 
@@ -194,15 +175,28 @@ def email_feedback(data):
     msg.content_subtype = "html"   
     #msg.send()
 
-def news(request):
+def news_static(request):
     data = {}
     data['current_nav'] = 'news'
-    
+
     message_data = get_system_message(request) #get the message List
     data =  dict(data.items() + message_data.items())   #merge message list to data
-    
+
     requestProcessor = HttpRequestProcessor(request)
     return requestProcessor.render_to_response(request,'website/info/news.html', data, '')
+
+def news_dynamic(request):
+    data = {}
+    data['current_nav'] = 'news'
+    data['pressreleases'] = news.PressRelease.objects.all().order_by('published')
+    data['articles'] = news.Article.objects.all().order_by('published')
+    data['events'] = news.Event.objects.all().filter(expiration__gte=datetime.now()).order_by('published')
+
+    message_data = get_system_message(request) #get the message List
+    data =  dict(data.items() + message_data.items())   #merge message list to data
+
+    requestProcessor = HttpRequestProcessor(request)
+    return requestProcessor.render_to_response(request,'website/info/news_dynamic.html', data, '')
 
 def about(request):
     data = {}

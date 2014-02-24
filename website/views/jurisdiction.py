@@ -31,22 +31,6 @@ import urllib
 JURISDICTION_PAGE_SIZE = 30 #page size for endless scroll
 
 
-def jurisdiction_details(request, id):
-    requestProcessor = HttpRequestProcessor(request)
-    data = {}
-    try:
-        jurisdiction = Jurisdiction.objects.get(id=id)
-    except:
-        jurisdiction = None
-    data['jurisdiction'] = jurisdiction
-    
-    #save to user recent search
-    user = request.user
-    if user.is_authenticated() and jurisdiction != None:
-        save_recent_search(user, jurisdiction)
-        
-    return requestProcessor.render_to_response(request,'website/jurisdictions/jurisdiction.html', data, '')      
-
 #dispatch to either state map or listing within state
 def jurisdiction_browse_improved(request):
     requestProcessor = HttpRequestProcessor(request)
@@ -307,8 +291,6 @@ def check_search_level(search_str):
         search_level = 'county' 
     elif search_str.find('city') > -1:  
         search_level = 'city'
-    elif search_str.find('county') > -1:  
-        search_level = 'state'
     else:
         search_level = ''
     
@@ -324,24 +306,18 @@ def exclude(search_str):
     return exclude
 
 def scrub_text_search_str(search_str):
-    search_str_only_a_z = re.sub("[^A-Za-z]", ' ', search_str)
-    #print "search_str_only_a_z :: " + str(search_str_only_a_z)
-    search_str_only_a_z = search_str_only_a_z.lower().replace('borough', '')    
-    search_str_only_a_z = search_str_only_a_z.lower().replace('borough of', '')    
-    search_str_only_a_z = search_str_only_a_z.lower().replace('parish', '')    
-    search_str_only_a_z = search_str_only_a_z.lower().replace('parish of', '')
-    search_str_only_a_z = search_str_only_a_z.lower().replace('county', '')    
-    search_str_only_a_z = search_str_only_a_z.lower().replace('county of', '')
-    search_str_only_a_z = search_str_only_a_z.lower().replace('city and county of', '')  
-    search_str_only_a_z = search_str_only_a_z.lower().replace('state of', '')       
-    search_str_only_a_z = search_str_only_a_z.lower().replace('of', '')      
-    search_str_only_a_z = search_str_only_a_z.lower().replace('state', '')  
-    search_str_only_a_z = search_str_only_a_z.lower().replace('city', '')              
-        
-    search_str_only_a_z_no_space_either_side = search_str_only_a_z.strip()
-    
-    return search_str_only_a_z_no_space_either_side
-
+    search_str_only_a_z = re.sub("[^A-Za-z]", ' ', search_str).lower()
+    search_str_only_a_z = search_str_only_a_z.replace('borough of', '')
+    search_str_only_a_z = search_str_only_a_z.replace('borough', '')
+    search_str_only_a_z = search_str_only_a_z.replace('parish of', '')
+    search_str_only_a_z = search_str_only_a_z.replace('parish', '')
+    search_str_only_a_z = search_str_only_a_z.replace('county of', '')
+    search_str_only_a_z = search_str_only_a_z.replace('county', '')
+    search_str_only_a_z = search_str_only_a_z.replace('city and county of', '')
+    search_str_only_a_z = search_str_only_a_z.replace('state of', '')
+    search_str_only_a_z = search_str_only_a_z.replace('state', '')
+    search_str_only_a_z = search_str_only_a_z.replace('city', '')
+    return search_str_only_a_z.strip()
 
 #get the nearby jurisdictions given a center point and starting distance range
 def getNearbyJs(geoHelper, center, distance, iteration):
@@ -386,123 +362,6 @@ def sortNearbyJs(geoHelper, center, nearbyJs):
         sortedJs.append(jurisdiction)
     return sortedJs
     
-def jurisdiction_search(request):    
-    requestProcessor = HttpRequestProcessor(request)
-            
-    dajax = Dajax()
-    ajax = requestProcessor.getParameter('ajax')
-    if (ajax != None):
-        #handle ajax calls
-        if (ajax == 'nearby'):
-            jid = requestProcessor.getParameter('jid')
-            if (jid != None):
-                try:
-                    data = {}
-                    data['list'] = []
-                    
-                    jurisdiction = Jurisdiction.objects.get(id=jid)
-                    
-                    #neabyTemplate = '<div style="width:600px;"><b>Nearby: &nbsp;&nbsp; </b> '
-                    
-                    geoHelper = GeoHelper()
-                    center = {}
-                    center['lat'] = jurisdiction.latitude
-                    center['lon'] = jurisdiction.longitude
-                    
-                    nearbyJs = getNearbyJs(geoHelper, center, geoHelper.initialDistance, 1)
-                    
-                    for j in nearbyJs:
-                        if j.id != jurisdiction.id:
-                            #neabyTemplate += j.name+' ('+str(j.latitude)+','+str(j.longitude)+') '
-                            data['list'].append(j)
-                    #neabyTemplate += 'Range is: '+str(range['latMin'])+' to '+str(range['latMax'])+', '+str(range['lonMin'])+' to '+str(range['lonMax'])
-                    
-                    #neabyTemplate += '</div>'
-                    
-                    body = requestProcessor.decode_jinga_template(request, 'website/jurisdiction_search_nearby.html', data, '') 
-                    dajax.assign('#nearby_'+jid, 'innerHTML', body)
-                    #dajax.script('$("#nearby_link_'+jid+'").hide();')
-                except:
-                    pass
-            return HttpResponse(dajax.json())
-        
-        return HttpResponse(dajax.json())
-    
-    data = {'page_class': 'meta'}
-    data['breadcrum'] = 'no'
-    data['page'] = 'general_search'
-    data['nav'] = 'yes'    
-    form = None
-
-    jurisdiction_search_str = requestProcessor.getParameter('text') 
-    if jurisdiction_search_str == None:
-        jurisdiction_search_str = ''                                  
-
-        
-    data['jurisdiction_search_str'] = jurisdiction_search_str         
-    
-    page = requestProcessor.getParameter('page')
-    if page != None and page != '':
-        page_number = int(page)
-    else:
-        page_number = 1
-    range_start = (page_number - 1) * JURISDICTION_PAGE_SIZE
-    range_end = page_number * JURISDICTION_PAGE_SIZE
-    data['next_page_param'] = 'page='+str(page_number + 1)
-    
-    data['message'] = ''
-    mathUtil = MathUtil()
-    if mathUtil.is_number(jurisdiction_search_str) == False:
-        data['search_by'] = 'search_by_name';
-        scrubbed_jurisdiction_search_str = scrub_text_search_str(jurisdiction_search_str)
-        if jurisdiction_search_str.__len__() >= 2:
-            
-            objects_all_types = jurisdiction_text_search(jurisdiction_search_str,scrubbed_jurisdiction_search_str, '', range_start, range_end)
-            
-            redirect_url = '/jurisdiction/'
-                
-            if len(objects_all_types) == 1:
-                redirect_url = redirect_url + str(objects_all_types[0].get_name_for_url())
-                
-                return redirect(redirect_url)
-            else:
-                data['list'] = objects_all_types
-                                
-
-        else:
-            data['message'] = 'This search field requires at least 2 alphabetic (a-z) characters.';
-    else:
-        data['search_by'] = 'search_by_zip';
-        nearbyJs = {}
-        #geo based approach
-        zipcodes = Zipcode.objects.filter(zip_code=jurisdiction_search_str)
-        
-        #TODO: if zip code not found, look for next zip code up
-        if len(zipcodes) < 1:
-            zipcodes = Zipcode.objects.filter(zip_code__gt=jurisdiction_search_str)[0:1]
-        
-        if len(zipcodes) > 0:
-            zipcode = zipcodes[0] #should be only one anyway
-            
-            geoHelper = GeoHelper()
-            center = {}
-            center['lat'] = zipcode.latitude
-            center['lon'] = zipcode.longitude
-            #zip code data problem - longitude needs to be inverted:
-            center['lon'] = float(-center['lon'])
-            
-            nearbyJs = getNearbyJs(geoHelper, center, geoHelper.initialDistance, 1)
-
-            data['list'] = nearbyJs
-        
-    request.session['jurisdiction_search_str'] = jurisdiction_search_str 
-    
-    if page_number != 1:
-        #for endless scroll next page, only render the list
-        return requestProcessor.render_to_response(request,'website/jurisdictions/jurisdiction_list.html', data, '')      
-    else:
-        return requestProcessor.render_to_response(request,'website/jurisdictions/jurisdiction_search.html', data, '')      
-
 def jurisdiction_autocomplete(request):
     MAX_RESULT_COUNT = 7
     
@@ -516,37 +375,19 @@ def jurisdiction_autocomplete(request):
     output += '<div>' #a div to enclose everything
     output += '<ul id="search_results">'
     
-    jurisdiction_ids = []
+    jurisdictions = []
     
     mathUtil = MathUtil()
     if mathUtil.is_number(text) == False:
-    
-        #county j name starts with text
-        jurisdiction_ids1 = Jurisdiction.objects.filter(county__istartswith=text, jurisdiction_type__in=('CO', 'CC')).order_by('county', 'state').values_list('id', flat=True)[:MAX_RESULT_COUNT]
-        for id in jurisdiction_ids1:
-            jurisdiction_ids.append(id)    
-        
-        if len(jurisdiction_ids) < MAX_RESULT_COUNT:
-            count_needed = MAX_RESULT_COUNT - len(jurisdiction_ids)
-            #city j name starts with text
-            jurisdiction_ids2 = Jurisdiction.objects.filter(city__istartswith=text, jurisdiction_type__in=('CI', 'U', 'CC')).exclude(id__in=jurisdiction_ids).order_by('city', 'state').values_list('id', flat=True)[:MAX_RESULT_COUNT]
-            for id in jurisdiction_ids2:
-                jurisdiction_ids.append(id)
-            
-            if len(jurisdiction_ids) < MAX_RESULT_COUNT:
-                count_needed = MAX_RESULT_COUNT - len(jurisdiction_ids)
-                #county j name contains text
-                jurisdiction_ids3 = Jurisdiction.objects.filter(county__icontains=text, jurisdiction_type__in=('CO', 'CC')).exclude(id__in=jurisdiction_ids).order_by('county', 'state').values_list('id', flat=True)[:count_needed]
-                for id in jurisdiction_ids3:
-                    jurisdiction_ids.append(id)
-        
-                if len(jurisdiction_ids) < MAX_RESULT_COUNT:
-                    count_needed = MAX_RESULT_COUNT - len(jurisdiction_ids)
-                    #city j name contains text
-                    jurisdiction_ids4 = Jurisdiction.objects.filter(city__icontains=text, jurisdiction_type__in=('CI', 'U', 'CC')).exclude(id__in=jurisdiction_ids).order_by('city', 'state').values_list('id', flat=True)[:count_needed]
-                    for id in jurisdiction_ids4:
-                        jurisdiction_ids.append(id)
-    
+        jurisdictions = jurisdiction_text_search(text,
+                                                 scrub_text_search_str(text),
+                                                 "",
+                                                 check_search_level(text) or 'all',
+                                                 'name',
+                                                 0,
+                                                 MAX_RESULT_COUNT,
+                                                 exclude(text),
+                                                 '')
     else:
         #is number, so zipcode based search
         zipcodes = Zipcode.objects.filter(zip_code__startswith=text)[0:1]
@@ -559,10 +400,7 @@ def jurisdiction_autocomplete(request):
             zipcode = zipcodes[0] #should be only one anyway
             
             geoHelper = GeoHelper()
-            geoHelper.initialDistance = 1 #km, initial distance to use for nearby search
-            geoHelper.maxDistance = 50 #km, max distance for nearby search
-            geoHelper.maxIteration = 10 #max number of iteration to get nearby items
-            geoHelper.targetCount = MAX_RESULT_COUNT - 2 #target number of nearby items to get
+            geoHelper.targetCount = MAX_RESULT_COUNT #target number of nearby items to get
             geoHelper.targetMargin = 2 #+ and - this number of items from the target number to stop
             
             center = {}
@@ -571,13 +409,9 @@ def jurisdiction_autocomplete(request):
             #zip code data problem - longitude needs to be inverted:
             center['lon'] = float(-center['lon'])
             
-            nearbyJs = getNearbyJs(geoHelper, center, geoHelper.initialDistance, 1)
-            nearbyJs = nearbyJs[:MAX_RESULT_COUNT]
-            for nearbyJ in nearbyJs:
-                jurisdiction_ids.append(nearbyJ.id)
-    
-    #sort by query again
-    jurisdictions = Jurisdiction.objects.filter(id__in=jurisdiction_ids).order_by('city', 'county', 'state')[:MAX_RESULT_COUNT]
+            jurisdictions = getNearbyJs(geoHelper, center, geoHelper.initialDistance, 1)
+            jurisdictions = sortNearbyJs(geoHelper, center, jurisdictions)
+            jurisdictions = jurisdictions[:MAX_RESULT_COUNT]
     
     for jurisdiction in jurisdictions:
         output += '<li><a href="/jurisdiction/'+str(jurisdiction.id)+'">'+jurisdiction.show_jurisdiction()+'</a></li>'
@@ -720,9 +554,7 @@ def jurisdiction_search_improved(request):
         #print 'sec_exclude :: ' + str(sec_exclude)    
             
         if primary_search_str.__len__() >= 2:
-            
-
-            objects_all_types = jurisdiction_text_search(primary_search_str,scrubbed_primary_search_str, secondary_search_str,filter, order_by_str, range_start, range_end, primary_exclude, sec_exclude )
+            objects_all_types = jurisdiction_text_search(primary_search_str, scrubbed_primary_search_str, secondary_search_str,filter, order_by_str, range_start, range_end, primary_exclude, sec_exclude)
             redirect_url = '/jurisdiction/'
                 
             if len(objects_all_types) == 1 and ajax == None: #don't redirect if ajax
@@ -730,8 +562,6 @@ def jurisdiction_search_improved(request):
                 return redirect(redirect_url)
             else:
                 data['list'] = objects_all_types
-                                
-
         else:
             data['message'] = 'This search field requires at least 2 alphabetic (a-z) characters.';
     else:

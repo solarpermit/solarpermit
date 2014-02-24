@@ -6,11 +6,9 @@
     <div class="field" style="font-style:normal;">
     {% set answer_content = answer.get('answer_content') %}
     	{% if this_question.display_template == '' or this_question.display_template == None %}
-            {% set template = 'website/jurisdictions/suggestion_display_template/single_field_display.html' %}
-            {% include template %}
+            {% include 'website/jurisdictions/suggestion_display_template/single_field_display.html' %}
         {% else %}
-            {% set template = 'website/jurisdictions/suggestion_display_template/'+this_question.display_template %}
-            {% include template %}
+            {% include 'website/jurisdictions/suggestion_display_template/'+this_question.display_template %}
         {% endif %}               
     </div>   
 {% endfor %}
