@@ -39,11 +39,11 @@ def build_query(question, field_map):
                    "fields": ", ".join(fields) }
 
 def json_match(field_name, value):
-    return 'value LIKE \'%%%%"%(name)s"%%%%"%(value)s"%%%%\' COLLATE utf8_general_ci' % { "name": field_name,
-                                                                                          "value": value }
+    return regexp_match('"%(name)s": *"%(value)s"' % { "name": field_name,
+                                                       "value": value })
 
 def regexp_match(regexp):
-    return 'value REGEXP \'%(regexp)s\'' % { "regexp": regexp }
+    return 'value REGEXP \'%(regexp)s\' COLLATE utf8_general_ci' % { "regexp": regexp }
 
 def null_match():
     return 'value IS NULL'
@@ -103,7 +103,14 @@ reports_by_type = {
                                                           ("Outsourced",
                                                            sum_match(json_match("plan_check_service_type",
                                                                                 "outsourced"))),
-                                                          ("Total", total())])],
+                                                          ("Other",
+                                                           sum_match(not_match(or_match(json_match("plan_check_service_type",
+                                                                                                   "over the counter"),
+                                                                                        json_match("plan_check_service_type",
+                                                                                                   "in-house"),
+                                                                                        json_match("plan_check_service_type",
+                                                                                                   "outsourced"))))),
+                                                          ("Total", sum_match(total()))])],
     "radio_compliant_sb1222_with_exception.html": [coverage_report(),
                                                    yes_no_exception_field("compliant")],
     "inspection_checklists_display.html": [coverage_report(),
@@ -136,7 +143,7 @@ reports_by_type = {
                                                         ("No",
                                                          sum_match(json_match("value",
                                                                               "n in series in a rectangle allowed"))),
-                                                        ("Total", total())])],
+                                                        ("Total", sum_match(total()))])],
     "radio_allowed_with_exception_display.html": [coverage_report(),
                                                   yes_no_exception_field("allowed")],
     "required_spec_sheets_display.html": [coverage_report()],
@@ -148,7 +155,7 @@ reports_by_type = {
                                                                                                       "in person"))),
                                                                    ("Remotely", sum_match(json_match("apply",
                                                                                                      "remotely"))),
-                                                                   ("Total", total())])],
+                                                                   ("Total", sum_match(total()))])],
     "signed_inspection_approval_delivery_display.html": [coverage_report()],
     "radio_vent_spanning_rules_with_exception_display.html": [coverage_report(), yes_no_exception_field("allowed")],
     "solar_permitting_checklists_display.html": [coverage_report()],
@@ -162,11 +169,11 @@ reports_by_type = {
                                                                                                "4"))),
                                               ("Full Day (greater than 4 hours)", sum_match(json_match("time_window",
                                                                                                        "8"))),
-                                              ("Other", sum_match(or_match(json_match("time_window", "0"),
-                                                                           json_match("time_window", "2"),
-                                                                           json_match("time_window", "4"),
-                                                                           json_match("time_window", "8")))),
-                                              ("Total", total())])],
+                                              ("Other", sum_match(not_match(or_match(json_match("time_window", "0"),
+                                                                                     json_match("time_window", "2"),
+                                                                                     json_match("time_window", "4"),
+                                                                                     json_match("time_window", "8"))))),
+                                              ("Total", sum_match(total()))])],
     "radio_has_training_display.html": [coverage_report(), yes_no_field("value")],
     "radio_licensing_required_display.html": [coverage_report(), yes_no_field("required")],
     "online_forms.html": [coverage_report()],
