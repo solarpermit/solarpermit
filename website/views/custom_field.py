@@ -104,7 +104,6 @@ def custom_field(request):
                         display_order = last_question.display_order
                     '''    
                     highest_display_order_obj = Question.objects.filter(category=category_obj, accepted=1).aggregate(Max('display_order'))
-                    #print highest_display_order_obj
                     if highest_display_order_obj == None:
                         highest_display_order = 0
                     else:
@@ -141,7 +140,6 @@ def custom_field(request):
                     
                 except Exception, e:
                     data[msg_key] = e.message
-                    print e.message
         
             #else:
             if len(error_message) > 0:

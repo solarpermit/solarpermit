@@ -30,15 +30,12 @@ class FieldValidationCycleUtil():
             for answer in answers:
                 if answer.approval_status == 'A':
                     approved_answer_status_datetime = answer.status_datetime
-                    #print 'approve ' + str(approved_answer_status_datetime)
                 else:
-                    #print 'pending ' + str(answer.status_datetime)
                     if approved_answer_status_datetime != None and answer.status_datetime <= approved_answer_status_datetime:
                         answer.approval_status = 'R'
                         answer.status_datetime = datetime.datetime.now()
                         answer.save()
                         pending_answer_rejected = True
-                        #print 'answer status updated'
                         
             if pending_answer_rejected:
                 answers = AnswerReference.objects.filter(jurisdiction__exact=jurisdiction, question__exact=question, approval_status__in=('A', 'P')).order_by('approval_status','create_datetime')             
@@ -149,8 +146,6 @@ class FieldValidationCycleUtil():
                     fee_info = self.process_fee_structure(approved['answer_content'])
                     for key in fee_info.keys():
                         approved[key] = fee_info.get(key)   
-                        print key
-                        print approved[key]  
                                     
                 if len(vote_info) > 0:
                     if answer.id in vote_info:
@@ -795,14 +790,11 @@ class FieldValidationCycleUtil():
     
     def get_jurisdiction_voting_info(self, category_name, jurisdiction, questions = None):
         action_category = ActionCategory.objects.filter(name__iexact=category_name)
-        print action_category
         if questions == None:
             votes = Action.objects.filter(category__in=action_category, jurisdiction=jurisdiction).order_by('question_category', 'entity_id', '-action_datetime')    
         else:
             answer_ids = AnswerReference.objects.filter(jurisdiction__exact=jurisdiction, question__in=questions).exclude(approval_status__exact='R').exclude(approval_status__exact='F').exclude(approval_status__exact='C').values_list('id')
-            print answer_ids
             votes = Action.objects.filter(category__in=action_category, jurisdiction=jurisdiction).order_by('question_category', 'entity_id', '-action_datetime')    
-        print votes
         vote_info = {}
         for vote in votes:
             if vote.entity_id not in vote_info:
@@ -1081,7 +1073,6 @@ class FieldValidationCycleUtil():
         action_obj.save_action(action_category_name, data, answerreference, entity_name, user.id, juris) 
         
         if question_obj.id == 96 or question_obj.id == 105 or question_obj.id == 36 or question_obj.id == 282 or question_obj.id == 62:
-            print 'process_link_or_file'
             self.process_link_or_file(answerreference) 
 
         return answerreference 
@@ -1305,12 +1296,10 @@ class FieldValidationCycleUtil():
         # today date - create date >= 2 weeks
         # assign approval_status = 'A' - answerreference, action
         today_date = date.today()
-        print today_date
         user_id = 1 # supposedly the django admin user.
         
         number_days_unchallenged_b4_approved = django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED        
         two_weeks_before_today = today_date - timedelta(days=number_days_unchallenged_b4_approved)
-        print two_weeks_before_today
         vote_action_category = ActionCategory.objects.filter(name__iexact='VoteRequirement')
         entity_name='Requirement'
         action_obj = Action()
@@ -1319,22 +1308,15 @@ class FieldValidationCycleUtil():
                         
         already_processed_jurisdiction_question = []
         answers = AnswerReference.objects.filter(approval_status__iexact='P', create_datetime__lte=two_weeks_before_today).order_by('jurisdiction__id', 'question__id', 'create_datetime')  
-        #print answers
         for answer in answers:
-            #print 'answer :: ' + str(answer.id)
-            #print answer
             jurisdiction_question_str = str(answer.jurisdiction.id) + '_'  + str(answer.question.id)
-            #print 'jurisdiction_question_str :: ' + str(jurisdiction_question_str)
             if jurisdiction_question_str not in already_processed_jurisdiction_question:
                 votes = Action.objects.filter(data__iexact='vote: down', entity_name__iexact=entity_name, entity_id=answer.id, action_datetime__gt=answer.create_datetime)
-                #print 'number of down votes :: ' + str(len(votes))
                 if len(votes) == 0:
                     answer.approval_status = 'A'
                     answer.status_datetime = datetime.datetime.now()
                     answer.save()
-                    #print 'answer saved :: ' + str(answer.id)
                     already_processed_jurisdiction_question.append(jurisdiction_question_str)       
-                    #print already_processed_jurisdiction_question
                     #action
                     data = 'approved - unchallenged for 1 week(s) after creation'
                     aobj = action_obj.save_action(validate_action_category_name, data, answer, entity_name, user_id, answer.jurisdiction)  
@@ -1416,7 +1398,6 @@ class FieldValidationCycleUtil():
         # get fee item's details
         
     def process_questions_with_link_or_file(self, answer):
-        print 'process_questions_with_link_or_file'
         process = False
         if answer.question.id == 96 or answer.question.id == 105:
             if answer.approval_status == 'A':
@@ -1446,16 +1427,12 @@ class FieldValidationCycleUtil():
         
     def process_link_or_file(self, answer):
         answer_details = json.loads(answer.value)
-        print answer.question.question
         if 'form_option' in answer_details:
-            print answer_details['form_option'] 
             if answer_details['form_option'] == 'link':
                 answerattachments = AnswerAttachment.objects.filter(answer_reference__exact= answer)
-                print len(answerattachments)
                 if len(answerattachments) > 0:
                     for answerattachment in answerattachments:
                         answerattachment.delete()  
-                        print "===> delete"
             elif answer_details['form_option'] == 'upload':      
                 answer_details['link_1'] = ''
                 answer.value = json.dumps(answer_details)

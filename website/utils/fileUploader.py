@@ -1,7 +1,6 @@
 import time
 import os
 import string
-import pprint
 class qqFileUploader(object):
 
     def __init__(self, allowedExtensions = [], sizeLimit = 1024):
@@ -31,7 +30,6 @@ class qqFileUploader(object):
         #    isHtx = False
         valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
         file_store_name = str(time.time())+'_'+''.join(c for c in fileName if c in valid_chars)
-        #print len(file_store_name)
         #check first for allowed file extensions
         if self._getExtensionFromFileName(fileName).lower() in self.allowedExtensions:
             #check file size

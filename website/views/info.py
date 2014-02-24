@@ -168,7 +168,6 @@ def email_feedback(data):
     c = Context(data)
     body = tp.render(c)
     from_mail = data['user_email']
-    #print from_mail
     to_mail = [data['email']]
     
     msg = EmailMessage( subject, body, from_mail, to_mail)
@@ -265,7 +264,6 @@ def page_404(request):
     
     requestProcessor = HttpRequestProcessor(request)
     #return HttpResponseNotFound('<h1>Page not found</h1>')
-    print 8898999999999999999999999999
     return requestProcessor.render_to_response(request,'website/info/404.html', data, '')
 
 
