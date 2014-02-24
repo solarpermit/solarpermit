@@ -32,7 +32,7 @@ nose==1.3.0
 PIL==1.1.7
 sorl-thumbnail==11.12
 South==0.8.1
--e git+https://github.com/eel/django-tracking2.git#egg=django-tracking
+-e git+https://github.com/db48x/django-tracking2.git@865f6bf68df55d5160757607265bc498b7f94535#egg=django-tracking
 -e git+https://github.com/db48x/django_compressor.git@offline-jinja2#egg=django-compressor
 django-extensions==1.3.3
 cssmin==0.2.0
