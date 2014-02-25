@@ -672,7 +672,7 @@ class FieldValidationCycleUtil():
                 self.on_approving_a_suggestion(jurisdiction, answer)
             
         return feedback
-    
+    #lss; post approve
     def on_approving_a_suggestion(self, answer):
         if answer.question.has_multivalues == 0:        
             answers = AnswerReference.objects.filter(jurisdiction=answer.jurisdiction, question=answer.question).exclude(id=answer.id)
@@ -711,7 +711,7 @@ class FieldValidationCycleUtil():
         #self.rate(action_category_name, entity_name, eid, action_obj, user_id, jurisdiction_id)
         return 'registered'
         #return action_obj
-        #lss;
+        #lss; pre valid check
     def pre_validation_check(self, action_category, vote, entity_id):
 
         answer = AnswerReference.objects.get(id=entity_id)
@@ -830,7 +830,7 @@ class FieldValidationCycleUtil():
                         
         return vote_info    
         
-        
+        #lss; vote tally? maybe this takes the final vote count
     def get_voting_tally(self, category_name, entity_id, jurisdiction, entity_category):
 
         action_category = ActionCategory.objects.filter(name__iexact=category_name)
@@ -986,7 +986,7 @@ class FieldValidationCycleUtil():
             data['js'].append('AHJ_validation_default.js')
                 
         return data  
-    
+    #lss; question template
     def get_question_template(self, question):
         if question.form_type == 'CF':
             question_template = 'textarea.html'
@@ -1002,7 +1002,7 @@ class FieldValidationCycleUtil():
             question_template = question.template
             
         return question_template        
-    #lss;
+    #lss; save answer
     def save_answer(self, question_obj, answer, juris, action_category_name, user, is_callout, answer_id=None):
         if question_obj.id == 16:
             answer = self.process_answer(question_obj, answer)    
@@ -1078,7 +1078,7 @@ class FieldValidationCycleUtil():
             self.process_link_or_file(answerreference) 
 
         return answerreference 
-    #lss;
+    #lss; this might only be for fees.
     def process_answer(self, question, answer):
         # "default_value": "{\"percentage_of_total_system_cost_cap\": \"\", \"fee_per_inverter\": \"\", \"flat_rate_amt\": \"\", \"fee_per_major_components\": \"\", 
         # \"jurisdiction_cost_recovery_notes\": \"\", \"percentage_of_total_system_cost\": \"\", \"percentage_of_total_system_cost_cap_amt\": \"\", \"fee_per_component_cap\": \"\", 
@@ -1292,7 +1292,7 @@ class FieldValidationCycleUtil():
                 
 
         return top_contributors            
-                 
+              #lss; this is where the cron job is   
     def cron_validate_answers(self):
         # get all 'pending' answers that is just 2 weeks old
         # today date - create date >= 2 weeks

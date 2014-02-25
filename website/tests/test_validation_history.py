@@ -50,3 +50,6 @@ class TestValidHistory(TestCase):
             question.delete()
         for answer in self.answers:
             answer.delete()
+#    tried calling TestVoting.vote()... didnt seem to work
+#    def test_import(self):
+#
