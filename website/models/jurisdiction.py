@@ -9,7 +9,7 @@ import urllib
 from htmlentitiesdecode import decode as entity_decode
 import re
 from website.utils.datetimeUtil import DatetimeHelper 
-
+#lss; jurisdiction type info
 JURISDICTION_TYPE_CHOICES = (
     ('S', 'State'),
     ('CO', 'County'),
@@ -23,6 +23,8 @@ JURISDICTION_TYPE_CHOICES = (
     ('U', 'Unincorporated'), #meaning no jurisdiction, refer users to parent jurisdiction
     ('O', 'Other'),
 )
+#lss; see model methods https://docs.djangoproject.com/en/dev/topics/db/models/
+#the creation can be done with querysets https://docs.djangoproject.com/en/1.6/ref/models/querysets/#create
 
 class Jurisdiction(models.Model):
     name = models.CharField(max_length=64, blank=True, null=True, db_index=True)

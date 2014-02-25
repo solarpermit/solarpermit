@@ -7,6 +7,7 @@ from django.conf import settings
 import json
 #todo
 #check to see if this class will create valid answers
+#objects are created with querysets https://docs.djangoproject.com/en/1.6/ref/models/querysets/#create
 class TestVoting(TestCase):
     def setUp(self):
         self.users = [User.objects.create_user("testuser%s" % id, "testuser%s@testing.solarpermit.org" % id, "testuser")
