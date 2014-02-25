@@ -1,3 +1,5 @@
+#field valid update
+
 from website.utils.httpUtil import HttpRequestProcessor
 from website.models import Jurisdiction, Question, AnswerReference, OrganizationMember, QuestionCategory, User, ActionCategory, Action, Comment, UserCommentView, AnswerAttachment, Organization
 from website.utils.datetimeUtil import DatetimeHelper
@@ -515,7 +517,7 @@ class FieldValidationCycleUtil():
                 content['show_add_button'] = True
                 
         return content
-        
+        #here is one of the areas we are validating #lss;
     def get_validation_history(self, entity_name, entity_id):       # for approved items only
         data = {}
         if entity_name == 'requirement':
@@ -638,7 +640,7 @@ class FieldValidationCycleUtil():
                     value = value + "</div>"   
                               
         return value
-            
+            #lss;
     def process_vote(self, user, vote, entity_name, entity_id, user_confirm_vote='not_yet'):  
         if entity_name == 'requirement':
             category_name = 'VoteRequirement'
@@ -709,7 +711,7 @@ class FieldValidationCycleUtil():
         #self.rate(action_category_name, entity_name, eid, action_obj, user_id, jurisdiction_id)
         return 'registered'
         #return action_obj
-        
+        #lss;
     def pre_validation_check(self, action_category, vote, entity_id):
 
         answer = AnswerReference.objects.get(id=entity_id)
@@ -1000,7 +1002,7 @@ class FieldValidationCycleUtil():
             question_template = question.template
             
         return question_template        
-    
+    #lss;
     def save_answer(self, question_obj, answer, juris, action_category_name, user, is_callout, answer_id=None):
         if question_obj.id == 16:
             answer = self.process_answer(question_obj, answer)    
@@ -1076,7 +1078,7 @@ class FieldValidationCycleUtil():
             self.process_link_or_file(answerreference) 
 
         return answerreference 
-    
+    #lss;
     def process_answer(self, question, answer):
         # "default_value": "{\"percentage_of_total_system_cost_cap\": \"\", \"fee_per_inverter\": \"\", \"flat_rate_amt\": \"\", \"fee_per_major_components\": \"\", 
         # \"jurisdiction_cost_recovery_notes\": \"\", \"percentage_of_total_system_cost\": \"\", \"percentage_of_total_system_cost_cap_amt\": \"\", \"fee_per_component_cap\": \"\", 

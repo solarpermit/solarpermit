@@ -5,7 +5,8 @@ from website.models import User, RatingCategory, ActionCategory, Jurisdiction, Q
 from django.contrib.auth import authenticate
 from django.conf import settings
 import json
-
+#todo
+#check to see if this class will create valid answers
 class TestVoting(TestCase):
     def setUp(self):
         self.users = [User.objects.create_user("testuser%s" % id, "testuser%s@testing.solarpermit.org" % id, "testuser")

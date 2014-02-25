@@ -1,6 +1,6 @@
 import os, sys
 
-sys.path.insert(0, '/path/to/software')
+sys.path.insert(0, '/solarpermit/therian')
 
 import settings
 
