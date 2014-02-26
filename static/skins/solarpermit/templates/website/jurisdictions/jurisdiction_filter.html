@@ -1,48 +1,47 @@
-		{% if state != '' and state != None %}
-            {% if state == 'AK' %}
-                {% set county_equilvalent = 'boroughs' %}
-            {% elif state == 'LA' %}
-                {% set county_equilvalent = 'parishes' %}           
-            {% else %}
-                {% set county_equilvalent = 'counties' %}               
-            {% endif %} 
+{% if state != '' and state != None %}
+  {% if state == 'AK' %}
+    {% set county_equilvalent = 'boroughs' %}
+  {% elif state == 'LA' %}
+    {% set county_equilvalent = 'parishes' %}
+  {% else %}
+    {% set county_equilvalent = 'counties' %}
+  {% endif %}
+{% else %}
+  {% set county_equilvalent = 'counties' %}
+{% endif %}
+<div class="filter_header_row">
+  <form id="jurisdiction_search" name="jurisdiction_search" action="."
+  method="post" accept-charset="utf-8"
+  onSubmit="controller.submitForm('#jurisdiction_search');return false;">
+    <input id="text_2" class="searchfield_table_filter left"
+           type="text" name="text_2" placeholder="Search"
+           value="{{secondary_search_str}}"/>
+    <input type="hidden" id="ajax" name="ajax" value="filter"/>
+    <input type="hidden" id="text" name="q" value="{{primary_search_str}}"/>
+    <input type="hidden" id="state" name="state" value="{{state}}"/>
+    <input type="hidden" id="sort_by" name="sort_by" value="name"/>
+    <input type="hidden" id="sort_dir" name="sort_dir" value="{{sort_dir}}"/>
+    <input type="hidden" id="page" name="caller" value="{{caller}}"/>
+    <select id="filter" name="filter" onChange="$('#jurisdiction_search').submit();">
+      <!--controller.submitForm('#jurisdiction_search')-->
+      <option value="all" {% if filter == 'all' %}selected{% endif %}>Show all jurisdictions</option>
+      <option value="city" {% if filter == 'city' %}selected{% endif %}>Show only cities</option>
+      <option value="county" {% if filter == 'county' %}selected{% endif %}>Show only {{county_equilvalent}}</option>
+      <option value="state" {% if filter == 'state' %}selected{% endif %}>Show only state-level jurisdictions</option>
+    </select>
+    {% if get_state_jurisdiction == True %}
+      <span style="padding-left:10px;">
+	<input type="checkbox" name="only_jurisditions_with_data"
+               id="only_jurisditions_with_data" value="1"
+               {% if only_jurisditions_with_data | int == 1 %}checked{% endif %}/>
+      </span>
+      <span id="only_jurisdictions_with_data_message" class="label">
+        {% if only_jurisditions_with_data | int == 1 %}
+          Jurisdictions without data are hidden. Uncheck to show.
         {% else %}
-            {% set county_equilvalent = 'counties' %}          
+          Jurisdictions without data are visible. Check to hide.
         {% endif %}
-        <div class="filter_header_row">
-			<form id="jurisdiction_search" name="jurisdiction_search" action="." method="post" onSubmit="controller.submitForm('#jurisdiction_search');return false;" accept-charset="utf-8">
-				<input id="text_2" class="searchfield_table_filter left" type="text" name="text_2" placeholder="Search" value="{{secondary_search_str}}" />
-				<input type="hidden" id="ajax" name="ajax" value="filter" />
-				<input type="hidden" id="text" name="q" value="{{primary_search_str}}" />
-				<input type="hidden" id="state" name="state" value="{{state}}" />
-				<input type="hidden" id="sort_by" name="sort_by" value="name" />
-				<input type="hidden" id="sort_dir" name="sort_dir" value="{{sort_dir}}" />
-				<input type="hidden" id="page" name="caller" value="{{caller}}" />
-				<select id="filter" name="filter" onChange="$('#jurisdiction_search').submit();" >  <!--controller.submitForm('#jurisdiction_search')-->
-					<option value="all" {% if filter == 'all' %}selected{% endif %} >Show all jurisdictions</option>
-					<option value="city" {% if filter == 'city' %}selected{% endif %}>Show only cities</option>
-					<option value="county" {% if filter == 'county' %}selected{% endif %}>Show only {{county_equilvalent}}</option>
-					<option value="state" {% if filter == 'state' %}selected{% endif %}>Show only state-level jurisdictions</option>					
-				</select>
-				{% if get_state_jurisdiction == True %}			
-				<span style="padding-left:10px;" >
-				<input type="checkbox" name="only_jurisditions_with_data" id="only_jurisditions_with_data" value="1" {% if only_jurisditions_with_data | int == 1 %}checked{% endif %}  /> 
-				</span>
-				<span id="only_jurisdictions_with_data_message" class="label">{% if only_jurisditions_with_data | int == 1 %}Jurisdictions without data are hidden. Uncheck to show.{% else %}Jurisdictions without data are visible. Check to hide.{% endif %}
-				</span>	
-				{% endif %}			
-			</form>
-		</div>
-		
-{% block endjs %}
-		<script type='text/javascript'>
-			
-			$(document).ready(function() {
-      
-                $('#only_jurisditions_with_data').click(function(){
-                    $('#jurisdiction_search').submit();
-                });        
-                                        
-			});
-		</script>
-{% endblock %}
+      </span>
+    {% endif %}
+  </form>
+</div>
