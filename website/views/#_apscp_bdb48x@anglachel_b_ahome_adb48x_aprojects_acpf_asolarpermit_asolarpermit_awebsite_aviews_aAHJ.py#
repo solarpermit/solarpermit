@@ -1883,8 +1883,7 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
     # all questions
     if not question_ids and (category == "quirks" or category == "favorite_fields" or category == "attachments"):
         return []
-    # in either case, if we have a list of question_ids, then we want
-    # to limit ourselves to just that list
+    # in either case, if we have a list of question_ids, thn we want t
     placeholder = ",".join(["%s" for id in question_ids]) if question_ids else None
     query_str = '''(SELECT website_answerreference.id,
                             website_answerreference.question_id as question_id,
