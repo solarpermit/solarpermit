@@ -83,9 +83,23 @@ def get_state_jurisdictions(request, state='', sort_by='', sort_dir='', page_num
                 data['only_jurisditions_with_data'] = request.session['only_jurisditions_with_data']
             else:
                 data['only_jurisditions_with_data'] = 1
-                
     request.session['only_jurisditions_with_data'] = data['only_jurisditions_with_data']          
-     
+
+    if sort_by == '' or sort_by == None:
+        sort_by = 'name'
+    elif sort_by == 'last':
+        sort_by = 'last_contributed'
+
+    if sort_dir == '' or sort_dir == None:
+        sort_dir = 'asc'
+    if sort_dir == 'asc':
+        order_by_str = sort_by
+    else:
+        order_by_str = '-'+sort_by
+
+    data['sort_by'] = sort_by
+    data['sort_dir'] = sort_dir
+
     data['secondary_search_str'] = search_str
     data['filter'] = filter
         
@@ -106,15 +120,7 @@ def get_state_jurisdictions(request, state='', sort_by='', sort_dir='', page_num
     sort_columns['county'] = 'asc'
     sort_columns['last_contributed'] = 'asc'
     sort_columns['last_contributed_by'] = 'asc'
-
-    if sort_by == '' or sort_by == None:
-        sort_by = 'name'
-    
-    data['sort_by'] = sort_by
-    
-    if sort_dir == '' or sort_dir == None:
-        sort_dir = 'asc'
-    data['sort_dir'] = sort_dir
+   
     data['current_nav'] = 'browse'
     href = '/jurisdiction/browse/?state=' + state
 
@@ -149,24 +155,6 @@ def get_state_jurisdictions(request, state='', sort_by='', sort_dir='', page_num
     data['next_page_param'] = 'page='+str(page_number + 1)
     
     objects = Jurisdiction.objects.none() 
-    if sort_by == '' or sort_by == None:     
-        pass
-    else:
-        if sort_by == 'last':
-            sort_by = 'last_contributed'
-        else:
-            sort_by = 'last_contributed_by'
-            
-    if sort_dir == '' or sort_dir == None:
-        sort_dir = 'asc'
-  
-           
-    if sort_dir == 'asc':           
-        order_by_str = sort_by
-        data['sort_dir'] = 'asc'       
-    else:
-        order_by_str = '-'+sort_by
-        data['sort_dir'] = 'desc'
         
         
     if search_str == '':
