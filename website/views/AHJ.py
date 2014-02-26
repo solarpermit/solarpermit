@@ -651,24 +651,26 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             dajax.add_data(data, 'process_ahj_answers_attachments')
             return HttpResponse(dajax.json())      
     
-        if (ajax == 'get_ahj_num_quirks_favorites'):        
+        if (ajax == 'get_ahj_num_quirks_favorites'):
+            if not user.is_authenticated():
+                return HttpResponse(status=403)
             view_questions_obj = ViewQuestions()
             quirks = view_questions_obj.get_jurisdiction_quirks(jurisdiction)
-            
-            data['quirk_number_of_questions'] = 0    
+
+            data['quirk_number_of_questions'] = 0
             if 'view_id' in quirks:
-                data['quirk_number_of_questions'] = len(quirks['view_questions']) 
-                
-            data['user_number_of_favorite_fields'] = 0    
+                data['quirk_number_of_questions'] = len(quirks['view_questions'])
+
+            data['user_number_of_favorite_fields'] = 0
             user_obj = User.objects.get(id=user.id)
             if user_obj != None:
                 user_favorite_fields = view_questions_obj.get_user_favorite_fields(user_obj)
                 if 'view_id' in user_favorite_fields:
                     data['view_id'] = user_favorite_fields['view_id']
-                    data['user_number_of_favorite_fields'] = len(user_favorite_fields['view_questions'])               
-                    
+                    data['user_number_of_favorite_fields'] = len(user_favorite_fields['view_questions'])
+
             dajax.add_data(data, 'process_ahj_qirks_user_favorites')
-         
+
             return HttpResponse(dajax.json())
         
         if (ajax == 'get_ahj_answers_votes'):
