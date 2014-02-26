@@ -608,6 +608,8 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             return HttpResponse(dajax.json())   
         
         if (ajax == 'get_ahj_questions_actions'):
+            if not user.is_authenticated():
+                return HttpResponse(status=403)
             data['questions_actions'] = get_ahj_actions( jurisdiction, user)
              
             dajax.add_data(data, 'process_ahj_actions')
