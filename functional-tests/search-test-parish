@@ -3,43 +3,42 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://dev.solarpermit.org/" />
-<title>Site-map-link-to-homepage</title>
+<title>New Test</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Site-map-link-to-homepage</td></tr>
+<tr><td rowspan="1" colspan="3">New Test</td></tr>
 </thead><tbody>
 <tr>
 	<td>open</td>
-	<td>/sitemap/</td>
+	<td>/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=search_field</td>
+	<td>Parish acadia</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a.search-a</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>css=div.contentOnlyPage &gt; h1</td>
-	<td>Site Map</td>
+	<td>//div[@id='top_main_content']/span[2]</td>
+	<td>Empty data fields visible. Check to hide.</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=SolarPermit.org</td>
-	<td></td>
+	<td>verifyText</td>
+	<td>css=h1.page_title</td>
+	<td>Parish of Acadia, LA</td>
 </tr>
 <tr>
-	<td>waitForTitle</td>
-	<td>Home - National Solar Permitting Database</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTitle</td>
-	<td>Home - National Solar Permitting Database</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>css=div.cssCell.autoPlay</td>
-	<td></td>
+	<td>verifyText</td>
+	<td>link=Louisiana</td>
+	<td>Louisiana</td>
 </tr>
 </tbody></table>
 </body>
