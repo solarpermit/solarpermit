@@ -7,7 +7,27 @@ from django.conf import settings
 from website.tests.test_voting import TestVoting
 import json
 
+'''
+cron_validate_answers
 
+function setup
+Create sample jurisdiction
+create sample 3 questions for approved, pending, rejected
+create sample answers
+superuser add answer
+
+function vote
+down vote answer to limit to reject
+upvote answer to limit to approve
+leave answer pending
+
+function timepass
+simulate days passing
+call cron script every simulated day.
+assert answered questions against template
+log errors
+
+'''
 class TestValidHistory(TestCase):
     def setUp(self):
         self.users = [User.objects.create_user("testuser%s" % id, 
@@ -50,6 +70,6 @@ class TestValidHistory(TestCase):
             question.delete()
         for answer in self.answers:
             answer.delete()
-#    tried calling TestVoting.vote()... didnt seem to work
+#    tried calling TestVoting.vote()... didnt seem to work gotta use querysets
 #    def test_import(self):
 #
