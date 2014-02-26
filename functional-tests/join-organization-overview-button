@@ -56,9 +56,6 @@
 	<td>css=div.label</td>
 	<td></td>
 </tr>
-<<<<<<< Updated upstream:functional-tests/join-organization-overview-button
-
-=======
 <tr>
 	<td>verifyEval</td>
 	<td>window.document.getElementById('introVideo').contentWindow.document.querySelector(&quot;.flideo &gt; video:nth-child(1)&quot;).played.end(0) &gt; 0</td>

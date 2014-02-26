@@ -26,13 +26,23 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>css=div.cssCell.ahj_category_header</td>
+	<td>waitForText</td>
+	<td>css=h1.page_title</td>
+	<td>Gun Barrel City, TX</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=div.ahj_category_header</td>
+	<td>General</td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>id=general</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTitle</td>
-	<td>Gun Barrel City, Terrell , TX - National Solar Permitting Database</td>
+	<td>Gun Barrel City, Henderson County, TX - National Solar Permitting Database</td>
 	<td></td>
 </tr>
 </tbody></table>
