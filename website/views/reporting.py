@@ -1,8 +1,4 @@
-#
-# code is function but needs enhancement to conform to DRY methodology
-#
-
-# django components
+# -*- coding: utf-8 -*-
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template import Context
 from website.utils.httpUtil import HttpRequestProcessor
@@ -39,56 +35,84 @@ def build_query(question, field_map):
            ''' % { "question_id": question.id,
                    "fields": ", ".join(fields) }
 
-def json_match(field_name, value):
+def json_match(field_name, value, op="="):
+    return 'json_get(value, "%s") %s "%s"' % (field_name, op, value)
     return regexp_match('"%(name)s": *"%(value)s"' % { "name": escape_regex_inclusion(field_name),
                                                        "value": escape_regex_inclusion(value) })
-
 def json_extract(field_name):
-    uhh...
+    return 'json_get(value, "%s")' % field_name
 
 def regexp_match(regexp):
     return 'value REGEXP \'%(regexp)s\' COLLATE utf8_general_ci' % { "regexp": regexp }
-
 def escape_regex_inclusion(s):
     return re.sub(r'([\[\].*?{}()|$^])',
                   r'[[.\1.]]',
                   s)
 
-def null_match():
-    return 'value IS NULL'
-
-def not_null_match():
-    return 'value IS NOT NULL'
+def null_match(field='value'):
+    return '%s IS NULL' % field
+def not_null_match(field='value'):
+    return '%s IS NOT NULL' % field
 
 def sum_match(match):
     return 'SUM(%s)' % match
-
 def count_match(match):
     return 'COUNT(%s)' % match
-
 def count_all():
     return 'COUNT(*)'
 
 def total():
     return not_null_match()
 
-def or_match(*args):
-    return " OR ".join(args)
-
 def and_match(*args):
     return " AND ".join(args)
-
+def or_match(*args):
+    return " OR ".join(args)
 def not_match(match):
     return 'NOT (%s)' % match
 
+def lt(a, b):
+    return "%s < %s" % (a, b)
+def gt(a, b):
+    return "%s > %s" % (a, b)
+def lte(a, b):
+    return "%s <= %s" % (a, b)
+def gte(a, b):
+    return "%s >= %s" % (a, b)
+
+def between(v, a, b):
+    if a > b:
+        (a, b) = (b, a)
+    return "%s BETWEEN %s AND %s" % (v, a, b)
+
+def parenthesize(match):
+    return "("+ match +")"
+
 def chart(type, spec):
     return {"type": type, "spec": spec}
-
 def pie(spec):
     return chart("pie", spec)
-
 def hist(spec):
     return chart("histogram", spec)
+
+def add_other(spec):
+    copy = OrderedDict(spec)
+    conditions = [v for (k,v) in copy.iteritems()]
+    copy["Other"] = not_match(or_match(*conditions))
+    return copy
+def summarize(spec):
+    copy = OrderedDict(spec)
+    for (k,v) in copy.iteritems():
+        copy[k] = sum_match(v)
+    return copy
+def add_sum_total(spec):
+    copy = OrderedDict(spec)
+    copy["Total"] = sum_match(total())
+    return copy
+def add_count_total(spec):
+    copy = OrderedDict(spec)
+    copy["Total"] = count_all()
+    return copy
 
 def coverage_report():
     return pie(OrderedDict([("Answered", sum_match(not_null_match())),
@@ -114,25 +138,35 @@ def yes_no_exception_field(field_name):
 # macros, man, macros.
 # also, shouldn't this go by multiples of 5? presumably it's business days…
 def turn_around_report():
-    hist(OrderedDict([("Hours", sum_match(json_match("time_unit", "hour(s)"))),
-                      ("1-2 days", sum_match(and_match(json_match("time_unit", "day(s)"),
-                                                       lte(unsigned(json_extract("time_qty")), 2)))),
-                      ("3-7 days", sum_match(or_match(and_match(json_match("time_unit", "day(s)"),
-                                                                between(unsigned(json_extract("time_qty")), 3, 7)),
-                                                      and_match(json_match("time_unit", "week(s)"),
-                                                                json_match("time_qty", "1"))))),
-                      ("8-14 days", sum_match(or_match(and_match(json_match("time_unit", "day(s)"),
-                                                                 between(unsigned(json_extract("time_qty")), 8, 14)),
-                                                       and_match(json_match("time_unit", "week(s)"),
-                                                                 json_match("time_qty", "2"))))),
-                      ("15-21 days", sum_match(or_match(and_match(json_match("time_unit", "day(s)"),
-                                                                  between(unsigned(json_extract("time_qty")), 15, 21)),
+    not_freeform = parenthesize(or_match(null_match(json_extract("free-form")),
+                                         json_match("free-form", "")))
+    bins = OrderedDict([("Same day", and_match(not_freeform,
+                                               json_match("time_unit", "hour(s)"))),
+                        ("1-2 days", and_match(not_freeform,
+                                               json_match("time_unit", "day(s)"),
+                                               lte(json_extract("time_qty"), 2))),
+                        ("3-7 days", and_match(not_freeform,
+                                               or_match(and_match(json_match("time_unit", "day(s)"),
+                                                                  between(json_extract("time_qty"), 3, 7)),
                                                         and_match(json_match("time_unit", "week(s)"),
-                                                                  json_match("time_qty", "3"))))),
-                      ("22+ days", sum_match(or_match(and_match(json_match("time_unit", "day(s)"),
-                                                                gte(unsigned(json_extract("time_qty")), 22)),
-                                                      and_match(json_match("time_unit", "week(s)"),
-                                                                gte(unsigned(json_extract("time_qty")), 4)))))]))
+                                                                  json_match("time_qty", "1"))))),
+                        ("8-14 days", and_match(not_freeform,
+                                                or_match(and_match(json_match("time_unit", "day(s)"),
+                                                                   between(json_extract("time_qty"), 8, 14)),
+                                                         and_match(json_match("time_unit", "week(s)"),
+                                                                   json_match("time_qty", "2"))))),
+                        ("15-21 days", and_match(not_freeform,
+                                                 or_match(and_match(json_match("time_unit", "day(s)"),
+                                                                    between(json_extract("time_qty"), 15, 21)),
+                                                          and_match(json_match("time_unit", "week(s)"),
+                                                                    json_match("time_qty", "3"))))),
+                        ("22+ days", and_match(not_freeform,
+                                               or_match(and_match(json_match("time_unit", "day(s)"),
+                                                                  gte(json_extract("time_qty"), 22)),
+                                                        and_match(json_match("time_unit", "week(s)"),
+                                                                  gte(json_extract("time_qty"), 4))))),
+                        ("Freeform", json_match("free-form", "", op="!="))])
+    return hist(add_sum_total(summarize(add_other(bins))))
 
 
 reports_by_type = {
@@ -287,7 +321,6 @@ def report_on(request, question_id):
     idx = 0
     for report in reports:
       query = build_query(question, report['spec'])
-      print(query)
       cursor = connection.cursor()
       cursor.execute(query)
       table = [{'key': k, 'value': v } for (k,v) in zip([col[0] for col in cursor.description], cursor.fetchone())]
