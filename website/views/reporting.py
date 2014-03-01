@@ -20,27 +20,32 @@ def build_query(question, field_map):
     # binding
     fields = []
     for name, match in field_map.items():
-        fields.append("CONVERT(%(match)s, UNSIGNED) AS '%(name)s'" % { "name": name, "match": match })
-    return '''SELECT %(fields)s
-              FROM (SELECT (SELECT value
-                            FROM website_answerreference
-                            WHERE id = (SELECT MAX(id)
-                                        FROM website_answerreference
-                                        WHERE website_answerreference.jurisdiction_id = website_jurisdiction.id AND
-                                        approval_status = 'A' AND
-                                        question_id = %(question_id)s)) AS value
-                    FROM website_jurisdiction
-                    WHERE website_jurisdiction.id NOT IN (1, 101105) AND
-                          website_jurisdiction.jurisdiction_type != 'u') AS temp
+        fields.append("       CONVERT(%(match)s, UNSIGNED) AS '%(name)s'\n" % { "name": name, "match": match })
+    return '''SELECT
+                     %(fields)s
+              FROM (SELECT id AS answer_id,
+                           (SELECT value FROM website_answerreference WHERE id = answer_id) AS value
+                    FROM (SELECT (SELECT id
+                                  FROM website_answerreference
+                                  WHERE id = (SELECT MAX(id)
+                                              FROM website_answerreference
+                                              WHERE website_answerreference.jurisdiction_id = website_jurisdiction.id AND
+                                              approval_status = 'A' AND
+                                              question_id = %(question_id)s)) AS id
+                          FROM website_jurisdiction
+                          WHERE website_jurisdiction.id NOT IN (1, 101105) AND
+                                website_jurisdiction.jurisdiction_type != 'u') AS temp0) as temp1
            ''' % { "question_id": question.id,
                    "fields": ", ".join(fields) }
 
 def json_match(field_name, value, op="="):
-    return 'json_get(value, "%s") %s "%s"' % (field_name, op, value)
+    return 'json_get(value, "%s") %s "%s" COLLATE utf8_general_ci' % (field_name, op, value)
     return regexp_match('"%(name)s": *"%(value)s"' % { "name": escape_regex_inclusion(field_name),
                                                        "value": escape_regex_inclusion(value) })
 def json_extract(field_name):
     return 'json_get(value, "%s")' % field_name
+def json_valid():
+    return 'json_valid(value)'
 
 def regexp_match(regexp):
     return 'value REGEXP \'%(regexp)s\' COLLATE utf8_general_ci' % { "regexp": regexp }
@@ -62,14 +67,14 @@ def count_all():
     return 'COUNT(*)'
 
 def total():
-    return not_null_match()
+    return not_null_match("answer_id")
 
 def and_match(*args):
-    return " AND ".join(args)
+    return parenthesize(" AND ".join(args))
 def or_match(*args):
-    return " OR ".join(args)
+    return parenthesize(" OR ".join(args))
 def not_match(match):
-    return 'NOT (%s)' % match
+    return parenthesize('NOT (%s)' % match)
 
 def lt(a, b):
     return "%s < %s" % (a, b)
@@ -98,7 +103,11 @@ def hist(spec):
 def add_other(spec):
     copy = OrderedDict(spec)
     conditions = [v for (k,v) in copy.iteritems()]
-    copy["Other"] = not_match(or_match(*conditions))
+    copy["Other"] = or_match(and_match(not_null_match("answer_id"),
+                                       null_match("value")),
+                             and_match(not_null_match("value"),
+                                       not_match(json_valid())),
+                             not_match(or_match(*conditions)))
     return copy
 def summarize(spec):
     copy = OrderedDict(spec)
@@ -115,31 +124,26 @@ def add_count_total(spec):
     return copy
 
 def coverage_report():
-    return pie(OrderedDict([("Answered", sum_match(not_null_match())),
-                            ("Unanswered", sum_match(null_match())),
-                            ("Total", count_all())]))
+    spec = OrderedDict([("Answered", not_null_match("answer_id")),
+                        ("Unanswered", null_match("answer_id"))])
+    return pie(add_count_total(summarize(spec)))
 
 def yes_no_field(field_name):
-    return pie(OrderedDict([("Yes", sum_match(json_match(field_name, "yes"))),
-                            ("No", sum_match(json_match(field_name, "no"))),
-                            ("Other", sum_match(not_match(or_match(json_match(field_name, "yes"),
-                                                                   json_match(field_name, "no"))))),
-                            ("Total", sum_match(total()))]))
+    spec = OrderedDict([("Yes", json_match(field_name, "yes")),
+                        ("No", json_match(field_name, "no"))])
+    return pie(add_sum_total(summarize(add_other(spec))))
 
 def yes_no_exception_field(field_name):
-    return pie(OrderedDict([("Yes", sum_match(json_match(field_name, "yes"))),
-                            ("Yes, with exceptions", sum_match(json_match(field_name, "yes, with exceptions"))),
-                            ("No", sum_match(json_match(field_name, "no"))),
-                            ("Other", sum_match(not_match(or_match(json_match(field_name, "yes"),
-                                                                   json_match(field_name, "yes, with exceptions"),
-                                                                   json_match(field_name, "no"))))),
-                            ("Total", sum_match(total()))]))
+    spec = OrderedDict([("Yes", json_match(field_name, "yes")),
+                        ("Yes, with exceptions", json_match(field_name, "yes, with exceptions")),
+                        ("No", json_match(field_name, "no"))])
+    return pie(add_sum_total(summarize(add_other(spec))))
 
 # macros, man, macros.
 # also, shouldn't this go by multiples of 5? presumably it's business days…
 def turn_around_report():
-    not_freeform = parenthesize(or_match(null_match(json_extract("free-form")),
-                                         json_match("free-form", "")))
+    not_freeform = or_match(null_match(json_extract("free-form")),
+                            json_match("free-form", ""))
     bins = OrderedDict([("Same day", and_match(not_freeform,
                                                json_match("time_unit", "hour(s)"))),
                         ("1-2 days", and_match(not_freeform,
@@ -168,92 +172,66 @@ def turn_around_report():
                         ("Freeform", json_match("free-form", "", op="!="))])
     return hist(add_sum_total(summarize(add_other(bins))))
 
+def plan_check_service_type_report():
+    spec = OrderedDict([("Over the Counter",
+                         json_match("plan_check_service_type",
+                                    "over the counter")),
+                        ("In-House (not same day)",
+                         json_match("plan_check_service_type",
+                                    "in-house")),
+                        ("Outsourced",
+                         json_match("plan_check_service_type",
+                                    "outsourced"))])
+    return pie(add_sum_total(summarize(add_other(spec))))
+
+def module_drawings_report():
+    spec = OrderedDict([("Yes", json_match("value", "must draw individual modules")),
+                        ("No", json_match("value", "n in series in a rectangle allowed"))])
+    return pie(add_sum_total(summarize(add_other(spec))))
+
+def inspection_approval_report():
+    spec = OrderedDict([("In person", json_match("apply", "in person")),
+                        ("Remotely", json_match("apply", "remotely"))])
+    return pie(add_sum_total(summarize(add_other(spec))))
+
+def time_window_report():
+    spec = OrderedDict([("Exact time given", json_match("time_window", "0")),
+                        ("2 hours (or less)", json_match("time_window", "2")),
+                        ("Half Day (2 to 4 hours)", json_match("time_window", "4")),
+                        ("Full Day (greater than 4 hours)", json_match("time_window", "8"))])
+    return hist(add_sum_total(summarize(add_other(spec))))
 
 reports_by_type = {
     "available_url_display.html": [coverage_report(), yes_no_field("available")],
     "radio_with_exception_display.html": [coverage_report(), yes_no_exception_field("required")],
-    "plan_check_service_type_display.html": [coverage_report(),
-                                             pie(OrderedDict([("Over the Counter",
-                                                               sum_match(json_match("plan_check_service_type",
-                                                                                    "over the counter"))),
-                                                              ("In-House (not same day)",
-                                                               sum_match(json_match("plan_check_service_type",
-                                                                                    "in-house"))),
-                                                              ("Outsourced",
-                                                               sum_match(json_match("plan_check_service_type",
-                                                                                    "outsourced"))),
-                                                              ("Other",
-                                                               sum_match(not_match(or_match(json_match("plan_check_service_type",
-                                                                                                       "over the counter"),
-                                                                                            json_match("plan_check_service_type",
-                                                                                                       "in-house"),
-                                                                                            json_match("plan_check_service_type",
-                                                                                                       "outsourced"))))),
-                                                              ("Total", sum_match(total()))]))],
-    "radio_compliant_sb1222_with_exception.html": [coverage_report(),
-                                                   yes_no_exception_field("compliant")],
-    "inspection_checklists_display.html": [coverage_report(),
-                                           yes_no_field("value")],
-    "radio_has_training_display.html": [coverage_report(),
-                                        yes_no_field("value")],
+    "plan_check_service_type_display.html": [coverage_report(), plan_check_service_type_report()],
+    "radio_compliant_sb1222_with_exception.html": [coverage_report(), yes_no_exception_field("compliant")],
+    "inspection_checklists_display.html": [coverage_report(), yes_no_field("value")],
+    "radio_has_training_display.html": [coverage_report(), yes_no_field("value")],
     "phone_display.html": [coverage_report()],
     "url.html": [coverage_report()],
     "address_display.html": [coverage_report()],
-    "radio_submit_PE_stamped_structural_letter_with_exception_display.html": [coverage_report(),
-                                                                              yes_no_exception_field("required")],
+    "radio_submit_PE_stamped_structural_letter_with_exception_display.html": [coverage_report(), yes_no_exception_field("required")],
     "hours_display.html": [coverage_report()], # histogram
-    "turn_around_time_display.html": [coverage_report(), # histogram, time_unit/time_qty
-                                      turn_around_report()],
+    "turn_around_time_display.html": [coverage_report(), turn_around_report()],
     "available_url_display.html": [coverage_report()],
     "permit_cost_display.html": [coverage_report()], # check the spec, probably needs histograms and stuff
-    "radio_required_for_page_sizes_display.html": [coverage_report(),
-                                                   yes_no_field("required")], # should do more for the required values
-    "radio_required_for_scales_display.html": [coverage_report(),
-                                               yes_no_field("required")], # likewise
-    "radio_required_display.html": [coverage_report(),
-                                    yes_no_field("required")],
-    "radio_covered_with_exception_display.html": [coverage_report(),
-                                                  yes_no_exception_field("required")],
-    "radio_studer_vent_rules_with_exception_display.html": [coverage_report(),
-                                                            yes_no_exception_field("allowed")],
-    "radio_module_drawings_display.html": [coverage_report(),
-                                           pie(OrderedDict([("Yes",
-                                                             sum_match(json_match("value",
-                                                                                  "must draw individual modules"))),
-                                                            ("No",
-                                                             sum_match(json_match("value",
-                                                                                  "n in series in a rectangle allowed"))),
-                                                            ("Total", sum_match(total()))]))],
-    "radio_allowed_with_exception_display.html": [coverage_report(),
-                                                  yes_no_exception_field("allowed")],
+    "radio_required_for_page_sizes_display.html": [coverage_report(), yes_no_field("required")], # should do more for the required values
+    "radio_required_for_scales_display.html": [coverage_report(), yes_no_field("required")], # likewise
+    "radio_required_display.html": [coverage_report(), yes_no_field("required")],
+    "radio_covered_with_exception_display.html": [coverage_report(), yes_no_exception_field("required")],
+    "radio_studer_vent_rules_with_exception_display.html": [coverage_report(), yes_no_exception_field("allowed")],
+    "radio_module_drawings_display.html": [coverage_report(), module_drawings_report()],
+    "radio_allowed_with_exception_display.html": [coverage_report(), yes_no_exception_field("allowed")],
     "required_spec_sheets_display.html": [coverage_report()],
     "homeowner_requirements_display.html": [coverage_report()], # two yes/no answers in one
-    "fire_setbacks_display.html": [coverage_report(),
-                                   yes_no_exception_field("enforced")],
-    "radio_inspection_approval_copies_display.html": [coverage_report(),
-                                                      pie(OrderedDict([("In person", sum_match(json_match("apply",
-                                                                                                          "in person"))),
-                                                                       ("Remotely", sum_match(json_match("apply",
-                                                                                                         "remotely"))),
-                                                                       ("Total", sum_match(total()))]))],
+    "fire_setbacks_display.html": [coverage_report(), yes_no_exception_field("enforced")],
+    "radio_inspection_approval_copies_display.html": [coverage_report(), inspection_approval_report()],
     "signed_inspection_approval_delivery_display.html": [coverage_report()],
     "radio_vent_spanning_rules_with_exception_display.html": [coverage_report(), yes_no_exception_field("allowed")],
     "solar_permitting_checklists_display.html": [coverage_report()],
     "radio_available_with_exception_display.html": [coverage_report(), yes_no_exception_field("available")],
-    "time_window_display.html": [coverage_report(), # histogram
-                                 hist(OrderedDict([("Exact time given", sum_match(json_match("time_window",
-                                                                                             "0"))),
-                                                   ("2 hours (or less)", sum_match(json_match("time_window",
-                                                                                              "2"))),
-                                                   ("Half Day (2 to 4 hours)", sum_match(json_match("time_window",
-                                                                                                    "4"))),
-                                                   ("Full Day (greater than 4 hours)", sum_match(json_match("time_window",
-                                                                                                            "8"))),
-                                                   ("Other", sum_match(not_match(or_match(json_match("time_window", "0"),
-                                                                                          json_match("time_window", "2"),
-                                                                                          json_match("time_window", "4"),
-                                                                                          json_match("time_window", "8"))))),
-                                                   ("Total", sum_match(total()))]))],
+    "time_window_display.html": [coverage_report(), time_window_report()],
     "radio_has_training_display.html": [coverage_report(), yes_no_field("value")],
     "radio_licensing_required_display.html": [coverage_report(), yes_no_field("required")],
     "online_forms.html": [coverage_report()],
