@@ -52,7 +52,7 @@
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>css=span</td>
+	<td>css=h1.page_title &gt; span</td>
 	<td>Results for &quot;bristol county&quot;</td>
 </tr>
 <tr>

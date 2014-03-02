@@ -63,7 +63,7 @@
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>css=span</td>
+	<td>css=h1.page_title &gt; span</td>
 	<td>Results for &quot;dallas city&quot;</td>
 </tr>
 <tr>
@@ -126,7 +126,10 @@
 	<td>storedVars['auto_complete_six']==storedVars['search_result_six']</td>
 	<td>true</td>
 </tr>
+<<<<<<< HEAD
 
+=======
+>>>>>>> functional-test
 </tbody></table>
 </body>
 </html>

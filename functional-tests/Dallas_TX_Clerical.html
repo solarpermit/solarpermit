@@ -12,32 +12,7 @@
 </thead><tbody>
 <tr>
 	<td>open</td>
-	<td>/</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
 	<td>/jurisdiction/dallas-tx/</td>
-	<td></td>
-</tr>
-<tr>
-	<td>sendKeys</td>
-	<td>id=search_field</td>
-	<td>Dallas, TX</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>css=a.search-a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>select</td>
-	<td>id=filter</td>
-	<td>label=Show only cities</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Dallas, TX</td>
 	<td></td>
 </tr>
 <tr>
@@ -51,13 +26,23 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForText</td>
+	<td>//div[@id='ahj_tab_content cssTable']/div/div/div/div[16]/div[2]</td>
+	<td>exact:Don't see the info you're looking for here?</td>
+</tr>
+<tr>
 	<td>verifyText</td>
-	<td>id=clerical</td>
+	<td>css=div.ahj_category_header</td>
 	<td>Clerical</td>
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>css=h3.ahj_category_header</td>
+	<td>//div[@id='child_of_div_17']/div/span[2]</td>
+	<td>Page size requirements for submittals</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>id=clerical</td>
 	<td>Clerical</td>
 </tr>
 </tbody></table>
