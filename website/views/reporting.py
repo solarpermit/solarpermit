@@ -217,9 +217,9 @@ reports_by_type = {
     "available_url_display.html": [coverage_report()],
     "permit_cost_display.html": [coverage_report()], # check the spec, probably needs histograms and stuff
     "radio_required_for_page_sizes_display.html": [coverage_report(), yes_no_field("required")], # should do more for the required values
-    "radio_required_for_scales_display.html": [coverage_report(), yes_no_field("required")], # likewise
-    "radio_required_display.html": [coverage_report(), yes_no_field("required")],
-    "radio_covered_with_exception_display.html": [coverage_report(), yes_no_exception_field("required")],
+    "radio_required_for_scales_display.html": [coverage_report()], # likewise
+    "radio_required_display.html": [coverage_report()],
+    "radio_covered_with_exception_display.html": [coverage_report(), yes_no_exception_field("allowed")],
     "radio_studer_vent_rules_with_exception_display.html": [coverage_report(), yes_no_exception_field("allowed")],
     "radio_module_drawings_display.html": [coverage_report(), module_drawings_report()],
     "radio_allowed_with_exception_display.html": [coverage_report(), yes_no_exception_field("allowed")],
