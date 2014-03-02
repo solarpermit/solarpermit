@@ -43,22 +43,17 @@
 <tr>
 	<td>verifyText</td>
 	<td>css=tr.odd &gt; th</td>
-	<td>Yes</td>
+	<td>Answered</td>
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[3]/th</td>
-	<td>Yes, with exceptions</td>
+	<td>//div[@id='report0']/table/tbody/tr[3]/th</td>
+	<td>Unanswered</td>
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/th</td>
-	<td>No</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/th</td>
-	<td>Other</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
+	<td>Total</td>
 </tr>
 <tr>
 	<td>verifyText</td>
@@ -77,17 +72,12 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[3]/th</td>
+	<td>//div[@id='report0']/table/tbody/tr[3]/th</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/th</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/th</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
 	<td></td>
 </tr>
 <tr>
@@ -107,43 +97,175 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/td</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row</td>
+	<td>Value</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.odd &gt; th</td>
+	<td>Yes</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[3]/th</td>
+	<td>Yes, with exceptions</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[4]/th</td>
+	<td>No</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+<<<<<<< Updated upstream
+	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/th</td>
+	<td>Other</td>
+=======
+	<td>//div[@id='report1']/table/tbody/tr[5]/th</td>
+	<td>Other</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[6]/th</td>
+	<td>Total</td>
+>>>>>>> Stashed changes
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row_right</td>
+	<td>Jurisdictions</td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/td</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.odd &gt; th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[3]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[4]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[5]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[6]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row_right</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.odd &gt; td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[4]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[5]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[6]/td</td>
 	<td></td>
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>css=td</td>
+	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(2) &gt; td:nth-child(2)</td>
+	<td>answered</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(3) &gt; td:nth-child(2)</td>
+	<td>unanswered</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(4) &gt; td:nth-child(2)</td>
+	<td>total</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>parseInt(storedVars['answered']) + parseInt(storedVars['unanswered'])</td>
+	<td>${total}</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(2) &gt; td:nth-child(2)</td>
 	<td>yes</td>
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>css=tr.even &gt; td</td>
+	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(3) &gt; td:nth-child(2)</td>
 	<td>yes_with_exception</td>
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/td</td>
+	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(4) &gt; td:nth-child(2)</td>
 	<td>no</td>
 </tr>
 <tr>
 	<td>storeText</td>
+<<<<<<< Updated upstream
 	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/td</td>
+=======
+	<td>css=tr.even:nth-child(5) &gt; td:nth-child(2)</td>
+>>>>>>> Stashed changes
 	<td>other</td>
 </tr>
 <tr>
 	<td>storeText</td>
 	<td>css=tr.odd:nth-child(6) &gt; td:nth-child(2)</td>
+<<<<<<< Updated upstream
 	<td>total</td>
+=======
+	<td>total2</td>
+>>>>>>> Stashed changes
 </tr>
 <tr>
 	<td>verifyEval</td>
 	<td>parseInt(storedVars['yes']) + parseInt(storedVars['yes_with_exception']) + parseInt(storedVars['no']) + parseInt(storedVars['other'])</td>
+<<<<<<< Updated upstream
 	<td>${total}</td>
+=======
+	<td>${total2}</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>parseInt(storedVars['answered']) === parseInt(storedVars['total2'])</td>
+	<td>true</td>
+>>>>>>> Stashed changes
 </tr>
 </tbody></table>
 </body>
