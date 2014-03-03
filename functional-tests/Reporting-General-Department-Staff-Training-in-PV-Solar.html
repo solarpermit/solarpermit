@@ -52,13 +52,8 @@
 </tr>
 <tr>
 	<td>verifyText</td>
-<<<<<<< Updated upstream
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/th</td>
-	<td>Other</td>
-=======
 	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
 	<td>Total</td>
->>>>>>> Stashed changes
 </tr>
 <tr>
 	<td>verifyText</td>
@@ -186,16 +181,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/th</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/td</td>
-	<td></td>
-</tr>
-<tr>
 	<td>storeText</td>
 	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(2) &gt; td:nth-child(2)</td>
 	<td>answered</td>
@@ -207,26 +192,44 @@
 </tr>
 <tr>
 	<td>storeText</td>
-<<<<<<< Updated upstream
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/td</td>
+	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(4) &gt; td:nth-child(2)</td>
+	<td>total</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>parseInt(storedVars['answered']) + parseInt(storedVars['unanswered'])</td>
+	<td>${total}</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(2) &gt; td:nth-child(2)</td>
+	<td>yes</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(3) &gt; td:nth-child(2)</td>
+	<td>no</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(4) &gt; td:nth-child(2)</td>
 	<td>other</td>
 </tr>
 <tr>
 	<td>storeText</td>
 	<td>css=tr.even:nth-child(5) &gt; td:nth-child(2)</td>
-=======
-	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(4) &gt; td:nth-child(2)</td>
->>>>>>> Stashed changes
-	<td>total</td>
+	<td>total2</td>
 </tr>
 <tr>
 	<td>verifyEval</td>
 <<<<<<< Updated upstream
 	<td>parseInt(storedVars['yes']) + parseInt(storedVars['no']) + parseInt(storedVars['other'])</td>
-=======
-	<td>parseInt(storedVars['answered']) + parseInt(storedVars['unanswered'])</td>
->>>>>>> Stashed changes
-	<td>${total}</td>
+	<td>${total2}</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>parseInt(storedVars['answered']) === parseInt(storedVars['total2'])</td>
+	<td>true</td>
 </tr>
 <tr>
 	<td>storeText</td>

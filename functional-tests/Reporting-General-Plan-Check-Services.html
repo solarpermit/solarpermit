@@ -32,11 +32,6 @@
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>css=div.contentOnlyPage &gt; h1</td>
-	<td>Plan-check services - Field Answer Reporting</td>
-</tr>
-<tr>
-	<td>verifyText</td>
 	<td>css=th.header_row</td>
 	<td>Value</td>
 </tr>
@@ -146,6 +141,41 @@
 	<td></td>
 </tr>
 <tr>
+	<td>verifyText</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row</td>
+	<td>Value</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.odd &gt; th</td>
+	<td>Over the Counter</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[3]/th</td>
+	<td>In-House (not same day)</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[4]/th</td>
+	<td>Outsourced</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[5]/th</td>
+	<td>Other</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[6]/th</td>
+	<td>Total</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row_right</td>
+	<td>Jurisdictions</td>
+</tr>
+<tr>
 	<td>verifyElementPresent</td>
 	<td>//div[@id='report1']/table/tbody/tr[3]/th</td>
 	<td></td>
@@ -176,25 +206,6 @@
 	<td></td>
 </tr>
 <tr>
-<<<<<<< Updated upstream
-	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/th</td>
-	<td>Other</td>
-</tr>
-<tr>
-	<td>storeText</td>
-	<td>css=tr.odd:nth-child(2) &gt; td:nth-child(2)</td>
-	<td>over_the_counter</td>
-</tr>
-<tr>
-	<td>storeText</td>
-	<td>css=tr.even:nth-child(3) &gt; td:nth-child(2)</td>
-	<td>in_house</td>
-</tr>
-<tr>
-	<td>storeText</td>
-	<td>css=tr.odd:nth-child(4) &gt; td:nth-child(2)</td>
-=======
 	<td>verifyElementPresent</td>
 	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; td</td>
 	<td></td>
@@ -237,17 +248,16 @@
 <tr>
 	<td>storeText</td>
 	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(2) &gt; td:nth-child(2)</td>
-	<td>overTheCounter</td>
+	<td>over_the_counter</td>
 </tr>
 <tr>
 	<td>storeText</td>
 	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(3) &gt; td:nth-child(2)</td>
-	<td>inHouse</td>
+	<td>in_house</td>
 </tr>
 <tr>
 	<td>storeText</td>
 	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(4) &gt; td:nth-child(2)</td>
->>>>>>> Stashed changes
 	<td>outsourced</td>
 </tr>
 <tr>
@@ -258,26 +268,17 @@
 <tr>
 	<td>storeText</td>
 	<td>css=tr.odd:nth-child(6) &gt; td:nth-child(2)</td>
-<<<<<<< Updated upstream
-	<td>total</td>
-</tr>
-<tr>
-	<td>verifyEval</td>
-	<td>parseInt(storedVars['over_the_counter']) + parseInt(storedVars['in_house']) + parseInt(storedVars['outsourced']) + parseInt(storedVars['other'])</td>
-	<td>${total}</td>
-=======
 	<td>total2</td>
 </tr>
 <tr>
 	<td>verifyEval</td>
-	<td>parseInt(storedVars['overTheCounter']) + parseInt(storedVars['inHouse']) + parseInt(storedVars['outsourced']) + parseInt(storedVars['other'])</td>
+	<td>parseInt(storedVars['over_the_counter']) + parseInt(storedVars['in_house']) + parseInt(storedVars['outsourced']) + parseInt(storedVars['other'])</td>
 	<td>${total2}</td>
 </tr>
 <tr>
 	<td>verifyEval</td>
 	<td>parseInt(storedVars['answered']) === parseInt(storedVars['total2'])</td>
 	<td>true</td>
->>>>>>> Stashed changes
 </tr>
 </tbody></table>
 </body>

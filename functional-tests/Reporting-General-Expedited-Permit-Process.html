@@ -52,16 +52,7 @@
 </tr>
 <tr>
 	<td>verifyText</td>
-<<<<<<< Updated upstream
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/th</td>
-	<td>Other</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/th</td>
-=======
 	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
->>>>>>> Stashed changes
 	<td>Total</td>
 </tr>
 <tr>
@@ -176,6 +167,11 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.odd &gt; td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
 	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; td</td>
 	<td></td>
 </tr>
@@ -197,7 +193,7 @@
 <tr>
 	<td>storeText</td>
 	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(3) &gt; td:nth-child(2)</td>
-	<td>unaswered</td>
+	<td>unanswered</td>
 </tr>
 <tr>
 	<td>storeText</td>
@@ -206,7 +202,7 @@
 </tr>
 <tr>
 	<td>verifyEval</td>
-	<td>parseInt(storedVars['answered']) + parseInt(storedVars['unaswered'])</td>
+	<td>parseInt(storedVars['answered']) + parseInt(storedVars['unanswered'])</td>
 	<td>${total}</td>
 </tr>
 <tr>

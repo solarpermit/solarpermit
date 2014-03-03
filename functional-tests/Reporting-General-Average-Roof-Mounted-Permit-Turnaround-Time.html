@@ -42,8 +42,18 @@
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[3]/th</td>
+	<td>css=tr.odd &gt; th</td>
+	<td>Answered</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report0']/table/tbody/tr[3]/th</td>
 	<td>Unanswered</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
+	<td>Total</td>
 </tr>
 <tr>
 	<td>verifyText</td>
@@ -62,12 +72,122 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>css=td</td>
+	<td>//div[@id='report0']/table/tbody/tr[3]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
 	<td>css=th.header_row_right</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row</td>
+	<td>Value</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.odd &gt; th</td>
+	<td>Same day</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[3]/th</td>
+	<td>1-2 days</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[4]/th</td>
+	<td>3-7 days</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[5]/th</td>
+	<td>8-14 days</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[6]/th</td>
+	<td>15-21 days</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[7]/th</td>
+	<td>22+ days</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[8]/th</td>
+	<td>Freeform</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[9]/th</td>
+	<td>Other</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[10]/th</td>
+	<td>Total</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row_right</td>
+	<td>Jurisdictions</td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.odd &gt; th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[3]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[4]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[5]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[6]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[7]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[8]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=tr.even &gt; td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/td</td>
 	<td></td>
 </tr>
 <tr>
@@ -207,20 +327,11 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-<<<<<<< Updated upstream
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[3]/th</td>
-=======
 	<td>//div[@id='report1']/table/tbody/tr[7]/td</td>
->>>>>>> Stashed changes
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-<<<<<<< Updated upstream
-	<td>css=tr.even &gt; td</td>
-	<td></td>
-</tr>
-=======
 	<td>//div[@id='report1']/table/tbody/tr[8]/td</td>
 	<td></td>
 </tr>
@@ -242,7 +353,7 @@
 <tr>
 	<td>storeText</td>
 	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(3) &gt; td:nth-child(2)</td>
-	<td>unaswered</td>
+	<td>unanswered</td>
 </tr>
 <tr>
 	<td>storeText</td>
@@ -251,7 +362,7 @@
 </tr>
 <tr>
 	<td>verifyEval</td>
-	<td>parseInt(storedVars['answered']) + parseInt(storedVars['unaswered'])</td>
+	<td>parseInt(storedVars['answered']) + parseInt(storedVars['unanswered'])</td>
 	<td>${total}</td>
 </tr>
 <tr>
@@ -287,7 +398,7 @@
 <tr>
 	<td>storeText</td>
 	<td>css=tr.odd:nth-child(8) &gt; td:nth-child(2)</td>
-	<td>freeFrom</td>
+	<td>freeForm</td>
 </tr>
 <tr>
 	<td>storeText</td>
@@ -301,7 +412,7 @@
 </tr>
 <tr>
 	<td>verifyEval</td>
-	<td>parseInt(storedVars['sameDay']) + parseInt(storedVars['2days']) + parseInt(storedVars['7days']) + parseInt(storedVars['14days']) + parseInt(storedVars['21days']) + parseInt(storedVars['22days']) + parseInt(storedVars['freeFrom']) + parseInt(storedVars['other'])</td>
+	<td>parseInt(storedVars['sameDay']) + parseInt(storedVars['2days']) + parseInt(storedVars['7days']) + parseInt(storedVars['14days']) + parseInt(storedVars['21days']) + parseInt(storedVars['22days']) + parseInt(storedVars['freeForm']) + parseInt(storedVars['other'])</td>
 	<td>${total2}</td>
 </tr>
 <tr>
@@ -309,7 +420,6 @@
 	<td>parseInt(storedVars['answered']) === parseInt(storedVars['total2'])</td>
 	<td>true</td>
 </tr>
->>>>>>> Stashed changes
 </tbody></table>
 </body>
 </html>

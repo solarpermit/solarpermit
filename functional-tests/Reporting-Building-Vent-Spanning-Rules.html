@@ -117,30 +117,17 @@
 </tr>
 <tr>
 	<td>verifyText</td>
-<<<<<<< Updated upstream
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[6]/th</td>
-=======
 	<td>//div[@id='report1']/table/tbody/tr[5]/th</td>
 	<td>Other</td>
 </tr>
 <tr>
 	<td>verifyText</td>
 	<td>//div[@id='report1']/table/tbody/tr[6]/th</td>
->>>>>>> Stashed changes
 	<td>Total</td>
 </tr>
 <tr>
 	<td>verifyText</td>
-<<<<<<< Updated upstream
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/th</td>
-	<td>Other</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>css=th.header_row_right</td>
-=======
 	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row_right</td>
->>>>>>> Stashed changes
 	<td>Jurisdictions</td>
 </tr>
 <tr>
@@ -190,29 +177,17 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-<<<<<<< Updated upstream
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[6]/th</td>
-=======
 	<td>//div[@id='report1']/table/tbody/tr[4]/td</td>
->>>>>>> Stashed changes
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-<<<<<<< Updated upstream
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[6]/td</td>
-=======
 	<td>//div[@id='report1']/table/tbody/tr[5]/td</td>
->>>>>>> Stashed changes
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-<<<<<<< Updated upstream
-	<td>css=th.header_row_right</td>
-=======
 	<td>//div[@id='report1']/table/tbody/tr[6]/td</td>
->>>>>>> Stashed changes
 	<td></td>
 </tr>
 <tr>
@@ -252,35 +227,23 @@
 </tr>
 <tr>
 	<td>storeText</td>
-<<<<<<< Updated upstream
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/td</td>
-=======
 	<td>css=tr.even:nth-child(5) &gt; td:nth-child(2)</td>
->>>>>>> Stashed changes
 	<td>other</td>
 </tr>
 <tr>
 	<td>storeText</td>
 	<td>css=tr.odd:nth-child(6) &gt; td:nth-child(2)</td>
-<<<<<<< Updated upstream
-	<td>total</td>
-=======
 	<td>total2</td>
->>>>>>> Stashed changes
 </tr>
 <tr>
 	<td>verifyEval</td>
 	<td>parseInt(storedVars['yes']) + parseInt(storedVars['yes_with_exceptions']) + parseInt(storedVars['no']) + parseInt(storedVars['other'])</td>
-<<<<<<< Updated upstream
-	<td>${total}</td>
-=======
 	<td>${total2}</td>
 </tr>
 <tr>
 	<td>verifyEval</td>
 	<td>parseInt(storedVars['answered']) === parseInt(storedVars['total2'])</td>
 	<td>true</td>
->>>>>>> Stashed changes
 </tr>
 </tbody></table>
 </body>
