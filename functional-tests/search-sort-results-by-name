@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>search-sort-results-by-name</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">search-sort-results-by-name</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=search_field</td>
+	<td>texas</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a.search-a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>css=h1.page_title &gt; span</td>
+	<td>Results for &quot;texas&quot;</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.row_odd:nth-child(1) &gt; td:nth-child(2)</td>
+	<td>search_result_one</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.row_even:nth-child(2) &gt; td:nth-child(2) &gt; a:nth-child(1)</td>
+	<td>search_result_two</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>'Abbott, TX'</td>
+	<td>expected_result_one</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>'Abernathy, TX'</td>
+	<td>expected_result_two</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>storedVars['expected_result_one']==storedVars['search_result_one']</td>
+	<td>true</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>storedVars['expected_result_two']==storedVars['search_result_two']</td>
+	<td>true</td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>5000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=name</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>5000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.row_odd:nth-child(1) &gt; td:nth-child(2)</td>
+	<td>search_result_one</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.row_even:nth-child(2) &gt; td:nth-child(2) &gt; a:nth-child(1)</td>
+	<td>search_result_two</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>'Zephyr, TX'</td>
+	<td>expected_result_one</td>
+</tr>
+<tr>
+	<td>storeEval</td>
+	<td>'Zavalla, TX'</td>
+	<td>expected_result_two</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>storedVars['expected_result_one']==storedVars['search_result_one']</td>
+	<td>true</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>storedVars['expected_result_two']==storedVars['search_result_two']</td>
+	<td>true</td>
+</tr>
+</tbody></table>
+</body>
+</html>

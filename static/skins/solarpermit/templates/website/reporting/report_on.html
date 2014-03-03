@@ -10,14 +10,8 @@
                 border-top: 1px solid #bdbdbd;
                 border-right: 1px solid #bdbdbd;
         }
-        .graphing {
-                border: 1px solid #6f6;
-                max-width: 960px;
-                min-height: 200px;
-                display: none;
-        }
         .data_table {
-                min-width: 480px;
+                min-width: 320px;
         }
         td, th {
                 padding: 4px;
@@ -57,10 +51,34 @@
         background-image:     -ms-linear-gradient(left, #ccc, #333, #ccc);
         background-image:      -o-linear-gradient(left, #ccc, #333, #ccc);
         }
+        .legend-dot {
+          border-radius: 50%;
+          width: .8em;
+          height: .8em;
+          display: inline-block;
+          margin: .1em .4em 0 .2em;
+          background-color: transparent;
+        }
+        .report {
+          max-width: 320px;
+          margin-left: 25px;
+          float: left;
+        }
+        .graph {
+          width: 320px;
+          height: 320px;
+        }
 </style>
 {% endblock %}
 
-{% block forejs %}{% endblock %}
+{% block forejs %}
+{% compress js %}
+<script src="/media/js/raphael.js"></script>
+<script src="/media/js/g.raphael.js"></script>
+<script src="/media/js/g.pie.js"></script>
+<script src="/media/js/g.bar.js"></script>
+{% endcompress %}
+{% endblock %}
 
 {% block body %}
   <div class="contentOnlyPage">
@@ -69,22 +87,65 @@
       <hr/>
       <h2>Question's Instruction: {{ question_instruction }}</h2>
     {% endif %}
-    <div class="graphing">Graphic</div>
     <hr/>
     <h3>Current Approved Values in the Database</h3>
-    <table class="data_table">
-      <tr class="even">
-        <th class="header_row">Value</th>
-        <th class="header_row_right">Jurisdictions</th>
-      </tr>
-      {% for row in table %}
-        <tr class="{{ loop.cycle('odd', 'even') }}">
-          <th>{{ row['key'] }}</th>
-          <td>{{ row['value'] }}</td>
-        </tr>
-      {% endfor %}
-    </table>
+    {% for report in reports %}
+      <div class="report" id="report{{report.idx}}">
+        <div class="graph" id="graph{{report.idx}}"></div>
+        <table class="data_table">
+          <tr class="even">
+            <th class="header_row">Value</th>
+            <th class="header_row_right">Jurisdictions</th>
+          </tr>
+          {% for row in report.table %}
+            <tr class="{{ loop.cycle('odd', 'even') }}">
+              <th><span class="legend-dot"></span>{{ row['key'] }}</th>
+              <td>{{ row['value'] }}</td>
+            </tr>
+          {% endfor %}
+        </table>
+      </div>
+    {% endfor %}
   </div>
 {% endblock %}
 
-{% block endjs %}{% endblock %}
+{% block endjs %}
+  <script>
+    var reports = {{reports_json}};
+    function select(field) {
+      return function (elem) {
+               if (elem.key != 'Total')
+                 return elem[field];
+             };
+    }
+    function defined(val) {
+      return typeof val != "undefined"
+    }
+    function draw_graphs() {
+      $.each(reports,
+             function (idx, report) {
+               var values = report.table.map(select("value")).filter(defined),
+                   sum = values.reduce(function (a, b) { return a+b; });
+               if (sum <= 0)
+                 return;
+               var r = Raphael("graph"+ idx),
+                   pie = r.piechart(160, 160, 150,
+                                    values),
+                   paths = [];
+               $.each(pie.series,
+                      function(k, v) {
+                        if (v.value)
+                          paths[v.value.order] = v.node;
+                      })
+               $("#report"+ idx +" .legend-dot").each(function (n, elem) {
+                                                        if ($(elem).parent().text() != "Total") {
+                                                          $(elem).css("background-color",
+                                                                      $(paths[n]).css("fill"));
+                                                          console.log($(paths[n]).css("fill"))
+                                                        }
+                                                      });
+             });
+    }
+    $(document).ready(draw_graphs())
+  </script>
+{% endblock %}

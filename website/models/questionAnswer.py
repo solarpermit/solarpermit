@@ -213,7 +213,7 @@ class Question(models.Model):
                 question.save()
                
             except:
-                print "no question for id = " + str(template_question.question_id)
+                pass
         
     def get_custom_fields_by_jurisdiction_by_category(self, jurisdiction_obj, category_id):
         questions = [] #if this is none, will cause template loop to crash!!!

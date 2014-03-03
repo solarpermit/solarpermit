@@ -445,30 +445,19 @@ class Action(models.Model):
         else:
             action_data = data
          
-        #print "1"    
         if entity_name == 'Requirement':
-            #print 'entity id :: ' + str(entity_id)
-            #entity = AnswerReference.objects.get(id=entity.id)
-            #print 'question id :: ' + str(entity.question_id)
-            #question = Question.objects.get(id=entity.question_id)
-            #print 'question category id :: ' + str(question.category_id) 
             entity_category_id = entity.question.category.id    
             organization = entity.organization
-            #print entity.id
-            #print organization.id
         else:
             entity_category_id = 0 # not sure here.  will need to figure out entity_category for comment and other non-requirement and non-callout entity
-        #print "2"    
         
         if organization != None:    
             action_obj = Action.objects.create(category_id=action_category[0].id, entity_id=entity.id, data=action_data, entity_name=entity_name, user_id=user_id, scale=action_category[0].points, jurisdiction_id=jurisdiction.id, question_category_id=entity_category_id, organization_id=organization.id)
         else:
             action_obj = Action.objects.create(category_id=action_category[0].id, entity_id=entity.id, data=action_data, entity_name=entity_name, user_id=user_id, scale=action_category[0].points, jurisdiction_id=jurisdiction.id, question_category_id=entity_category_id)
             
-        #print "track contribution :: "
         #jurisdiction_contributor_obj = JurisdictionContributor()
         #jurisdiction_contributor_obj.track_contributions(action_obj.scale, jurisdiction, entity.question.category, user_id)
-        #print "3"
         return action_obj
     
 class ReactionCategory(models.Model):
@@ -510,7 +499,6 @@ class Reaction(models.Model):
         reaction_category = ReactionCategory.objects.filter(name__iexact=reaction_category_name)
 
      
-        #print action_data                   
         reaction_obj = Reaction.objects.create(category_id=reaction_category[0].id, action_id=action_obj.id, data=action_obj.data, user_id=user_id, scale=reaction_category[0].points, jurisdiction_id=jurisdiction_id, question_category_id=entity_category_id)
         #contributionHelper = ContributionHelper()
         #contributionHelper.track_contributions(reaction_category[0].points, jurisdiction_id, entity_category_id, user_id)        

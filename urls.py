@@ -103,6 +103,9 @@ else:
         #### api calls
         (r'^api1/', 'website.views.api.searchState'),
         
+        #### django-tracking2
+        (r'^tracking/', include('tracking.urls')),
+
         #### reporting pages
         (r'^reporting/$', 'website.views.reporting.report_index'),
         (r'^reporting/(?P<question_id>\d+)/$', 'website.views.reporting.report_on'))

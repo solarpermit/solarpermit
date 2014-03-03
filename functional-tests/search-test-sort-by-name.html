@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://anglachel.db48x.net:8000/" />
+<title>search-test-sort-by-name</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">search-test-sort-by-name</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=search_field</td>
+	<td>dallas</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a.search-a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>css=span</td>
+	<td>Results for &quot;dallas&quot;</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=County of Dallas, AL</td>
+	<td>County of Dallas, AL</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=County of Dallas, AR</td>
+	<td>County of Dallas, AR</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=Dallas, AR</td>
+	<td>Dallas, AR</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=Dallas, GA</td>
+	<td>Dallas, GA</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=County of Dallas, IA</td>
+	<td>County of Dallas, IA</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=name</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>5</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=Melcher-Dallas, IA</td>
+	<td>Melcher-Dallas, IA</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=Lake Dallas, TX</td>
+	<td>Lake Dallas, TX</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=Dallastown, PA</td>
+	<td>Dallastown, PA</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=Dallas City Township, IL</td>
+	<td>Dallas City Township, IL</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>link=Dallas City, IL</td>
+	<td>Dallas City, IL</td>
+</tr>
+
+</tbody></table>
+</body>
+</html>

@@ -153,8 +153,6 @@ def account(request):
                 else:
                     data[form_name+'_fail_reason'] = 'The invitation is no longer valid.  You are still welcome to sign up with SolarPermit.org.'   
                     data['invitation_key'] = ''   
-            else:
-                print "normal create account"
             
             data['firstname'] = requestProcessor.getParameter('firstname') 
             data['lastname'] = requestProcessor.getParameter('lastname') 
@@ -529,13 +527,10 @@ def account(request):
                             
                     else:
                         #dajax.script("alert('" + request.META['HTTP_REFERER'] + "');");
-                        #print request.META['HTTP_REFERER'] + 'xxx'
                         #dajax.script("window.location ='" + request.META['HTTP_REFERER'] + "';")
                         dajax.script("reload_page();")
-                        #print request.META['HTTP_REFERER'] + 'yyy'
                         #return redirect(request.META['HTTP_REFERER'])
                         
-                    #print 'zzzzzzzzzzzzzzzzzz'
                     return HttpResponse(dajax.json()) 
                     
                 else:
@@ -560,7 +555,6 @@ def account(request):
                 dajax.assign('#sign_in_block','innerHTML', body)     
                 dajax.script(script) 
 
-            #print 'aaaaaaaaaaaaaaaaaaaaaaa'
             dajax.script("set_error_class()")            
                    
             return HttpResponse(dajax.json()) 

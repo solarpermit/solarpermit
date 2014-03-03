@@ -78,7 +78,6 @@ class NotificationHelper():
         else:
             obj3monthsbefore = self.objDateTimeNow - timedelta(seconds = num)
         
-        print str(obj3monthsbefore.replace(tzinfo=utc))
         updates = []
         jurisdiction_list = []
         for jurisdiction in jurisdictions:
