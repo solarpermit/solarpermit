@@ -4,10 +4,12 @@ from django.test.client import Client
 from website.models import User, RatingCategory, ActionCategory, Jurisdiction, Question, AnswerReference
 from django.contrib.auth import authenticate
 from django.conf import settings
-from website.tests.test_voting import TestVoting
+from website.tests.test_voting import vote
 import json
 
 '''
+Will get 301 status code if no trailing slash is in place.
+merge to devel update to fix issue #53
 cron_validate_answers
 
 function setup
@@ -70,6 +72,5 @@ class TestValidHistory(TestCase):
             question.delete()
         for answer in self.answers:
             answer.delete()
-#    tried calling TestVoting.vote()... didnt seem to work gotta use querysets
+#    tried calling TestVoting.vote()... didnt work because i was calling the class test vote, and vote is not part of the class test vote
 #    def test_import(self):
-#

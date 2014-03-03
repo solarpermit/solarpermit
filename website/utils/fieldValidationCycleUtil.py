@@ -518,7 +518,7 @@ class FieldValidationCycleUtil():
                 
         return content
         #here is one of the areas we are validating #lss;
-    def get_validation_history(self, entity_name, entity_id):       # for approved items only
+    def get_validation_history(self, entity_name, entity_id):       # for approved items only #lss;
         data = {}
         if entity_name == 'requirement':
             data['answer'] = answer = AnswerReference.objects.get(id=entity_id)
@@ -672,7 +672,7 @@ class FieldValidationCycleUtil():
                 self.on_approving_a_suggestion(jurisdiction, answer)
             
         return feedback
-    #lss; post approve
+    #lss;  i think this deletes all the other suggested answers when an answer gets approved 
     def on_approving_a_suggestion(self, answer):
         if answer.question.has_multivalues == 0:        
             answers = AnswerReference.objects.filter(jurisdiction=answer.jurisdiction, question=answer.question).exclude(id=answer.id)
@@ -711,7 +711,11 @@ class FieldValidationCycleUtil():
         #self.rate(action_category_name, entity_name, eid, action_obj, user_id, jurisdiction_id)
         return 'registered'
         #return action_obj
-        #lss; pre valid check
+        #lss; pre valid check This is where we mark things to be approved or disapproved. this is the most important part
+        #from the code. i believe that they are trying to get either three upvotes, or three downvotes. 
+        #because programming is all procedural, I hypothesize since they check down votes second, as long as an suggest answer as 3 down votes, no matter the amount of upvotes, it will be rejected.
+        #this is bad, since good answers can be rejected in a very easy way.
+         
     def pre_validation_check(self, action_category, vote, entity_id):
 
         answer = AnswerReference.objects.get(id=entity_id)

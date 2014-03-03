@@ -102,7 +102,7 @@ class TestVoting(TestCase):
                          val["answers_votes"][str(answer.id)]["total_up_votes"])
         self.assertEqual(down_votes,
                          val["answers_votes"][str(answer.id)]["total_down_votes"])
-#lss; vote, posts to jurisdiction. no tests just posts the vote with simulated Ajax
+#lss; vote, posts to jurisdiction. no tests just posts the vote with simulated Ajax NOT PART OF TestVoting Class!
 def vote(client, ahj, answer, direction):
     res = client.post('/jurisdiction/%s/' % ahj.name_for_url,
                       { 'ajax': 'vote',
