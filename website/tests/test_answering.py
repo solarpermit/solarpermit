@@ -8,6 +8,9 @@ from django.conf import settings
 import json
 from itertools import chain
 from pprint import pprint
+import lxml
+import lxml.html
+import lxml.etree
 
 class TestAnswering(TestCase):
     #fixtures = ['questions']
@@ -76,13 +79,26 @@ ault_value, display_template order by display_template;
     """
 
     def test(self):
-        tests = {   1: [({ 'field_value': 'test answer' }, "Test answer")],
-                   15: [({ 'field_value': 'test answer' }, "Test answer")],
-                   51: [({ 'field_value': 'test answer' }, "Test answer")],
-                   57: [({ 'field_value': 'test answer' }, "Test answer")],
-                  102: [({ 'field_value': 'test answer' }, "Test answer")],
-                    4: [({ 'field_address1': '123 Main St', 'field_address2': 'Suite 42', 'field_city': 'Nowhere', 'field_state': 'CA', 'field_zip_code': '12345', 'field_county': '' }, "123 Main St")], }
+        tests = {   1: [({ 'field_value': 'test answer' },
+                         '//div[@class="field answer_field"]/div[normalize-space(text())="Test answer"]')],
+                   15: [({ 'field_value': 'test answer' },
+                         '//div[@class="field answer_field"]/div[normalize-space(text())="Test answer"]')],
+                   51: [({ 'field_value': 'test answer' },
+                         '//div[@class="field answer_field"]/div[normalize-space(text())="Test answer"]')],
+                   57: [({ 'field_value': 'test answer' },
+                         '//div[@class="field answer_field"]/div[normalize-space(text())="Test answer"]')],
+                   102: [({ 'field_value': 'test answer' },
+                         '//div[@class="field answer_field"]/div[normalize-space(text())="Test answer kW"]')],
+                     4: [({ 'field_address1': '123 Main St',
+                            'field_address2': 'Suite 42',
+                            'field_city': 'Nowhere',
+                            'field_state': 'CA',
+                            'field_zip_code': '12345',
+                            'field_county': '' },
+                          '//div[@class="field answer_field"]/div[normalize-space(text())="123 Main St, Suite 42, Nowhere, CA 12345"]')], }
+
         for (qid, scenarios) in tests.iteritems():
+            print("testing question %s" % qid)
             for (scenario, result) in scenarios:
                 self.do_answer(self.ahj[0], Question.objects.get(id=qid), scenario, result)
 
@@ -97,7 +113,22 @@ ault_value, display_template order by display_template;
         (status_code, content) = post(self.client, ahj, question, scenario)
         self.assertEqual(200, status_code)
         self.assertTemplateUsed(question.display_template or 'single_field_display.html')
-        self.assertNotEqual(-1, content[0]['val'].find(result))
+        self.assertContainsXPath(content[0]['val'], result)
+
+    def assertContainsXPath(self, html_haystack, xpath_needle):
+        parsed = lxml.html.fragment_fromstring(html_haystack,
+                                               lxml.etree.HTMLParser(recover=True,
+                                                                     remove_blank_text=True))
+        nodes = []
+        try:
+            nodes = parsed.xpath(xpath_needle)
+        except Exception as e:
+            print(e)
+            pass
+        self.assertTrue(len(nodes) > 0,
+                        '"'+ xpath_needle +'" should match\n'+ lxml.etree.tostring(parsed,
+                                                                                   pretty_print=True,
+                                                                                   method="html"))
 
 def post(client, ahj, question, data):
     res = client.post('/jurisdiction/%s/' % ahj.name_for_url,
