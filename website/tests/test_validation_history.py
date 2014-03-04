@@ -94,3 +94,21 @@ class TestValidHistory(TestCase):
 
 #    tried calling TestVoting.vote()... didnt work because i was calling the class test vote, and vote is not part of the class test vote
 #    def test_import(self):
+#the following is a successful vote, sent to the sample jur in FL. was able to upvote the permiting department name
+#first I need to have the django client
+#from django.test.client import Client
+#c = Client()
+# Then i need to make a user, (This made an actual user on the site, not just a test user in a test env)
+# User.objects.create_user("testuser00001", "testuser001@testing.solarpermit.org", "testuser")
+# Must be inside a class invoking TestCase in order to use a test env, then call the User to an new object exp: 
+# self.user = User.objects.create_user("testuser00001", "testuser001@testing.solarpermit.org", "testuser") for one user, or inside [] for multi users
+# to login with a user
+# c.login(username='testuser00001',password-'testuser')
+# should return True and user should be logged in
+# test to make sure user is logged in: 
+# logged_in = c.login(username='testuser00001',password-'testuser')
+# self.assertTrue(logged_in)
+# then you can vote using:
+# res = c.post('/jurisdiction/sample-jurisdiction-fl/', {'ajax': 'vote','entity_id': '26473', 'entity_name': 'requirement','vote': 'up', 'confirmed':''})
+# this posts to the login page over ajax, and then assigns the response to res.
+# res is an object containing res.status_code and res.content

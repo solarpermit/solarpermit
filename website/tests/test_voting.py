@@ -52,6 +52,7 @@ class TestVoting(TestCase):
     def test_voting(self):
         client = Client()
         # must not be able to vote while unauthorized
+        #status = response status, commands = content of return json if commands != none the user voted?
         (status, commands) = vote(client, self.ahj[0], self.questions[0], 'up')
         self.assertEqual(status, 200)
         self.assertIs(None, commands)
@@ -103,7 +104,7 @@ class TestVoting(TestCase):
         self.assertEqual(down_votes,
                          val["answers_votes"][str(answer.id)]["total_down_votes"])
 #lss; vote, posts to jurisdiction. no tests just posts the vote with simulated Ajax NOT PART OF TestVoting Class!
-
+#vote RETURNS A RESPONSE in 2 pieces first piece is the status codes, the second part is the content of the response
 def vote(client, ahj, answer, direction):
     res = client.post('/jurisdiction/%s/' % ahj.name_for_url, #res is response of client
                       { 'ajax': 'vote', #send through ajax
