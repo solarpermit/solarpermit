@@ -42,16 +42,16 @@
  	{%	set type_text = '' %} 	
  	{% endif %}
 					<td style="width:200px;" class="info2">N/A ({{ type_text }})</td>
+					{% if item.parent != None %}
 					<td style="width:200px;" class="info2">
-						{% if item.parent != None %}
 						Redirects to 
 						<a href="/jurisdiction/{{item.parent.name_for_url}}/" title="View {{ item.parent.name | title }} {{item.parent.get_county_equivalent_name() | title }} ">
 							{{item.parent.get_jurisdiction_display('title')}}
 						</a>
-						{% else %}
-						&nbsp;
-						{% endif %}
 					</td>
+					{% else %}
+					<td style="width:200px;" class="info">No data entered yet</td>
+					{% endif %}
 {% endif %}
 {% if item.distance %}
 					<td style="width:100px;font-style:italic;text-align:left" >{{item.distance|round(2)}} {{item.unit}}</td>

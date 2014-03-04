@@ -22,8 +22,8 @@
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>css=li</td>
-	<td>County of Dallas, AL</td>
+	<td>//form[@id='search_form']/div/div/ul[2]/li[7]</td>
+	<td>Dallas, MO</td>
 </tr>
 <tr>
 	<td>storeText</td>

@@ -3,7 +3,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://anglachel:8001" />
 <title>search-test-dallas-county</title>
 </head>
 <body>
@@ -63,7 +62,7 @@
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>css=span</td>
+	<td>css=h1.page_title &gt; span</td>
 	<td>Results for &quot;dallas city&quot;</td>
 </tr>
 <tr>
@@ -126,7 +125,10 @@
 	<td>storedVars['auto_complete_six']==storedVars['search_result_six']</td>
 	<td>true</td>
 </tr>
+<<<<<<< HEAD
 
+=======
+>>>>>>> functional-test
 </tbody></table>
 </body>
 </html>

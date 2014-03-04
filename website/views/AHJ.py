@@ -608,6 +608,8 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             return HttpResponse(dajax.json())   
         
         if (ajax == 'get_ahj_questions_actions'):
+            if not user.is_authenticated():
+                return HttpResponse(status=403)
             data['questions_actions'] = get_ahj_actions( jurisdiction, user)
              
             dajax.add_data(data, 'process_ahj_actions')
@@ -651,24 +653,26 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             dajax.add_data(data, 'process_ahj_answers_attachments')
             return HttpResponse(dajax.json())      
     
-        if (ajax == 'get_ahj_num_quirks_favorites'):        
+        if (ajax == 'get_ahj_num_quirks_favorites'):
+            if not user.is_authenticated():
+                return HttpResponse(status=403)
             view_questions_obj = ViewQuestions()
             quirks = view_questions_obj.get_jurisdiction_quirks(jurisdiction)
-            
-            data['quirk_number_of_questions'] = 0    
+
+            data['quirk_number_of_questions'] = 0
             if 'view_id' in quirks:
-                data['quirk_number_of_questions'] = len(quirks['view_questions']) 
-                
-            data['user_number_of_favorite_fields'] = 0    
+                data['quirk_number_of_questions'] = len(quirks['view_questions'])
+
+            data['user_number_of_favorite_fields'] = 0
             user_obj = User.objects.get(id=user.id)
             if user_obj != None:
                 user_favorite_fields = view_questions_obj.get_user_favorite_fields(user_obj)
                 if 'view_id' in user_favorite_fields:
                     data['view_id'] = user_favorite_fields['view_id']
-                    data['user_number_of_favorite_fields'] = len(user_favorite_fields['view_questions'])               
-                    
+                    data['user_number_of_favorite_fields'] = len(user_favorite_fields['view_questions'])
+
             dajax.add_data(data, 'process_ahj_qirks_user_favorites')
-         
+
             return HttpResponse(dajax.json())
         
         if (ajax == 'get_ahj_answers_votes'):
@@ -1209,9 +1213,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
     message_data = get_system_message(request) #get the message List
     data =  dict(data.items() + message_data.items())   #merge message list to data  
     
-    
     return requestProcessor.render_to_response(request,'website/jurisdictions/AHJ_cqa.html', data, '') 
-
 
 def get_jurisdiction_templates(jurisdiction):
     cf_template_objs = Template.objects.filter(jurisdiction = jurisdiction, template_type__iexact='CF', accepted=1)
@@ -1876,6 +1878,13 @@ def get_questions_in_category(user, jurisdiction, category):
             return ([q.get('id') for q in category_questions], False)
 
 def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, question_ids = []):
+    # if we're in a special category then the meaning of an empty
+    # question_ids is reversed; we want to return nothing instead of
+    # all questions
+    if not question_ids and (category == "quirks" or category == "favorite_fields" or category == "attachments"):
+        return []
+    # in either case, if we have a list of question_ids, then we want
+    # to limit ourselves to just that list
     placeholder = ",".join(["%s" for id in question_ids]) if question_ids else None
     query_str = '''(SELECT website_answerreference.id,
                             website_answerreference.question_id as question_id,

@@ -69,6 +69,7 @@ else:
         (r'^news2/', info.news_dynamic),
         (r'^about/', info.about),
         (r'^getting-started/', info.getting_started_page),  
+        (r'^contributions/', info.contributions),
         
         #data migrations
         #(r'^util/import/unincorporated/$', 'website.views.data_migration.migrate_unincorporated'),
