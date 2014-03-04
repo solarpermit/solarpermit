@@ -114,7 +114,7 @@ class Applicability(models.Model):
     class Meta:
         app_label = 'website'
     
-        
+        #lss; question model
 class Question(models.Model):
     category = models.ForeignKey(QuestionCategory, blank=True, null=True, db_index=True)
     label = models.TextField(blank=True, null=True) #label to display if it is shown in field format
@@ -420,7 +420,7 @@ APPROVAL_STATUS_CHOICES = (
     ('C', 'Cancelled'),    
 )
 
-#answers for a reference template, like the template for electrical requirements in San Jose
+#lss; answers for a reference template, like the template for electrical requirements in San Jose
 class AnswerReference(models.Model):
     jurisdiction = models.ForeignKey(Jurisdiction, blank=True, null=True, db_index=True)
     is_callout = models.BooleanField(default=False) #this is for the callouts section
@@ -688,7 +688,7 @@ class AnswerReference(models.Model):
             visibility_matrix['D'] = by_approal_status             
                 
         return visibility_matrix
-    
+    #lss; visibility matrix... I know this depects what to show what user. but the status codes for the matrix aren't obvious to me.
     def get_info_visibility_matrix(self, login, has_previously_visible_answer):
         
         visibility_matrix = {}
@@ -926,7 +926,7 @@ class AnswerReference(models.Model):
                 
         return msg
                 
-        
+        #lss; saving a answer to the model... save_answer method used in test voting lives here
     def save_answer(self, question_obj, answer, juris, action_category_obj, user, is_callout):
         
         #juris = Jurisdiction.objects.get(id=jid)

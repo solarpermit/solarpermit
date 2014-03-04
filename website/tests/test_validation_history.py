@@ -40,35 +40,50 @@ function timepass
     call cron script every simulated day.
     assert answered questions against template
     log errors
+            self.users = [User.objects.create_user("testuser%s" % id, "testuser%s@testing.solarpermit.org" % id, "testuser") for id in xrange(3)]
 
 '''
 class TestValidHistory(TestCase):
     def setUp(self):
+#create a local users object for testuser1, 2, 3, out of a list build using the Django users model
         self.users = [User.objects.create_user("testuser%s" % id, 
                                                "testuser%s@testing.solarpermit.org" % id,
                                                 "testuser")
                           for id in xrange(3)]
+
         RatingCategory.objects.create(name='Points',
                                       description='Number of points',
                                       rating_type='N').save()
+
         ActionCategory.objects.create(name='VoteRequirement',
                                       description='Vote on Requirement',
                                       rating_category_id=1,
                                       points=2).save()
+
         self.ahj = [Jurisdiction.objects.create(city = "foo city",
                                                 name_for_url = "foo1",
                                                 description = "foo",
                                                 state = "CA",
                                                 jurisdiction_type = "CI",
                                                 name = "foo"),
+
                     Jurisdiction.objects.create(city = "foo city",
                                                 name_for_url = "foo2",
                                                 description = "foo",
                                                 state = "CA",
                                                 jurisdiction_type = "CI",
                                                 name = "foo")]
+
         self.questions = [Question.objects.create(label="test%s" % id, question="test%s" % id)
                               for id in xrange(2)]
+#lss; at first it confused me that they used the for loops in this way.#lss; interesting for statement
+#thought it would be no different than
+# for ahj in self.ahj:
+#    for question in self.questions:
+#        self.answers = [AnswerReference.objects.create(jurisdiction=ahj, question=question, value='test answer')
+#But it actually is, done the way above, it would create a new object for each answer and replace everything thats in there
+#Idk if this is a python thing, but i really like it, going to remember it
+
         self.answers = [AnswerReference.objects
                                        .create(jurisdiction=ahj,
                                                question=question,
