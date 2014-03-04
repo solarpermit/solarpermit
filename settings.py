@@ -285,9 +285,6 @@ PAGE_COLUMNS = 5 #number of columns in multiple column listing page
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = True
 COMPRESS_URL = '/media/'
-COMPRESS_ENABLED = True
-COMPRESS_OFFLINE = True
-COMPRESS_URL = '/media/'
 COMPRESS_ROOT = os.path.join(PROJECT_ROOT, 'static/skins/solarpermit/media')
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',
                         'compressor.filters.cssmin.CSSMinFilter']
