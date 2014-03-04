@@ -103,14 +103,15 @@ class TestVoting(TestCase):
         self.assertEqual(down_votes,
                          val["answers_votes"][str(answer.id)]["total_down_votes"])
 #lss; vote, posts to jurisdiction. no tests just posts the vote with simulated Ajax NOT PART OF TestVoting Class!
+
 def vote(client, ahj, answer, direction):
-    res = client.post('/jurisdiction/%s/' % ahj.name_for_url,
-                      { 'ajax': 'vote',
-                        'entity_id': answer.id,
+    res = client.post('/jurisdiction/%s/' % ahj.name_for_url, #res is response of client
+                      { 'ajax': 'vote', #send through ajax
+                        'entity_id': answer.id, 
                         'entity_name': 'requirement',
-                        'vote': direction,
+                        'vote': direction, #direction up or down. 
                         'confirmed': '' })
-    return (res.status_code, try_decode(res.content))
+    return (res.status_code, try_decode(res.content)) #return the status code, look for 200, then attempt to decode the content
 
 def try_decode(content):
     try:

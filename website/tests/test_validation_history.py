@@ -75,14 +75,6 @@ class TestValidHistory(TestCase):
                                                value='test answer')
                             for ahj in self.ahj for question in self.questions]
 
-    def tearDown(self):
-        for user in self.users:
-            user.delete()
-        for ahj in self.ahj:
-            ahj.delete()
-        for question in self.questions:
-            question.delete()
-        for answer in self.answers:
-            answer.delete()
+
 #    tried calling TestVoting.vote()... didnt work because i was calling the class test vote, and vote is not part of the class test vote
 #    def test_import(self):
