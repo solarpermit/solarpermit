@@ -18,11 +18,12 @@ def build_query(question, field_map):
     # note: we're substituting directly into the query because the
     # mysql python driver adapter doesn't support real parameter
     # binding
-    fields = []
-    for name, match in field_map.items():
-        fields.append("       CONVERT(%(match)s, UNSIGNED) AS '%(name)s'\n" % { "name": name, "match": match })
-    return '''SELECT
-                     %(fields)s
+    indent = "                     ";
+    sep = ",\n"+indent
+    fields = ["CONVERT(%(match)s, UNSIGNED) AS '%(name)s'" % { "name": n, "match": m }
+              for (n, m) in field_map.items()]
+    return '''
+              SELECT %(fields)s
               FROM (SELECT id AS answer_id,
                            (SELECT value FROM website_answerreference WHERE id = answer_id) AS value
                     FROM (SELECT (SELECT id
@@ -36,7 +37,7 @@ def build_query(question, field_map):
                           WHERE website_jurisdiction.id NOT IN (1, 101105) AND
                                 website_jurisdiction.jurisdiction_type != 'u') AS temp0) as temp1
            ''' % { "question_id": question.id,
-                   "fields": ", ".join(fields) }
+                   "fields": sep.join(fields) }
 
 def json_match(field_name, value, op="="):
     return 'json_get(value, "%s") %s "%s" COLLATE utf8_general_ci' % (field_name, op, value)
