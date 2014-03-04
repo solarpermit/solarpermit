@@ -731,7 +731,7 @@ class FieldValidationCycleUtil():
 
                 total_down_votes_while_pending = Action.objects.filter(category=action_category, entity_id=entity_id, data__iexact='vote: down', action_datetime__gt=answer_pending_datetime).order_by('action_datetime')                
                 #lss; logic now states any suggested answer with 2 downvotes gets rejected, BUT if there are at least 1 more upvote than down vote, change to accepted.
-                 if vote == 'down' and len(total_down_votes_while_pending) >= 2:     # 3 down votes to reject
+                if vote == 'down' and len(total_down_votes_while_pending) >= 2:     # 3 down votes to reject
                     status = 'will_reject'
                     
                 if vote == 'up' and len(total_up_votes_while_pending) >= len(total_down_votes_while_pending) + 1 :

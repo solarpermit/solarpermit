@@ -15,19 +15,20 @@ cron_validate_answers
 function setup
 Create sample jurisdiction
 Create sample question for:
-        approved with downvotes
-        approved without downvotes
-        approved with no votes
-        approved multi value with downvotes
-        approved multi value without downvotes
-        rejected with downvotes
-        rejected with downvotes and upvotes
-        rejected multi value with downvotes
-        rejected multi value with downvotes and upvotes
+      1  approved with downvotes
+      2  approved without downvotes
+      3  approved with no votes
+      4  approved multi value with downvotes
+      5  approved multi value without downvotes
+      6  rejected with downvotes
+      7  rejected with downvotes and upvotes
+      8  rejected multi value with downvotes
+      9  rejected multi value with downvotes and upvotes
+      10 approved by superuser
         rejected after already approved?? I don't think i need to test this feature.
         
     create sample answers (multianswer questions will have 3 answers, pending, approved, reject)
-    superuser add answer?? waiting for db48x to reply.
+    superuser add answer?? waiting for db48x to reply. yes we are to test this
 
 function vote
     downvote answer to 2 to reject
@@ -75,7 +76,7 @@ class TestValidHistory(TestCase):
                                                 name = "foo")]
 
         self.questions = [Question.objects.create(label="test%s" % id, question="test%s" % id)
-                              for id in xrange(2)]
+                              for id in xrange(10)]
 #lss; at first it confused me that they used the for loops in this way.#lss; interesting for statement
 #thought it would be no different than
 # for ahj in self.ahj:
