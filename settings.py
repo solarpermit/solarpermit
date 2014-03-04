@@ -189,8 +189,11 @@ INSTALLED_APPS = (
     'followit',  
     'sorl.thumbnail',
     'dajax',    
-    'website',
+    'compressor',
+     'website',
     #'debug_toolbar',    
+    'django_extensions',
+    'tracking',
 )
 
 #setup memcached for production use!
@@ -279,4 +282,29 @@ PAGE_COLUMNS = 5 #number of columns in multiple column listing page
 
 #EXCLUDED_ORGS_FROM_GOOGLE_ANALYTICS = [1]   # org id numbers
 
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = True
+COMPRESS_URL = '/media/'
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = True
+COMPRESS_URL = '/media/'
+COMPRESS_ROOT = os.path.join(PROJECT_ROOT, 'static/skins/solarpermit/media')
+COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',
+                        'compressor.filters.cssmin.CSSMinFilter']
+COMPRESS_JS_FILTERS = ['compressor.filters.closure.ClosureCompilerFilter']
+COMPRESS_CLOSURE_COMPILER_BINARY = '/usr/local/bin/closure'
+COMPRESS_CLOSURE_COMPILER_ARGUMENTS = '--language_in ECMASCRIPT5 --summary_detail_level 3'
+
+# do not run migrations during testing
+SOUTH_TESTS_MIGRATE=False
+
+FORUM_INTEGRATION=False
+
+# django-tracking2
+TRACK_AJAX_REQUESTS = True
+TRACK_ANONYMOUS_USERS = True
+TRACK_PAGEVIEWS = True
+TRACK_IGNORE_URLS = ['tracking', 'admin']
+
 from settings_local import *
+
