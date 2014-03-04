@@ -101,6 +101,13 @@ def pie(spec):
 def hist(spec):
     return chart("histogram", spec)
 
+def add_freeform(spec):
+    not_freeform = or_match(null_match(json_extract("free-form")),
+                            json_match("free-form", ""))
+    copy = [(k, and_match(not_freeform, v)) for (k,v) in spec.iteritems()]
+    copy.append(("Freeform", and_match(not_null_match(json_extract("free-form")),
+                                       json_match("free-form", "", op="!="))))
+    return OrderedDict(copy)
 def add_other(spec):
     copy = OrderedDict(spec)
     conditions = [v for (k,v) in copy.iteritems()]
@@ -143,35 +150,26 @@ def yes_no_exception_field(field_name):
 # macros, man, macros.
 # also, shouldn't this go by multiples of 5? presumably it's business days…
 def turn_around_report():
-    not_freeform = or_match(null_match(json_extract("free-form")),
-                            json_match("free-form", ""))
-    bins = OrderedDict([("Same day", and_match(not_freeform,
-                                               json_match("time_unit", "hour(s)"))),
-                        ("1-2 days", and_match(not_freeform,
-                                               json_match("time_unit", "day(s)"),
+    bins = OrderedDict([("Same day", json_match("time_unit", "hour(s)")),
+                        ("1-2 days", and_match(json_match("time_unit", "day(s)"),
                                                lte(json_extract("time_qty"), 2))),
-                        ("3-7 days", and_match(not_freeform,
-                                               or_match(and_match(json_match("time_unit", "day(s)"),
+                        ("3-7 days", or_match(and_match(json_match("time_unit", "day(s)"),
                                                                   between(json_extract("time_qty"), 3, 7)),
                                                         and_match(json_match("time_unit", "week(s)"),
-                                                                  json_match("time_qty", "1"))))),
-                        ("8-14 days", and_match(not_freeform,
-                                                or_match(and_match(json_match("time_unit", "day(s)"),
+                                                                  json_match("time_qty", "1")))),
+                        ("8-14 days", or_match(and_match(json_match("time_unit", "day(s)"),
                                                                    between(json_extract("time_qty"), 8, 14)),
                                                          and_match(json_match("time_unit", "week(s)"),
-                                                                   json_match("time_qty", "2"))))),
-                        ("15-21 days", and_match(not_freeform,
-                                                 or_match(and_match(json_match("time_unit", "day(s)"),
+                                                                   json_match("time_qty", "2")))),
+                        ("15-21 days", or_match(and_match(json_match("time_unit", "day(s)"),
                                                                     between(json_extract("time_qty"), 15, 21)),
                                                           and_match(json_match("time_unit", "week(s)"),
-                                                                    json_match("time_qty", "3"))))),
-                        ("22+ days", and_match(not_freeform,
-                                               or_match(and_match(json_match("time_unit", "day(s)"),
+                                                                    json_match("time_qty", "3")))),
+                        ("22+ days", or_match(and_match(json_match("time_unit", "day(s)"),
                                                                   gte(json_extract("time_qty"), 22)),
                                                         and_match(json_match("time_unit", "week(s)"),
-                                                                  gte(json_extract("time_qty"), 4))))),
-                        ("Freeform", json_match("free-form", "", op="!="))])
-    return hist(add_sum_total(summarize(add_other(bins))))
+                                                                  gte(json_extract("time_qty"), 4))))])
+    return hist(add_sum_total(summarize(add_other(add_freeform(bins)))))
 
 def plan_check_service_type_report():
     spec = OrderedDict([("Over the Counter",
@@ -200,7 +198,7 @@ def time_window_report():
                         ("2 hours (or less)", json_match("time_window", "2")),
                         ("Half Day (2 to 4 hours)", json_match("time_window", "4")),
                         ("Full Day (greater than 4 hours)", json_match("time_window", "8"))])
-    return hist(add_sum_total(summarize(add_other(spec))))
+    return hist(add_sum_total(summarize(add_other(add_freeform(spec)))))
 
 reports_by_type = {
     "available_url_display.html": [coverage_report(), yes_no_field("available")],
