@@ -31,6 +31,16 @@
 	<td>Current Approved Values in the Database</td>
 </tr>
 <tr>
+	<td>verifyElementPresent</td>
+	<td>css=svg</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#graph1 &gt; svg</td>
+	<td></td>
+</tr>
+<tr>
 	<td>verifyText</td>
 	<td>css=th.header_row</td>
 	<td>Value</td>
@@ -96,86 +106,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyText</td>
-	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row</td>
-	<td>Value</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.odd &gt; th</td>
-	<td>In person</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='report1']/table/tbody/tr[3]/th</td>
-	<td>Remotely</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='report1']/table/tbody/tr[4]/th</td>
-	<td>Other</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='report1']/table/tbody/tr[5]/th</td>
-	<td>Total</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row_right</td>
-	<td>Jurisdictions</td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.odd &gt; th</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='report1']/table/tbody/tr[3]/th</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='report1']/table/tbody/tr[4]/th</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='report1']/table/tbody/tr[5]/th</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row_right</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.odd &gt; td</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; td</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='report1']/table/tbody/tr[4]/td</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='report1']/table/tbody/tr[5]/td</td>
-	<td></td>
-</tr>
-<tr>
 	<td>storeText</td>
 	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(2) &gt; td:nth-child(2)</td>
 	<td>answered</td>
@@ -217,38 +147,7 @@
 </tr>
 <tr>
 	<td>verifyEval</td>
-<<<<<<< Updated upstream
-	<td>parseInt(storedVars['in_person']) + parseInt(storedVars['remotely']) + parseInt(storedVars['other'])</td>
-	<td>${total2}</td>
-</tr>
-<tr>
-	<td>verifyEval</td>
-	<td>parseInt(storedVars['answered']) === parseInt(storedVars['total2'])</td>
-	<td>true</td>
-</tr>
-<tr>
-	<td>storeText</td>
-	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(2) &gt; td:nth-child(2)</td>
-	<td>in_person</td>
-</tr>
-<tr>
-	<td>storeText</td>
-	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(3) &gt; td:nth-child(2)</td>
-	<td>remotely</td>
-</tr>
-<tr>
-	<td>storeText</td>
-	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(4) &gt; td:nth-child(2)</td>
-	<td>other</td>
-</tr>
-<tr>
-	<td>storeText</td>
-	<td>css=tr.even:nth-child(5) &gt; td:nth-child(2)</td>
-	<td>total2</td>
-</tr>
-<tr>
-	<td>verifyEval</td>
-	<td>parseInt(storedVars['in_person']) + parseInt(storedVars['remotely']) + parseInt(storedVars['other'])</td>
+	<td>parseInt(storedVars['in_person']) + parseInt(storedVars['remotely'])</td>
 	<td>${total2}</td>
 </tr>
 <tr>
