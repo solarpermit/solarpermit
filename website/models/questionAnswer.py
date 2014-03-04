@@ -411,7 +411,7 @@ RATING_STATUS_CHOICES = (
     ('C', 'Confirmed'),
     ('D', 'Disputed'),
 )
-
+#lss; approval status choices def
 APPROVAL_STATUS_CHOICES = (
     ('P', 'Pending'),
     ('F', 'Flagged'),
