@@ -43,7 +43,7 @@ function timepass
     log errors
             self.users = [User.objects.create_user("testuser%s" % id, "testuser%s@testing.solarpermit.org" % id, "testuser") for id in xrange(3)]
 
-'''
+
 class TestValidHistory(TestCase):
     def setUp(self):
 #create a local users object for testuser1, 2, 3, out of a list build using the Django users model
@@ -77,29 +77,30 @@ class TestValidHistory(TestCase):
 
         self.questions = [Question.objects.create(label="test%s" % id, question="test%s" % id)
                               for id in xrange(10)]
-#lss; at first it confused me that they used the for loops in this way.#lss; interesting for statement
-#thought it would be no different than
-# for ahj in self.ahj:
-#    for question in self.questions:
-#        self.answers = [AnswerReference.objects.create(jurisdiction=ahj, question=question, value='test answer')
-#But it actually is, done the way above, it would create a new object for each answer and replace everything thats in there
-#Idk if this is a python thing, but i really like it, going to remember it
-
         self.answers = [AnswerReference.objects
                                        .create(jurisdiction=ahj,
                                                question=question,
                                                value='test answer')
                             for ahj in self.ahj for question in self.questions]
-
-
-#    tried calling TestVoting.vote()... didnt work because i was calling the class test vote, and vote is not part of the class test vote
-#    def test_import(self):
-#the following is a successful vote, sent to the sample jur in FL. was able to upvote the permiting department name
-#first I need to have the django client
-#from django.test.client import Client
-#c = Client()
+        
+        
+        
+#lss; at first it confused me that they used the for loops in this way.#lss; interesting for statement
+#thought it would be no different than
+# for ahj in self.ahj:
+#    for question in self.questions:
+#        self.answers = [AnswerReference.objects.create(jurisdiction=ahj, question=question, value='test answer')
+# But it actually is, done the way above, it would create a new object for each answer and replace everything thats in there
+# Idk if this is a python thing, but i really like it, going to remember it
+# tried calling TestVoting.vote()... didnt work because i was calling the class test vote, and vote is not part of the class test vote
+# def test_import(self):
+# the following is a successful vote, sent to the sample jur in FL. was able to upvote the permiting department name
+# first I need to have the django client
+# from django.test.client import Client
+# c = Client()
 # Then i need to make a user, (This made an actual user on the site, not just a test user in a test env)
 # User.objects.create_user("testuser00001", "testuser001@testing.solarpermit.org", "testuser")
+# WARNING creating a user this way does not invoke UserDetail, and will not allow the user to login on an actual browser. good catch, user detail is need inorder to have a complete test me thinks
 # Must be inside a class invoking TestCase in order to use a test env, then call the User to an new object exp: 
 # self.user = User.objects.create_user("testuser00001", "testuser001@testing.solarpermit.org", "testuser") for one user, or inside [] for multi users
 # to login with a user
@@ -112,3 +113,4 @@ class TestValidHistory(TestCase):
 # res = c.post('/jurisdiction/sample-jurisdiction-fl/', {'ajax': 'vote','entity_id': '26473', 'entity_name': 'requirement','vote': 'up', 'confirmed':''})
 # this posts to the login page over ajax, and then assigns the response to res.
 # res is an object containing res.status_code and res.content
+# on the site actual user creation is handled with jquery. static/skins/templates/solarpermit/website/accounts/create_account.js'''
