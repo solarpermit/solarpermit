@@ -1335,7 +1335,7 @@ def get_jurisdiction_voting_info(category_name, jurisdiction, login_user, catego
                     vote_info[vote.entity_id]['total_up_votes'] = vote_info[vote.entity_id]['total_up_votes'] + 1   
                     vote_info[vote.entity_id]['up_vote_found'] = True
                     vote_info[vote.entity_id]['num_consecutive_last_down_votes'] = 0
-                    if vote_info[vote.entity_id]['login_user_last_vote'] == '':
+                    if vote.user == login_user:
                         vote_info[vote.entity_id]['login_user_last_vote'] = 'up'
                                                          
                 elif vote.data == 'Vote: Down':
@@ -1347,7 +1347,7 @@ def get_jurisdiction_voting_info(category_name, jurisdiction, login_user, catego
                         last_down_vote_date = datetime_util_obj.showStateTimeFormat(jurisdiction.state)                    
                         vote_info[vote.entity_id]['last_down_vote_date'] = last_down_vote_date
                         
-                    if vote_info[vote.entity_id]['login_user_last_vote'] == '':
+                    if vote.user == login_user:
                         vote_info[vote.entity_id]['login_user_last_vote'] = 'down'                        
                                                 
                     if vote_info[vote.entity_id]['up_vote_found'] == False:
@@ -1821,7 +1821,7 @@ def get_answer_voting_info(category_name, jurisdiction, login_user, answer_ids):
                 vote_info[vote.entity_id]['total_up_votes'] = vote_info[vote.entity_id]['total_up_votes'] + 1   
                 vote_info[vote.entity_id]['up_vote_found'] = True
                 vote_info[vote.entity_id]['num_consecutive_last_down_votes'] = 0
-                if vote_info[vote.entity_id]['login_user_last_vote'] == '':
+                if vote.user == login_user:
                     vote_info[vote.entity_id]['login_user_last_vote'] = 'up'
                                                          
             elif vote.data == 'Vote: Down':
@@ -1833,7 +1833,7 @@ def get_answer_voting_info(category_name, jurisdiction, login_user, answer_ids):
                     last_down_vote_date = datetime_util_obj.showStateTimeFormat(jurisdiction.state)                    
                     vote_info[vote.entity_id]['last_down_vote_date'] = last_down_vote_date
                         
-                if vote_info[vote.entity_id]['login_user_last_vote'] == '':
+                if vote.user == login_user:
                     vote_info[vote.entity_id]['login_user_last_vote'] = 'down'                        
                                             
                 if vote_info[vote.entity_id]['up_vote_found'] == False:
