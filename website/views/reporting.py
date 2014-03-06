@@ -111,11 +111,11 @@ def add_freeform(spec):
 def add_other(spec):
     copy = OrderedDict(spec)
     conditions = [v for (k,v) in copy.iteritems()]
-    copy["Other"] = or_match(and_match(not_null_match("answer_id"),
-                                       null_match("value")),
-                             and_match(not_null_match("value"),
-                                       not_match(json_valid())),
-                             not_match(or_match(*conditions)))
+    copy["Other"] = and_match(not_null_match("answer_id"),
+                              or_match(null_match("value"),
+                                       and_match(not_null_match("value"),
+                                                 not_match(json_valid())),
+                                       not_match(or_match(*conditions))))
     return copy
 def summarize(spec):
     copy = OrderedDict(spec)
@@ -154,21 +154,21 @@ def turn_around_report():
                         ("1-2 days", and_match(json_match("time_unit", "day(s)"),
                                                lte(json_extract("time_qty"), 2))),
                         ("3-7 days", or_match(and_match(json_match("time_unit", "day(s)"),
-                                                                  between(json_extract("time_qty"), 3, 7)),
-                                                        and_match(json_match("time_unit", "week(s)"),
-                                                                  json_match("time_qty", "1")))),
+                                                        between(json_extract("time_qty"), 3, 7)),
+                                              and_match(json_match("time_unit", "week(s)"),
+                                                        json_match("time_qty", "1")))),
                         ("8-14 days", or_match(and_match(json_match("time_unit", "day(s)"),
-                                                                   between(json_extract("time_qty"), 8, 14)),
-                                                         and_match(json_match("time_unit", "week(s)"),
-                                                                   json_match("time_qty", "2")))),
+                                                         between(json_extract("time_qty"), 8, 14)),
+                                               and_match(json_match("time_unit", "week(s)"),
+                                                         json_match("time_qty", "2")))),
                         ("15-21 days", or_match(and_match(json_match("time_unit", "day(s)"),
-                                                                    between(json_extract("time_qty"), 15, 21)),
-                                                          and_match(json_match("time_unit", "week(s)"),
-                                                                    json_match("time_qty", "3")))),
+                                                          between(json_extract("time_qty"), 15, 21)),
+                                                and_match(json_match("time_unit", "week(s)"),
+                                                          json_match("time_qty", "3")))),
                         ("22+ days", or_match(and_match(json_match("time_unit", "day(s)"),
-                                                                  gte(json_extract("time_qty"), 22)),
-                                                        and_match(json_match("time_unit", "week(s)"),
-                                                                  gte(json_extract("time_qty"), 4))))])
+                                                        gte(json_extract("time_qty"), 22)),
+                                              and_match(json_match("time_unit", "week(s)"),
+                                                        gte(json_extract("time_qty"), 4))))])
     return hist(add_sum_total(summarize(add_other(add_freeform(bins)))))
 
 def plan_check_service_type_report():
@@ -194,10 +194,14 @@ def inspection_approval_report():
     return pie(add_sum_total(summarize(add_other(spec))))
 
 def time_window_report():
-    spec = OrderedDict([("Exact time given", json_match("time_window", "0")),
-                        ("2 hours (or less)", json_match("time_window", "2")),
-                        ("Half Day (2 to 4 hours)", json_match("time_window", "4")),
-                        ("Full Day (greater than 4 hours)", json_match("time_window", "8"))])
+    spec = OrderedDict([("Exact time given", and_match(not_null_match(json_extract("time_window")),
+                                                       json_match("time_window", "0"))),
+                        ("2 hours (or less)", and_match(not_null_match(json_extract("time_window")),
+                                                        json_match("time_window", "2"))),
+                        ("Half Day (2 to 4 hours)", and_match(not_null_match(json_extract("time_window")),
+                                                              json_match("time_window", "4"))),
+                        ("Full Day (greater than 4 hours)", and_match(not_null_match(json_extract("time_window")),
+                                                                      json_match("time_window", "8")))])
     return hist(add_sum_total(summarize(add_other(add_freeform(spec)))))
 
 reports_by_type = {
