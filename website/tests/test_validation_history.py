@@ -43,7 +43,7 @@ function timepass
     log errors
             self.users = [User.objects.create_user("testuser%s" % id, "testuser%s@testing.solarpermit.org" % id, "testuser") for id in xrange(3)]
 
-
+'''
 class TestValidHistory(TestCase):
     def setUp(self):
 #create a local users object for testuser1, 2, 3, out of a list build using the Django users model
