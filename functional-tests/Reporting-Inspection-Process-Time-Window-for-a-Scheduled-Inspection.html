@@ -43,36 +43,16 @@
 <tr>
 	<td>verifyText</td>
 	<td>css=tr.odd &gt; th</td>
-	<td>Exact time given</td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>id=graph</td>
-	<td></td>
+	<td>Answered</td>
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[3]/th</td>
-	<td>2 hours (or less)</td>
+	<td>//div[@id='report0']/table/tbody/tr[3]/th</td>
+	<td>Unanswered</td>
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/th</td>
-	<td>Half Day (2 to 4 hours)</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/th</td>
-	<td>Full Day (greater than 4 hours)</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[6]/th</td>
-	<td>Other</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[7]/th</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
 	<td>Total</td>
 </tr>
 <tr>
@@ -92,57 +72,12 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[3]/th</td>
+	<td>//div[@id='report0']/table/tbody/tr[3]/th</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/th</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/th</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[6]/th</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[7]/th</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[7]/td</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[6]/td</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/td</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/td</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>css=tr.even &gt; td</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>css=td</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
 	<td></td>
 </tr>
 <tr>
@@ -151,39 +86,189 @@
 	<td></td>
 </tr>
 <tr>
-	<td>storeText</td>
+	<td>verifyElementPresent</td>
 	<td>css=td</td>
-	<td>exact_time_given</td>
+	<td></td>
 </tr>
 <tr>
-	<td>storeText</td>
+	<td>verifyElementPresent</td>
 	<td>css=tr.even &gt; td</td>
-	<td>2_hours</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row</td>
+	<td>Value</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.odd &gt; th</td>
+	<td>Exact time given</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[3]/th</td>
+	<td>2 hours (or less)</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[4]/th</td>
+	<td>Half Day (2 to 4 hours)</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[5]/th</td>
+	<td>Full Day (greater than 4 hours)</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[6]/th</td>
+	<td>Other</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[7]/th</td>
+	<td>Total</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row_right</td>
+	<td>Jurisdictions</td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.odd &gt; th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[3]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[4]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[5]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[6]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[7]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row_right</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.odd &gt; td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[4]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[5]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[6]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[7]/td</td>
+	<td></td>
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/td</td>
-	<td>half_day</td>
+	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(2) &gt; td:nth-child(2)</td>
+	<td>answered</td>
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/td</td>
-	<td>full_day</td>
+	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(3) &gt; td:nth-child(2)</td>
+	<td>unanswered</td>
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[6]/td</td>
-	<td>other</td>
-</tr>
-<tr>
-	<td>storeText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[7]/td</td>
+	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(4) &gt; td:nth-child(2)</td>
 	<td>total</td>
 </tr>
 <tr>
 	<td>verifyEval</td>
-	<td>parseInt(storedVars['exact_time_given']) + parseInt(storedVars['2_hours']) + parseInt(storedVars['half_day']) + parseInt(storedVars['full_day']) + parseInt(storedVars['other'])</td>
+	<td>parseInt(storedVars['answered']) + parseInt(storedVars['unanswered'])</td>
 	<td>${total}</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(2) &gt; td:nth-child(2)</td>
+	<td>exact_time_given</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(3) &gt; td:nth-child(2)</td>
+	<td>2_hours</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(4) &gt; td:nth-child(2)</td>
+	<td>half_day</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.even:nth-child(5) &gt; td:nth-child(2)</td>
+	<td>full_day</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.odd:nth-child(6) &gt; td:nth-child(2)</td>
+	<td>other</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.even:nth-child(7) &gt; td:nth-child(2)</td>
+	<td>total2</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>parseInt(storedVars['exact_time_given']) + parseInt(storedVars['2_hours']) + parseInt(storedVars['half_day']) + parseInt(storedVars['full_day']) + parseInt(storedVars['other'])</td>
+	<td>${total2}</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>parseInt(storedVars['answered']) === parseInt(storedVars['total2'])</td>
+	<td>true</td>
 </tr>
 </tbody></table>
 </body>

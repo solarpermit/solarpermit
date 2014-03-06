@@ -31,9 +31,14 @@
 	<td>Current Approved Values in the Database</td>
 </tr>
 <tr>
-	<td>verifyText</td>
-	<td>css=div.contentOnlyPage &gt; h1</td>
-	<td>Inspection approval copies - Field Answer Reporting</td>
+	<td>verifyElementPresent</td>
+	<td>css=svg</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#graph1 &gt; svg</td>
+	<td></td>
 </tr>
 <tr>
 	<td>verifyText</td>
@@ -43,21 +48,16 @@
 <tr>
 	<td>verifyText</td>
 	<td>css=tr.odd &gt; th</td>
-	<td>In person</td>
+	<td>Answered</td>
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[3]/th</td>
-	<td>Remotely</td>
+	<td>//div[@id='report0']/table/tbody/tr[3]/th</td>
+	<td>Unanswered</td>
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/th</td>
-	<td>Other</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/th</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
 	<td>Total</td>
 </tr>
 <tr>
@@ -77,12 +77,12 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[3]/th</td>
+	<td>//div[@id='report0']/table/tbody/tr[3]/th</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/th</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
 	<td></td>
 </tr>
 <tr>
@@ -102,33 +102,53 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/td</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/td</td>
 	<td></td>
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>css=td</td>
-	<td>in_person</td>
+	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(2) &gt; td:nth-child(2)</td>
+	<td>answered</td>
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>css=tr.even &gt; td</td>
-	<td>remotely</td>
+	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(3) &gt; td:nth-child(2)</td>
+	<td>unanswered</td>
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/td</td>
-	<td>other</td>
-</tr>
-<tr>
-	<td>storeText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[5]/td</td>
+	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(4) &gt; td:nth-child(2)</td>
 	<td>total</td>
 </tr>
 <tr>
 	<td>verifyEval</td>
-	<td>parseInt(storedVars['in_person']) + parseInt(storedVars['remotely']) + parseInt(storedVars['other'])</td>
+	<td>parseInt(storedVars['answered']) + parseInt(storedVars['unanswered'])</td>
 	<td>${total}</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(2) &gt; td:nth-child(2)</td>
+	<td>in_person</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(3) &gt; td:nth-child(2)</td>
+	<td>remotely</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(4) &gt; td:nth-child(2)</td>
+	<td>total2</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>parseInt(storedVars['in_person']) + parseInt(storedVars['remotely'])</td>
+	<td>${total2}</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>parseInt(storedVars['answered']) === parseInt(storedVars['total2'])</td>
+	<td>true</td>
 </tr>
 </tbody></table>
 </body>
