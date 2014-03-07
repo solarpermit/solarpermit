@@ -34,5 +34,4 @@ class UpdateCron():
             evc.entity_id = entity_id
             evc.count_30_days = record_sum
             evc.save()
-        #print str(evs)
         return

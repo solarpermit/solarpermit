@@ -98,8 +98,6 @@ def organization(request):
                 else:
                     order_by_str = 'name'       
                     
-            print order_by_str                                                         
-
             if text != '':
                 organizations = Organization.objects.filter(name__icontains=text, status = 'A').order_by(order_by_str)[0:ORGANIZATION_PAGE_SIZE]
             else:
@@ -286,11 +284,6 @@ def organization(request):
                 dajax.script(script)                  
 
                 return HttpResponse(dajax.json())                                                        
-                
-                #except Exception, e:
-                    #print e.message
-                    #error_message[msg_key] = e.message
-                    #print data
 
             if len(error_message) > 0:
                 for msg_key in error_message.keys():
@@ -469,7 +462,7 @@ def organization(request):
                         template = 'remove_member_org.html'
                         send_org_email(email_data, to_mail, subject,  template)
                     except:
-                        print('Failed to send remove from org email to ' + org_member.user.email)
+                        pass
             
             role_list = []
             members_list = []
@@ -514,7 +507,7 @@ def organization(request):
                             template = 'change_org_right.html'
                             send_org_email(email_data, to_mail, subject,  template)
                         except:
-                            print('Failed to send role change email to ' + member.user.email)
+                            pass
                 
                 dajax.script('jQuery.fancybox.close();')  
                 dajax.script("controller.showMessage('Changes saved.', 'success')") 
@@ -1141,10 +1134,6 @@ def organization_search(request):
         else:
             order_by_str = 'name'       
                     
-    print order_by_str          
-        
-                                                   
-
     if search_text != '':
         organizations = Organization.objects.filter(name__icontains=text, status = 'A').order_by(order_by_str)[range_start:range_end]
         data['search_param'] = '&text='+search_text

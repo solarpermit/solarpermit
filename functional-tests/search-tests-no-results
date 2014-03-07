@@ -32,7 +32,7 @@
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>css=span</td>
+	<td>css=h1.page_title &gt; span</td>
 	<td>Results for &quot;far out ca&quot;</td>
 </tr>
 </tbody></table>

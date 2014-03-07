@@ -47,6 +47,7 @@
 		    <li class="first{% if current_nav == "home" %} active {% endif %}"><a href="/">Home</a></li>
 		    <li {% if current_nav == "browse"%} class="active" {% endif %}><a href="/jurisdiction/browse/">Browse</a></li>
 			{% if request.user.is_authenticated() %}<li {% if current_nav == "fj" %} class="active" {% endif %}><a href="/user_favorite/">Favorite Jurisdictions</a></li>{% endif %}
+		    <li {% if current_nav == "reporting"%} class="active" {% endif %}><a href="/reporting/">Reporting</a></li>
 		    <li {% if current_nav == "about"%} class="active" {% endif %}><a href="/about/">About</a></li>
 		    <li {% if current_nav == "news"%} class="active" {% endif %}><a href="/news/">News</a></li>
 			{# for forum bridge integration #}

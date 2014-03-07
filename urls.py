@@ -69,6 +69,7 @@ else:
         (r'^news2/', info.news_dynamic),
         (r'^about/', info.about),
         (r'^getting-started/', info.getting_started_page),  
+        (r'^contributions/', info.contributions),
         
         #data migrations
         #(r'^util/import/unincorporated/$', 'website.views.data_migration.migrate_unincorporated'),
@@ -103,6 +104,9 @@ else:
         #### api calls
         (r'^api1/', 'website.views.api.searchState'),
         
+        #### django-tracking2
+        (r'^tracking/', include('tracking.urls')),
+
         #### reporting pages
         (r'^reporting/$', 'website.views.reporting.report_index'),
         (r'^reporting/(?P<question_id>\d+)/$', 'website.views.reporting.report_on'))

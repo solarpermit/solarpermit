@@ -678,7 +678,7 @@ $(document).ready(function() {
                 $('#votedown_'+answer_id).removeClass('disabled');   
                 $('#votedown_'+answer_id).addClass('canvotedown');                                                            
             }
-            else
+            else if (answer_votes['login_user_last_vote'] === 'down')
             {
                 $('#up_vote_'+answer_id).removeClass('cannot_vote');
                 $('#voteup_'+answer_id).removeClass('disabled');    

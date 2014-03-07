@@ -121,7 +121,6 @@ class AnswerHelper:
                 if height != '':
                     answer_obj['width'] = width
                     answer_obj['height'] = height
-            #print 'width: '+width+', height: '+height
             
             #if len(import_answer_value) > self.MIN_FREE_FORM_LENGTH:
                 #answer_obj['free-form'] = import_answer_value
@@ -269,7 +268,6 @@ class AnswerHelper:
         try:
             answer_dict = json.loads(answer_json)
         except:
-            print 'Failed to parse json form answer: '+answer_json
             return False
                 
         for key in answer_dict:

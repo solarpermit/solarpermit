@@ -11,7 +11,6 @@ class TimeShow():
     def get_show_time(self):
         now = datetime.utcnow()
         now1 = datetime.now()
-        #print self.time
         try:
             diff = now - self.time.replace(tzinfo=None)
         except:
@@ -22,7 +21,6 @@ class TimeShow():
         
         if day_diff < 0:
             return ''
-        #print second_diff
         if day_diff == 0:
             if second_diff < 60: 
                 return 'just now'

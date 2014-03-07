@@ -16,6 +16,11 @@ Install Instructions
 1.  Install Dependencies
     A. Apache 2
     B. MySQL Server
+        a. Install the mysql_json UDF
+            1. git submodule update --init    (checks out the source code)
+            2. cd deps/mysql_json
+            3. make
+            4. make install
     C. mod_wsgi
     D. Please See dependencies.txt
         a.  This file is written to be used with pip for easily handling python requirements - i.e. "pip install -r dependencies.txt"

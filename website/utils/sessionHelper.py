@@ -53,7 +53,6 @@ class SessionHelper():
         #get user uuid from session
         try:
             s = SessionStore(session_key=sid) #the session itself
-            #print '-----'+str(s['uuid']);
             self.uuid = s['uuid']
         except:
             self.error = True

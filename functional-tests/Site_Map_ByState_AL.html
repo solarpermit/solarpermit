@@ -12,33 +12,48 @@
 </thead><tbody>
 <tr>
 	<td>open</td>
-	<td>/</td>
+	<td>/sitemap/</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=Site Map</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
+	<td>click</td>
 	<td>link=Jurisdictions by State</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
+	<td>waitForText</td>
+	<td>css=div.contentOnlyPage &gt; h1</td>
+	<td>Jurisdictions by State</td>
+</tr>
+<tr>
+	<td>click</td>
 	<td>link=Alabama</td>
 	<td></td>
 </tr>
 <tr>
-	<td>waitForTitle</td>
-	<td>Site Map - National Solar Permitting Database</td>
-	<td></td>
+	<td>waitForText</td>
+	<td>css=div.contentOnlyPage &gt; h1</td>
+	<td>Jurisdictions in Alabama</td>
 </tr>
 <tr>
 	<td>verifyText</td>
 	<td>css=div.contentOnlyPage &gt; h1</td>
 	<td>Jurisdictions in Alabama</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=h3</td>
+	<td>County Locations</td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=Jurisdictions by State</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='main-wrapper']/div[4]/div/h3[2]</td>
+	<td>City Locations</td>
 </tr>
 </tbody></table>
 </body>

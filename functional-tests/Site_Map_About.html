@@ -12,16 +12,11 @@
 </thead><tbody>
 <tr>
 	<td>open</td>
-	<td>/</td>
+	<td>/sitemap/</td>
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=Site Map</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
+	<td>click</td>
 	<td>link=About SolarPermit.org</td>
 	<td></td>
 </tr>
@@ -29,6 +24,11 @@
 	<td>waitForTitle</td>
 	<td>About - National Solar Permitting Database</td>
 	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>css=div.contentOnlyPage &gt; h1</td>
+	<td>About SolarPermit.org</td>
 </tr>
 <tr>
 	<td>verifyText</td>
