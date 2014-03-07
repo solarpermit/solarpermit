@@ -11,6 +11,9 @@ TEMPLATE_DEBUG = DEBUG
 INTERNAL_IPS = ('127.0.0.1',)
 #SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
+SOLARPERMIT_VERSION = '1.3.37'
+SAMPLE_JURISDICTIONS=['1', '101105']
+
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -106,6 +109,7 @@ STATICFILES_DIRS = (
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
+    'compressor.finders.CompressorFinder',
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
@@ -123,6 +127,7 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
+    'tracking.middleware.VisitorTrackingMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -188,11 +193,11 @@ INSTALLED_APPS = (
     'djkombu',
     'followit',  
     'sorl.thumbnail',
-    'dajax',    
+    'dajax',
+    'website',
     'compressor',
-     'website',
-    #'debug_toolbar',    
     'django_extensions',
+    #'debug_toolbar',    
     'tracking',
 )
 
@@ -304,4 +309,3 @@ TRACK_PAGEVIEWS = True
 TRACK_IGNORE_URLS = ['tracking', 'admin']
 
 from settings_local import *
-

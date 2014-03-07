@@ -25,10 +25,8 @@ Create sample question for:
       8  rejected multi value with downvotes
       9  rejected multi value with downvotes and upvotes
       10 approved by superuser
-        rejected after already approved?? I don't think i need to test this feature.
-        
+
     create sample answers (multianswer questions will have 3 answers, pending, approved, reject)
-    superuser add answer?? waiting for db48x to reply. yes we are to test this
 
 function vote
     downvote answer to 2 to reject
@@ -47,6 +45,17 @@ function timepass
 class TestValidHistory(TestCase):
     def setUp(self):
 #create a local users object for testuser1, 2, 3, out of a list build using the Django users model
+        qName = ["approved with downvotes",
+                 "approved without downvotes",
+                 "approved with no votes",
+                 "approved multi value with downvotes",
+                 "approved multi value without downvotes",
+                 "rejected with downvotes",
+                 "rejected with downvotes and upvotes",
+                 "rejected multi value with downvotes",
+                 "rejected multi value with downvotes and upvotes",
+                 "approved by superuser"
+                 ]
         self.users = [User.objects.create_user("testuser%s" % id, 
                                                "testuser%s@testing.solarpermit.org" % id,
                                                 "testuser")
@@ -61,22 +70,16 @@ class TestValidHistory(TestCase):
                                       rating_category_id=1,
                                       points=2).save()
 
-        self.ahj = [Jurisdiction.objects.create(city = "foo city",
+        self.ahj = Jurisdiction.objects.create(city = "foo city",
                                                 name_for_url = "foo1",
                                                 description = "foo",
                                                 state = "CA",
                                                 jurisdiction_type = "CI",
-                                                name = "foo"),
+                                                name = "foo")
 
-                    Jurisdiction.objects.create(city = "foo city",
-                                                name_for_url = "foo2",
-                                                description = "foo",
-                                                state = "CA",
-                                                jurisdiction_type = "CI",
-                                                name = "foo")]
+        self.questions = [Question.objects.create(label="test %s" % name, question="test%s" % id)
+                              for id in xrange(10) for name in qName]
 
-        self.questions = [Question.objects.create(label="test%s" % id, question="test%s" % id)
-                              for id in xrange(10)]
         self.answers = [AnswerReference.objects
                                        .create(jurisdiction=ahj,
                                                question=question,
@@ -85,8 +88,8 @@ class TestValidHistory(TestCase):
         
         
         
-#lss; at first it confused me that they used the for loops in this way.#lss; interesting for statement
-#thought it would be no different than
+#lss; at first it confused me that they used the for loops in this way.
+# thought it would be no different than
 # for ahj in self.ahj:
 #    for question in self.questions:
 #        self.answers = [AnswerReference.objects.create(jurisdiction=ahj, question=question, value='test answer')
