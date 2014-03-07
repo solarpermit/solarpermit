@@ -123,6 +123,11 @@
 <tr>
 	<td>verifyText</td>
 	<td>//div[@id='report1']/table/tbody/tr[4]/th</td>
+	<td>Other</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[5]/th</td>
 	<td>Total</td>
 </tr>
 <tr>
@@ -203,11 +208,16 @@
 <tr>
 	<td>storeText</td>
 	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(4) &gt; td:nth-child(2)</td>
+	<td>other</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.even:nth-child(5) &gt; td:nth-child(2)</td>
 	<td>total2</td>
 </tr>
 <tr>
 	<td>verifyEval</td>
-	<td>parseInt(storedVars['yes']) + parseInt(storedVars['no'])</td>
+	<td>parseInt(storedVars['yes']) + parseInt(storedVars['no']) + parseInt(storedVars['other'])</td>
 	<td>${total2}</td>
 </tr>
 <tr>
