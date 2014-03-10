@@ -591,16 +591,26 @@ def jurisdiction_text_search(primary_search_str, scrubbed_primary_search_str, se
                 state_filter_list.append(state_abbrevs[word])
             elif state_names.has_key(word):
                 state_filter_list.append(state_names[word])
-            else:
+                # this state name might actually be a city name, so
+                # add it to the search list
                 words.append(word)
+            elif word:
+                words.append(word)
+
         search_words = [" ".join(words), scrubbed_primary_search_str, primary_search_str]
         return query(state_filter_list, search_words, secondary_search_str, filter, order_by_str, range_start, range_end, primary_exclude, sec_exclude)
     return Jurisdiction.objects.none()
 
-def query(state_list, search_words, secondary_search_str, filter, order_by_str, range_start=0, range_end=JURISDICTION_PAGE_SIZE, primary_exclude='',sec_exclude=''):
-    query = reduce(lambda q,word: q | Q(name__icontains = word.strip()),
+def query(state_list, search_words, secondary_search_str, filter,
+          order_by_str, range_start=0,
+          range_end=JURISDICTION_PAGE_SIZE,
+          primary_exclude='',sec_exclude=''):
+    query = reduce(lambda q, word:
+                       q | Q(name__icontains = word.strip()) if word.strip() else q,
                    search_words, Q())
-    objects = Jurisdiction.objects.filter(query).filter(name__icontains = secondary_search_str)
+    objects = Jurisdiction.objects.filter(query)
+    if secondary_search_str:
+        objects = objects.filter(name__icontains = secondary_search_str)
 
     if filter == 'county':  
         objects = objects.filter(jurisdiction_type__in=('CO', 'CC'))
@@ -616,7 +626,6 @@ def query(state_list, search_words, secondary_search_str, filter, order_by_str, 
         objects = objects.exclude(jurisdiction_type__in='U')
 
     return objects.order_by(order_by_str, 'state')[range_start:range_end]
-
     
 def jurisdiction_comment(request):
     requestProcessor = HttpRequestProcessor(request)
