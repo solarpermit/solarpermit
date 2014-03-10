@@ -11,13 +11,12 @@ from dajax.core import Dajax
 from django.conf import settings as django_settings
 from django.core.mail.message import EmailMessage
 from django.shortcuts import render
-
+from django.db.models import Q
 from django.shortcuts import render_to_response, redirect
 from website.utils.mathUtil import MathUtil
 
 from website.utils.geoHelper import GeoHelper
 from website.models import Jurisdiction, Zipcode, UserSearch, Question, AnswerReference, OrganizationMember, QuestionCategory, Comment, UserCommentView, Template, ActionCategory, JurisdictionContributor, Action, UserDetail
-
 from website.utils.messageUtil import MessageUtil,add_system_message,get_system_message
 from website.utils.miscUtil import UrlUtil
 
@@ -579,129 +578,44 @@ def jurisdiction_search_improved(request):
         return requestProcessor.render_to_response(request,'website/jurisdictions/jurisdiction_search_results.html', data, '')      
     
 def jurisdiction_text_search(primary_search_str, scrubbed_primary_search_str, secondary_search_str, filter, order_by_str, range_start=0, range_end=JURISDICTION_PAGE_SIZE, primary_exclude='', sec_exclude=''):
- 
-    states = US_STATES
+    state_filter_list = []
 
-    state_list = {}
-    search_words = []
-    dict_states = {}
-    dict_long_name_states = {}
-    counter = 0
-    
-    objects = Jurisdiction.objects.none()   
     if scrubbed_primary_search_str != '':
-        list_words = scrubbed_primary_search_str.split(' ')
-        
-        for state in states:
-            dict_states[state[0]] = state[0]
-            dict_long_name_states[state[1]] = state[0]        
-        
-        words = ''
-        if len(list_words) == 1:
-            word = list_words[0] 
-            if dict_long_name_states.has_key(word.lower().title()) and len(list_words) == 1:    # nevada, ca where nevada matches a state, but it's a city by the user.
-                state_list[dict_long_name_states[word.lower().title()]] = dict_long_name_states[word.lower().title()]
+        search_terms = scrubbed_primary_search_str.lower().split(' ')
+        state_abbrevs = dict([(s.lower(), s) for s in dict(US_STATES).keys()])
+        state_names = dict([(s[1].lower(), s[0]) for s in US_STATES])
+
+        words = []
+        for word in search_terms:
+            if state_abbrevs.has_key(word):
+                state_filter_list.append(state_abbrevs[word])
+            elif state_names.has_key(word):
+                state_filter_list.append(state_names[word])
             else:
-                words = word            
-        else:
-            for word in list_words:
-                if len(word) >= 2:
-                    if len(word) == 2:
-                        if dict_states.has_key(word.upper()):    
-                            state_list[word] = word
-                        else:
-                            words = words + ' ' + word
-                    else:
-                        if dict_long_name_states.has_key(word.lower().title()) and len(list_words) == 1:    # nevada, ca where nevada matches a state, but it's a city by the user.
-                            state_list[dict_long_name_states[word.lower().title()]] = dict_long_name_states[word.lower().title()]
-                        #else:
-                        words = words + ' ' + word
-                        
-                    #if words.strip() not in search_words:
-                    #    search_words.append(words.strip())
-                #elif len(word) > 0:
-                #     words = words + ' ' + word
-                    
-        #search_words[0] = words.strip()
-        #if words.strip() not in search_words:
-        search_words.append(words.strip())  
-        search_words.append(scrubbed_primary_search_str)   
-        search_words.append(primary_search_str)            
-        objects = query(state_list, search_words, secondary_search_str, filter, order_by_str, range_start, range_end, primary_exclude, sec_exclude)
-        '''
-        if state_list:
-            ##print "limit by states"  #name__in=search_words.values(),
-            for search_word in search_words.values():    
-                #objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values()).order_by('name', 'state')[range_start:range_end] 
-                objects |= query(state_list, search_words, secondary_search_str, filter, order_by_str)
-        else: 
-            ##print "not limit by states"   
-            for search_word in search_words.values():   
-                #objects |= Jurisdiction.objects.filter(name__icontains=search_word).order_by('name', 'state')[range_start:range_end]
-                objects |= query(state_list, search_words, secondary_search_str, filter, order_by_str)
-        
-        ##print "text search objects :: "
-        ##print objects
-        '''
-    return objects
+                words.append(word)
+        search_words = [" ".join(words), scrubbed_primary_search_str, primary_search_str]
+        return query(state_filter_list, search_words, secondary_search_str, filter, order_by_str, range_start, range_end, primary_exclude, sec_exclude)
+    return Jurisdiction.objects.none()
 
 def query(state_list, search_words, secondary_search_str, filter, order_by_str, range_start=0, range_end=JURISDICTION_PAGE_SIZE, primary_exclude='',sec_exclude=''):
-    objects = Jurisdiction.objects.none()  
+    query = reduce(lambda q,word: q | Q(name__icontains = word.strip()),
+                   search_words, Q())
+    objects = Jurisdiction.objects.filter(query).filter(name__icontains = secondary_search_str)
+
+    if filter == 'county':  
+        objects = objects.filter(jurisdiction_type__in=('CO', 'CC'))
+    elif filter == 'city':
+        objects = objects.filter(jurisdiction_type__in=('CI', 'U', 'CC'))
+    elif filter == 'state':
+        objects = objects.filter(jurisdiction_type__in=('S'))
     
-    if secondary_search_str == '':  
-        if state_list:
-            for search_word in search_words:  
-                if filter == 'county':  
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('CO', 'CC')).order_by(order_by_str, 'state')
-                elif filter == 'city':
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('CI', 'U', 'CC')).order_by(order_by_str, 'state')       
-                elif filter == 'state':
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('S')).order_by(order_by_str, 'state')                              
-                else:
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values()).order_by(order_by_str, 'state')               
-        else:
-            for search_word in search_words:    
-                if filter == 'county':  
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('CO', 'CC')).order_by(order_by_str, 'state') 
-                elif filter == 'city':
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('CI', 'U', 'CC')).order_by(order_by_str, 'state')        
-                elif filter == 'state':
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('S')).order_by(order_by_str, 'state')                             
-                else:
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word).order_by(order_by_str, 'state')                    
-    
-    else:
-        if state_list:
-            for search_word in search_words:  
-                if filter == 'county':  
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('CO', 'CC')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                                    
-                elif filter == 'city':
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('CI', 'U', 'CC')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                 
-                elif filter == 'state':
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('S')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                 
-                else:
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values()).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')
-                        
-        else:
-            for search_word in search_words:    
-                if filter == 'county':  
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('CO', 'CC')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                                            
-                elif filter == 'city':
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('CI','U', 'CC')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state') 
-                elif filter == 'state':
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('S')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                                  
-                else:
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                       
-        
-    if primary_exclude != '':
-        if primary_exclude == 'unincorporated':        
-            objects = objects.exclude(jurisdiction_type__in='U')
-    
-    if sec_exclude != '':
-        if sec_exclude == 'unincorporated':
-            objects = objects.exclude(jurisdiction_type__in='U')
-            
-    return objects[range_start:range_end]
+    if state_list:
+        objects = objects.filter(state__in=state_list)
+
+    if primary_exclude == 'unincorporated' or sec_exclude == 'unincorporated':        
+        objects = objects.exclude(jurisdiction_type__in='U')
+
+    return objects.order_by(order_by_str, 'state')[range_start:range_end]
 
     
 def jurisdiction_comment(request):
