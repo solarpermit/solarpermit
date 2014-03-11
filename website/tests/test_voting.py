@@ -89,7 +89,7 @@ class TestVoting(TestCase):
         ## votes on one question don't get counted for others
         self.do_test_vote(client, self.ahj[0], self.answers[2], 'up', 1, 0)
         self.do_test_vote(client, self.ahj[1], self.answers[3], 'down', 0, 1)
-
+#client is django test client, ahj is the jurisdiction info, answer is the answerReference object, Direction we will vote in, up or down, number of total upvotes we should have after test, number of total downvotes we should have after test.
     def do_test_vote(self, client, ahj, answer, direction, up_votes, down_votes):
         (status, commands) = vote(client, ahj, answer, direction)
         self.assertEqual(status, 200)
