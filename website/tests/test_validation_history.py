@@ -55,20 +55,38 @@ class TestValidHistory(TestCase):
         logged_in = client.login(username='testuser0',
                                  password='testuser')
         self.assertTrue(logged_in)
+#      1  approved with downvotes
+        # 3 upvotes, 1 down votes
+        down_votes = 1 #max down votes
+        up_votes = 3 #max upvotes
+        cur_up = 0 #current amount of up votes
+        cur_down = 0 #current amount of up votes
+        direction = "" #voting direction
+        inc = 0 
+        ### NEED TO CHANGE USERS AFTER EACH VOTE!
+        
+        while inc < up_votes: # while our incrementor is less than our total upvotes,
+            direction = "up" # set to upvote
+            if cur_up <= up_votes: # if our current amount of upvotes is less or equal to our max upvote
+                cur_up = cur_up + 1 #inc current upvotes
+            self.do_test_vote( client, self.ahj, self.answers[0], direction, cur_up, cur_down) #test vote
+            while inc < down_votes:
+                if cur_down <= down_votes:
+                    cur_down = cur_down + 1
+                direction = "down"
+                self.do_test_vote( client, self.ahj, self.answers[0], direction, cur_up, cur_down)
+            inc = inc + 1 #dont forget to inc!
+
+#      2  approved without downvotes
+        # 1 upvote
         down_votes = 0
         up_votes = 1
         direction = "up"
-        (status, commands) = vote(client, self.ahj, self.answers[0], direction)
-        self.assertEqual(status, 200)
-        self.assertNotEqual(self.ahj.id,0)
-        self.do_test_vote( client, self.ahj, self.answers[0], direction, up_votes, down_votes)
-
-#      1  approved with downvotes
-        # 3 upvotes, 2 down votes
-#      2  approved without downvotes
-        # 1 upvote
 #      3  approved with no votes
         #no votes
+        down_votes = 0
+        up_votes = 1
+        direction = "up"
 #      4  approved multi value with downvotes
         #answer one: downvote, upvote 3
         #answer two: downvote 2
@@ -86,7 +104,7 @@ class TestValidHistory(TestCase):
         #answer one upvote 1 downvote 2
         #answer two upvote 1 downvote 2
 #      10 approved by superuser
-        #login as superuser. upvote? approve?
+        #login as superuser. upvote? approve? need to figure this out.
         
         #i altered do_test_vote to not include a test against the response for jurisdiction_id since it doesnt exist.
     def do_test_vote(self, client, ahj, answer, direction, up_votes, down_votes):
