@@ -70,19 +70,24 @@ class TestValidHistory(TestCase):
 #      3  approved with no votes
         #no votes
 #      4  approved multi value with downvotes
-        
+        #answer one: downvote, upvote 3
+        #answer two: downvote 2
 #      5  approved multi value without downvotes
-
+        #answer one: upvote 3
+        #answer two: downvote 2
 #      6  rejected with downvotes
-
+        #downvote 2
 #      7  rejected with downvotes and upvotes
-
+        #upvote 1 downvote 2
 #      8  rejected multi value with downvotes
-
+        #answer one downvote 2
+        #answer two downvote 2
 #      9  rejected multi value with downvotes and upvotes
-
+        #answer one upvote 1 downvote 2
+        #answer two upvote 1 downvote 2
 #      10 approved by superuser
-
+        #login as superuser. upvote? approve?
+        
         #i altered do_test_vote to not include a test against the response for jurisdiction_id since it doesnt exist.
     def do_test_vote(self, client, ahj, answer, direction, up_votes, down_votes):
         (status, commands) = vote(client, ahj, answer, direction)
@@ -109,6 +114,11 @@ def try_decode(content):
         return json.loads(content)
     except:
         return None
+def dump(obj):
+    for attr in dir(obj):
+        if hasattr( obj, attr ):
+            print( "obj.%s = %s" % (attr, getattr(obj, attr)))
+
 
 '''
 Will get 301 status code if no trailing slash is in place.
