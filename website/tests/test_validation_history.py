@@ -40,15 +40,23 @@ class TestValidHistory(TestCase):
                                                 state = "CA",
                                                 jurisdiction_type = "CI",
                                                 name = "foo")
-
+## we need 4 questions that have multiple answer possiblites. add to the end? diff object? diff object will be wayyyy easier
         self.questions = [Question.objects.create(label="test %s" % name, question="test%s" % id)
                               for id in xrange(10) for name in qName]
-
+        self.questionsMulti = [Question.objects.create(label="test %s" % name, question="test%s" % id, has_multivalues = True)
+                              for id in xrange(4) for name in qName]
+        
         self.answers = [AnswerReference.objects
                                        .create(jurisdiction=self.ahj,
                                                question=question,
                                                value='test answer')
                              for question in self.questions]
+        inc = 0
+        self.answersMulti = []
+        while inc < 4:
+            self.answersMulti.append(AnswerReference.objects.create(jurisdiction=self.ahj, question="test%s" % inc, value='test answer Multi'))
+            self.answersMulti.append(AnswerReference.objects.create(jurisdiction=self.ahj, question="test%s" % inc, value='test answer Multi'))             
+            inc = inc + 1
 ## need to add a couple of multi value questions to the answer ref. to do so i need to add some questions to the question object that have has_multivalues = True
 
     def test_validate(self):
