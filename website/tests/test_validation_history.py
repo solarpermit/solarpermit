@@ -23,7 +23,7 @@ class TestValidHistory(TestCase):
         self.users = [User.objects.create_user("testuser%s" % id, 
                                                "testuser%s@testing.solarpermit.org" % id,
                                                 "testuser")
-                          for id in xrange(3)]
+                          for id in xrange(10)]
 
         RatingCategory.objects.create(name='Points',
                                       description='Number of points',
@@ -49,54 +49,156 @@ class TestValidHistory(TestCase):
                                                question=question,
                                                value='test answer')
                              for question in self.questions]
-
+## need to add a couple of multi value questions to the answer ref. to do so i need to add some questions to the question object that have has_multivalues = True
 
     def test_validate(self):
-        logged_in = client.login(username='testuser0',
-                                 password='testuser')
-        self.assertTrue(logged_in)
-#      1  approved with downvotes
+        
+#      test #0 Goal: approved with downvotes
         # 3 upvotes, 1 down votes
+        testNum = 0 #dictates what answer were applying votes to
         down_votes = 1 #max down votes
         up_votes = 3 #max upvotes
         cur_up = 0 #current amount of up votes
         cur_down = 0 #current amount of up votes
         direction = "" #voting direction
-        inc = 0 
-        ### NEED TO CHANGE USERS AFTER EACH VOTE!
-        
+        inc = 0
+        userNum = 0 #user logged in right now 
+        ### Currently, It will run through all the upvotes, then all the down
+        ### should think of a way to alternate, but this works for the moment
+        self.loginUser(userNum) 
         while inc < up_votes: # while our incrementor is less than our total upvotes,
             direction = "up" # set to upvote
             if cur_up <= up_votes: # if our current amount of upvotes is less or equal to our max upvote
                 cur_up = cur_up + 1 #inc current upvotes
-            self.do_test_vote( client, self.ahj, self.answers[0], direction, cur_up, cur_down) #test vote
-            while inc < down_votes:
-                if cur_down <= down_votes:
-                    cur_down = cur_down + 1
-                direction = "down"
-                self.do_test_vote( client, self.ahj, self.answers[0], direction, cur_up, cur_down)
+            self.do_test_vote( client, self.ahj, self.answers[testNum], direction, cur_up, cur_down) #test vote
+            userNum = userNum + 1
+            self.loginUser(userNum)
             inc = inc + 1 #dont forget to inc!
-
-#      2  approved without downvotes
-        # 1 upvote
-        down_votes = 0
-        up_votes = 1
-        direction = "up"
-#      3  approved with no votes
+        while inc < down_votes:
+            if cur_down <= down_votes:
+                cur_down = cur_down + 1
+            direction = "down"
+            self.do_test_vote( client, self.ahj, self.answers[testNum], direction, cur_up, cur_down)
+            userNum = userNum + 1
+            self.loginUser(userNum)
+            inc = inc + 1 #dont forget to inc!
+        userNum = 0 # null out incs
+        inc = 0 # null out incs
+#      test#1  goal approved without downvotes 
+        # 3 upvote
+        testNum = 1 #dictates what answer were applying votes to
+        down_votes = 0 #max down votes
+        up_votes = 3 #max upvotes
+        cur_up = 0 #current amount of up votes
+        cur_down = 0 #current amount of up votes
+        direction = "" #voting direction
+        inc = 0
+        userNum = 0 #user logged in right now 
+        ### Currently, It will run through all the upvotes, then all the down
+        ### should think of a way to alternate, but this works for the moment
+        self.loginUser(userNum) 
+        while inc < up_votes: # while our incrementor is less than our total upvotes,
+            direction = "up" # set to upvote
+            if cur_up <= up_votes: # if our current amount of upvotes is less or equal to our max upvote
+                cur_up = cur_up + 1 #inc current upvotes
+            self.do_test_vote( client, self.ahj, self.answers[testNum], direction, cur_up, cur_down) #test vote
+            userNum = userNum + 1
+            self.loginUser(userNum)
+            inc = inc + 1 #dont forget to inc!        
+#     test #2 goal: approved with no votes #over time
         #no votes
+        testNum = 2 #dictates what answer were applying votes to
         down_votes = 0
-        up_votes = 1
+        up_votes = 0
         direction = "up"
-#      4  approved multi value with downvotes
-        #answer one: downvote, upvote 3
-        #answer two: downvote 2
-#      5  approved multi value without downvotes
+        ## following needs multi val questions
+        '''
+#      Test#3&4  approved multi value with downvotes
+        # Test#3 #answer one: downvote, upvote 3
+        testNum = 3 #dictates what answer were applying votes to
+        down_votes = 1 #max down votes
+        up_votes = 3 #max upvotes
+        cur_up = 0 #current amount of up votes
+        cur_down = 0 #current amount of up votes
+        direction = "" #voting direction
+        inc = 0
+        userNum = 0 #user logged in right now 
+        self.loginUser(userNum) 
+        while inc < up_votes: # while our incrementor is less than our total upvotes,
+            direction = "up" # set to upvote
+            if cur_up <= up_votes: # if our current amount of upvotes is less or equal to our max upvote
+                cur_up = cur_up + 1 #inc current upvotes
+            self.do_test_vote( client, self.ahj, self.answers[testNum], direction, cur_up, cur_down) #test vote
+            userNum = userNum + 1
+            self.loginUser(userNum)
+            inc = inc + 1 #dont forget to inc!
+        while inc < down_votes:
+            if cur_down <= down_votes:
+                cur_down = cur_down + 1
+            direction = "down"
+            self.do_test_vote( client, self.ahj, self.answers[testNum], direction, cur_up, cur_down)
+            userNum = userNum + 1
+            self.loginUser(userNum)
+            inc = inc + 1 #dont forget to inc!
+        userNum = 0 # null out incs
+        inc = 0 # null out incs        
+    # Test#4 #answer two: downvote 2
+    
+
+#      5&6  approved multi value without downvotes
         #answer one: upvote 3
         #answer two: downvote 2
-#      6  rejected with downvotes
+'''
+#      7  rejected with downvotes
         #downvote 2
-#      7  rejected with downvotes and upvotes
+        testNum = 7 #dictates what answer were applying votes to
+        down_votes = 2 #max down votes
+        up_votes = 0 #max upvotes
+        cur_up = 0 #current amount of up votes
+        cur_down = 0 #current amount of up votes
+        direction = "" #voting direction
+        inc = 0
+        userNum = 0 #user logged in right now 
+        self.loginUser(userNum) 
+        while inc < down_votes:
+            if cur_down <= down_votes:
+                cur_down = cur_down + 1
+            direction = "down"
+            self.do_test_vote( client, self.ahj, self.answers[testNum], direction, cur_up, cur_down)
+            userNum = userNum + 1
+            self.loginUser(userNum)
+            inc = inc + 1 #dont forget to inc!
+        userNum = 0 # null out incs
+        inc = 0 # null out incs
+#      8  rejected with downvotes and upvotes
         #upvote 1 downvote 2
+        testNum = 8 #dictates what answer were applying votes to
+        down_votes = 2 #max down votes
+        up_votes = 1 #max upvotes
+        cur_up = 0 #current amount of up votes
+        cur_down = 0 #current amount of up votes
+        direction = "" #voting direction
+        inc = 0
+        userNum = 0 #user logged in right now 
+        self.loginUser(userNum) 
+        while inc < up_votes: # while our incrementor is less than our total upvotes,
+            direction = "up" # set to upvote
+            if cur_up <= up_votes: # if our current amount of upvotes is less or equal to our max upvote
+                cur_up = cur_up + 1 #inc current upvotes
+            self.do_test_vote( client, self.ahj, self.answers[testNum], direction, cur_up, cur_down) #test vote
+            userNum = userNum + 1
+            self.loginUser(userNum)
+            inc = inc + 1 #dont forget to inc!
+        while inc < down_votes:
+            if cur_down <= down_votes:
+                cur_down = cur_down + 1
+            direction = "down"
+            self.do_test_vote( client, self.ahj, self.answers[testNum], direction, cur_up, cur_down)
+            userNum = userNum + 1
+            self.loginUser(userNum)
+            inc = inc + 1 #dont forget to inc!
+        userNum = 0 # null out incs
+        inc = 0 # null out incs
 #      8  rejected multi value with downvotes
         #answer one downvote 2
         #answer two downvote 2
@@ -118,6 +220,10 @@ class TestValidHistory(TestCase):
                          val["answers_votes"][str(answer.id)]["total_up_votes"])
         self.assertEqual(down_votes,
                          val["answers_votes"][str(answer.id)]["total_down_votes"])
+    def loginUser(self, user): #feed user number
+        logged_in = client.login(username='testuser%s' % user,
+                            password='testuser')
+        self.assertTrue(logged_in)
 
 def vote(client, ahj, answer, direction):
     res = client.post('/jurisdiction/%s/' % ahj.name_for_url, #res is response of client
@@ -136,7 +242,6 @@ def dump(obj):
     for attr in dir(obj):
         if hasattr( obj, attr ):
             print( "obj.%s = %s" % (attr, getattr(obj, attr)))
-
 
 '''
 Will get 301 status code if no trailing slash is in place.
