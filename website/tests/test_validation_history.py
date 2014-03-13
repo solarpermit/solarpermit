@@ -6,6 +6,24 @@ from django.contrib.auth import authenticate
 from django.conf import settings
 import json
 client = Client()
+def vote(client, ahj, answer, direction):
+    res = client.post('/jurisdiction/%s/' % ahj.name_for_url, #res is response of client
+                      { 'ajax': 'vote', #send through ajax
+                        'entity_id': answer.id, 
+                        'entity_name': 'requirement',
+                        'vote': direction, #direction up or down. 
+                        'confirmed': '' })
+    return (res.status_code, try_decode(res.content)) #return the status code, look for 200, then attempt to decode the content
+def try_decode(content):
+    try:
+        return json.loads(content)
+    except:
+        return None
+def dump(obj):
+    for attr in dir(obj):
+        if hasattr( obj, attr ):
+            print( "obj.%s = %s" % (attr, getattr(obj, attr)))
+
 class TestValidHistory(TestCase):
     def setUp(self):
 #create a local users object for testuser1, 2, 3, out of a list build using the Django users model
@@ -63,6 +81,23 @@ class TestValidHistory(TestCase):
                              for question in self.questionsMulti]) 
 ## I think this makes an answer for each, need to confirm that it doesnt overwrite its self
 ## need to add a couple of multi value questions to the answer ref. to do so i need to add some questions to the question object that have has_multivalues = True
+
+        #i altered do_test_vote to not include a test against the response for jurisdiction_id since it doesnt exist.
+    def do_test_vote(self, client, ahj, answer, direction, up_votes, down_votes):
+        (status, commands) = vote(client, ahj, answer, direction)
+        self.assertEqual(status, 200)
+        self.assertTrue(len(commands) >= 1)
+        val = commands[0]["val"]
+        self.assertIn(str(answer.id),
+                      val["answers_votes"])
+        self.assertEqual(up_votes,
+                         val["answers_votes"][str(answer.id)]["total_up_votes"])
+        self.assertEqual(down_votes,
+                         val["answers_votes"][str(answer.id)]["total_down_votes"])
+    def loginUser(self, user): #feed user number
+        logged_in = client.login(username='testuser%s' % user,
+                            password='testuser')
+        self.assertTrue(logged_in)
 
     def test_validate(self):
         
@@ -125,10 +160,10 @@ class TestValidHistory(TestCase):
         up_votes = 0
         direction = "up"
         ## following needs multi val questions
-        '''
+
 #      Test#3&4  approved multi value with downvotes
         # Test#3 #answer one: downvote, upvote 3
-        testNum = 3 #dictates what answer were applying votes to
+        testNum = 0 #dictates what answer were applying votes to
         down_votes = 1 #max down votes
         up_votes = 3 #max upvotes
         cur_up = 0 #current amount of up votes
@@ -141,7 +176,7 @@ class TestValidHistory(TestCase):
             direction = "up" # set to upvote
             if cur_up <= up_votes: # if our current amount of upvotes is less or equal to our max upvote
                 cur_up = cur_up + 1 #inc current upvotes
-            self.do_test_vote( client, self.ahj, self.answers[testNum], direction, cur_up, cur_down) #test vote
+            self.do_test_vote( client, self.ahj, self.answersMulti[testNum], direction, cur_up, cur_down) #test vote
             userNum = userNum + 1
             self.loginUser(userNum)
             inc = inc + 1 #dont forget to inc!
@@ -220,41 +255,7 @@ class TestValidHistory(TestCase):
         #answer two upvote 1 downvote 2
 #      10 approved by superuser
         #login as superuser. upvote? approve? need to figure this out.
-        
-        #i altered do_test_vote to not include a test against the response for jurisdiction_id since it doesnt exist.
-    def do_test_vote(self, client, ahj, answer, direction, up_votes, down_votes):
-        (status, commands) = vote(client, ahj, answer, direction)
-        self.assertEqual(status, 200)
-        self.assertTrue(len(commands) >= 1)
-        val = commands[0]["val"]
-        self.assertIn(str(answer.id),
-                      val["answers_votes"])
-        self.assertEqual(up_votes,
-                         val["answers_votes"][str(answer.id)]["total_up_votes"])
-        self.assertEqual(down_votes,
-                         val["answers_votes"][str(answer.id)]["total_down_votes"])
-    def loginUser(self, user): #feed user number
-        logged_in = client.login(username='testuser%s' % user,
-                            password='testuser')
-        self.assertTrue(logged_in)
-
-def vote(client, ahj, answer, direction):
-    res = client.post('/jurisdiction/%s/' % ahj.name_for_url, #res is response of client
-                      { 'ajax': 'vote', #send through ajax
-                        'entity_id': answer.id, 
-                        'entity_name': 'requirement',
-                        'vote': direction, #direction up or down. 
-                        'confirmed': '' })
-    return (res.status_code, try_decode(res.content)) #return the status code, look for 200, then attempt to decode the content
-def try_decode(content):
-    try:
-        return json.loads(content)
-    except:
-        return None
-def dump(obj):
-    for attr in dir(obj):
-        if hasattr( obj, attr ):
-            print( "obj.%s = %s" % (attr, getattr(obj, attr)))
+ '''       
 
 '''
 Will get 301 status code if no trailing slash is in place.
