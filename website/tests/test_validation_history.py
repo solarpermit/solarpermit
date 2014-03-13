@@ -51,12 +51,17 @@ class TestValidHistory(TestCase):
                                                question=question,
                                                value='test answer')
                              for question in self.questions]
-        inc = 0
-        self.answersMulti = []
-        while inc < 4:
-            self.answersMulti.append(AnswerReference.objects.create(jurisdiction=self.ahj, question="test%s" % inc, value='test answer Multi'))
-            self.answersMulti.append(AnswerReference.objects.create(jurisdiction=self.ahj, question="test%s" % inc, value='test answer Multi'))             
-            inc = inc + 1
+        self.answersMulti = [AnswerReference.objects
+                                       .create(jurisdiction=self.ahj,
+                                               question=question,
+                                               value='test answer multi')
+                             for question in self.questionsMulti] 
+        self.answersMulti.extend([AnswerReference.objects
+                                       .create(jurisdiction=self.ahj,
+                                               question=question,
+                                               value='test answer multi 2')
+                             for question in self.questionsMulti]) 
+
 ## need to add a couple of multi value questions to the answer ref. to do so i need to add some questions to the question object that have has_multivalues = True
 
     def test_validate(self):
