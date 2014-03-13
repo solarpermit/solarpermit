@@ -4,6 +4,7 @@ from django.test.client import Client
 from website.models import User, RatingCategory, ActionCategory, Jurisdiction, Question, AnswerReference
 from django.contrib.auth import authenticate
 from django.conf import settings
+from datetime import timedelta, date
 import json
 client = Client()
 def vote(client, ahj, answer, direction):
@@ -26,18 +27,7 @@ def dump(obj):
 
 class TestValidHistory(TestCase):
     def setUp(self):
-#create a local users object for testuser1, 2, 3, out of a list build using the Django users model
-        qName = ["approved with downvotes",
-                 "approved without downvotes",
-                 "approved with no votes",
-                 "approved multi value with downvotes",
-                 "approved multi value without downvotes",
-                 "rejected with downvotes",
-                 "rejected with downvotes and upvotes",
-                 "rejected multi value with downvotes",
-                 "rejected multi value with downvotes and upvotes",
-                 "approved by superuser"
-                 ]
+        #create a local users object for testuser1, 2, 3, out of a list build using the Django users model
         self.users = [User.objects.create_user("testuser%s" % id, 
                                                "testuser%s@testing.solarpermit.org" % id,
                                                 "testuser")
@@ -58,11 +48,11 @@ class TestValidHistory(TestCase):
                                                 state = "CA",
                                                 jurisdiction_type = "CI",
                                                 name = "foo")
-## we need 4 questions that have multiple answer possiblites. add to the end? diff object? diff object will be wayyyy easier
-        self.questions = [Question.objects.create(label="test %s" % name, question="test%s" % id)
-                              for id in xrange(10) for name in qName]
-        self.questionsMulti = [Question.objects.create(label="test %s" % name, question="test%s" % id, has_multivalues = True)
-                              for id in xrange(4) for name in qName]
+        ## we need 4 questions that have multiple answer possiblites. add to the end? diff object? diff object will be wayyyy easier
+        self.questions = [Question.objects.create(label="test%s" % id, question="test%s" % id)
+                              for id in xrange(10)]
+        self.questionsMulti = [Question.objects.create(label="test%s" % id, question="test%s" % id, has_multivalues = True)
+                              for id in xrange(4)]
         
         self.answers = [AnswerReference.objects
                                        .create(jurisdiction=self.ahj,
@@ -165,8 +155,7 @@ class TestValidHistory(TestCase):
 #      test# 6 answerMulti# 1 & 5 approved multi value without downvotes
         #answer 1: upvote 3
         self.upVote(3, 0, 0, 1, True)
-        #answer 5: no votes
-        
+        #answer 5: no votes        
 #      test# 7  answerMulti# 2 & 6 rejected multi value with downvotes
         #answer 2 downvote 2
         self.downVote(2, 0, 0, 2, True)
@@ -183,66 +172,62 @@ class TestValidHistory(TestCase):
 #      11 approved by superuser
         #login as superuser. upvote? approve? need to figure this out.
 
+    def test_timePass(self):
+        testTime = date.today()
+        diff = datetime.timedelta(days=7)
+        futureTime = testTime + diff
+        self.cron_validate_answers(futureTime)
+
+              #lss; this is where the cron job is   
+    def cron_validate_answers(self, testTime):
+        # get all 'pending' answers that is just 2 weeks old
+        # today date - create date >= 2 weeks
+        # assign approval_status = 'A' - answerreference, action
+        today_date = testTime
+        user_id = 1 # supposedly the django admin user.
+        
+        number_days_unchallenged_b4_approved = django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED        
+        two_weeks_before_today = today_date - timedelta(days=number_days_unchallenged_b4_approved)
+        vote_action_category = ActionCategory.objects.filter(name__iexact='VoteRequirement')
+        entity_name='Requirement'
+        action_obj = Action()
+        
+        validate_action_category_name = 'ValidateRequirement'
+                        
+        already_processed_jurisdiction_question = []
+        answers = AnswerReference.objects.filter(approval_status__iexact='P', create_datetime__lte=two_weeks_before_today).order_by('jurisdiction__id', 'question__id', 'create_datetime')  
+        for answer in answers:
+            jurisdiction_question_str = str(answer.jurisdiction.id) + '_'  + str(answer.question.id)
+            if jurisdiction_question_str not in already_processed_jurisdiction_question:
+                votes = Action.objects.filter(data__iexact='vote: down', entity_name__iexact=entity_name, entity_id=answer.id, action_datetime__gt=answer.create_datetime)
+                if len(votes) == 0:
+                    answer.approval_status = 'A'
+                    answer.status_datetime = datetime.datetime.now()
+                    answer.save()
+                    already_processed_jurisdiction_question.append(jurisdiction_question_str)       
+                    #action
+                    data = 'approved - unchallenged for 1 week(s) after creation'
+                    aobj = action_obj.save_action(validate_action_category_name, data, answer, entity_name, user_id, answer.jurisdiction)  
+                    
+                    # cancel all subsequent answers to the same question
+                    question = answer.question
+                    if question.has_multivalues == 0:
+                        answers_to_be_rejected = AnswerReference.objects.filter(question = answer.question, jurisdiction = answer.jurisdiction, approval_status = 'P' )    # reject all other pending answers
+                        for answer_to_be_rejected in answers_to_be_rejected:
+                            answer_to_be_rejected.approval_status = 'R'
+                            answer_to_be_rejected.status_datetime = datetime.datetime.now()
+                            answer_to_be_rejected.save()
+                        
+                            #action
+                            data = 'rejected - another answer was approved by the cron job'
+                            action_obj.save_action(validate_action_category_name, data, answer_to_be_rejected, entity_name, user_id, answer.jurisdiction)                      
+
 '''
-Will get 301 status code if no trailing slash is in place.
-merge to devel update to fix issue #53
 cron_validate_answers
-
-function setup
-Create sample jurisdiction
-Create sample question for:
-      1  approved with downvotes
-      2  approved without downvotes
-      3  approved with no votes
-      4  approved multi value with downvotes
-      5  approved multi value without downvotes
-      6  rejected with downvotes
-      7  rejected with downvotes and upvotes
-      8  rejected multi value with downvotes
-      9  rejected multi value with downvotes and upvotes
-      10 approved by superuser
-
-    create sample answers (multianswer questions will have 3 answers, pending, approved, reject)
-
-function vote
-    downvote answer to 2 to reject
-    upvote answer to 1 to approve
-    downvote answer, upvote to downvote + 1 to approve
-    leave answer pending for week to approve
-
 function timepass
     simulate days passing
     call cron script every simulated day.
     assert answered questions against template
     log errors
-            self.users = [User.objects.create_user("testuser%s" % id, "testuser%s@testing.solarpermit.org" % id, "testuser") for id in xrange(3)]
 
-'''        
-#lss; at first it confused me that they used the for loops in this way.
-# thought it would be no different than
-# for ahj in self.ahj:
-#    for question in self.questions:
-#        self.answers = [AnswerReference.objects.create(jurisdiction=ahj, question=question, value='test answer')
-# But it actually is, done the way above, it would create a new object for each answer and replace everything thats in there
-# Idk if this is a python thing, but i really like it, going to remember it
-# tried calling TestVoting.vote()... didnt work because i was calling the class test vote, and vote is not part of the class test vote
-# the following is a successful vote, sent to the sample jur in FL. was able to upvote the permiting department name
-# first I need to have the django client
-# from django.test.client import Client
-# c = Client()
-# Then i need to make a user, (This made an actual user on the site, not just a test user in a test env)
-# User.objects.create_user("testuser00001", "testuser001@testing.solarpermit.org", "testuser")
-# WARNING creating a user this way does not invoke UserDetail, and will not allow the user to login on an actual browser. good catch, user detail is need inorder to have a complete test me thinks
-# Must be inside a class invoking TestCase in order to use a test env, then call the User to an new object exp: 
-# self.user = User.objects.create_user("testuser00001", "testuser001@testing.solarpermit.org", "testuser") for one user, or inside [] for multi users
-# to login with a user
-# c.login(username='testuser001',password='testuser')
-# should return True and user should be logged in
-# test to make sure user is logged in: 
-# logged_in = c.login(username='testuser00001',password-'testuser')
-# self.assertTrue(logged_in)
-# then you can vote using:
-# res = c.post('/jurisdiction/sample-jurisdiction-fl/', {'ajax': 'vote','entity_id': '27431', 'entity_name': 'requirement','vote': 'up', 'confirmed':''})
-# this posts to the login page over ajax, and then assigns the response to res.
-# res is an object containing res.status_code and res.content
-# on the site actual user creation is handled with jquery. static/skins/templates/solarpermit/website/accounts/create_account.js'''
+'''
