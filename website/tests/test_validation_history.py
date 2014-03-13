@@ -61,7 +61,7 @@ class TestValidHistory(TestCase):
                                                question=question,
                                                value='test answer multi 2')
                              for question in self.questionsMulti]) 
-
+## I think this makes an answer for each, need to confirm that it doesnt overwrite its self
 ## need to add a couple of multi value questions to the answer ref. to do so i need to add some questions to the question object that have has_multivalues = True
 
     def test_validate(self):
