@@ -171,56 +171,12 @@ class TestValidHistory(TestCase):
         
 #      11 approved by superuser
         #login as superuser. upvote? approve? need to figure this out.
-
+# we are going to use mock in order to simulate time passing. still learning mock. pretty cool actually. 
     def test_timePass(self):
         testTime = date.today()
         diff = datetime.timedelta(days=7)
         futureTime = testTime + diff
-        self.cron_validate_answers(futureTime)
 
-              #lss; this is where the cron job is   
-    def cron_validate_answers(self, testTime):
-        # get all 'pending' answers that is just 2 weeks old
-        # today date - create date >= 2 weeks
-        # assign approval_status = 'A' - answerreference, action
-        today_date = testTime
-        user_id = 1 # supposedly the django admin user.
-        
-        number_days_unchallenged_b4_approved = django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED        
-        two_weeks_before_today = today_date - timedelta(days=number_days_unchallenged_b4_approved)
-        vote_action_category = ActionCategory.objects.filter(name__iexact='VoteRequirement')
-        entity_name='Requirement'
-        action_obj = Action()
-        
-        validate_action_category_name = 'ValidateRequirement'
-                        
-        already_processed_jurisdiction_question = []
-        answers = AnswerReference.objects.filter(approval_status__iexact='P', create_datetime__lte=two_weeks_before_today).order_by('jurisdiction__id', 'question__id', 'create_datetime')  
-        for answer in answers:
-            jurisdiction_question_str = str(answer.jurisdiction.id) + '_'  + str(answer.question.id)
-            if jurisdiction_question_str not in already_processed_jurisdiction_question:
-                votes = Action.objects.filter(data__iexact='vote: down', entity_name__iexact=entity_name, entity_id=answer.id, action_datetime__gt=answer.create_datetime)
-                if len(votes) == 0:
-                    answer.approval_status = 'A'
-                    answer.status_datetime = datetime.datetime.now()
-                    answer.save()
-                    already_processed_jurisdiction_question.append(jurisdiction_question_str)       
-                    #action
-                    data = 'approved - unchallenged for 1 week(s) after creation'
-                    aobj = action_obj.save_action(validate_action_category_name, data, answer, entity_name, user_id, answer.jurisdiction)  
-                    
-                    # cancel all subsequent answers to the same question
-                    question = answer.question
-                    if question.has_multivalues == 0:
-                        answers_to_be_rejected = AnswerReference.objects.filter(question = answer.question, jurisdiction = answer.jurisdiction, approval_status = 'P' )    # reject all other pending answers
-                        for answer_to_be_rejected in answers_to_be_rejected:
-                            answer_to_be_rejected.approval_status = 'R'
-                            answer_to_be_rejected.status_datetime = datetime.datetime.now()
-                            answer_to_be_rejected.save()
-                        
-                            #action
-                            data = 'rejected - another answer was approved by the cron job'
-                            action_obj.save_action(validate_action_category_name, data, answer_to_be_rejected, entity_name, user_id, answer.jurisdiction)                      
 
 '''
 cron_validate_answers
