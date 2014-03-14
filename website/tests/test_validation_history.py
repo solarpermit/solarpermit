@@ -225,9 +225,9 @@ class TestValidHistory(TestCase):
 '''
 cron_validate_answers
 function timepass
-    simulate days passing
-    call cron script every simulated day.
+    simulate days passing #
+    call cron script every simulated day ???
     assert answered questions against template
     log errors
-
+ 
 '''
