@@ -5,8 +5,14 @@ from website.models import User, RatingCategory, ActionCategory, Jurisdiction, Q
 from django.contrib.auth import authenticate
 from django.conf import settings
 from datetime import timedelta, date
+import mock
 import json
 client = Client()
+class FakeDate(date):
+    "A manipulable date replacement"
+    def __new__(cls, *args, **kwargs):
+        return date.__new__(date, *args, **kwargs)
+
 def vote(client, ahj, answer, direction):
     res = client.post('/jurisdiction/%s/' % ahj.name_for_url, #res is response of client
                       { 'ajax': 'vote', #send through ajax
@@ -171,18 +177,21 @@ class TestValidHistory(TestCase):
         
 #      11 approved by superuser
         #login as superuser. upvote? approve? need to figure this out.
-# we are going to use mock in order to simulate time passing. still learning mock. pretty cool actually. 
+# we are going to use mock in order to simulate time passing. 
+    @mock.patch('datetime.date', FakeDate)
     def test_timePass(self):
+        from datetime import date, timedelta
         testTime = date.today()
-        diff = datetime.timedelta(days=7)
+        diff = timedelta(days=7)
         futureTime = testTime + diff
-
-
+        FakeDate.today = classmethod(lambda cls: futureTime)
+        self.assertEqual(date.today(), futureTime)
+        from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
+        FieldValidationCycleUtil.cron_validate_answers()
 '''
 cron_validate_answers
 function timepass
-    simulate days passing #
-    call cron script every simulated day ???
+    simulate days passing
     assert answered questions against template
     log errors
  
