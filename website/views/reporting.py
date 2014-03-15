@@ -41,7 +41,7 @@ def build_query(question, field_map):
 
 def json_match(field_name, value, op="="):
     return and_match(not_null_match(json_extract(field_name)),
-                     'json_get(value, "%s") %s "%s" COLLATE utf8_general_ci' % (field_name, op, value))
+                     'json_get(value, "%s") %s "%s"' % (field_name, op, value))
     return regexp_match('"%(name)s": *"%(value)s"' % { "name": escape_regex_inclusion(field_name),
                                                        "value": escape_regex_inclusion(value) })
 def json_extract(field_name):
@@ -50,7 +50,7 @@ def json_valid():
     return 'json_valid(value)'
 
 def regexp_match(regexp):
-    return 'value REGEXP \'%(regexp)s\' COLLATE utf8_general_ci' % { "regexp": regexp }
+    return 'value REGEXP \'%(regexp)s\'' % { "regexp": regexp }
 def escape_regex_inclusion(s):
     return re.sub(r'([\[\].*?{}()|$^])',
                   r'[[.\1.]]',
