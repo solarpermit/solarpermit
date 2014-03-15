@@ -8,8 +8,7 @@ from datetime import timedelta, date
 import mock
 import json
 client = Client()
-class FakeDate(date):
-    "A manipulable date replacement"
+class FakeDate(date): #replace date with new date in mock
     def __new__(cls, *args, **kwargs):
         return date.__new__(date, *args, **kwargs)
 
@@ -21,6 +20,7 @@ def vote(client, ahj, answer, direction):
                         'vote': direction, #direction up or down. 
                         'confirmed': '' })
     return (res.status_code, try_decode(res.content)) #return the status code, look for 200, then attempt to decode the content
+
 def try_decode(content):
     try:
         return json.loads(content)
@@ -38,16 +38,13 @@ class TestValidHistory(TestCase):
                                                "testuser%s@testing.solarpermit.org" % id,
                                                 "testuser")
                           for id in xrange(10)]
-
         RatingCategory.objects.create(name='Points',
                                       description='Number of points',
                                       rating_type='N').save()
-
         ActionCategory.objects.create(name='VoteRequirement',
                                       description='Vote on Requirement',
                                       rating_category_id=1,
                                       points=2).save()
-
         self.ahj = Jurisdiction.objects.create(city = "foo city",
                                                 name_for_url = "foo1",
                                                 description = "foo",
@@ -59,7 +56,6 @@ class TestValidHistory(TestCase):
                               for id in xrange(10)]
         self.questionsMulti = [Question.objects.create(label="test%s" % id, question="test%s" % id, has_multivalues = True)
                               for id in xrange(4)]
-        
         self.answers = [AnswerReference.objects
                                        .create(jurisdiction=self.ahj,
                                                question=question,
@@ -74,11 +70,7 @@ class TestValidHistory(TestCase):
                                        .create(jurisdiction=self.ahj,
                                                question=question,
                                                value='test answer multi 2')
-                             for question in self.questionsMulti]) 
-## I think this makes an answer for each, need to confirm that it doesnt overwrite its self
-## need to add a couple of multi value questions to the answer ref. to do so i need to add some questions to the question object that have has_multivalues = True
-
-        #i altered do_test_vote to not include a test against the response for jurisdiction_id since it doesnt exist.
+                             for question in self.questionsMulti])
 
     def do_test_vote(self, client, ahj, answer, direction, up_votes, down_votes):
         (status, commands) = vote(client, ahj, answer, direction)
@@ -130,10 +122,8 @@ class TestValidHistory(TestCase):
             self.loginUser(userNum)
             inc = inc + 1
         inc = 0 # null out incs
-        
 
-    def test_validate(self):
-        
+    def test_Valid_Vote(self):       
 #      test #0 answer#0 Goal: approved with downvotes
         # 3 upvotes, 1 down votes
         self.downVote(1, 0, 0, 0,False)
@@ -147,7 +137,6 @@ class TestValidHistory(TestCase):
 #      test #3 answer#3  rejected with downvotes
         #downvote 2
         self.downVote(2, 0, 0, 3, False)
-
 #      test #4 answer#4  rejected with downvotes and upvotes
         #upvote 1 downvote 2
         self.upVote(1, 0, 0, 4, False)
@@ -158,7 +147,7 @@ class TestValidHistory(TestCase):
         # Test#5 #answer 1: downvote 1, upvote 3
         self.downVote(1, 0, 0, 4, True)
         self.upVote(3, 1, 1, 4, True)
-#      test# 6 answerMulti# 1 & 5 approved multi value without downvotes
+#      test# 6 answerMulti# 1 & 5 approved multi values, one with upvotes, one without, both without downvotes
         #answer 1: upvote 3
         self.upVote(3, 0, 0, 1, True)
         #answer 5: no votes        
@@ -175,24 +164,20 @@ class TestValidHistory(TestCase):
         self.upVote(1, 0, 0, 7, True)
         self.downVote(2, 1, 1, 7, True)
         
-#      11 approved by superuser
-        #login as superuser. upvote? approve? need to figure this out.
-# we are going to use mock in order to simulate time passing. 
-    @mock.patch('datetime.date', FakeDate)
+    @mock.patch('datetime.date', FakeDate) #patch FakeDate for datetime.date
     def test_timePass(self):
         from datetime import date, timedelta
         testTime = date.today()
         diff = timedelta(days=7)
-        futureTime = testTime + diff
-        FakeDate.today = classmethod(lambda cls: futureTime)
-        self.assertEqual(date.today(), futureTime)
+        futureTime = testTime + diff #todays date plus 7 days
+        FakeDate.today = classmethod(lambda cls: futureTime) #set today's date to the future date
+        self.assertEqual(date.today(), futureTime) #make sure its a future date
         from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
-        FieldValidationCycleUtil.cron_validate_answers()
-'''
-cron_validate_answers
-function timepass
-    simulate days passing
-    assert answered questions against template
-    log errors
- 
-'''
+        valUtil = FieldValidationCycleUtil()
+        valUtil.cron_validate_answers()
+        pendingAnswer = self.answers[2]
+        paStatus = pendingAnswer.approval_status
+        self.assertEqual(str(paStatus),"A") #check that test #2 is successful
+        pendingAnswerMulti = self.answersMulti[5]
+        pamStatus = pendingAnswerMulti.approval_status
+        self.assertEqual(str(pamStatus),"A") #check that test #6 is successful
