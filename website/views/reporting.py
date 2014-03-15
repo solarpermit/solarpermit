@@ -40,7 +40,8 @@ def build_query(question, field_map):
                    "fields": sep.join(fields) }
 
 def json_match(field_name, value, op="="):
-    return 'json_get(value, "%s") %s "%s" COLLATE utf8_general_ci' % (field_name, op, value)
+    return and_match(not_null_match(json_extract(field_name)),
+                     'json_get(value, "%s") %s "%s" COLLATE utf8_general_ci' % (field_name, op, value))
     return regexp_match('"%(name)s": *"%(value)s"' % { "name": escape_regex_inclusion(field_name),
                                                        "value": escape_regex_inclusion(value) })
 def json_extract(field_name):
@@ -194,14 +195,10 @@ def inspection_approval_report():
     return pie(add_sum_total(summarize(add_other(spec))))
 
 def time_window_report():
-    spec = OrderedDict([("Exact time given", and_match(not_null_match(json_extract("time_window")),
-                                                       json_match("time_window", "0"))),
-                        ("2 hours (or less)", and_match(not_null_match(json_extract("time_window")),
-                                                        json_match("time_window", "2"))),
-                        ("Half Day (2 to 4 hours)", and_match(not_null_match(json_extract("time_window")),
-                                                              json_match("time_window", "4"))),
-                        ("Full Day (greater than 4 hours)", and_match(not_null_match(json_extract("time_window")),
-                                                                      json_match("time_window", "8")))])
+    spec = OrderedDict([("Exact time given", json_match("time_window", "0")),
+                        ("2 hours (or less)", json_match("time_window", "2")),
+                        ("Half Day (2 to 4 hours)", json_match("time_window", "4")),
+                        ("Full Day (greater than 4 hours)", json_match("time_window", "8"))])
     return hist(add_sum_total(summarize(add_other(add_freeform(spec)))))
 
 reports_by_type = {
