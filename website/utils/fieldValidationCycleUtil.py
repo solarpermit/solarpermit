@@ -1301,6 +1301,7 @@ class FieldValidationCycleUtil():
         # get all 'pending' answers that is just 2 weeks old
         # today date - create date >= 2 weeks
         # assign approval_status = 'A' - answerreference, action
+        #we could change this to datetime to be able to test at exact time.
         today_date = date.today()
         user_id = 1 # supposedly the django admin user.
         
@@ -1309,7 +1310,8 @@ class FieldValidationCycleUtil():
         vote_action_category = ActionCategory.objects.filter(name__iexact='VoteRequirement')
         entity_name='Requirement'
         action_obj = Action()
-        
+        import pdb
+        pdb.set_trace()
         validate_action_category_name = 'ValidateRequirement'
                         
         already_processed_jurisdiction_question = []
@@ -1339,7 +1341,7 @@ class FieldValidationCycleUtil():
                             #action
                             data = 'rejected - another answer was approved by the cron job'
                             action_obj.save_action(validate_action_category_name, data, answer_to_be_rejected, entity_name, user_id, answer.jurisdiction)                      
-                
+
     def process_fee_structure(self, answer):
         
         #"default_value": "{\"fee_type_1\": \"\", \"fee_item_1_1\": \"\", \"fee_formula_1_1\": \"\", \"fee_other_1_1\": \"\", \"fee_percentage_of_total_system_cost_cap_1_1\": \"\", \"fee_per_inverter_1_1\": \"\", \"fee_flat_rate_1_1\": \"\", \"fee_per_major_components_1_1\": \"\", \"fee_jurisdiction_cost_recovery_notes_1_1\": \"\", \"fee_percentage_of_total_system_cost_1_1\": \"\", \"fee_percentage_of_total_system_cost_cap_amt_1_1\": \"\", \"fee_per_component_cap_1_1\": \"\", \"fee_per_component_cap_cap_amt_1_1\": \"\", \"fee_per_module_1_1\": \"\"}",

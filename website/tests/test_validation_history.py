@@ -5,13 +5,10 @@ from website.models import User, RatingCategory, ActionCategory, Jurisdiction, Q
 from django.contrib.auth import authenticate
 from django.conf import settings
 from datetime import timedelta, date
+from django.conf import settings as django_settings
 import mock
 import json
 client = Client()
-class FakeDate(date): #replace date with new date in mock
-    def __new__(cls, *args, **kwargs):
-        return date.__new__(date, *args, **kwargs)
-
 def vote(client, ahj, answer, direction):
     res = client.post('/jurisdiction/%s/' % ahj.name_for_url, #res is response of client
                       { 'ajax': 'vote', #send through ajax
@@ -164,17 +161,23 @@ class TestValidHistory(TestCase):
         self.upVote(1, 0, 0, 7, True)
         self.downVote(2, 1, 1, 7, True)
         
-    @mock.patch('datetime.date', FakeDate) #patch FakeDate for datetime.date
-    def test_timePass(self):
-        from datetime import date, timedelta
-        testTime = date.today()
-        diff = timedelta(days=7)
+    def test_timePass(self):#this works. however it currently tests BEFORE the users are made because queries are ran at midnight, this is because FieldValidationCycleUtil uses date instead of datetime.
+        from datetime import datetime, timedelta
+        testTime = datetime.today()
+        testTime = str(testTime)
+        testTime = testTime[:10]
+        testTime = testTime.split('-')
+        testTime = date(int(testTime[0]),int(testTime[1]),int(testTime[2]))
+        daysPass = django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED
+        diff = timedelta(days=daysPass)
         futureTime = testTime + diff #todays date plus 7 days
-        FakeDate.today = classmethod(lambda cls: futureTime) #set today's date to the future date
-        self.assertEqual(date.today(), futureTime) #make sure its a future date
-        from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
-        valUtil = FieldValidationCycleUtil()
-        valUtil.cron_validate_answers()
+        from datetime import datetime
+        with mock.patch('website.utils.fieldValidationCycleUtil.date') as mock_date:
+            mock_date.today.return_value = futureTime
+            mock_date.side_effect = lambda *args, **kw: date(*args, **kw)
+            from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
+            valUtil = FieldValidationCycleUtil()
+            valUtil.cron_validate_answers()
         pendingAnswer = self.answers[2]
         paStatus = pendingAnswer.approval_status
         self.assertEqual(str(paStatus),"A") #check that test #2 is successful
