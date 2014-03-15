@@ -299,6 +299,7 @@ def report_on(request, question_id):
     idx = 0
     for report in reports:
       query = build_query(question, report['spec'])
+      print(query)
       cursor = connection.cursor()
       cursor.execute(query)
       table = [{'key': k, 'value': v } for (k,v) in zip([col[0] for col in cursor.description], cursor.fetchone())]
