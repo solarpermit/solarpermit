@@ -8,36 +8,54 @@ from django.template import Context, RequestContext, Template
 from django.conf import settings
 from jinja2 import FileSystemLoader, Environment
 import hashlib
-from website.models import Question, QuestionCategory
+from website.models import Question, QuestionCategory, Jurisdiction
 from django.db import connection
 from collections import OrderedDict
 import json
 import re
+from django.db.models import Q
+from django.db.models.sql import Query
+from django.db import DEFAULT_DB_ALIAS
 
-def build_query(question, field_map):
-    # note: we're substituting directly into the query because the
-    # mysql python driver adapter doesn't support real parameter
-    # binding
+def build_query(question, field_map, geo_filter=None):
+    # Yes we have two mechanisms for building queries here. We've
+    # hacked out a slice of the django sql "compiler" for one of them,
+    # since they specialize in where clauses, while writing a simpler
+    # one of our own that specializes in select clauses. Both of them
+    # bear more than a passing resemblance to lisp, of course.
     indent = "                     ";
     sep = ",\n"+indent
+    # convert everything to unsigned, even though they are already
+    # unsigned. This prevents django from occasionally thinking that
+    # the values are Decimals
     fields = ["CONVERT(%(match)s, UNSIGNED) AS '%(name)s'" % { "name": n, "match": m }
               for (n, m) in field_map.items()]
-    return '''
-              SELECT %(fields)s
-              FROM (SELECT id AS answer_id,
-                           (SELECT value FROM website_answerreference WHERE id = answer_id) AS value
-                    FROM (SELECT (SELECT id
-                                  FROM website_answerreference
-                                  WHERE id = (SELECT MAX(id)
-                                              FROM website_answerreference
-                                              WHERE website_answerreference.jurisdiction_id = website_jurisdiction.id AND
-                                              approval_status = 'A' AND
-                                              question_id = %(question_id)s)) AS id
-                          FROM website_jurisdiction
-                          WHERE website_jurisdiction.id NOT IN (1, 101105) AND
-                                website_jurisdiction.jurisdiction_type != 'u') AS temp0) as temp1
-           ''' % { "question_id": question.id,
-                   "fields": sep.join(fields) }
+    if geo_filter:
+        fake_query = Query(Jurisdiction)
+        fake_query.add_q(geo_filter)
+        compiler = fake_query.get_compiler(DEFAULT_DB_ALIAS)
+        where, where_params = fake_query.where.as_sql(compiler.connection.ops.quote_name, #might break postgres
+                                                      compiler.connection)
+        compiled_filter = where % tuple(where_params)
+    return ('''
+               SELECT %(fields)s
+               FROM (SELECT id AS answer_id,
+                            (SELECT value FROM website_answerreference WHERE id = answer_id) AS value
+                     FROM (SELECT (SELECT id
+                                   FROM website_answerreference
+                                   WHERE id = (SELECT MAX(id)
+                                               FROM website_answerreference
+                                               WHERE website_answerreference.jurisdiction_id = website_jurisdiction.id AND
+                                                     approval_status = 'A' AND
+                                                     question_id = %(question_id)s)) AS id
+                           FROM website_jurisdiction
+                           WHERE website_jurisdiction.id NOT IN (1, 101105) AND
+                                 website_jurisdiction.jurisdiction_type != 'u' ''' +
+            (("AND\n                                %(geo_filter)s") if geo_filter else "") +
+            ''') AS temp0) as temp1
+            ''') % { "question_id": question.id,
+                     "fields": sep.join(fields),
+                     "geo_filter": compiled_filter }
 
 def json_match(field_name, value, op="="):
     return and_match(not_null_match(json_extract(field_name)),
@@ -288,6 +306,20 @@ def report_on(request, question_id):
     if not question or not (question.id in reports_by_qid or question.display_template in reports_by_type):
         raise Http404
 
+    def param(p):
+        s = request.GET[p]
+        return s.split(",") if s else []
+    def quoted_param(p):
+        return ['"%s"' % s for s in param(p)]
+
+    geo_filter = None
+    if 'states' in request.GET:
+        geo_filter = Q(state__in = quoted_param('states'))
+    elif 'counties' in request.GET:
+        geo_filter = Q(county__in = quoted_param('counties'))
+    elif 'jurisdictions' in request.GET:
+        geo_filter = Q(pk__in = param('jurisdictions'))
+
     data = {}
     data['current_nav'] = 'reporting'
     data['report_name'] = question.question
@@ -298,7 +330,7 @@ def report_on(request, question_id):
     data['reports'] = []
     idx = 0
     for report in reports:
-      query = build_query(question, report['spec'])
+      query = build_query(question, report['spec'], geo_filter)
       cursor = connection.cursor()
       cursor.execute(query)
       table = [{'key': k, 'value': v } for (k,v) in zip([col[0] for col in cursor.description], cursor.fetchone())]
