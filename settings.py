@@ -120,9 +120,8 @@ SECRET_KEY = 'zj8k!s68ar4m#zqk7o%)!e+^(cfme2%^86u#jb5&f&$-!qui=1'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    'django_jinja.loaders.AppLoader',
+    'django_jinja.loaders.FileSystemLoader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -199,6 +198,7 @@ INSTALLED_APPS = (
     'django_extensions',
     #'debug_toolbar',    
     'tracking',
+    'django_jinja',
 )
 
 #setup memcached for production use!
@@ -307,5 +307,8 @@ TRACK_AJAX_REQUESTS = True
 TRACK_ANONYMOUS_USERS = True
 TRACK_PAGEVIEWS = True
 TRACK_IGNORE_URLS = ['tracking', 'admin']
+
+JINJA2_EXTENSIONS = ['jinja2.ext.WithExtension',
+                     'compressor.contrib.jinja2ext.CompressorExtension']
 
 from settings_local import *
