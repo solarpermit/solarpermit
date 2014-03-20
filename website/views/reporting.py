@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+from django.views.generic import DetailView, ListView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django import forms
+from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template import Context
 from website.utils.httpUtil import HttpRequestProcessor
@@ -8,7 +12,7 @@ from django.template import Context, RequestContext, Template
 from django.conf import settings
 from jinja2 import FileSystemLoader, Environment
 import hashlib
-from website.models import Question, QuestionCategory, Jurisdiction
+from website.models import Question, QuestionCategory, Jurisdiction, GeographicArea
 from django.db import connection
 from collections import OrderedDict
 import json
@@ -16,6 +20,9 @@ import re
 from django.db.models import Q
 from django.db.models.sql import Query
 from django.db import DEFAULT_DB_ALIAS
+from django.contrib.localflavor.us.us_states import US_STATES
+from autocomplete.widgets import MultipleAutocompleteWidget
+from website.views.autocomp import autocomplete_instance
 
 def build_query(question, field_map, geo_filter=None):
     # Yes we have two mechanisms for building queries here. We've
@@ -30,6 +37,7 @@ def build_query(question, field_map, geo_filter=None):
     # the values are Decimals
     fields = ["CONVERT(%(match)s, UNSIGNED) AS '%(name)s'" % { "name": n, "match": m }
               for (n, m) in field_map.items()]
+    compiled_filter = None
     if geo_filter:
         fake_query = Query(Jurisdiction)
         fake_query.add_q(geo_filter)
@@ -51,7 +59,7 @@ def build_query(question, field_map, geo_filter=None):
                            FROM website_jurisdiction
                            WHERE website_jurisdiction.id NOT IN (1, 101105) AND
                                  website_jurisdiction.jurisdiction_type != 'u' ''' +
-            (("AND\n                                %(geo_filter)s") if geo_filter else "") +
+            ("AND\n                                %(geo_filter)s" if geo_filter else "") +
             ''') AS temp0) as temp1
             ''') % { "question_id": question.id,
                      "fields": sep.join(fields),
@@ -342,3 +350,55 @@ def report_on(request, question_id):
 
     requestProcessor = HttpRequestProcessor(request)
     return requestProcessor.render_to_response(request,'website/reporting/report_on.html', data, '')
+
+class GeographicAreaForm(forms.ModelForm):
+    name = forms.CharField()
+    states = forms.MultipleChoiceField(choices = US_STATES,
+                                       required = False)
+    counties = forms.ModelMultipleChoiceField(queryset = Jurisdiction.objects.filter(jurisdiction_type__in = ('CO', 'SC', 'CC')),
+                                              widget = MultipleAutocompleteWidget("counties", view=autocomplete_instance),
+                                              required = False)
+    cities = forms.ModelMultipleChoiceField(queryset = Jurisdiction.objects.filter(jurisdiction_type__in = ('CC', 'CI', 'IC')),
+                                            widget = MultipleAutocompleteWidget("cities", view=autocomplete_instance),
+                                            required = False)
+    def clean(self):
+        cleaned_data = super(GeographicAreaForm, self).clean()
+        states = cleaned_data['states']
+        del cleaned_data['states']
+        counties = cleaned_data['counties']
+        del cleaned_data['counties']
+        cities = cleaned_data['cities']
+        del cleaned_data['cities']
+
+        cleaned_data['jurisdictions'] = states or counties or cities
+        from pprint import pprint
+        pprint(cleaned_data)
+        return cleaned_data
+        
+    class Meta:
+        model = GeographicArea
+        fields = ['name', 'description', 'states', 'counties', 'cities']
+
+class GeographicAreaDetail(DetailView):
+    queryset = GeographicArea.objects.all()
+    template_name = 'geographic_area_detail.jinja'
+
+class GeographicAreaList(ListView):
+    queryset = GeographicArea.objects.all()
+    template_name = 'geographic_area_list.jinja'
+    
+class GeographicAreaCreate(CreateView):
+    model = GeographicArea
+    fields = ['name']
+    template_name = 'geographic_area_form.jinja'
+    form_class = GeographicAreaForm
+
+class GeographicAreaUpdate(UpdateView):
+    model = GeographicArea
+    fields = ['name']
+    template_name = 'geographic_area_form.jinja'
+
+class GeographicAreaDelete(DeleteView):
+    model = GeographicArea
+    success_url = reverse_lazy('geoarea-list')
+    template_name = 'geographic_area_confirm_delete.jinja'

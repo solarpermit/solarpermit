@@ -110,8 +110,8 @@ STATICFILES_DIRS = (
 # various locations.
 STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
-    'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
@@ -193,12 +193,14 @@ INSTALLED_APPS = (
     'followit',  
     'sorl.thumbnail',
     'dajax',
+    'localflavor',
     'website',
     'compressor',
     'django_extensions',
     #'debug_toolbar',    
     'tracking',
     'django_jinja',
+    'autocomplete',
 )
 
 #setup memcached for production use!
@@ -308,7 +310,11 @@ TRACK_ANONYMOUS_USERS = True
 TRACK_PAGEVIEWS = True
 TRACK_IGNORE_URLS = ['tracking', 'admin']
 
+# Jinja2 integration via django-jinja
 JINJA2_EXTENSIONS = ['jinja2.ext.WithExtension',
                      'compressor.contrib.jinja2ext.CompressorExtension']
+
+# django-autocomplete; has nothing to do with our current search autocomplete
+AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/'
 
 from settings_local import *

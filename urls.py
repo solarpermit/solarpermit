@@ -1,8 +1,9 @@
 from django.http import HttpResponseRedirect
 from django.conf.urls.defaults import patterns, include, handler404, handler500, url
 from django.conf import settings
-from website.views import home, account, info, jurisdiction, organization, custom_field, maintenance, siteadmin
+from website.views import home, account, info, jurisdiction, organization, custom_field, maintenance, siteadmin, reporting
 from website.views.news import *
+from website.views.autocomp import autocomplete_instance
 
 from django.contrib import admin
 admin.autodiscover()
@@ -108,8 +109,18 @@ else:
         (r'^tracking/', include('tracking.urls')),
 
         #### reporting pages
-        (r'^reporting/$', 'website.views.reporting.report_index'),
-        (r'^reporting/(?P<question_id>\d+)/$', 'website.views.reporting.report_on'))
+        url(r'^reporting/$', 'website.views.reporting.report_index'),
+        url(r'^reporting/filter/$', reporting.GeographicAreaList.as_view(),
+                                    name='geoarea-list'),
+        url(r'^reporting/filter/new/$', reporting.GeographicAreaCreate.as_view(),
+                                        name='geoarea-new'),
+        url(r'^reporting/filter/(?P<pk>\d+)/$', reporting.GeographicAreaDetail.as_view(),
+                                                name='geoarea-view'),
+        url(r'^reporting/(?P<question_id>\d+)/$', 'website.views.reporting.report_on'),
+        url(r'^reporting/(?P<question_id>\d+)/(?P<filter_id>.+)/$', 'website.views.reporting.report_on'),
+
+        #### these urls power most of the autocomplete fields; notably the search field has a one-off implementation
+        url('^autocomplete/', include(autocomplete_instance.urls)))
 
     ## admin
     urlpatterns += patterns('',
@@ -120,3 +131,4 @@ else:
     if 'rosetta' in settings.INSTALLED_APPS:
         urlpatterns += patterns('',
                                 url(r'^rosetta/', include('rosetta.urls')))
+

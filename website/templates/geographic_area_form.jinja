@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}New Geographic Filter{% endblock %}
+{% block forestyle %}
+  <style>
+    th { vertical-align: top; }
+  </style>
+{% endblock %}
+{% block forejs %}{% endblock %}
+{% block body %}
+  <form action="" method="post">{% csrf_token %}
+    {{ form.media|safe }}
+    <table>
+      <tr><th>{{ form.name.label_tag() }}</th>
+          <td>{{ form.name|safe }}
+              {{ form.name.errors|safe }}</td></tr>
+      <tr><th>{{ form.description.label_tag() }}</th>
+          <td>{{ form.description|safe }}
+              {{ form.description.errors|safe }}</td></tr>
+      <tr><th>{{ form.states.label_tag() }}</th>
+          <td>{{ form.states|safe }}
+              {{ form.states.errors|safe }}</td></tr>
+      <tr><th>{{ form.counties.label_tag() }}</th>
+          <td>{{ form.counties|safe }}
+              {{ form.counties.errors|safe }}</td></tr>
+      <tr><th>{{ form.cities.label_tag() }}</th>
+          <td>{{ form.cities|safe }}
+              {{ form.cities.errors|safe }}</td></tr>
+    </table>
+    <input type="submit" value="Save"/>
+  </form>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}{% endblock %}
+{% block forestyle %}{% endblock %}
+{% block forejs %}{% endblock %}
+{% block body %}
+  {{ object.pk }}
+  {{ object.name }}
+  {{ object.description }}
+  {% for area in object.jurisdictions.all() %}
+    {{ area.name }}
+  {% endfor %}
+{% endblock %}
