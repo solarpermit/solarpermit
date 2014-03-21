@@ -2,7 +2,14 @@
 {% block title %}New Geographic Filter{% endblock %}
 {% block forestyle %}
   <style>
-    th { vertical-align: top; }
+    th {
+      vertical-align: top;
+      text-align: left;
+    }
+    ul[disabled] {
+      color: lightgray;
+      pointer-events: none;
+    }
   </style>
 {% endblock %}
 {% block forejs %}{% endblock %}
@@ -16,16 +23,39 @@
       <tr><th>{{ form.description.label_tag() }}</th>
           <td>{{ form.description|safe }}
               {{ form.description.errors|safe }}</td></tr>
-      <tr><th>{{ form.states.label_tag() }}</th>
+      <tr><th><input type="radio" name="type" value="state"
+                     id="type-state" class="type-selection">
+              <label for="type-state">{{ form.states.label }}<label></th>
           <td>{{ form.states|safe }}
               {{ form.states.errors|safe }}</td></tr>
-      <tr><th>{{ form.counties.label_tag() }}</th>
+      <tr><th><input type="radio" name="type" value="county"
+                     id="type-county" class="type-selection">
+              <label for="type-county">{{ form.counties.label }}</label></th>
           <td>{{ form.counties|safe }}
               {{ form.counties.errors|safe }}</td></tr>
-      <tr><th>{{ form.cities.label_tag() }}</th>
+      <tr><th><input type="radio" name="type" value="city"
+                     id="type-city" class="type-selection">
+              <label for="type-city">{{ form.cities.label }}</label></th>
           <td>{{ form.cities|safe }}
               {{ form.cities.errors|safe }}</td></tr>
     </table>
     <input type="submit" value="Save"/>
   </form>
+{% endblock %}
+{% block endjs %}
+  <script>
+    //debugger;
+    function setDisabled(n, radio) {
+      var elem = $(radio).closest("tr").find("td input, td select, td ul");
+      if (radio.checked)
+        elem.removeAttr("disabled");
+      else
+        elem.attr("disabled", true);
+    }
+    var radios = $(".type-selection");
+    radios.change(function () {
+                    radios.each(setDisabled);
+                  })
+          .trigger("change");
+  </script>
 {% endblock %}
