@@ -369,12 +369,15 @@ class GeographicAreaForm(forms.ModelForm):
         del cleaned_data['counties']
         cities = cleaned_data['cities']
         del cleaned_data['cities']
-
         cleaned_data['jurisdictions'] = states or counties or cities
-        from pprint import pprint
-        pprint(cleaned_data)
         return cleaned_data
-        
+    def save(self, commit=True):
+        area = super(GeographicAreaForm, self).save(commit)
+        if commit:
+            for j in self.cleaned_data['jurisdictions']:
+                area.jurisdictions.add(j)
+            area.save()
+        return area
     class Meta:
         model = GeographicArea
         fields = ['name', 'description', 'states', 'counties', 'cities']
