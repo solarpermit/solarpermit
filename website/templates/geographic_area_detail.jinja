@@ -3,10 +3,26 @@
 {% block forestyle %}{% endblock %}
 {% block forejs %}{% endblock %}
 {% block body %}
-  {{ object.pk }}
-  {{ object.name }}
-  {{ object.description }}
-  {% for area in object.jurisdictions.all() %}
-    {{ area.name }}
-  {% endfor %}
+  <p>Name: {{ object.name }}</p>
+  <p>Description: {{ object.description }}</p>
+  <p>Criteria:
+    <ul>
+      {% for jurisdiction in object.jurisdictions.all() %}
+        <li>
+          <a href="{{ url('website.views.AHJ.view_AHJ_by_name', jurisdiction.name_for_url) }}">
+            {{ jurisdiction.get_jurisdiction_display() }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul></p>
+  <p>Matches {{ object.matches().count() }} total jurisdictions:
+    <ul>
+      {% for jurisdiction in object.matches().all() %}
+        <li>
+          <a href="{{ url('website.views.AHJ.view_AHJ_by_name', jurisdiction.name_for_url) }}">
+            {{ jurisdiction.get_jurisdiction_display() }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul></p>
 {% endblock %}
