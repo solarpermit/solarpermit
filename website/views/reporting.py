@@ -307,7 +307,7 @@ def report_index(request):
 # Display an individual report on a question_id
 #
 ##############################################################################
-def report_on(request, question_id):
+def report_on(request, question_id, filter_id=None):
     # Check request for validity
     question_id = int(question_id)
     question = Question.objects.get(id=question_id)
@@ -315,18 +315,21 @@ def report_on(request, question_id):
         raise Http404
 
     def param(p):
-        s = request.GET[p]
+        s = request.GET[p] if p in request.GET else None
         return s.split(",") if s else []
-    def quoted_param(p):
-        return ['"%s"' % s for s in param(p)]
 
     geo_filter = None
-    if 'states' in request.GET:
-        geo_filter = Q(state__in = quoted_param('states'))
-    elif 'counties' in request.GET:
-        geo_filter = Q(county__in = quoted_param('counties'))
-    elif 'jurisdictions' in request.GET:
-        geo_filter = Q(pk__in = param('jurisdictions'))
+    # TODO: state-based filters should work by looking at the parents
+    # of the parents, but this information doesn't exist in the
+    # database yet.
+    if filter_id:
+        jurisdictions = GeographicArea.objects.get(pk=filter_id).jurisdictions.all()
+        geo_filter = Q(pk__in = jurisdictions) | \
+                     Q(parent__in = jurisdictions)
+    else:
+        jurisdiction_ids = param('jurisdictions')
+        geo_filter = Q(pk__in = jurisdiction_ids) | \
+                     Q(parent_id__in = jurisdiction_ids)
 
     data = {}
     data['current_nav'] = 'reporting'
