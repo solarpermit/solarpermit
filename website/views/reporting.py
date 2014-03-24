@@ -49,13 +49,11 @@ def build_query(question, field_map, geo_filter=None):
                SELECT %(fields)s
                FROM (SELECT id AS answer_id,
                             (SELECT value FROM website_answerreference WHERE id = answer_id) AS value
-                     FROM (SELECT (SELECT id
+                     FROM (SELECT (SELECT MAX(id)
                                    FROM website_answerreference
-                                   WHERE id = (SELECT MAX(id)
-                                               FROM website_answerreference
-                                               WHERE website_answerreference.jurisdiction_id = website_jurisdiction.id AND
-                                                     approval_status = 'A' AND
-                                                     question_id = %(question_id)s)) AS id
+                                   WHERE website_answerreference.jurisdiction_id = website_jurisdiction.id AND
+                                         approval_status = 'A' AND
+                                         question_id = %(question_id)s) AS id
                            FROM website_jurisdiction
                            WHERE website_jurisdiction.id NOT IN (1, 101105) AND
                                  website_jurisdiction.jurisdiction_type != 'u' ''' +
