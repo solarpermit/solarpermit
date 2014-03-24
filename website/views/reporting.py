@@ -313,6 +313,7 @@ def report_on(request, question_id, filter_id=None):
     question = Question.objects.get(id=question_id)
     if not question or not (question.id in reports_by_qid or question.display_template in reports_by_type):
         raise Http404
+    data = {}
 
     def param(p):
         s = request.GET[p] if p in request.GET else None
@@ -326,12 +327,14 @@ def report_on(request, question_id, filter_id=None):
         jurisdictions = GeographicArea.objects.get(pk=filter_id).jurisdictions.all()
         geo_filter = Q(pk__in = jurisdictions) | \
                      Q(parent__in = jurisdictions)
+        data['geo_filter'] = GeographicArea.objects.get(pk=filter_id)
     else:
         jurisdiction_ids = param('jurisdictions')
-        geo_filter = Q(pk__in = jurisdiction_ids) | \
-                     Q(parent_id__in = jurisdiction_ids)
+        if jurisdiction_ids:
+            geo_filter = Q(pk__in = jurisdiction_ids) | \
+                         Q(parent_id__in = jurisdiction_ids)
+            data['geo_filter'] = None
 
-    data = {}
     data['current_nav'] = 'reporting'
     data['report_name'] = question.question
     data['question_instruction'] = question.instruction
