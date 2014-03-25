@@ -856,7 +856,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             view_obj = None
             user = request.user
             if not user.is_authenticated():
-                raise Http401
+                return HttpResponse(status=401)
             entity_name = requestProcessor.getParameter('entity_name') 
             question_id = requestProcessor.getParameter('question_id') 
 
@@ -928,7 +928,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             view_obj = None
             user = request.user
             if not user.is_authenticated():
-                raise Http401
+                return HttpResponse(status=401)
             entity_name = requestProcessor.getParameter('entity_name') 
             question_id = requestProcessor.getParameter('question_id') 
                   
