@@ -88,7 +88,13 @@
       <h2>Question's Instruction: {{ question_instruction }}</h2>
     {% endif %}
     <hr/>
-    <h3>Current Approved Values in the Database</h3>
+    <h3>Current Approved Values in the Database
+      {% if geo_filter %}
+        filtered to the {{ geo_filter.matches().count() }}
+        jurisdictions in the area named
+        &ldquo;<a href="{{ url('geoarea-view', pk=geo_filter.pk) }}">{{ geo_filter.name }}</a>&rdquo;
+      {% endif %}
+    </h3>
     {% for report in reports %}
       <div class="report" id="report{{report.idx}}">
         <div class="graph" id="graph{{report.idx}}"></div>
