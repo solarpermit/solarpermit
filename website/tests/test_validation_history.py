@@ -178,11 +178,8 @@ class TestValidHistory(TestCase):
         for question in self.questionsMulti:
             question.save(force_update=True)
         from datetime import datetime, timedelta, date
-        testTime = timezone.now()
-        testTime = str(testTime)
-        testTime = testTime[:10]
-        testTime = testTime.split('-')
-        testTime = date(int(testTime[0]),int(testTime[1]),int(testTime[2]))
+
+        testTime = date(int(timezone.now().year),int(timezone.now().month),int(timezone.now().day))
         daysPass = django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED + 1
         diff = timedelta(days=daysPass)
         futureTime = testTime + diff #todays date plus 7 days
