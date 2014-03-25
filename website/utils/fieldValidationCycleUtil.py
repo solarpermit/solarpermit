@@ -10,7 +10,7 @@ import operator
 from datetime import timedelta, date
 from django.conf import settings as django_settings
 from website.utils.mathUtil import MathUtil
-
+from django.utils import timezone
 
 class FieldValidationCycleUtil():
   
@@ -729,7 +729,7 @@ class FieldValidationCycleUtil():
                 # if net of 3 up vote at any time ==> approved
                 total_up_votes_while_pending = Action.objects.filter(category=action_category, entity_id=entity_id, data__iexact='vote: up', action_datetime__gt=answer_pending_datetime).order_by('action_datetime')    
 
-                total_down_votes_while_pending = Action.objects.filter(category=action_category, entity_id=entity_id, data__iexact='vote: down', action_datetime__gt=answer_pending_datetime).order_by('action_datetime')                
+                total_down_votes_while_pending = Action.objects.filter(category=action_category, entity_id=entity_id, data__iexact='vote: down', action_datetime__gt=answer_pending_datetime).order_by('action_datetime')#vote action                
                 #lss; logic now states any suggested answer with 2 downvotes gets rejected, BUT if there are at least 1 more upvote than down vote, change to accepted.
                 if vote == 'down' and len(total_down_votes_while_pending) >= 2:     # 3 down votes to reject
                     status = 'will_reject'
@@ -1302,20 +1302,16 @@ class FieldValidationCycleUtil():
         # today date - create date >= 2 weeks
         # assign approval_status = 'A' - answerreference, action
         #we could change this to datetime to be able to test at exact time.
-        today_date = date.today()
-        user_id = 1 # supposedly the django admin user.
-        
+        today_date = timezone.now()#replaced date.today() with the proper timezone.now
+        user_id = 1 # supposedly the django admin user.   
         number_days_unchallenged_b4_approved = django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED        
         two_weeks_before_today = today_date - timedelta(days=number_days_unchallenged_b4_approved)
         vote_action_category = ActionCategory.objects.filter(name__iexact='VoteRequirement')
         entity_name='Requirement'
         action_obj = Action()
-        import pdb
-        pdb.set_trace()
         validate_action_category_name = 'ValidateRequirement'
-                        
         already_processed_jurisdiction_question = []
-        answers = AnswerReference.objects.filter(approval_status__iexact='P', create_datetime__lte=two_weeks_before_today).order_by('jurisdiction__id', 'question__id', 'create_datetime')  
+        answers = AnswerReference.objects.filter(approval_status__iexact='P', create_datetime__lte=two_weeks_before_today).order_by('jurisdiction__id', 'question__id', 'create_datetime')
         for answer in answers:
             jurisdiction_question_str = str(answer.jurisdiction.id) + '_'  + str(answer.question.id)
             if jurisdiction_question_str not in already_processed_jurisdiction_question:
@@ -1340,8 +1336,15 @@ class FieldValidationCycleUtil():
                         
                             #action
                             data = 'rejected - another answer was approved by the cron job'
-                            action_obj.save_action(validate_action_category_name, data, answer_to_be_rejected, entity_name, user_id, answer.jurisdiction)                      
-
+                            action_obj.save_action(validate_action_category_name, data, answer_to_be_rejected, entity_name, user_id, answer.jurisdiction)
+                else:
+                    answer.approval_status = 'R'
+                    answer.status_datetime = datetime.datetime.now()
+                    answer.save()
+                    already_processed_jurisdiction_question.append(jurisdiction_question_str)       
+                    #action
+                    data = 'rejected with downvotes after creation'
+                    aobj = action_obj.save_action(validate_action_category_name, data, answer, entity_name, user_id, answer.jurisdiction)                                      
     def process_fee_structure(self, answer):
         
         #"default_value": "{\"fee_type_1\": \"\", \"fee_item_1_1\": \"\", \"fee_formula_1_1\": \"\", \"fee_other_1_1\": \"\", \"fee_percentage_of_total_system_cost_cap_1_1\": \"\", \"fee_per_inverter_1_1\": \"\", \"fee_flat_rate_1_1\": \"\", \"fee_per_major_components_1_1\": \"\", \"fee_jurisdiction_cost_recovery_notes_1_1\": \"\", \"fee_percentage_of_total_system_cost_1_1\": \"\", \"fee_percentage_of_total_system_cost_cap_amt_1_1\": \"\", \"fee_per_component_cap_1_1\": \"\", \"fee_per_component_cap_cap_amt_1_1\": \"\", \"fee_per_module_1_1\": \"\"}",

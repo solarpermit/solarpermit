@@ -1,11 +1,12 @@
 from django.utils import unittest
 from django.test import TestCase
 from django.test.client import Client
-from website.models import User, RatingCategory, ActionCategory, Jurisdiction, Question, AnswerReference
+from website.models import User, RatingCategory, ActionCategory, Jurisdiction, Question, AnswerReference, QuestionCategory, Action
 from django.contrib.auth import authenticate
 from django.conf import settings
-from datetime import timedelta, date
+from datetime import timedelta, datetime, date
 from django.conf import settings as django_settings
+from django.utils import timezone
 import mock
 import json
 client = Client()
@@ -31,6 +32,7 @@ def dump(obj):
 class TestValidHistory(TestCase):
     def setUp(self):
         #create a local users object for testuser1, 2, 3, out of a list build using the Django users model
+        #need to mock the create date, must mock datetime in models i believe.
         self.users = [User.objects.create_user("testuser%s" % id, 
                                                "testuser%s@testing.solarpermit.org" % id,
                                                 "testuser")
@@ -49,10 +51,17 @@ class TestValidHistory(TestCase):
                                                 jurisdiction_type = "CI",
                                                 name = "foo")
         ## we need 4 questions that have multiple answer possiblites. add to the end? diff object? diff object will be wayyyy easier
+        self.qCategory = QuestionCategory.objects.get(id = 1)
+        
         self.questions = [Question.objects.create(label="test%s" % id, question="test%s" % id)
                               for id in xrange(10)]
+        for x in xrange(10):
+            self.questions[x].category = QuestionCategory.objects.get(id = 1)
+            
         self.questionsMulti = [Question.objects.create(label="test%s" % id, question="test%s" % id, has_multivalues = True)
                               for id in xrange(4)]
+        for x in xrange(4):
+            self.questionsMulti[x].category = QuestionCategory.objects.get(id = 1)
         self.answers = [AnswerReference.objects
                                        .create(jurisdiction=self.ahj,
                                                question=question,
@@ -120,7 +129,7 @@ class TestValidHistory(TestCase):
             inc = inc + 1
         inc = 0 # null out incs
 
-    def test_Valid_Vote(self):       
+    def test_Valid_Vote(self):
 #      test #0 answer#0 Goal: approved with downvotes
         # 3 upvotes, 1 down votes
         self.downVote(1, 0, 0, 0,False)
@@ -160,27 +169,33 @@ class TestValidHistory(TestCase):
         #answer 7 upvote 1 downvote 2
         self.upVote(1, 0, 0, 7, True)
         self.downVote(2, 1, 1, 7, True)
-        
-    def test_timePass(self):#this works. however it currently tests BEFORE the users are made because queries are ran at midnight, this is because FieldValidationCycleUtil uses date instead of datetime.
-        from datetime import datetime, timedelta
-        testTime = datetime.today()
+        for answer in self.answers:
+            answer.save(force_update=True)
+        for answer in self.answersMulti:
+            answer.save(force_update=True)
+        for question in self.questions:
+            question.save(force_update=True)
+        for question in self.questionsMulti:
+            question.save(force_update=True)
+        from datetime import datetime, timedelta, date
+        testTime = timezone.now()
         testTime = str(testTime)
         testTime = testTime[:10]
         testTime = testTime.split('-')
         testTime = date(int(testTime[0]),int(testTime[1]),int(testTime[2]))
-        daysPass = django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED
+        daysPass = django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED + 1
         diff = timedelta(days=daysPass)
         futureTime = testTime + diff #todays date plus 7 days
-        from datetime import datetime
-        with mock.patch('website.utils.fieldValidationCycleUtil.date') as mock_date:
-            mock_date.today.return_value = futureTime
-            mock_date.side_effect = lambda *args, **kw: date(*args, **kw)
+        from datetime import datetime, date
+        with mock.patch('website.utils.fieldValidationCycleUtil.timezone') as mock_timezone:#can we mock datetime as date? making fieldval think 
+            mock_timezone.now.return_value = futureTime
+            mock_timezone.side_effect = lambda *args, **kw: date(*args, **kw)
             from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
             valUtil = FieldValidationCycleUtil()
             valUtil.cron_validate_answers()
-        pendingAnswer = self.answers[2]
+        pendingAnswer = AnswerReference.objects.get(id = 2)
         paStatus = pendingAnswer.approval_status
         self.assertEqual(str(paStatus),"A") #check that test #2 is successful
-        pendingAnswerMulti = self.answersMulti[5]
-        pamStatus = pendingAnswerMulti.approval_status
-        self.assertEqual(str(pamStatus),"A") #check that test #6 is successful
+        pendingAnswer = AnswerReference.objects.get(id = 15)
+        paStatus = pendingAnswer.approval_status
+        self.assertEqual(str(paStatus),"A") #check that answerMulti # 5 is approved, Test# 6

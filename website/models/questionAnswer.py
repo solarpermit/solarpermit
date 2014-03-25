@@ -116,11 +116,10 @@ class Applicability(models.Model):
     
         #lss; question model
 class Question(models.Model):
-    category = models.ForeignKey(QuestionCategory, blank=True, null=True, db_index=True)
+    category = models.ForeignKey(QuestionCategory, blank=True, null=True, db_index=True) #removed the second call to this
     label = models.TextField(blank=True, null=True) #label to display if it is shown in field format
     question = models.TextField(blank=True, null=True) #question to display if it is show as a question
     instruction = models.TextField(blank=True, null=True)
-    category = models.ForeignKey(QuestionCategory, blank=True, null=True, db_index=True)
     applicability = models.ForeignKey(Applicability, blank=True, null=True)
     form_type = models.CharField(choices=FORM_TYPE_CHOICES, max_length=8, blank=True, null=True)
     answer_choice_group = models.ForeignKey(AnswerChoiceGroup, blank=True, null=True)
