@@ -44,7 +44,7 @@ def build_query(question, field_map, geo_filter=None):
         compiler = fake_query.get_compiler(DEFAULT_DB_ALIAS)
         where, where_params = fake_query.where.as_sql(compiler.connection.ops.quote_name, #might break postgres
                                                       compiler.connection)
-        compiled_filter = where % tuple(where_params)
+        compiled_filter = where % tuple(["'%s'" % p for p in where_params])
     return ('''
                SELECT %(fields)s
                FROM (SELECT id AS answer_id,
@@ -322,10 +322,8 @@ def report_on(request, question_id, filter_id=None):
     # of the parents, but this information doesn't exist in the
     # database yet.
     if filter_id:
-        jurisdictions = GeographicArea.objects.get(pk=filter_id).jurisdictions.all()
-        geo_filter = Q(pk__in = jurisdictions) | \
-                     Q(parent__in = jurisdictions)
         data['geo_filter'] = GeographicArea.objects.get(pk=filter_id)
+        geo_filter = data['geo_filter'].where()
     else:
         jurisdiction_ids = param('jurisdictions')
         if jurisdiction_ids:
@@ -343,6 +341,7 @@ def report_on(request, question_id, filter_id=None):
     idx = 0
     for report in reports:
       query = build_query(question, report['spec'], geo_filter)
+      print(query)
       cursor = connection.cursor()
       cursor.execute(query)
       table = [{'key': k, 'value': v } for (k,v) in zip([col[0] for col in cursor.description], cursor.fetchone())]
@@ -367,17 +366,19 @@ class GeographicAreaForm(forms.ModelForm):
                                             required = False)
     def clean(self):
         cleaned_data = super(GeographicAreaForm, self).clean()
-        states = cleaned_data['states']
-        del cleaned_data['states']
+        # we always keep the largest specified jurisdictions and throw
+        # away the smallest (of course the form itself prevents entry
+        # of more than one type in the normal case)
         counties = cleaned_data['counties']
         del cleaned_data['counties']
         cities = cleaned_data['cities']
         del cleaned_data['cities']
-        cleaned_data['jurisdictions'] = states or counties or cities
+        if not cleaned_data['states']:
+            cleaned_data['jurisdictions'] = counties or cities
         return cleaned_data
     def save(self, commit=True):
         area = super(GeographicAreaForm, self).save(commit)
-        if commit:
+        if commit and 'jurisdictions' in self.cleaned_data:
             for j in self.cleaned_data['jurisdictions']:
                 area.jurisdictions.add(j)
             area.save()
