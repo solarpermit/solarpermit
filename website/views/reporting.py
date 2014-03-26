@@ -364,6 +364,19 @@ class GeographicAreaForm(forms.ModelForm):
     cities = forms.ModelMultipleChoiceField(queryset = Jurisdiction.objects.filter(jurisdiction_type__in = ('CC', 'CI', 'IC')),
                                             widget = MultipleAutocompleteWidget("cities", view=autocomplete_instance),
                                             required = False)
+    def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance', None)
+        if instance:
+            initial = kwargs.get('initial', {})
+            initial['states'] = instance.states
+            initial['counties'] = instance.jurisdictions.filter(jurisdiction_type__in = ('CO', 'SC', 'CC'))
+            # BUG: we're ommitting type 'CC' from the cities list, but
+            # if the user did originally choose a 'CC' as a city then
+            # this will cause it to not round-trip.
+            initial['cities'] = instance.jurisdictions.filter(jurisdiction_type__in = ('CI', 'IC'))
+            kwargs['initial'] = initial
+        super(GeographicAreaForm, self).__init__(*args, **kwargs)
+
     def clean(self):
         cleaned_data = super(GeographicAreaForm, self).clean()
         # we always keep the largest specified jurisdictions and throw
@@ -405,6 +418,7 @@ class GeographicAreaUpdate(UpdateView):
     model = GeographicArea
     fields = ['name']
     template_name = 'geographic_area_form.jinja'
+    form_class = GeographicAreaForm
 
 class GeographicAreaDelete(DeleteView):
     model = GeographicArea

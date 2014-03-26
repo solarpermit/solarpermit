@@ -24,16 +24,19 @@
           <td>{{ form.description|safe }}
               {{ form.description.errors|safe }}</td></tr>
       <tr><th><input type="radio" name="type" value="state"
+                     {{ 'checked' if form.initial.states }}
                      id="type-state" class="type-selection">
               <label for="type-state">{{ form.states.label }}<label></th>
           <td>{{ form.states|safe }}
               {{ form.states.errors|safe }}</td></tr>
       <tr><th><input type="radio" name="type" value="county"
+                     {{ 'checked' if form.initial.counties }}
                      id="type-county" class="type-selection">
               <label for="type-county">{{ form.counties.label }}</label></th>
           <td>{{ form.counties|safe }}
               {{ form.counties.errors|safe }}</td></tr>
       <tr><th><input type="radio" name="type" value="city"
+                     {{ 'checked' if form.initial.cities }}
                      id="type-city" class="type-selection">
               <label for="type-city">{{ form.cities.label }}</label></th>
           <td>{{ form.cities|safe }}

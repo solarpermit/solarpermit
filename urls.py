@@ -114,6 +114,8 @@ else:
                                     name='geoarea-list'),
         url(r'^reporting/filter/new/$', reporting.GeographicAreaCreate.as_view(),
                                         name='geoarea-new'),
+        url(r'^reporting/filter/edit/(?P<pk>\d+)/$', reporting.GeographicAreaUpdate.as_view(),
+                                                     name='geoarea-edit'),
         url(r'^reporting/filter/(?P<pk>\d+)/$', reporting.GeographicAreaDetail.as_view(),
                                                 name='geoarea-view'),
         url(r'^reporting/(?P<question_id>\d+)/$', 'website.views.reporting.report_on'),
