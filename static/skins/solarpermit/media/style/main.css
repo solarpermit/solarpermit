@@ -2540,12 +2540,27 @@ ul.paperlist li span.author{
 	margin-right:10px;
 }
 
-.black_tooltip {
-	background-color:#555555;
-	color:white;
-	font-size:11px;
-	padding:0px 0px 5px 10px;
+.ui-tooltip {
+    background-color :#555;
+    color: white;
+    padding: .8em;
+    max-width: auto;
+    font-size: smaller;
 }
+
+.ui-tooltip.ui-widget-content {
+    border: none;
+    background-image: none;
+}
+
+.ui-tooltip-content p:first-child {
+    margin-top: 0;
+}
+
+.ui-tooltip-content p:last-child {
+    margin-bottom: 0;
+}
+
 /*
 .top_contributors {
 	padding:20px 0px 50px 0px;
