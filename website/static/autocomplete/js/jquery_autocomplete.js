@@ -36,7 +36,7 @@ $.widget( "ui.djangoautocomplete", {
                     return false;
                 }
             }
-        }).data( "autocomplete" )._renderItem = this.options.renderItem;
+        }).data( "uiAutocomplete" )._renderItem = this.options.renderItem;
         this._initSource();
         if ( this.options.multiple ) {
             this._initManyToMany();
@@ -110,7 +110,7 @@ $.widget( "ui.djangoautocomplete", {
             this.values_ul = $( "<ul></ul>" ).insertAfter( this.element );
         }
         this.values_ul.addClass( "ui-autocomplete-values" );
-        $( ".ui-autocomplete-value a", this.values_ul[0] ).live( "click", function() {
+        $( ".ui-autocomplete-value a", this.values_ul[0] ).on( "click", function() {
             var span = $(this).parent();
             var id = span.data( "value.autocomplete" );
             $.each( self.values, function (i, v) {

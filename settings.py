@@ -316,5 +316,6 @@ JINJA2_EXTENSIONS = ['jinja2.ext.WithExtension',
 
 # django-autocomplete; has nothing to do with our current search autocomplete
 AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/'
+AUTOCOMPLETE_JQUERY_ALREADY_INCLUDED = True
 
 from settings_local import *
