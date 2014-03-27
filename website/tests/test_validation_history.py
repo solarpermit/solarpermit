@@ -94,36 +94,25 @@ class TestValidHistory(TestCase):
         logged_in = client.login(username='testuser%s' % user,
                             password='testuser')
         self.assertTrue(logged_in)
-        
-    def upVote(self,up_votes,cur_down,lastUser,answerNum,multi): #number of times to upvote, current amount of down votes, last test user we used, current test number (answer ref), multi is a boolean depicting if we use answers or answersmulti 
+    #redesign to take into mind downvotes as well to not have repeat functions    
+    def pushVote(self,votes,currentOpp,lastUser,answerNum,multi,direction): #number of times to upvote, current amount of down votes, last test user we used, current test number (answer ref), multi is a boolean depicting if we use answers or answersmulti 
         userNum = lastUser + 1
         inc = 0
-        cur_up = 0 #current amount of up votes
+        currentUsed = 0 #current amount of votes in our suggested direction
         self.loginUser(userNum) 
-        while inc < up_votes: # while our incrementor is less than our total upvotes,
-            if cur_up <= up_votes: # if our current amount of upvotes is less or equal to our max upvote
-                cur_up = cur_up + 1 #inc current upvotes
-            if multi == False:
-                self.do_test_vote( client, self.ahj, self.answers[answerNum], "up", cur_up, cur_down)
-            else:
-                self.do_test_vote( client, self.ahj, self.answersMulti[answerNum], "up", cur_up, cur_down)
-            userNum = userNum + 1
-            self.loginUser(userNum)
-            inc = inc + 1
-        inc = 0 # null out incs
-
-    def downVote(self,down_votes,cur_up,lastUser,answerNum,multi): #number of times to downvote, current amount of up votes, last test user we used, current test number (answer ref), multi is a boolean depicting if we use answers or answersmulti 
-        userNum = lastUser + 1
-        inc = 0
-        cur_down = 0 #current amount of up votes
-        self.loginUser(userNum) 
-        while inc < down_votes:
-            if cur_down <= down_votes:
-                cur_down = cur_down + 1           
-            if multi == False:
-                self.do_test_vote( client, self.ahj, self.answers[answerNum], "down", cur_up, cur_down)
-            else:
-                self.do_test_vote( client, self.ahj, self.answersMulti[answerNum], "down", cur_up, cur_down)
+        while inc < votes: # while our incrementor is less than our total upvotes,
+            if currentUsed <= votes: # if our current amount of upvotes is less or equal to our max upvote
+                currentUsed = currentUsed + 1 #inc current upvotes
+            if direction == "up":
+                if multi == False:
+                    self.do_test_vote( client, self.ahj, self.answers[answerNum], direction, currentUsed, currentOpp)
+                else:
+                    self.do_test_vote( client, self.ahj, self.answersMulti[answerNum], direction, currentUsed, currentOpp)
+            elif direction == "down":
+                if multi == False:
+                    self.do_test_vote( client, self.ahj, self.answers[answerNum], direction, currentOpp, currentUsed)
+                else:
+                    self.do_test_vote( client, self.ahj, self.answersMulti[answerNum], direction, currentOpp, currentUsed)
             userNum = userNum + 1
             self.loginUser(userNum)
             inc = inc + 1
@@ -132,43 +121,43 @@ class TestValidHistory(TestCase):
     def test_Valid_Vote(self):
 #      test #0 answer#0 Goal: approved with downvotes
         # 3 upvotes, 1 down votes
-        self.downVote(1, 0, 0, 0,False)
-        self.upVote(3, 1, 1, 0,False)
+        self.pushVote(1, 0, 0, 0,False,"down")
+        self.pushVote(3, 1, 1, 0,False,"up")
 #      test #1 answer#1  goal approved without downvotes 
         # 3 upvote
-        self.upVote(3, 0, 0, 1, False)
+        self.pushVote(3, 0, 0, 1, False,"up")
 #     test #2 answer#2 goal: approved with no votes #over time
         #no votes
         #####just a note that answer 2 lives here 
 #      test #3 answer#3  rejected with downvotes
         #downvote 2
-        self.downVote(2, 0, 0, 3, False)
+        self.pushVote(2, 0, 0, 3, False,"down")
 #      test #4 answer#4  rejected with downvotes and upvotes
         #upvote 1 downvote 2
-        self.upVote(1, 0, 0, 4, False)
-        self.downVote(2, 1, 1, 4, False)
+        self.pushVote(1, 0, 0, 4, False,"up")
+        self.pushVote(2, 1, 1, 4, False,"down")
 #      Test #5 answerMulti#0 & 4  approved multi value with downvotes
         # Test#5 #answer 0: downvote 2
-        self.downVote(2, 0, 0, 0, True)
+        self.pushVote(2, 0, 0, 0, True,"down")
         # Test#5 #answer 1: downvote 1, upvote 3
-        self.downVote(1, 0, 0, 4, True)
-        self.upVote(3, 1, 1, 4, True)
+        self.pushVote(1, 0, 0, 4, True,"down")
+        self.pushVote(3, 1, 1, 4, True,"up")
 #      test# 6 answerMulti# 1 & 5 approved multi values, one with upvotes, one without, both without downvotes
         #answer 1: upvote 3
-        self.upVote(3, 0, 0, 1, True)
+        self.pushVote(3, 0, 0, 1, True,"up")
         #answer 5: no votes        
 #      test# 7  answerMulti# 2 & 6 rejected multi value with downvotes
         #answer 2 downvote 2
-        self.downVote(2, 0, 0, 2, True)
+        self.pushVote(2, 0, 0, 2, True,"down")
         #answer 6 downvote 2
-        self.downVote(2, 0, 0, 6, True)
+        self.pushVote(2, 0, 0, 6, True,"down")
 #      test# 8 answerMulti# 3 & 7  rejected multi value with downvotes and upvotes
         #answer 3 upvote 1 downvote 2
-        self.upVote(1, 0, 0, 3, True)
-        self.downVote(2, 1, 1, 3, True)
+        self.pushVote(1, 0, 0, 3, True,"up")
+        self.pushVote(2, 1, 1, 3, True,"down")
         #answer 7 upvote 1 downvote 2
-        self.upVote(1, 0, 0, 7, True)
-        self.downVote(2, 1, 1, 7, True)
+        self.pushVote(1, 0, 0, 7, True,"up")
+        self.pushVote(2, 1, 1, 7, True,"down")
         for answer in self.answers:
             answer.save(force_update=True)
         for answer in self.answersMulti:
@@ -177,13 +166,12 @@ class TestValidHistory(TestCase):
             question.save(force_update=True)
         for question in self.questionsMulti:
             question.save(force_update=True)
-        from datetime import datetime, timedelta, date
-
         testTime = date(int(timezone.now().year),int(timezone.now().month),int(timezone.now().day))
         daysPass = django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED + 1
         diff = timedelta(days=daysPass)
         futureTime = testTime + diff #todays date plus 7 days
-        from datetime import datetime, date
+        #going to loop all tests, check for expected results. and not validated
+        #make function
         with mock.patch('website.utils.fieldValidationCycleUtil.timezone') as mock_timezone:#can we mock datetime as date? making fieldval think 
             mock_timezone.now.return_value = futureTime
             mock_timezone.side_effect = lambda *args, **kw: date(*args, **kw)
@@ -192,6 +180,7 @@ class TestValidHistory(TestCase):
             valUtil.cron_validate_answers()
         pendingAnswer = AnswerReference.objects.get(id = 2)
         paStatus = pendingAnswer.approval_status
+        #going to loop all tests, check that they have been validated
         self.assertEqual(str(paStatus),"A") #check that test #2 is successful
         pendingAnswer = AnswerReference.objects.get(id = 15)
         paStatus = pendingAnswer.approval_status
