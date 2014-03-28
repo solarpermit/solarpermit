@@ -138,11 +138,11 @@ $(document).ready(function() {
 {% block top_main_content %}
             <span style="padding-left:10px;">
 {% if jurisdiction.jurisdiction_type!='U' and jurisdiction.jurisdiction_type!='SC'  and jurisdiction.jurisdiction_type != 'CINP' and jurisdiction.jurisdiction_type != 'CONP' %}
-    {% if last_contributed_date == ''  or last_contributed_date == None %}
+    {% if jurisdiction.last_contributed == ''  or jurisdiction.last_contributed == None %}
                     This page is empty and has not been edited
     {% else %}
-        {% if last_contributed_by != None %}
-                    <span id="jurisdicton_last_updated">Last updated {{jurisdiction.display_last_contributed()}} by <a href='#' id='id_jurisdicton_last_updated' onmouseover="controller.postRequest('/account/', {ajax: 'user_profile_short', user_id: '{{last_contributed_by.id}}',  unique_list_id: 'jurisdicton_last_updated'  });"  >{{last_contributed_by.get_profile().get_display_name()}}</a></span>
+        {% if jurisdiction.last_contributed_by != None %}
+                    <span id="jurisdicton_last_updated">Last updated {{jurisdiction.display_last_contributed()}} by <a href='#' id='id_jurisdicton_last_updated' onmouseover="controller.postRequest('/account/', {ajax: 'user_profile_short', user_id: '{{jurisdiction.last_contributed_by.id}}',  unique_list_id: 'jurisdicton_last_updated'  });"  >{{jurisdiction.last_contributed_by.get_profile().get_display_name()}}</a></span>
         {% else %}
                     <span id="jurisdicton_last_updated">Last updated {{jurisdiction.display_last_contributed()}} by </span>    
         {% endif %}
