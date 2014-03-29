@@ -2,9 +2,16 @@
 {% block title %}New Geographic Filter{% endblock %}
 {% block forestyle %}
   <style>
+    #main-wrapper {
+      margin-left: 1em;
+    }
     th {
       vertical-align: top;
       text-align: left;
+      padding-left: 1em;
+    }
+    th.division {
+      padding-left: 0;
     }
     ul[disabled] {
       color: lightgray;
@@ -17,12 +24,7 @@
   <form action="" method="post">{% csrf_token %}
     {{ form.media|safe }}
     <table>
-      <tr><th>{{ form.name.label_tag() }}</th>
-          <td>{{ form.name|safe }}
-              {{ form.name.errors|safe }}</td></tr>
-      <tr><th>{{ form.description.label_tag() }}</th>
-          <td>{{ form.description|safe }}
-              {{ form.description.errors|safe }}</td></tr>
+      <tr><th class="division" colspan="2">Filter criteria:</th></tr>
       <tr><th><input type="radio" name="type" value="state"
                      {{ 'checked' if form.initial.states }}
                      id="type-state" class="type-selection">
@@ -41,6 +43,14 @@
               <label for="type-city">{{ form.cities.label }}</label></th>
           <td>{{ form.cities|safe }}
               {{ form.cities.errors|safe }}</td></tr>
+
+      <tr><th class="division" colspan="2">Save filter{% if question_id %} (optional){% endif %}:</th></tr>
+      <tr><th>{{ form.name.label_tag() }}</th>
+          <td>{{ form.name|safe }}
+              {{ form.name.errors|safe }}</td></tr>
+      <tr><th>{{ form.description.label_tag() }}{% if not question_id %}<br/>(optional){% endif %}</th>
+          <td>{{ form.description|safe }}
+              {{ form.description.errors|safe }}</td></tr>
     </table>
     <input type="submit" value="Save"/>
   </form>

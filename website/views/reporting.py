@@ -2,7 +2,7 @@
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django import forms
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template import Context
 from website.utils.httpUtil import HttpRequestProcessor
@@ -13,6 +13,7 @@ from django.conf import settings
 from jinja2 import FileSystemLoader, Environment
 import hashlib
 from website.models import Question, QuestionCategory, Jurisdiction, GeographicArea
+from website.models.reporting import where_clause_for_area
 from django.db import connection
 from collections import OrderedDict
 import json
@@ -23,6 +24,7 @@ from django.db import DEFAULT_DB_ALIAS
 from django.contrib.localflavor.us.us_states import US_STATES
 from autocomplete.widgets import MultipleAutocompleteWidget
 from website.views.autocomp import autocomplete_instance
+import urllib
 
 def build_query(question, field_map, geo_filter=None):
     # Yes we have two mechanisms for building queries here. We've
@@ -311,26 +313,25 @@ def report_on(request, question_id, filter_id=None):
     question = Question.objects.get(id=question_id)
     if not question or not (question.id in reports_by_qid or question.display_template in reports_by_type):
         raise Http404
-    data = {}
+    data = { 'question_id': question_id }
 
     def param(p):
         s = request.GET[p] if p in request.GET else None
         return s.split(",") if s else []
 
     geo_filter = None
-    # TODO: state-based filters should work by looking at the parents
-    # of the parents, but this information doesn't exist in the
-    # database yet.
     if filter_id:
         data['geo_filter'] = GeographicArea.objects.get(pk=filter_id)
         geo_filter = data['geo_filter'].where()
     else:
-        jurisdiction_ids = param('jurisdictions')
-        if jurisdiction_ids:
-            geo_filter = Q(pk__in = jurisdiction_ids) | \
-                         Q(parent_id__in = jurisdiction_ids)
-            data['geo_filter'] = None
-
+        data['geo_filter'] = {}
+        for key in ['states', 'jurisdictions']:
+            p = param(key)
+            if p:
+                data['geo_filter'][key] = p
+        if data['geo_filter']:
+            geo_filter = where_clause_for_area(**data['geo_filter'])
+            data['filter_is_temporary'] = True
     data['current_nav'] = 'reporting'
     data['report_name'] = question.question
     data['question_instruction'] = question.instruction
@@ -341,7 +342,6 @@ def report_on(request, question_id, filter_id=None):
     idx = 0
     for report in reports:
       query = build_query(question, report['spec'], geo_filter)
-      print(query)
       cursor = connection.cursor()
       cursor.execute(query)
       table = [{'key': k, 'value': v } for (k,v) in zip([col[0] for col in cursor.description], cursor.fetchone())]
@@ -392,8 +392,7 @@ class GeographicAreaForm(forms.ModelForm):
     def save(self, commit=True):
         area = super(GeographicAreaForm, self).save(commit)
         if commit and 'jurisdictions' in self.cleaned_data:
-            for j in self.cleaned_data['jurisdictions']:
-                area.jurisdictions.add(j)
+            area.jurisdictions.add(self.cleaned_data['jurisdictions'])
             area.save()
         return area
     class Meta:
@@ -410,13 +409,34 @@ class GeographicAreaList(ListView):
     
 class GeographicAreaCreate(CreateView):
     model = GeographicArea
-    fields = ['name']
     template_name = 'geographic_area_form.jinja'
     form_class = GeographicAreaForm
+    def get_context_data(self, **kwargs):
+        if 'question_id' in self.kwargs:
+            kwargs['question_id'] = self.kwargs['question_id']
+        return super(GeographicAreaCreate, self).get_context_data(**kwargs)
+    def form_valid(self, form):
+        response = super(GeographicAreaCreate, self).form_valid(form)
+        if 'question_id' in self.kwargs:
+            self.kwargs.update({'filter_id': form.instance.pk})
+            return HttpResponseRedirect(reverse('report-with-filter',
+                                                kwargs = self.kwargs))
+        else:
+            return response
+    def form_invalid(self, form):
+        if 'question_id' in self.kwargs:
+            params = {}
+            if 'states' in form.cleaned_data and form.cleaned_data['states']:
+                params['states'] = ",".join(form.cleaned_data['states'])
+            elif 'jurisdictions' in form.cleaned_data and form.cleaned_data['jurisdictions']:
+                params['jurisdictions'] = ",".join([str(j.pk) for j in form.cleaned_data['jurisdictions']])
+            return HttpResponseRedirect(reverse('report', kwargs=self.kwargs) + '?' + \
+                                        urllib.urlencode(params))
+        else:
+            return super(GeographicAreaCreate, self).form_invalid(form)
 
 class GeographicAreaUpdate(UpdateView):
     model = GeographicArea
-    fields = ['name']
     template_name = 'geographic_area_form.jinja'
     form_class = GeographicAreaForm
 

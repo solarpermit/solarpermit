@@ -88,11 +88,17 @@
       <h2>Question's Instruction: {{ question_instruction }}</h2>
     {% endif %}
     <hr/>
-    <h3>Current Approved Values in the Database
+    <h3>Current approved values
       {% if geo_filter %}
-        filtered to the {{ geo_filter.matches().count() }}
-        jurisdictions in the area named
-        &ldquo;<a href="{{ url('geoarea-view', pk=geo_filter.pk) }}">{{ geo_filter.name }}</a>&rdquo;
+        {% if not filter_is_temporary %}
+          filtered to the {{ geo_filter.matches().count() }}
+          jurisdictions in the area named
+          &ldquo;<a href="{{url('geoarea-view', pk=geo_filter.pk)}}">{{ geo_filter.name }}</a>&rdquo;
+        {% else %}
+          . <a href="{{url('geoarea-new-for-question', question_id=question_id)}}">Edit current filter...</a>
+        {% endif %}
+      {% else %}
+        . <a href="{{url('geoarea-new-for-question', question_id=question_id)}}">Filter this report...</a>
       {% endif %}
     </h3>
     {% for report in reports %}

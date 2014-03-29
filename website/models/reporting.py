@@ -33,12 +33,16 @@ class GeographicArea(models.Model):
     def get_absolute_url(self):
         return reverse('geoarea-view', kwargs={'pk': self.pk})
     def where(self):
-        if self.states:
-            q = Q(state__in = self.states)
-        else:
-            q = Q(pk__in = self.jurisdictions.all()) | \
-                Q(parent__in = self.jurisdictions.all())
-        return q & ~Q(jurisdiction_type = 'U',
-                      pk__in = settings.SAMPLE_JURISDICTIONS)
+        return where_clause_for_area(states = self.states,
+                                     jurisdictions = self.jurisdictions.all())
     def matches(self):
         return Jurisdiction.objects.filter(self.where())
+
+def where_clause_for_area(states=None, jurisdictions=None):
+    if states:
+        q = Q(state__in = states)
+    else:
+        q = Q(pk__in = jurisdictions) | \
+            Q(parent__in = jurisdictions)
+    return q & ~Q(jurisdiction_type = 'U',
+                  pk__in = settings.SAMPLE_JURISDICTIONS)

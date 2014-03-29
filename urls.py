@@ -118,8 +118,12 @@ else:
                                                      name='geoarea-edit'),
         url(r'^reporting/filter/(?P<pk>\d+)/$', reporting.GeographicAreaDetail.as_view(),
                                                 name='geoarea-view'),
-        url(r'^reporting/(?P<question_id>\d+)/$', 'website.views.reporting.report_on'),
-        url(r'^reporting/(?P<question_id>\d+)/(?P<filter_id>.+)/$', 'website.views.reporting.report_on'),
+        url(r'^reporting/(?P<question_id>\d+)/$', 'website.views.reporting.report_on',
+                                                  name='report'),
+        url(r'^reporting/(?P<question_id>\d+)/filter/$', reporting.GeographicAreaCreate.as_view(),
+                                                         name='geoarea-new-for-question'),
+        url(r'^reporting/(?P<question_id>\d+)/(?P<filter_id>\d+)/$', 'website.views.reporting.report_on',
+                                                                     name='report-with-filter'),
 
         #### these urls power most of the autocomplete fields; notably the search field has a one-off implementation
         url('^autocomplete/', include(autocomplete_instance.urls)))
