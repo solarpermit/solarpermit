@@ -95,7 +95,10 @@
           jurisdictions in the area named
           &ldquo;<a href="{{url('geoarea-view', pk=geo_filter.pk)}}">{{ geo_filter.name }}</a>&rdquo;
         {% else %}
-          . <a href="{{url('geoarea-new-for-question', question_id=question_id)}}">Edit current filter...</a>
+          . <a href="{{url_params(url('geoarea-new-for-question',
+                                      question_id=question_id),
+                                  **geo_filter_params)
+                     }}">Edit current filter...</a>
         {% endif %}
       {% else %}
         . <a href="{{url('geoarea-new-for-question', question_id=question_id)}}">Filter this report...</a>
@@ -123,7 +126,7 @@
 
 {% block endjs %}
   <script>
-    var reports = {{reports_json}};
+    var reports = {{reports_json|safe}};
     function select(field) {
       return function (elem) {
                if (elem.key != 'Total')

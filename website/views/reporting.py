@@ -25,6 +25,7 @@ from django.contrib.localflavor.us.us_states import US_STATES
 from autocomplete.widgets import MultipleAutocompleteWidget
 from website.views.autocomp import autocomplete_instance
 import urllib
+from django.shortcuts import render_to_response
 
 def build_query(question, field_map, geo_filter=None):
     # Yes we have two mechanisms for building queries here. We've
@@ -316,19 +317,20 @@ def report_on(request, question_id, filter_id=None):
     data = { 'question_id': question_id }
 
     def param(p):
-        s = request.GET[p] if p in request.GET else None
-        return s.split(",") if s else []
+        return request.GET[p] if p in request.GET else None
 
     geo_filter = None
     if filter_id:
         data['geo_filter'] = GeographicArea.objects.get(pk=filter_id)
         geo_filter = data['geo_filter'].where()
     else:
+        data['geo_filter_params'] = {}
         data['geo_filter'] = {}
         for key in ['states', 'jurisdictions']:
             p = param(key)
             if p:
-                data['geo_filter'][key] = p
+                data['geo_filter_params'][key] = p
+                data['geo_filter'][key] = p.split(",")
         if data['geo_filter']:
             geo_filter = where_clause_for_area(**data['geo_filter'])
             data['filter_is_temporary'] = True
@@ -350,9 +352,8 @@ def report_on(request, question_id, filter_id=None):
                                "type": report['type'] })
       idx += 1
     data['reports_json'] = json.dumps(data['reports'])
-
-    requestProcessor = HttpRequestProcessor(request)
-    return requestProcessor.render_to_response(request,'website/reporting/report_on.html', data, '')
+    data['request'] = request
+    return render_to_response('website/reporting/report_on.jinja', data)
 
 class GeographicAreaForm(forms.ModelForm):
     name = forms.CharField()
@@ -366,15 +367,21 @@ class GeographicAreaForm(forms.ModelForm):
                                             required = False)
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
+        initial = kwargs.get('initial', {})
+        # BUG: we're ommitting type 'CC' from the cities list, but
+        # if the user did originally choose a 'CC' as a city then
+        # this will cause it to not round-trip.
         if instance:
-            initial = kwargs.get('initial', {})
             initial['states'] = instance.states
             initial['counties'] = instance.jurisdictions.filter(jurisdiction_type__in = ('CO', 'SC', 'CC'))
-            # BUG: we're ommitting type 'CC' from the cities list, but
-            # if the user did originally choose a 'CC' as a city then
-            # this will cause it to not round-trip.
             initial['cities'] = instance.jurisdictions.filter(jurisdiction_type__in = ('CI', 'IC'))
-            kwargs['initial'] = initial
+        elif initial:
+            if 'jurisdictions' in initial:
+                initial['counties'] = Jurisdiction.objects.filter(pk__in = initial['jurisdictions'],
+                                                                  jurisdiction_type__in = ('CO', 'SC', 'CC'))
+                initial['cities'] = Jurisdiction.objects.filter(pk__in = initial['jurisdictions'],
+                                                                jurisdiction_type__in = ('CI', 'IC'))
+        kwargs['initial'] = initial
         super(GeographicAreaForm, self).__init__(*args, **kwargs)
 
     def clean(self):
@@ -411,6 +418,9 @@ class GeographicAreaCreate(CreateView):
     model = GeographicArea
     template_name = 'geographic_area_form.jinja'
     form_class = GeographicAreaForm
+    def get(self, request, *args, **kwargs):
+        self.initial = {key: ",".join(request.GET.getlist(key, "")).split(",") for key in set(request.GET.keys()) & set(['states', 'jurisdictions'])}
+        return super(GeographicAreaCreate, self).get(request, *args, **kwargs)
     def get_context_data(self, **kwargs):
         if 'question_id' in self.kwargs:
             kwargs['question_id'] = self.kwargs['question_id']
