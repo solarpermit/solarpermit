@@ -13,7 +13,7 @@ from django.conf import settings
 from jinja2 import FileSystemLoader, Environment
 import hashlib
 from website.models import Question, QuestionCategory, Jurisdiction, GeographicArea
-from website.models.reporting import where_clause_for_area
+from website.models.reporting import where_clause_for_area, matches_for_area
 from django.db import connection
 from collections import OrderedDict
 import json
@@ -333,6 +333,7 @@ def report_on(request, question_id, filter_id=None):
                 data['geo_filter'][key] = p.split(",")
         if data['geo_filter']:
             geo_filter = where_clause_for_area(**data['geo_filter'])
+            data['geo_filter_matches'] = matches_for_area(**data['geo_filter']).count()
             data['filter_is_temporary'] = True
     data['current_nav'] = 'reporting'
     data['report_name'] = question.question
