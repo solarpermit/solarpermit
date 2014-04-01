@@ -94,6 +94,24 @@ class TestValidHistory(TestCase):
         logged_in = client.login(username='testuser%s' % user,
                             password='testuser')
         self.assertTrue(logged_in)
+    #lss;
+    #asserts a particular approval status for an answer
+    #accepts either an id, or a list of ids
+    def assertApprovalStatus(self, answer_id, multi, status):
+        for ans_id in answer_id:
+            #dump(self.answers[ans_id])
+            ansId = 0
+            answer = None
+            if multi: 
+                ansId = ans_id
+                print "MultiAnswer ID:" + str(ansId)
+            else:
+                ansId = self.answers[ans_id].id
+                print "Answer ID: " + str(ansId)
+            answer = AnswerReference.objects.get(id = ansId)
+            answer_status = answer.approval_status
+            self.assertEqual(str(answer_status), status)
+            print "Assertion Completed Successfully"
     #redesign to take into mind downvotes as well to not have repeat functions    
     def pushVote(self,votes,currentOpp,lastUser,answerNum,multi,direction): #number of times to upvote, current amount of down votes, last test user we used, current test number (answer ref), multi is a boolean depicting if we use answers or answersmulti 
         userNum = lastUser + 1
@@ -170,17 +188,60 @@ class TestValidHistory(TestCase):
         daysPass = django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED + 1
         diff = timedelta(days=daysPass)
         futureTime = testTime + diff #todays date plus 7 days
+        
+        
+        #make a function that checks answer[x].approval_status approved should be A
+        #rejected should be R
+        #pending should be P
         #going to loop all tests, check for expected results. and not validated
-        #make function
+        #how can we systematically check this? loop rejected, approved, and pending?
+        #Approval list:
+        #0, 1, 5[4],6[1]
+        #
+        #reject list:
+        #3,4,5[0],7[2,6],8[3,7]
+        #
+        #pending list:
+        #2,6[5]
+        #
+        #check approved
+        
+        #assert approval status of each list
+        
+        import pdb; pdb.set_trace()
+        
+        approveList = [0,1]
+        approveMultiList = [14,11]
+        rejectList = [3,4]
+        rejectMultiList = [10,12,16,13,17]
+        pendingList = [2]
+        pendingMultiList = [15]
+    
+        #lss;
+        
+        #lss;
+        #make the use of mock into a fuction so we can do it whenever we want (with mock.patch)
         with mock.patch('website.utils.fieldValidationCycleUtil.timezone') as mock_timezone:#can we mock datetime as date? making fieldval think 
             mock_timezone.now.return_value = futureTime
             mock_timezone.side_effect = lambda *args, **kw: date(*args, **kw)
             from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
             valUtil = FieldValidationCycleUtil()
             valUtil.cron_validate_answers()
+            
+            
+            #assert the list above, except now answer 2 and multi 5 (answer ref 15)
+            #multi answers will be part of answerreference
+            #going to loop all tests, check that they have been validated
+        
+        self.assertApprovalStatus(approveList, False, 'A')
+        self.assertApprovalStatus(approveMultiList, True, 'A')
+        self.assertApprovalStatus(rejectList, False, 'R')
+        self.assertApprovalStatus(rejectMultiList, True, 'R')
+        self.assertApprovalStatus(pendingList, False, 'P')
+        self.assertApprovalStatus(pendingMultiList, True, 'P')
+        
         pendingAnswer = AnswerReference.objects.get(id = 2)
         paStatus = pendingAnswer.approval_status
-        #going to loop all tests, check that they have been validated
         self.assertEqual(str(paStatus),"A") #check that test #2 is successful
         pendingAnswer = AnswerReference.objects.get(id = 15)
         paStatus = pendingAnswer.approval_status
