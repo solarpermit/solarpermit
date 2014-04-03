@@ -104,15 +104,15 @@ class TestValidHistory(TestCase):
             answer = None
             if multi: 
                 ansId = ans_id
-                print "MultiAnswer ID:" + str(ansId)
+                #print "MultiAnswer ID:" + str(ansId)
             else:
                 ansId = self.answers[ans_id].id
-                print "Answer ID: " + str(ansId)
+               #print "Answer ID: " + str(ansId)
             answer = AnswerReference.objects.get(id = ansId)
             answer_status = answer.approval_status
             self.assertEqual(str(answer_status), status)
-            print "Assertion Completed Successfully"
-    #redesign to take into mind downvotes as well to not have repeat functions    
+            #print "Assertion Completed Successfully"
+                
     def pushVote(self,votes,currentOpp,lastUser,answerNum,multi,direction): #number of times to upvote, current amount of down votes, last test user we used, current test number (answer ref), multi is a boolean depicting if we use answers or answersmulti 
         userNum = lastUser + 1
         inc = 0
@@ -137,6 +137,20 @@ class TestValidHistory(TestCase):
         inc = 0 # null out incs
 
     def test_Valid_Vote(self):
+        for answer in self.answers:
+            answer.save(force_update=True)
+        for answer in self.answersMulti:
+            answer.save(force_update=True)
+        for question in self.questions:
+            question.save(force_update=True)
+        for question in self.questionsMulti:
+            question.save(force_update=True)
+        pendingList = xrange(10)
+        pendingMultiList = range(10, 19, 1)          
+            
+        self.assertApprovalStatus(pendingList, False, 'P')
+        self.assertApprovalStatus(pendingMultiList, True, 'P')
+        #run test to make sure that all approval status = P
 #      test #0 answer#0 Goal: approved with downvotes
         # 3 upvotes, 1 down votes
         self.pushVote(1, 0, 0, 0,False,"down")
@@ -188,8 +202,6 @@ class TestValidHistory(TestCase):
         daysPass = django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED + 1
         diff = timedelta(days=daysPass)
         futureTime = testTime + diff #todays date plus 7 days
-        
-        
         #make a function that checks answer[x].approval_status approved should be A
         #rejected should be R
         #pending should be P
@@ -205,19 +217,19 @@ class TestValidHistory(TestCase):
         #2,6[5]
         #
         #check approved
-        
         #assert approval status of each list
-        
-        import pdb; pdb.set_trace()
-        
         approveList = [0,1]
         approveMultiList = [14,11]
         rejectList = [3,4]
         rejectMultiList = [10,12,16,13,17]
         pendingList = [2]
         pendingMultiList = [15]
-    
-        #lss;
+        self.assertApprovalStatus(approveList, False, 'A')
+        self.assertApprovalStatus(approveMultiList, True, 'A')
+        self.assertApprovalStatus(rejectList, False, 'R')
+        self.assertApprovalStatus(rejectMultiList, True, 'R')
+        self.assertApprovalStatus(pendingList, False, 'P')
+        self.assertApprovalStatus(pendingMultiList, True, 'P')
         
         #lss;
         #make the use of mock into a fuction so we can do it whenever we want (with mock.patch)
@@ -228,21 +240,16 @@ class TestValidHistory(TestCase):
             valUtil = FieldValidationCycleUtil()
             valUtil.cron_validate_answers()
             
+        approveList = [0,1,2]
+        approveMultiList = [14,11,15]
+        rejectList = [3,4]
+        rejectMultiList = [10,12,16,13,17]
+
+        self.assertApprovalStatus(approveList, False, 'A')
+        self.assertApprovalStatus(approveMultiList, True, 'A')
+        self.assertApprovalStatus(rejectList, False, 'R')
+        self.assertApprovalStatus(rejectMultiList, True, 'R')        
             
             #assert the list above, except now answer 2 and multi 5 (answer ref 15)
             #multi answers will be part of answerreference
             #going to loop all tests, check that they have been validated
-        
-        self.assertApprovalStatus(approveList, False, 'A')
-        self.assertApprovalStatus(approveMultiList, True, 'A')
-        self.assertApprovalStatus(rejectList, False, 'R')
-        self.assertApprovalStatus(rejectMultiList, True, 'R')
-        self.assertApprovalStatus(pendingList, False, 'P')
-        self.assertApprovalStatus(pendingMultiList, True, 'P')
-        
-        pendingAnswer = AnswerReference.objects.get(id = 2)
-        paStatus = pendingAnswer.approval_status
-        self.assertEqual(str(paStatus),"A") #check that test #2 is successful
-        pendingAnswer = AnswerReference.objects.get(id = 15)
-        paStatus = pendingAnswer.approval_status
-        self.assertEqual(str(paStatus),"A") #check that answerMulti # 5 is approved, Test# 6

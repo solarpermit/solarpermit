@@ -1302,7 +1302,7 @@ class FieldValidationCycleUtil():
         # today date - create date >= 2 weeks
         # assign approval_status = 'A' - answerreference, action
         #we could change this to datetime to be able to test at exact time.
-        today_date = timezone.now()#replaced date.today() with the proper timezone.now
+        today_date = date.today()#replaced date.today() with the proper timezone.now
         user_id = 1 # supposedly the django admin user.   
         number_days_unchallenged_b4_approved = django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED        
         two_weeks_before_today = today_date - timedelta(days=number_days_unchallenged_b4_approved)
