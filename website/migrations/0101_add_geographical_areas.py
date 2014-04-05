@@ -12,7 +12,7 @@ class Migration(SchemaMigration):
         db.create_table(u'website_geographicarea', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.TextField')()),
-            ('description', self.gf('django.db.models.fields.TextField')()),
+            ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('states', self.gf('website.models.reporting.PythonDataField')()),
         ))
         db.send_create_signal('website', ['GeographicArea'])
@@ -226,7 +226,7 @@ class Migration(SchemaMigration):
         },
         'website.geographicarea': {
             'Meta': {'object_name': 'GeographicArea'},
-            'description': ('django.db.models.fields.TextField', [], {}),
+            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'jurisdictions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['website.Jurisdiction']", 'symmetrical': 'False'}),
             'name': ('django.db.models.fields.TextField', [], {}),

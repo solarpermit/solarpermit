@@ -110,7 +110,7 @@ $.widget( "ui.djangoautocomplete", {
             this.values_ul = $( "<ul></ul>" ).insertAfter( this.element );
         }
         this.values_ul.addClass( "ui-autocomplete-values" );
-        $( ".ui-autocomplete-value a", this.values_ul[0] ).on( "click", function() {
+        $(this.values_ul[0]).on( "click", "a", function() {
             var span = $(this).parent();
             var id = span.data( "value.autocomplete" );
             $.each( self.values, function (i, v) {

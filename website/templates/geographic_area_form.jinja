@@ -43,11 +43,10 @@
               <label for="type-city">{{ form.cities.label }}</label></th>
           <td>{{ form.cities|safe }}
               {{ form.cities.errors|safe }}</td></tr>
-
       <tr><th class="division" colspan="2">Save filter{% if question_id %} (optional){% endif %}:</th></tr>
-      <tr><th>{{ form.name.label_tag() }}</th>
-          <td>{{ form.name|safe }}
-              {{ form.name.errors|safe }}</td></tr>
+      <tr><th>{{ form.filter_name.label_tag() }}</th>
+          <td>{{ form.filter_name|safe }}
+              {{ form.filter_name.errors|safe }}</td></tr>
       <tr><th>{{ form.description.label_tag() }}{% if not question_id %}<br/>(optional){% endif %}</th>
           <td>{{ form.description|safe }}
               {{ form.description.errors|safe }}</td></tr>

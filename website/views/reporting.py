@@ -357,7 +357,7 @@ def report_on(request, question_id, filter_id=None):
     return render_to_response('website/reporting/report_on.jinja', data)
 
 class GeographicAreaForm(forms.ModelForm):
-    name = forms.CharField()
+    filter_name = forms.CharField()
     states = forms.MultipleChoiceField(choices = US_STATES,
                                        required = False)
     counties = forms.ModelMultipleChoiceField(queryset = Jurisdiction.objects.filter(jurisdiction_type__in = ('CO', 'SC', 'CC')),
@@ -387,6 +387,9 @@ class GeographicAreaForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(GeographicAreaForm, self).clean()
+        if 'filter_name' in cleaned_data:
+            cleaned_data['name'] = cleaned_data['filter_name']
+            del cleaned_data['filtered_name']
         # we always keep the largest specified jurisdictions and throw
         # away the smallest (of course the form itself prevents entry
         # of more than one type in the normal case)
@@ -400,12 +403,12 @@ class GeographicAreaForm(forms.ModelForm):
     def save(self, commit=True):
         area = super(GeographicAreaForm, self).save(commit)
         if commit and 'jurisdictions' in self.cleaned_data:
-            area.jurisdictions.add(self.cleaned_data['jurisdictions'])
+            area.jurisdictions.add(*self.cleaned_data['jurisdictions'])
             area.save()
         return area
     class Meta:
         model = GeographicArea
-        fields = ['name', 'description', 'states', 'counties', 'cities']
+        fields = ['filter_name', 'description', 'states', 'counties', 'cities']
 
 class GeographicAreaDetail(DetailView):
     queryset = GeographicArea.objects.all()

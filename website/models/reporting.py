@@ -25,7 +25,7 @@ add_introspection_rules([], ["^website\.models\.reporting\.PythonDataField"])
 
 class GeographicArea(models.Model):
     name = models.TextField()
-    description = models.TextField()
+    description = models.TextField(blank=True)
     states = PythonDataField()
     jurisdictions = models.ManyToManyField(Jurisdiction)
     class Meta:
