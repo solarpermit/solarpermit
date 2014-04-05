@@ -39,4 +39,4 @@ cssmin==0.2.0
 closure==20140110
 django-localflavor
 django-jinja
--e hg+https://bitbucket.org/db48x/django-autocomplete@9f088fe716758b5368e307b1b9c393df094ff090#egg=django-autocomplete
+-e hg+https://bitbucket.org/db48x/django-autocomplete@b43f484d3962b3f3b64bf15b34bd6327f8887441#egg=django-autocomplete
