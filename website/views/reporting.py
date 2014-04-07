@@ -389,7 +389,7 @@ class GeographicAreaForm(forms.ModelForm):
         cleaned_data = super(GeographicAreaForm, self).clean()
         if 'filter_name' in cleaned_data:
             cleaned_data['name'] = cleaned_data['filter_name']
-            del cleaned_data['filtered_name']
+            del cleaned_data['filter_name']
         # we always keep the largest specified jurisdictions and throw
         # away the smallest (of course the form itself prevents entry
         # of more than one type in the normal case)

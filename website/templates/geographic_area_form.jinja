@@ -1,28 +1,37 @@
 {% extends 'base.html' %}
 {% block title %}New Geographic Filter{% endblock %}
 {% block forestyle %}
-  <style>
-    #main-wrapper {
-      margin-left: 1em;
-    }
-    th {
-      vertical-align: top;
-      text-align: left;
-      padding-left: 1em;
-    }
-    th.division {
-      padding-left: 0;
-    }
-    ul[disabled] {
-      color: lightgray;
-      pointer-events: none;
-    }
-  </style>
+  {% compress css %}
+    <link rel="stylesheet" href="/static/jquery-tree/jquery.tree.css">
+    <style>
+      #main-wrapper {
+        margin-left: 1em;
+      }
+      th {
+        vertical-align: top;
+        text-align: left;
+        padding-left: 1em;
+      }
+      th.division {
+        padding-left: 0;
+      }
+      ul[disabled] {
+        color: lightgray;
+        pointer-events: none;
+      }
+    </style>
+  {% endcompress %}
 {% endblock %}
-{% block forejs %}{% endblock %}
+{% block forejs %}
+  {% compress js %}
+    <script src="/static/jquery-tree/jquery.tree.js"></script>
+  {% endcompress %}
+{% endblock %}
 {% block body %}
   <form action="" method="post">{% csrf_token %}
     {{ form.media|safe }}
+    <div id="tree">
+    </div>
     <table>
       <tr><th class="division" colspan="2">Filter criteria:</th></tr>
       <tr><th><input type="radio" name="type" value="state"
@@ -56,7 +65,62 @@
 {% endblock %}
 {% block endjs %}
   <script>
-    //debugger;
+    function node(canHaveChildren) {
+      return function (kind) {
+        return function (label, value) {
+          return { span: { text: label },
+                   li: { 'class': canHaveChildren ? 'collapsed' : 'leaf',
+                         'data-kind': kind,
+                         'data-value': value },
+                   input: { type: 'checkbox' },
+                   children: [ ] };
+        }
+      }
+    }
+    container = node(true);
+    leaf = node(false);
+    stateNode = container("state");
+    countyNode = container("county");
+    cityNode = leaf("city");
+
+    function stateTree() {
+      var states = [['AL', 'Alabama'], ['AK', 'Alaska'], ['AZ', 'Arizona'], ['AR', 'Arkansas'], ['CA', 'California'], ['CO', 'Colorado'], ['CT', 'Connecticut'], ['DE', 'Delaware'], ['DC', 'District of Columbia'], ['FL', 'Florida'], ['GA', 'Georgia'], ['HI', 'Hawaii'], ['ID', 'Idaho'], ['IL', 'Illinois'], ['IN', 'Indiana'], ['IA', 'Iowa'], ['KS', 'Kansas'], ['KY', 'Kentucky'], ['LA', 'Louisiana'], ['ME', 'Maine'], ['MD', 'Maryland'], ['MA', 'Massachusetts'], ['MI', 'Michigan'], ['MN', 'Minnesota'], ['MS', 'Mississippi'], ['MO', 'Missouri'], ['MT', 'Montana'], ['NE', 'Nebraska'], ['NV', 'Nevada'], ['NH', 'New Hampshire'], ['NJ', 'New Jersey'], ['NM', 'New Mexico'], ['NY', 'New York'], ['NC', 'North Carolina'], ['ND', 'North Dakota'], ['OH', 'Ohio'], ['OK', 'Oklahoma'], ['OR', 'Oregon'], ['PA', 'Pennsylvania'], ['RI', 'Rhode Island'], ['SC', 'South Carolina'], ['SD', 'South Dakota'], ['TN', 'Tennessee'], ['TX', 'Texas'], ['UT', 'Utah'], ['VT', 'Vermont'], ['VA', 'Virginia'], ['WA', 'Washington'], ['WV', 'West Virginia'], ['WI', 'Wisconsin'], ['WY', 'Wyoming']];
+      tree = $("<div>").tree({nodes: states.map(function (state) {
+                                                  return stateNode(state[1], state[0]);
+                                                }),
+                              checkbox: true,
+                              dnd: false,
+                              onCheck: { ancestors: null,
+                                         descendants: null },
+                              onUncheck: { ancestors: null,
+                                           descendants: null }
+                             })
+                       .appendTo($("#tree"));
+      tree.bind("treeexpand",
+                function (event, element) {
+                  if ($(element).find('ul').length ||
+                      $(element).data("kind") == 'city') {
+                    return;
+                  }
+                  if ($(element).data("kind") == 'state')
+                    lazyLoad($(element), '/autocomplete/counties-by-state/', countyNode);
+                  else if ($(element).data("kind") == 'county')
+                    lazyLoad($(element), '/autocomplete/cities-by-county/', cityNode);
+                });
+      function lazyLoad(elem, url, buildNode) {
+        $.ajax({ url: url,
+                 dataType: 'json',
+                 data: { term: elem.data('value') },
+                 success: function (data) {
+                            $.each(data,
+                                   function (idx, j) {
+                                     tree.tree("addNode", buildNode(j.label, j.id), elem);
+                                   });
+                          }});
+      }
+    }
+    stateTree()
+
     function setDisabled(n, radio) {
       var elem = $(radio).closest("tr").find("td input, td select, td ul");
       if (radio.checked)
