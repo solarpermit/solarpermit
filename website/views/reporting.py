@@ -360,12 +360,12 @@ class GeographicAreaForm(forms.ModelForm):
     filter_name = forms.CharField()
     states = forms.MultipleChoiceField(choices = US_STATES,
                                        required = False)
-    counties = forms.ModelMultipleChoiceField(queryset = Jurisdiction.objects.filter(jurisdiction_type__in = ('CO', 'SC', 'CC')),
-                                              widget = MultipleAutocompleteWidget("counties", view=autocomplete_instance),
-                                              required = False)
-    cities = forms.ModelMultipleChoiceField(queryset = Jurisdiction.objects.filter(jurisdiction_type__in = ('CC', 'CI', 'IC')),
-                                            widget = MultipleAutocompleteWidget("cities", view=autocomplete_instance),
-                                            required = False)
+    #counties = forms.ModelMultipleChoiceField(queryset = Jurisdiction.objects.filter(jurisdiction_type__in = ('CO', 'SC', 'CC')),
+    #                                          widget = MultipleAutocompleteWidget("counties", view=autocomplete_instance),
+    #                                          required = False)
+    #cities = forms.ModelMultipleChoiceField(queryset = Jurisdiction.objects.filter(jurisdiction_type__in = ('CC', 'CI', 'IC')),
+    #                                        widget = MultipleAutocompleteWidget("cities", view=autocomplete_instance),
+    #                                        required = False)
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
         initial = kwargs.get('initial', {})
@@ -374,17 +374,17 @@ class GeographicAreaForm(forms.ModelForm):
         # this will cause it to not round-trip.
         if instance:
             initial['states'] = instance.states
-            initial['counties'] = instance.jurisdictions.filter(jurisdiction_type__in = ('CO', 'SC', 'CC'))
-            initial['cities'] = instance.jurisdictions.filter(jurisdiction_type__in = ('CI', 'IC'))
-        elif initial:
-            if 'jurisdictions' in initial:
-                initial['counties'] = Jurisdiction.objects.filter(pk__in = initial['jurisdictions'],
-                                                                  jurisdiction_type__in = ('CO', 'SC', 'CC'))
-                initial['cities'] = Jurisdiction.objects.filter(pk__in = initial['jurisdictions'],
-                                                                jurisdiction_type__in = ('CI', 'IC'))
+            initial['jurisdictions'] = instance.jurisdictions
+            #initial['counties'] = instance.jurisdictions.filter(jurisdiction_type__in = ('CO', 'SC', 'CC'))
+            #initial['cities'] = instance.jurisdictions.filter(jurisdiction_type__in = ('CI', 'IC'))
+        #elif initial:
+        #    if 'jurisdictions' in initial:
+        #        initial['counties'] = Jurisdiction.objects.filter(pk__in = initial['jurisdictions'],
+        #                                                          jurisdiction_type__in = ('CO', 'SC', 'CC'))
+        #        initial['cities'] = Jurisdiction.objects.filter(pk__in = initial['jurisdictions'],
+        #                                                        jurisdiction_type__in = ('CI', 'IC'))
         kwargs['initial'] = initial
         super(GeographicAreaForm, self).__init__(*args, **kwargs)
-
     def clean(self):
         cleaned_data = super(GeographicAreaForm, self).clean()
         if 'filter_name' in cleaned_data:
@@ -393,12 +393,12 @@ class GeographicAreaForm(forms.ModelForm):
         # we always keep the largest specified jurisdictions and throw
         # away the smallest (of course the form itself prevents entry
         # of more than one type in the normal case)
-        counties = cleaned_data['counties']
-        del cleaned_data['counties']
-        cities = cleaned_data['cities']
-        del cleaned_data['cities']
-        if not cleaned_data['states']:
-            cleaned_data['jurisdictions'] = counties or cities
+        #counties = cleaned_data['counties']
+        #del cleaned_data['counties']
+        #cities = cleaned_data['cities']
+        #del cleaned_data['cities']
+        #if not cleaned_data['states']:
+        #    cleaned_data['jurisdictions'] = counties or cities
         return cleaned_data
     def save(self, commit=True):
         area = super(GeographicAreaForm, self).save(commit)
@@ -408,7 +408,7 @@ class GeographicAreaForm(forms.ModelForm):
         return area
     class Meta:
         model = GeographicArea
-        fields = ['filter_name', 'description', 'states', 'counties', 'cities']
+        fields = ['filter_name', 'description', 'states', 'jurisdictions']
 
 class GeographicAreaDetail(DetailView):
     queryset = GeographicArea.objects.all()

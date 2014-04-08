@@ -30,28 +30,10 @@
 {% block body %}
   <form action="" method="post">{% csrf_token %}
     {{ form.media|safe }}
-    <div id="tree">
-    </div>
     <table>
       <tr><th class="division" colspan="2">Filter criteria:</th></tr>
-      <tr><th><input type="radio" name="type" value="state"
-                     {{ 'checked' if form.initial.states }}
-                     id="type-state" class="type-selection">
-              <label for="type-state">{{ form.states.label }}<label></th>
-          <td>{{ form.states|safe }}
-              {{ form.states.errors|safe }}</td></tr>
-      <tr><th><input type="radio" name="type" value="county"
-                     {{ 'checked' if form.initial.counties }}
-                     id="type-county" class="type-selection">
-              <label for="type-county">{{ form.counties.label }}</label></th>
-          <td>{{ form.counties|safe }}
-              {{ form.counties.errors|safe }}</td></tr>
-      <tr><th><input type="radio" name="type" value="city"
-                     {{ 'checked' if form.initial.cities }}
-                     id="type-city" class="type-selection">
-              <label for="type-city">{{ form.cities.label }}</label></th>
-          <td>{{ form.cities|safe }}
-              {{ form.cities.errors|safe }}</td></tr>
+      <tr><th>Jurisdictions:</th>
+          <td id="tree"></td></tr>
       <tr><th class="division" colspan="2">Save filter{% if question_id %} (optional){% endif %}:</th></tr>
       <tr><th>{{ form.filter_name.label_tag() }}</th>
           <td>{{ form.filter_name|safe }}
@@ -72,7 +54,9 @@
                    li: { 'class': canHaveChildren ? 'collapsed' : 'leaf',
                          'data-kind': kind,
                          'data-value': value },
-                   input: { type: 'checkbox' },
+                   input: { type: 'checkbox',
+                            name: (kind == 'state' ? 'states' : 'jurisdictions'),
+                            value: value },
                    children: [ ] };
         }
       }
@@ -119,7 +103,7 @@
                           }});
       }
     }
-    stateTree()
+    stateTree();
 
     function setDisabled(n, radio) {
       var elem = $(radio).closest("tr").find("td input, td select, td ul");
