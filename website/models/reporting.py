@@ -42,8 +42,7 @@ def where_clause_for_area(states=None, jurisdictions=None):
     if states:
         q = Q(state__in = states)
     else:
-        q = Q(pk__in = jurisdictions) | \
-            Q(parent__in = jurisdictions)
+        q = Q(pk__in = jurisdictions)
     return q & ~Q(jurisdiction_type__exact = 'U') & ~Q(pk__in = settings.SAMPLE_JURISDICTIONS)
 
 def matches_for_area(**kwargs):

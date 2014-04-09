@@ -360,28 +360,16 @@ class GeographicAreaForm(forms.ModelForm):
     filter_name = forms.CharField()
     states = forms.MultipleChoiceField(choices = US_STATES,
                                        required = False)
-    counties = forms.ModelMultipleChoiceField(queryset = Jurisdiction.objects.filter(jurisdiction_type__in = ('CO', 'SC', 'CC')),
-                                              widget = MultipleAutocompleteWidget("counties", view=autocomplete_instance),
-                                              required = False)
-    cities = forms.ModelMultipleChoiceField(queryset = Jurisdiction.objects.filter(jurisdiction_type__in = ('CC', 'CI', 'IC')),
-                                            widget = MultipleAutocompleteWidget("cities", view=autocomplete_instance),
-                                            required = False)
+    jurisdictions = forms.ModelMultipleChoiceField(queryset = Jurisdiction.objects.all(),
+                                                   widget = MultipleAutocompleteWidget("jurisdictions",
+                                                                                       view=autocomplete_instance),
+                                                   required = False)
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
         initial = kwargs.get('initial', {})
-        # BUG: we're ommitting type 'CC' from the cities list, but
-        # if the user did originally choose a 'CC' as a city then
-        # this will cause it to not round-trip.
         if instance:
             initial['states'] = instance.states
-            initial['counties'] = instance.jurisdictions.filter(jurisdiction_type__in = ('CO', 'SC', 'CC'))
-            initial['cities'] = instance.jurisdictions.filter(jurisdiction_type__in = ('CI', 'IC'))
-        elif initial:
-            if 'jurisdictions' in initial:
-                initial['counties'] = Jurisdiction.objects.filter(pk__in = initial['jurisdictions'],
-                                                                  jurisdiction_type__in = ('CO', 'SC', 'CC'))
-                initial['cities'] = Jurisdiction.objects.filter(pk__in = initial['jurisdictions'],
-                                                                jurisdiction_type__in = ('CI', 'IC'))
+            initial['jurisdictions'] = instance.jurisdictions
         kwargs['initial'] = initial
         super(GeographicAreaForm, self).__init__(*args, **kwargs)
 
@@ -389,16 +377,7 @@ class GeographicAreaForm(forms.ModelForm):
         cleaned_data = super(GeographicAreaForm, self).clean()
         if 'filter_name' in cleaned_data:
             cleaned_data['name'] = cleaned_data['filter_name']
-            del cleaned_data['filtered_name']
-        # we always keep the largest specified jurisdictions and throw
-        # away the smallest (of course the form itself prevents entry
-        # of more than one type in the normal case)
-        counties = cleaned_data['counties']
-        del cleaned_data['counties']
-        cities = cleaned_data['cities']
-        del cleaned_data['cities']
-        if not cleaned_data['states']:
-            cleaned_data['jurisdictions'] = counties or cities
+            del cleaned_data['filter_name']
         return cleaned_data
     def save(self, commit=True):
         area = super(GeographicAreaForm, self).save(commit)
@@ -408,7 +387,7 @@ class GeographicAreaForm(forms.ModelForm):
         return area
     class Meta:
         model = GeographicArea
-        fields = ['filter_name', 'description', 'states', 'counties', 'cities']
+        fields = ['filter_name', 'description', 'states', 'jurisdictions']
 
 class GeographicAreaDetail(DetailView):
     queryset = GeographicArea.objects.all()

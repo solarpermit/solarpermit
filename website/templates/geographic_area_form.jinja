@@ -31,18 +31,12 @@
               <label for="type-state">{{ form.states.label }}<label></th>
           <td>{{ form.states|safe }}
               {{ form.states.errors|safe }}</td></tr>
-      <tr><th><input type="radio" name="type" value="county"
-                     {{ 'checked' if form.initial.counties }}
-                     id="type-county" class="type-selection">
-              <label for="type-county">{{ form.counties.label }}</label></th>
-          <td>{{ form.counties|safe }}
-              {{ form.counties.errors|safe }}</td></tr>
-      <tr><th><input type="radio" name="type" value="city"
-                     {{ 'checked' if form.initial.cities }}
-                     id="type-city" class="type-selection">
-              <label for="type-city">{{ form.cities.label }}</label></th>
-          <td>{{ form.cities|safe }}
-              {{ form.cities.errors|safe }}</td></tr>
+      <tr><th><input type="radio" name="type" value="jurisdiction"
+                     {{ 'checked' if form.initial.jurisdictions }}
+                     id="type-jurisdiction" class="type-selection">
+              <label for="type-jurisdiction">{{ form.jurisdictions.label }}</label></th>
+          <td>{{ form.jurisdictions|safe }}
+              {{ form.jurisdictions.errors|safe }}</td></tr>
       <tr><th class="division" colspan="2">Save filter{% if question_id %} (optional){% endif %}:</th></tr>
       <tr><th>{{ form.filter_name.label_tag() }}</th>
           <td>{{ form.filter_name|safe }}
