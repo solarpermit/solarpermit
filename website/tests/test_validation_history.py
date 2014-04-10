@@ -33,7 +33,7 @@ def dump(obj):
 #given a time, run FieldValidationCycleUtil.cron_validate_answers using mock date
 def mockCronValidate(futureTime):
     with mock.patch('website.utils.fieldValidationCycleUtil.date') as mock_date:#can we mock datetime as date? making fieldval think 
-        mock_date.today.return_value = futureTime
+        mock_date.today.return_value = futureTime.replace(tzinfo=timezone.utc)
         mock_date.side_effect = lambda *args, **kw: date(*args, **kw)
         valUtil = FieldValidationCycleUtil()
         valUtil.cron_validate_answers()
@@ -143,14 +143,6 @@ class TestValidHistory(TestCase):
         
     def test_Valid_Vote(self):
         #save all answers to database
-        for answer in self.answers:
-            answer.save(force_update=True)
-        for answer in self.answersMulti:
-            answer.save(force_update=True)
-        for question in self.questions:
-            question.save(force_update=True)
-        for question in self.questionsMulti:
-            question.save(force_update=True)
         #make sure all answers are pending
         pendingList = xrange(10)
         pendingMultiList = range(10, 19, 1)               
@@ -158,9 +150,7 @@ class TestValidHistory(TestCase):
         self.assertApprovalStatus(pendingMultiList, True, 'P')
         #run test to make sure that all approval status = P
 #      test #0 answer#0 Goal: approved with downvotes
-        # 3 upvotes, 1 down votes
-        #lsscd;
-        
+        # 3 upvotes, 1 down votes        
         self.pushVote(1, 0, 0, 0,False,"down")
         self.pushVote(3, 1, 1, 0,False,"up")
 #      test #1 answer#1  goal approved without downvotes 
@@ -199,116 +189,36 @@ class TestValidHistory(TestCase):
         self.pushVote(1, 0, 0, 7, True,"up")
         self.pushVote(2, 1, 1, 7, True,"down")
         
-        #lss;
-        #Ben: I think these tests can be removed outright.
-        #If the answers are approved after pushing votes, this will reset them to pending
-        #since we are saving them to a database from a local copy
-        #up to you here
-        
-        #for answer in self.answers:
-        #    answer.save(force_update=True)
-        #for answer in self.answersMulti:
-        #    answer.save(force_update=True)
-        #for question in self.questions:
-        #    question.save(force_update=True)
-        #for question in self.questionsMulti:
-        #    question.save(force_update=True)
-        #check approved
-        #assert approval status of each list
-        #approveList = [0,1]
-        #approveMultiList = [14,11]
-        #rejectList = [3,4]
-        #rejectMultiList = [10,12,16,13,17]
-        #pendingList = [2]
-        #pendingMultiList = [15]
-                
-        #lss;
-        #at this point in the test, examining the test database reveals that every answer is
-        #still in the pending (approval_status = P) state.
-        #however, website_actions table shows all votes as having successfully posted.
-        approveList = [0,1]
-        approveMultiList = [15,12]
-        rejectList = [3,4]
-        rejectMultiList = [11,13,17,14,18]
-        pendingList = [2]
-        pendingMultiList = [16]
+        for answer in self.answers:
+            answer.save(force_update=True)
+        for answer in self.answersMulti:
+            answer.save(force_update=True)
+        for question in self.questions:
+            question.save(force_update=True)
+        for question in self.questionsMulti:
+            question.save(force_update=True)
 
-        #lss;
-        #these tests are suppressed
-        #self.assertApprovalStatus(approveList, False, 'A')
-        #self.assertApprovalStatus(approveMultiList, True, 'A')
-        #self.assertApprovalStatus(rejectList, False, 'R')
-        #self.assertApprovalStatus(rejectMultiList, True, 'R')
-    
-        self.assertApprovalStatus(pendingList, False, 'P')
-        self.assertApprovalStatus(pendingMultiList, True, 'P')
-        
-        #lss;
-        #verify everything's state is unchanged after insufficient timedelta
-        
         testTime = date(int(timezone.now().year),int(timezone.now().month),int(timezone.now().day))
         daysPass = django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED + 1
         diff = timedelta(days=daysPass)
-        futureTime = testTime + diff #todays date plus 7 days
-#         P(18)
+        futureTime = testTime + diff #todays date plus 7 days                
         
-        mockCronValidate(testTime + timedelta(days=1))
-        #should be no change.
-        #lss;
-        #ben: these tests are suppressed, everything still pending here
-        #self.assertApprovalStatus(approveList, False, 'A')
-        #self.assertApprovalStatus(approveMultiList, True, 'A')
-        #self.assertApprovalStatus(rejectList, False, 'R')
-        #self.assertApprovalStatus(rejectMultiList, True, 'R')
-    
-        self.assertApprovalStatus(pendingList, False, 'P')
-        self.assertApprovalStatus(pendingMultiList, True, 'P')
         
         
         #insufficient timedelta
         mockCronValidate(testTime + timedelta(days=django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED - 1))
-        #should be no change.
-        #lss;
-        #ben: these tests are suppressed, everything still pending here
-        #self.assertApprovalStatus(approveList, False, 'A')
-        #self.assertApprovalStatus(approveMultiList, True, 'A')
-        #self.assertApprovalStatus(rejectList, False, 'R')
-        #self.assertApprovalStatus(rejectMultiList, True, 'R')
-    
+        pendingList = xrange(10)
+        pendingMultiList = range(10, 19, 1)               
         self.assertApprovalStatus(pendingList, False, 'P')
         self.assertApprovalStatus(pendingMultiList, True, 'P')
+
         
-        mockCronValidate(futureTime)
-        
-        #lss; Ben: stuff happening. should not be.
-        #these are the approval statuses after running validation after the proper timedelta
-        #11-18 are multi-answers
-        #format: approval_status(database_id)
-#         A(1) 
-#         A(2)
-#         A(3)
-#         R(4)
-#         R(5)
-#         A(6)
-#         A(7)
-#         A(8)
-#         A(9)
-#         A(10)
-#         R(11)
-#         A(12)
-#         R(13)
-#         R(14)
-#         P(15)
-#         P(16)
-#         P(17)
-#         P(18)
-        
-        
+        #sufficient timedelta
+        mockCronValidate(futureTime)        
+
         approveList = [0,1,2]
-        #approveMultiList = [14,11,15]
         approveMultiList = [15, 12, 16]
         rejectList = [3,4]
-        #rejectMultiList = [10,12,16,13,17]
         rejectMultiList = [11,13,17,14,18]
         self.assertApprovalStatus(approveList, False, 'A')
         self.assertApprovalStatus(approveMultiList, True, 'A')
