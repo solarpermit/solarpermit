@@ -22,10 +22,10 @@ from django.db.models import Q
 from django.db.models.sql import Query
 from django.db import DEFAULT_DB_ALIAS
 from django.contrib.localflavor.us.us_states import US_STATES
-from autocomplete.widgets import MultipleAutocompleteWidget
-from website.views.autocomp import autocomplete_instance
 import urllib
 from django.shortcuts import render_to_response
+import autocomplete_light
+autocomplete_light.autodiscover()
 
 def build_query(question, field_map, geo_filter=None):
     # Yes we have two mechanisms for building queries here. We've
@@ -361,8 +361,9 @@ class GeographicAreaForm(forms.ModelForm):
     states = forms.MultipleChoiceField(choices = US_STATES,
                                        required = False)
     jurisdictions = forms.ModelMultipleChoiceField(queryset = Jurisdiction.objects.all(),
-                                                   widget = MultipleAutocompleteWidget("jurisdictions",
-                                                                                       view=autocomplete_instance),
+                                                   widget = autocomplete_light.MultipleChoiceWidget('JurisdictionAutocomplete'),
+                                                   #widget = MultipleAutocompleteWidget("jurisdictions",
+                                                   #                                    view=autocomplete_instance),
                                                    required = False)
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)

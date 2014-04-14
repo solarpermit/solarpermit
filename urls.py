@@ -3,7 +3,10 @@ from django.conf.urls.defaults import patterns, include, handler404, handler500,
 from django.conf import settings
 from website.views import home, account, info, jurisdiction, organization, custom_field, maintenance, siteadmin, reporting
 from website.views.news import *
-from website.views.autocomp import autocomplete_instance
+
+import autocomplete_light
+# import every app/autocomplete_light_registry.py
+autocomplete_light.autodiscover()
 
 from django.contrib import admin
 admin.autodiscover()
@@ -126,7 +129,7 @@ else:
                                                                      name='report-with-filter'),
 
         #### these urls power most of the autocomplete fields; notably the search field has a one-off implementation
-        url('^autocomplete/', include(autocomplete_instance.urls)))
+        url(r'^autocomplete/', include('autocomplete_light.urls')))
 
     ## admin
     urlpatterns += patterns('',

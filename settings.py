@@ -200,7 +200,7 @@ INSTALLED_APPS = (
     #'debug_toolbar',    
     'tracking',
     'django_jinja',
-    'autocomplete',
+    'autocomplete_light',
 )
 
 #setup memcached for production use!
