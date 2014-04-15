@@ -4,6 +4,8 @@ from website.models.jurisdiction import Jurisdiction
 
 class JurisdictionAutocomplete(autocomplete_light.AutocompleteModelBase):
     search_fields = ['name']
+    widget_attrs={'data-widget-bootstrap': 'side-by-side'}
+    choice_html_format = u'<option data-value="%s">%s</option>'
     def choices_for_request(self):
         self.choices = self.choices.exclude(jurisdiction_type__exact = 'U') \
                                    .exclude(pk__in = settings.SAMPLE_JURISDICTIONS)

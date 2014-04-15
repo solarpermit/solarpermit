@@ -1,0 +1,55 @@
+{% load i18n l10n %}
+{% load staticfiles %}
+{% load autocomplete_light_tags %}
+{% load url from future %}
+
+{% block widget_open %}
+<span id="{{ widget.html_id }}-wrapper" {{ widget_attrs }} >
+{% endblock %}
+
+{% block input %}
+    {# a text input, that is the 'autocomplete input' #}
+    <input type="text" name="{{ name }}-autocomplete" id="{{ widget.html_id }}-autocomplete" value="" {{ attrs }} />
+{% endblock %}
+
+{% block deck %}
+    <div>
+        <select multiple="multiple" class="box autocomplete-light-widget"></select>
+        <button type="button" class="select">&rarr;</button>
+        <button type="button" class="deselect">&larr;</button>
+        {# a deck that should contain the list of selected options #}
+        <select multiple="multiple" id="{{ widget.html_id }}-deck" class="sbsdeck autocomplete-light-widget" >
+            {% for choice in choices %}
+                {{ choice|autocomplete_light_choice_html:autocomplete }}
+            {% endfor %}
+        </select>
+    </div>
+{% endblock %}
+
+{% block select %}
+    {# a hidden select, that contains the actual selected values #}
+    <select style="display:none" class="value-select" name="{{ name }}" id="{{ widget.html_id }}" multiple="multiple">
+        {% for value in values %}
+            <option value="{{ value|unlocalize }}" selected="selected">{{ value }}</option>
+        {% endfor %}
+    </select>
+{% endblock %}
+
+{% block remove_template %}
+  {# deliberately left empty #}
+{% endblock %}
+
+{% block choice_template %}
+    <option style="display:none">
+        {% comment %}
+        the contained element will be used to render options that are added to the select
+        via javascript, for example in django admin with the + sign
+
+        The text of the option will be inserted in the html of this tag
+        {% endcomment %}
+    </option>
+{% endblock %}
+
+{% block widget_close %}
+</span>
+{% endblock %}

@@ -2,7 +2,8 @@
 {% block title %}New Geographic Filter{% endblock %}
 {% block forestyle %}
   {% compress css %}
-    <link rel="stylesheet" type="text/css" href="{{static('autocomplete_light/style.css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{static('autocomplete_light/style.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{static('autocomplete_light/side-by-side.css')}}"/>
     <style>
       #main-wrapper {
         margin-left: 1em;
@@ -27,6 +28,7 @@
     {% include 'autocomplete_light/_ajax_csrf.html' %}
     <script type="text/javascript" src="{{static('autocomplete_light/autocomplete.js')}}"></script>
     <script type="text/javascript" src="{{static('autocomplete_light/widget.js')}}"></script>
+    <script type="text/javascript" src="{{static('autocomplete_light/side-by-side.js')}}"></script>
   {% endcompress %}
 {% endblock %}
 {% block body %}
