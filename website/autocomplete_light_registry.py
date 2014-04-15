@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils.html import escape
 import autocomplete_light
 from website.models.jurisdiction import Jurisdiction
 
@@ -13,5 +14,9 @@ class JurisdictionAutocomplete(autocomplete_light.AutocompleteModelBase):
         return super(JurisdictionAutocomplete, self).choices_for_request()
     def choice_label(self, choice):
         return choice.get_jurisdiction_display()
-
+    def choice_html(self, choice):
+        # I hope the label never needs to be escaped
+        return self.choice_html_format % (
+            escape(self.choice_value(choice)),
+            self.choice_label(choice))
 autocomplete_light.register(Jurisdiction, JurisdictionAutocomplete)
