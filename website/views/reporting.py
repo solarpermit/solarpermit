@@ -362,8 +362,6 @@ class GeographicAreaForm(forms.ModelForm):
                                        required = False)
     jurisdictions = forms.ModelMultipleChoiceField(queryset = Jurisdiction.objects.all(),
                                                    widget = autocomplete_light.MultipleChoiceWidget('JurisdictionAutocomplete'),
-                                                   #widget = MultipleAutocompleteWidget("jurisdictions",
-                                                   #                                    view=autocomplete_instance),
                                                    required = False)
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)

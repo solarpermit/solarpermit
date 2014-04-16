@@ -17,8 +17,7 @@ var ourWidget = { initializeAutocomplete: function () {
                       $("button.select").click(function () {
                                                    box.find(':selected')
                                                       .each(function () {
-                                                                self.input.trigger('selectChoice',
-                                                                                   [$(this), self]);
+                                                                self.selectChoice($(this));
                                                             });
                                                });
                       $("button.deselect").click(function () {
@@ -27,6 +26,51 @@ var ourWidget = { initializeAutocomplete: function () {
                                                                    self.deselectChoice($(this));
                                                                });
                                                  });
+                  },
+                  selectChoice: function (choice) {
+                      var self = this;
+                      var values = choice.data('value-multiple');
+                      if (values) {
+                          this.freeDeck();
+                          this.addToDeck(choice, choice.data('value'));
+                          values.split(",")
+                                .map(function (v) {
+                                         yourlabs.Widget
+                                                 .prototype
+                                                 .addToSelect
+                                                 .call(self, choice, v);
+                                     });
+                          var index = $(':input:visible').index(this.input);
+                          this.resetDisplay();
+                          if (this.input.is(':visible')) {
+                              this.input.focus();
+                          } else {
+                              var next = $(':input:visible:eq('+ index +')');
+                              next.focus();
+                          }
+                          if (this.clearInputOnSelectChoice === "1")
+                              this.input.val('');
+                      } else {
+                          yourlabs.Widget.prototype.selectChoice.call(this, choice);
+                      }
+                  },
+                  deselectChoice: function (choice) {
+                      var self = this;
+                      var values = choice.data('value-multiple');
+                      if (values) {
+                          values.split(",")
+                                .map(function (v) {
+                                         self.select
+                                             .find('option[value="'+v+'"]')
+                                             .remove();
+                                     });
+                          this.select.trigger('change');
+                          choice.remove();
+                          this.updateAutocompleteExclude();
+                          this.resetDisplay();
+                      } else {
+                          yourlabs.Widget.prototype.deselectChoice.call(this, choice);
+                      }
                   },
                   hide: nothing
                 };
