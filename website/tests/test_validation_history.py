@@ -107,11 +107,14 @@ class TestValidHistory(TestCase):
     #accepts either an id, or a list of ids
     def assertApprovalStatus(self, answer_id, multi , status):
         for ans_id in answer_id:
-            print str(ans_id)
+            print "selfAnswer ID is: %s" % str(ans_id)
+            
             if multi:
                 ansId = self.answersMulti[ans_id].id
+                print "AnswerReference ID is: %s" % str(self.answersMulti[ans_id].id)
             else:
                 ansId = self.answers[ans_id].id
+                print "AnswerReference ID is: %s" % str(self.answers[ans_id].id)
             answer = AnswerReference.objects.get(id = ansId)
             answer_status = answer.approval_status
             self.assertEqual(str(answer_status), status)
@@ -143,10 +146,9 @@ class TestValidHistory(TestCase):
         #save all answers to database
         #make sure all answers are pending
         pendingList = xrange(10)
-        pendingMultiList = range(10, 19, 1)       
+        pendingMultiList = xrange(8)   
         self.assertApprovalStatus(pendingList,False, 'P')
         self.assertApprovalStatus(pendingMultiList,True, 'P')
-        #run test to make sure that all approval status = P
 #      test #0 answer#0 Goal: approved with downvotes
         # 3 upvotes, 1 down votes        
         self.pushVote(1, 0, 0, 0,False,"down")
@@ -195,28 +197,22 @@ class TestValidHistory(TestCase):
             question.save(force_update=True)
         for question in self.questionsMulti:
             question.save(force_update=True)
-
         testTime = date(int(timezone.now().year),int(timezone.now().month),int(timezone.now().day))
         daysPass = django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED + 1
         diff = timedelta(days=daysPass)
         futureTime = testTime + diff #todays date plus 7 days                
-        
-        
-        
         #insufficient timedelta
         mockCronValidate(testTime + timedelta(days=django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED - 1))
         pendingList = xrange(10)
-        pendingMultiList = range(10, 19, 1)       
+        pendingMultiList = xrange(8)       
         self.assertApprovalStatus(pendingList,False, 'P')
         self.assertApprovalStatus(pendingMultiList,True, 'P')
         #sufficient timedelta
         mockCronValidate(futureTime)        
-        #import pdb
-        #pdb.set_trace()
         approveList = [0,1,2]
-        approveListMulti[15,16] 
+        approveListMulti = [5,6] 
         rejectList = [3,4]
-        rejectListMulti = [11,13,17,14,18]
+        rejectListMulti = [1,3,7,4,8]
         self.assertApprovalStatus(approveList,False, 'A')
         self.assertApprovalStatus(approveListMulti,True, 'A')
         self.assertApprovalStatus(rejectList,False, 'R')
