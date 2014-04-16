@@ -105,9 +105,13 @@ class TestValidHistory(TestCase):
     #lss;
     #asserts a particular approval status for an answer
     #accepts either an id, or a list of ids
-    def assertApprovalStatus(self, answer_id, status):
+    def assertApprovalStatus(self, answer_id, multi , status):
         for ans_id in answer_id:
-            ansId = self.answers[ans_id].id
+            print str(ans_id)
+            if multi:
+                ansId = self.answersMulti[ans_id].id
+            else:
+                ansId = self.answers[ans_id].id
             answer = AnswerReference.objects.get(id = ansId)
             answer_status = answer.approval_status
             self.assertEqual(str(answer_status), status)
@@ -138,8 +142,10 @@ class TestValidHistory(TestCase):
     def test_Valid_Vote(self):
         #save all answers to database
         #make sure all answers are pending
-        pendingList = xrange(18)        
-        self.assertApprovalStatus(pendingList,'P')
+        pendingList = xrange(10)
+        pendingMultiList = range(10, 19, 1)       
+        self.assertApprovalStatus(pendingList,False, 'P')
+        self.assertApprovalStatus(pendingMultiList,True, 'P')
         #run test to make sure that all approval status = P
 #      test #0 answer#0 Goal: approved with downvotes
         # 3 upvotes, 1 down votes        
@@ -199,15 +205,19 @@ class TestValidHistory(TestCase):
         
         #insufficient timedelta
         mockCronValidate(testTime + timedelta(days=django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED - 1))
-        pendingList = xrange(18)             
-        self.assertApprovalStatus(pendingList, 'P')
-
-        
+        pendingList = xrange(10)
+        pendingMultiList = range(10, 19, 1)       
+        self.assertApprovalStatus(pendingList,False, 'P')
+        self.assertApprovalStatus(pendingMultiList,True, 'P')
         #sufficient timedelta
         mockCronValidate(futureTime)        
         #import pdb
         #pdb.set_trace()
-        approveList = [0,1, 2, 15, 12, 16] 
-        rejectList = [3,4,11,13,17,14,18]
-        self.assertApprovalStatus(approveList, 'A')
-        self.assertApprovalStatus(rejectList, 'R')
+        approveList = [0,1,2]
+        approveListMulti[15,16] 
+        rejectList = [3,4]
+        rejectListMulti = [11,13,17,14,18]
+        self.assertApprovalStatus(approveList,False, 'A')
+        self.assertApprovalStatus(approveListMulti,True, 'A')
+        self.assertApprovalStatus(rejectList,False, 'R')
+        self.assertApprovalStatus(rejectListMulti,True, 'R')
