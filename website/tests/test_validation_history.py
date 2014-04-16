@@ -33,15 +33,14 @@ def dump(obj):
 #given a time, run FieldValidationCycleUtil.cron_validate_answers using mock date
 def mockCronValidate(futureTime):
     with mock.patch('website.utils.fieldValidationCycleUtil.date') as mock_date:#can we mock datetime as date? making fieldval think 
-        mock_date.today.return_value = futureTime.replace(tzinfo=timezone.utc)
+        mock_date.today.return_value = futureTime
         mock_date.side_effect = lambda *args, **kw: date(*args, **kw)
         valUtil = FieldValidationCycleUtil()
         valUtil.cron_validate_answers()
             
 class TestValidHistory(TestCase):
     def setUp(self):
-        #create a local users object for testuser1, 2, 3, out of a list build using the Django users model
-        #need to mock the create date, must mock datetime in models i believe.
+        
         self.users = [User.objects.create_user("testuser%s" % id, 
                                                "testuser%s@testing.solarpermit.org" % id,
                                                 "testuser")
@@ -59,7 +58,7 @@ class TestValidHistory(TestCase):
                                                 state = "CA",
                                                 jurisdiction_type = "CI",
                                                 name = "foo")
-        ## we need 4 questions that have multiple answer possiblites. add to the end? diff object? diff object will be wayyyy easier
+        
         self.qCategory = QuestionCategory.objects.get(id = 1)
         
         self.questions = [Question.objects.create(label="test%s" % id, question="test%s" % id)
@@ -106,14 +105,9 @@ class TestValidHistory(TestCase):
     #lss;
     #asserts a particular approval status for an answer
     #accepts either an id, or a list of ids
-    def assertApprovalStatus(self, answer_id, multi, status):
+    def assertApprovalStatus(self, answer_id, status):
         for ans_id in answer_id:
-            ansId = 0
-            answer = None
-            if multi: 
-                ansId = ans_id
-            else:
-                ansId = self.answers[ans_id].id
+            ansId = self.answers[ans_id].id
             answer = AnswerReference.objects.get(id = ansId)
             answer_status = answer.approval_status
             self.assertEqual(str(answer_status), status)
@@ -144,10 +138,8 @@ class TestValidHistory(TestCase):
     def test_Valid_Vote(self):
         #save all answers to database
         #make sure all answers are pending
-        pendingList = xrange(10)
-        pendingMultiList = range(10, 19, 1)               
-        self.assertApprovalStatus(pendingList, False, 'P')
-        self.assertApprovalStatus(pendingMultiList, True, 'P')
+        pendingList = xrange(18)        
+        self.assertApprovalStatus(pendingList,'P')
         #run test to make sure that all approval status = P
 #      test #0 answer#0 Goal: approved with downvotes
         # 3 upvotes, 1 down votes        
@@ -207,20 +199,15 @@ class TestValidHistory(TestCase):
         
         #insufficient timedelta
         mockCronValidate(testTime + timedelta(days=django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED - 1))
-        pendingList = xrange(10)
-        pendingMultiList = range(10, 19, 1)               
-        self.assertApprovalStatus(pendingList, False, 'P')
-        self.assertApprovalStatus(pendingMultiList, True, 'P')
+        pendingList = xrange(18)             
+        self.assertApprovalStatus(pendingList, 'P')
 
         
         #sufficient timedelta
         mockCronValidate(futureTime)        
-
-        approveList = [0,1,2]
-        approveMultiList = [15, 12, 16]
-        rejectList = [3,4]
-        rejectMultiList = [11,13,17,14,18]
-        self.assertApprovalStatus(approveList, False, 'A')
-        self.assertApprovalStatus(approveMultiList, True, 'A')
-        self.assertApprovalStatus(rejectList, False, 'R')
-        self.assertApprovalStatus(rejectMultiList, True, 'R')
+        #import pdb
+        #pdb.set_trace()
+        approveList = [0,1, 2, 15, 12, 16] 
+        rejectList = [3,4,11,13,17,14,18]
+        self.assertApprovalStatus(approveList, 'A')
+        self.assertApprovalStatus(rejectList, 'R')
