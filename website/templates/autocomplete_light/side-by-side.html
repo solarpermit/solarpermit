@@ -35,19 +35,8 @@
     </select>
 {% endblock %}
 
-{% block remove_template %}
-  {# deliberately left empty #}
-{% endblock %}
-
 {% block choice_template %}
-    <option style="display:none">
-        {% comment %}
-        the contained element will be used to render options that are added to the select
-        via javascript, for example in django admin with the + sign
-
-        The text of the option will be inserted in the html of this tag
-        {% endcomment %}
-    </option>
+    <option style="display:none"></option>
 {% endblock %}
 
 {% block widget_close %}

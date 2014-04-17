@@ -4,6 +4,7 @@ import autocomplete_light
 from website.models.jurisdiction import Jurisdiction
 
 class JurisdictionAutocomplete(autocomplete_light.AutocompleteModelBase):
+    widget_template = 'autocomplete_light/side-by-side.html'
     search_fields = ['name']
     attrs = {'placeholder': 'Type some text to search for jurisdictions'}
     widget_attrs = {'data-widget-bootstrap': 'side-by-side'}
