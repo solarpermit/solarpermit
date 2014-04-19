@@ -71,9 +71,39 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyText</td>
-	<td>css=div.form_field &gt; div.label</td>
+	<td>waitForText</td>
+	<td>css=#qa_62_fields &gt; div.form_field &gt; div.label</td>
 	<td>Please select providing a link or uploading a file:</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=#qa_62_fields &gt; div.form_field &gt; div.field</td>
+	<td>Link to the online spec sheet <br /> Upload spec sheet</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='qa_62_fields']/div[2]/div/div</td>
+	<td>Spec sheet name:</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=#form_option_link_add62 &gt; div.label</td>
+	<td>Spec sheet link:</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=field_name_1_add62</td>
+	<td>test</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>id=field_link_1_add62</td>
+	<td>http://anglachel.db48x.net</td>
+</tr>
+<tr>
+	<td>verifyValue</td>
+	<td>id=save_62</td>
+	<td>Save</td>
 </tr>
 <tr>
 	<td>verifyText</td>
