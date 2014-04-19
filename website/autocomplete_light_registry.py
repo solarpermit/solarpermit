@@ -3,6 +3,11 @@ from django.utils.html import escape
 import autocomplete_light
 from website.models.jurisdiction import Jurisdiction
 
+CHILDREN_SUBQUERY = '''SELECT GROUP_CONCAT(id SEPARATOR ',')
+                       FROM website_jurisdiction AS j
+                       WHERE j.parent_id = website_jurisdiction.id
+                       GROUP BY parent_id'''
+
 class JurisdictionAutocomplete(autocomplete_light.AutocompleteModelBase):
     widget_template = 'autocomplete_light/side-by-side.html'
     search_fields = ['name']
@@ -12,18 +17,15 @@ class JurisdictionAutocomplete(autocomplete_light.AutocompleteModelBase):
     choice_html_format = u'<option data-value="%s">%s</option>'
     choice_html_format_multiple = u'<option data-value="%s-m" data-value-multiple="%s">%s</option>'
     choices = Jurisdiction.objects.exclude(jurisdiction_type__exact = 'U') \
-                                  .exclude(pk__in = settings.SAMPLE_JURISDICTIONS)
+                                  .exclude(pk__in = settings.SAMPLE_JURISDICTIONS) \
+                                  .extra({'children': CHILDREN_SUBQUERY}) 
     def choices_for_request(self):
         choices = super(JurisdictionAutocomplete, self).choices_for_request()
         self.choices = []
         for choice in choices:
             self.choices.append(choice)
-            parent_of = choice.parent_jurisdiction \
-                              .exclude(jurisdiction_type__exact = 'U') \
-                              .exclude(pk__in = settings.SAMPLE_JURISDICTIONS) \
-                              .values_list('pk', flat=True)
-            if parent_of:
-                self.choices.append((choice, parent_of))
+            if choice.children:
+                self.choices.append((choice, choice.children))
         return self.choices
     def choice_value(self, choice):
         if isinstance(choice, Jurisdiction):
