@@ -13,10 +13,12 @@
 {% endblock %}
 
 {% block deck %}
-    <div>
+    <div class="deck-container">
         <select multiple="multiple" class="box autocomplete-light-widget"></select>
-        <button type="button" class="select">&rarr;</button>
-        <button type="button" class="deselect">&larr;</button>
+        <div>
+          <button type="button" class="select">&rarr;</button><br/>
+          <button type="button" class="deselect">&larr;</button>
+        </div>
         {# a deck that should contain the list of selected options #}
         <select multiple="multiple" id="{{ widget.html_id }}-deck" class="sbsdeck autocomplete-light-widget" >
             {% for choice in choices %}

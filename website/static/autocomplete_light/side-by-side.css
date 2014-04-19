@@ -6,3 +6,7 @@
     width: 20em;
     height: 10em;
 }
+
+.autocomplete-light-widget .deck-container div {
+    display: inline-block;
+}

@@ -33,8 +33,12 @@ var ourWidget = { initializeAutocomplete: function () {
                       if (values) {
                           this.freeDeck();
                           this.addToDeck(choice, choice.data('value'));
-                          values.split(",")
-                                .map(function (v) {
+                          if (typeof values === "string") {
+                              values = values.split(",");
+                          } else if (typeof values === "number") {
+                              values = [values];
+                          }
+                          values.map(function (v) {
                                          yourlabs.Widget
                                                  .prototype
                                                  .addToSelect
@@ -58,8 +62,12 @@ var ourWidget = { initializeAutocomplete: function () {
                       var self = this;
                       var values = choice.data('value-multiple');
                       if (values) {
-                          values.split(",")
-                                .map(function (v) {
+                          if (typeof values === "string") {
+                              values = values.split(",");
+                          } else if (typeof values === "number") {
+                              values = [values];
+                          }
+                          values.map(function (v) {
                                          self.select
                                              .find('option[value="'+v+'"]')
                                              .remove();
@@ -71,6 +79,14 @@ var ourWidget = { initializeAutocomplete: function () {
                       } else {
                           yourlabs.Widget.prototype.deselectChoice.call(this, choice);
                       }
+                  },
+                  updateAutocompleteExclude: function () {
+                      var widget = this;
+                      var choices = this.select.find("[value]");
+                      this.autocomplete.data['exclude'] = $.map(choices,
+                                                                function(choice) { 
+                                                                    return $(choice).attr("value");
+                                                                });
                   },
                   hide: nothing
                 };
