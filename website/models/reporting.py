@@ -24,7 +24,7 @@ from south.modelsinspector import add_introspection_rules
 add_introspection_rules([], ["^website\.models\.reporting\.PythonDataField"])
 
 class GeographicArea(models.Model):
-    name = models.TextField()
+    filter_name = models.TextField(default="", null=False, blank=False)
     description = models.TextField(blank=True)
     states = PythonDataField()
     jurisdictions = models.ManyToManyField(Jurisdiction)

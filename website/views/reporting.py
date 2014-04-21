@@ -371,13 +371,6 @@ class GeographicAreaForm(forms.ModelForm):
             initial['jurisdictions'] = instance.jurisdictions
         kwargs['initial'] = initial
         super(GeographicAreaForm, self).__init__(*args, **kwargs)
-
-    def clean(self):
-        cleaned_data = super(GeographicAreaForm, self).clean()
-        if 'filter_name' in cleaned_data:
-            cleaned_data['name'] = cleaned_data['filter_name']
-            del cleaned_data['filter_name']
-        return cleaned_data
     def save(self, commit=True):
         area = super(GeographicAreaForm, self).save(commit)
         if commit and 'jurisdictions' in self.cleaned_data:
