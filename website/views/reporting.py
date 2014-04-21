@@ -300,8 +300,8 @@ def report_index(request):
     data['reports_index'] = reports_index
     data['report_types'] = reports_by_type.keys()
     data['report_qids'] = reports_by_qid.keys()
-    requestProcessor = HttpRequestProcessor(request)
-    return requestProcessor.render_to_response(request,'website/reporting/report_index.html', data, '')
+    data['request'] = request
+    return render_to_response('reporting/report_index.jinja', data)
 
 ##############################################################################
 #
@@ -354,7 +354,7 @@ def report_on(request, question_id, filter_id=None):
       idx += 1
     data['reports_json'] = json.dumps(data['reports'])
     data['request'] = request
-    return render_to_response('website/reporting/report_on.jinja', data)
+    return render_to_response('reporting/report_on.jinja', data)
 
 class GeographicAreaForm(forms.ModelForm):
     filter_name = forms.CharField()
