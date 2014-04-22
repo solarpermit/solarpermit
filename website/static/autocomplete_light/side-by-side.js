@@ -7,6 +7,31 @@ var COMMON = ["ille", "vill", "land", "owns", "svil", "ship", "nshi",
               "ster", "orth", "prin", "nton", "ings", "lton", "nvil",
               "dale", "idge", "reen", "outh"];
 
+// These, on the other hand, are all the cities which have
+// three-character names. We'll autocomplete these even though some of
+// them return more results than we'd like.
+var THREE_LETTER = ["ace", "ada", "aho", "aid", "ajo", "ama", "amo",
+                    "ari", "ark", "arm", "arp", "art", "ary", "ash",
+                    "ava", "ayr", "bay", "bee", "bem", "bim", "bly",
+                    "bow", "bud", "cid", "cly", "coe", "cox", "coy",
+                    "cut", "day", "dee", "dix", "dow", "duo", "dye",
+                    "eek", "ege", "ela", "eli", "elk", "elm", "ely",
+                    "era", "eva", "fay", "fig", "flo", "fly", "fox",
+                    "fry", "gap", "gas", "gay", "gem", "guy", "hay",
+                    "hoy", "hye", "ida", "igo", "ila", "ina", "ink",
+                    "ira", "iva", "ivy", "ixl", "jal", "jay", "jet",
+                    "job", "joy", "jud", "kay", "keo", "kim", "lay",
+                    "lea", "lee", "leo", "loa", "lon", "lum", "lux",
+                    "mae", "man", "max", "may", "mio", "moe", "naf",
+                    "ned", "ney", "nye", "oak", "odd", "ola", "oma",
+                    "ona", "ong", "ono", "opp", "ops", "ora", "ord",
+                    "orr", "oso", "oto", "pax", "pep", "poe", "ray",
+                    "rea", "reo", "rew", "rex", "rig", "rio", "roe",
+                    "roy", "rye", "sac", "sod", "sun", "tad", "tea",
+                    "tok", "tom", "tow", "tye", "ulm", "una", "uno",
+                    "usk", "ute", "uva", "van", "veo", "war", "wax",
+                    "way", "wea", "why", "yoe", "zap", "zim", "zoe"];
+
 $(document).bind('yourlabsWidgetReady',
                  function() {
                      $('body').on('initialize',
@@ -31,8 +56,10 @@ function nothing() {
  * Overrides for the Autocomplete class
  */
 function refresh() {
-    this.value = this.getQuery();
-    if (this.value.length > 4 || COMMON.indexOf(this.value) === -1) {
+    this.value = this.getQuery().toLowerCase();
+    if (THREE_LETTER.indexOf(this.value) !== -1 ||
+        this.value.length > 4 ||
+        COMMON.indexOf(this.value) === -1) {
         yourlabs.Autocomplete.prototype.refresh.call(this);
     }
 }
@@ -51,7 +78,7 @@ function init() {
                                                           boxMouseenter: nothing,
                                                           boxMouseleave: nothing,
                                                           boxClick: nothing,
-                                                          minimumCharacters: 4,
+                                                          minimumCharacters: 3,
                                                           refresh: refresh
                                                         });
     var self = this;
