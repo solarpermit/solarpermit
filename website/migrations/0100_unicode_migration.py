@@ -8,32 +8,99 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'GeographicArea'
-        db.create_table(u'website_geographicarea', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('filter_name', self.gf('django.db.models.fields.TextField')(default='')),
-            ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('states', self.gf('website.models.reporting.PythonDataField')()),
-        ))
-        db.send_create_signal('website', ['GeographicArea'])
+        db.execute("ALTER TABLE website_action CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_actioncategory CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_address CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_answerattachment CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_answerchoice CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_answerchoicegroup CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_answerreference CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_applicability CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_article CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_comment CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_entityview CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_entityviewcount CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_event CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_jurisdiction CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_jurisdictioncontributor CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_jurisdictionrating CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_migrationhistory CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_organization CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_organizationaddress CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_organizationcategory CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_organizationmember CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_organizationrating CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_pressrelease CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_question CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_questioncategory CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_ratingcategory CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_ratinglevel CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_reaction CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_reactioncategory CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_rewardcategory CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_roletype CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_servervariable CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_template CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_templatequestion CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_usercommentview CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_userdetail CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_userfavorite CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_userpageview CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_userrating CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_usersearch CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_view CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_vieworgs CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_viewquestions CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
+        db.execute("ALTER TABLE website_zipcode CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci")
 
-        # Adding M2M table for field jurisdictions on 'GeographicArea'
-        m2m_table_name = db.shorten_name(u'website_geographicarea_jurisdictions')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('geographicarea', models.ForeignKey(orm['website.geographicarea'], null=False)),
-            ('jurisdiction', models.ForeignKey(orm['website.jurisdiction'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['geographicarea_id', 'jurisdiction_id'])
-
+        db.execute("OPTIMIZE TABLE website_action")
+        db.execute("OPTIMIZE TABLE website_actioncategory")
+        db.execute("OPTIMIZE TABLE website_address")
+        db.execute("OPTIMIZE TABLE website_answerattachment")
+        db.execute("OPTIMIZE TABLE website_answerchoice")
+        db.execute("OPTIMIZE TABLE website_answerchoicegroup")
+        db.execute("OPTIMIZE TABLE website_answerreference")
+        db.execute("OPTIMIZE TABLE website_applicability")
+        db.execute("OPTIMIZE TABLE website_article")
+        db.execute("OPTIMIZE TABLE website_comment")
+        db.execute("OPTIMIZE TABLE website_entityview")
+        db.execute("OPTIMIZE TABLE website_entityviewcount")
+        db.execute("OPTIMIZE TABLE website_event")
+        db.execute("OPTIMIZE TABLE website_jurisdiction")
+        db.execute("OPTIMIZE TABLE website_jurisdictioncontributor")
+        db.execute("OPTIMIZE TABLE website_jurisdictionrating")
+        db.execute("OPTIMIZE TABLE website_migrationhistory")
+        db.execute("OPTIMIZE TABLE website_organization")
+        db.execute("OPTIMIZE TABLE website_organizationaddress")
+        db.execute("OPTIMIZE TABLE website_organizationcategory")
+        db.execute("OPTIMIZE TABLE website_organizationmember")
+        db.execute("OPTIMIZE TABLE website_organizationrating")
+        db.execute("OPTIMIZE TABLE website_pressrelease")
+        db.execute("OPTIMIZE TABLE website_question")
+        db.execute("OPTIMIZE TABLE website_questioncategory")
+        db.execute("OPTIMIZE TABLE website_ratingcategory")
+        db.execute("OPTIMIZE TABLE website_ratinglevel")
+        db.execute("OPTIMIZE TABLE website_reaction")
+        db.execute("OPTIMIZE TABLE website_reactioncategory")
+        db.execute("OPTIMIZE TABLE website_rewardcategory")
+        db.execute("OPTIMIZE TABLE website_roletype")
+        db.execute("OPTIMIZE TABLE website_servervariable")
+        db.execute("OPTIMIZE TABLE website_template")
+        db.execute("OPTIMIZE TABLE website_templatequestion")
+        db.execute("OPTIMIZE TABLE website_usercommentview")
+        db.execute("OPTIMIZE TABLE website_userdetail")
+        db.execute("OPTIMIZE TABLE website_userfavorite")
+        db.execute("OPTIMIZE TABLE website_userpageview")
+        db.execute("OPTIMIZE TABLE website_userrating")
+        db.execute("OPTIMIZE TABLE website_usersearch")
+        db.execute("OPTIMIZE TABLE website_view")
+        db.execute("OPTIMIZE TABLE website_vieworgs")
+        db.execute("OPTIMIZE TABLE website_viewquestions")
+        db.execute("OPTIMIZE TABLE website_zipcode")
 
     def backwards(self, orm):
-        # Deleting model 'GeographicArea'
-        db.delete_table(u'website_geographicarea')
-
-        # Removing M2M table for field jurisdictions on 'GeographicArea'
-        db.delete_table(db.shorten_name(u'website_geographicarea_jurisdictions'))
-
+        raise RuntimeError("Cannot reverse this migration.")
+        pass
 
     models = {
         u'auth.group': {
@@ -223,14 +290,6 @@ class Migration(SchemaMigration):
             'start': ('django.db.models.fields.DateTimeField', [], {}),
             'title': ('django.db.models.fields.TextField', [], {}),
             'url': ('django.db.models.fields.TextField', [], {})
-        },
-        'website.geographicarea': {
-            'Meta': {'object_name': 'GeographicArea'},
-            'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'filter_name': ('django.db.models.fields.TextField', [], {'default': "''"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'jurisdictions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['website.Jurisdiction']", 'symmetrical': 'False'}),
-            'states': ('website.models.reporting.PythonDataField', [], {})
         },
         'website.jurisdiction': {
             'Meta': {'object_name': 'Jurisdiction'},

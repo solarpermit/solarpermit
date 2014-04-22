@@ -93,7 +93,7 @@
         {% if not filter_is_temporary %}
           filtered to the {{geo_filter.matches().count()}}
           jurisdictions in the area named
-          &ldquo;<a href="{{url('geoarea-view', pk=geo_filter.pk)}}">{{ geo_filter.name }}</a>&rdquo;
+          &ldquo;<a href="{{url('geoarea-view', pk=geo_filter.pk)}}">{{ geo_filter.filter_name }}</a>&rdquo;
         {% else %}
           filtered to {{geo_filter_matches}} jurisdictions.
           <a href="{{url_params(url('geoarea-new-for-question',
