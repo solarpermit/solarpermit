@@ -31,8 +31,6 @@ class JurisdictionAutocomplete(autocomplete_light.AutocompleteModelBase):
         if isinstance(choice, Jurisdiction):
             return choice.pk
         return choice[0].pk
-    def choice_values(self, choice):
-        return ",".join([str(c) for c in choice[1]])
     def choice_label(self, choice):
         if isinstance(choice, Jurisdiction):
             return choice.get_jurisdiction_display()
@@ -41,7 +39,7 @@ class JurisdictionAutocomplete(autocomplete_light.AutocompleteModelBase):
         # I hope the label never needs to be escaped
         if isinstance(choice, (list, tuple)):
             return self.choice_html_format_multiple % (escape(self.choice_value(choice)),
-                                                       escape(self.choice_values(choice)),
+                                                       escape(choice[1]),
                                                        self.choice_label(choice))
         return self.choice_html_format % (escape(self.choice_value(choice)),
                                           self.choice_label(choice))
