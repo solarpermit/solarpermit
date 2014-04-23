@@ -28,6 +28,11 @@
 </tr>
 <tr>
 	<td>waitForText</td>
+	<td>css=h3</td>
+	<td>Current approved values . Filter this report...</td>
+</tr>
+<tr>
+	<td>waitForText</td>
 	<td>css=div.contentOnlyPage &gt; h1</td>
 	<td>ASHRAE min/max design temps - Field Answer Reporting</td>
 </tr>
@@ -260,11 +265,6 @@
 	<td>verifyEval</td>
 	<td>parseInt(storedVars['answered']) === parseInt(storedVars['total2'])</td>
 	<td>true</td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>link=Filter this report...</td>
-	<td></td>
 </tr>
 </tbody></table>
 </body>
