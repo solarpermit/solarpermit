@@ -182,6 +182,11 @@
 	<td>label=Dallas, Gregory County, SD</td>
 </tr>
 <tr>
+	<td>sendKeys</td>
+	<td>id=id_filter_name</td>
+	<td>dallas</td>
+</tr>
+<tr>
 	<td>click</td>
 	<td>css=button.select</td>
 	<td></td>
@@ -295,6 +300,51 @@
 	<td>verifyEval</td>
 	<td>parseInt(storedVars['answered']) === parseInt(storedVars['total2'])</td>
 	<td>true</td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=dallas</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=dallas</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>//div[@id='main-wrapper']/p[5]</td>
+	<td>Matches 4 total jurisdictions:</td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>xpath=(//a[contains(text(),'Dallas County, AL')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>xpath=(//a[contains(text(),'Lake Dallas, Denton County, TX')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>xpath=(//a[contains(text(),'Dallas, Gregory County, SD')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='main-wrapper']/p[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=Lake Dallas, Denton County, TX</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=Dallas, Gregory County, SD</td>
+	<td></td>
 </tr>
 </tbody></table>
 </body>

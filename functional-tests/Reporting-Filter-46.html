@@ -52,6 +52,11 @@
 	<td>label=California</td>
 </tr>
 <tr>
+	<td>sendKeys</td>
+	<td>id=id_filter_name</td>
+	<td>CA</td>
+</tr>
+<tr>
 	<td>clickAndWait</td>
 	<td>css=input[type=&quot;submit&quot;]</td>
 	<td></td>
@@ -186,7 +191,46 @@
 	<td>parseInt(storedVars['answered']) === parseInt(storedVars['total2'])</td>
 	<td>true</td>
 </tr>
-
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=CA</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=CA</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>//div[@id='main-wrapper']/p[5]</td>
+	<td>Matches 555 total jurisdictions:</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=#main-wrapper &gt; ul &gt; li</td>
+	<td>CA</td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=Alpine County, CA</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=San Joaquin County, CA</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=Alameda County, CA</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=Fresno, Fresno County, CA</td>
+	<td></td>
+</tr>
 </tbody></table>
 </body>
 </html>
