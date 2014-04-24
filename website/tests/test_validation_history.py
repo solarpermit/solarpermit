@@ -29,12 +29,14 @@ def dump(obj):
         if hasattr( obj, attr ):
             print( "obj.%s = %s" % (attr, getattr(obj, attr)))
 
-#lss;
+#lsscd;
 #given a time, run FieldValidationCycleUtil.cron_validate_answers using mock date
 def mockCronValidate(futureTime):
-    with mock.patch('website.utils.fieldValidationCycleUtil.date') as mock_date:#can we mock datetime as date? making fieldval think 
-        mock_date.today.return_value = futureTime
+    with mock.patch('website.utils.fieldValidationCycleUtil.timezone') as mock_date:#can we mock datetime as date? making fieldval think 
+        mock_date.now.return_value = futureTime
         mock_date.side_effect = lambda *args, **kw: date(*args, **kw)
+        import pdb
+        pdb.set_trace()
         valUtil = FieldValidationCycleUtil()
         valUtil.cron_validate_answers()
             
@@ -123,7 +125,7 @@ class TestValidHistory(TestCase):
         userNum = lastUser + 1
         inc = 0
         currentUsed = 0 #current amount of votes in our suggested direction
-        self.loginUser(userNum) 
+        self.loginUser(userNum)
         while inc < votes: # while our incrementor is less than our total upvotes,
             if currentUsed <= votes: # if our current amount of upvotes is less or equal to our max upvote
                 currentUsed = currentUsed + 1 #inc current upvotes
@@ -197,6 +199,7 @@ class TestValidHistory(TestCase):
             question.save(force_update=True)
         for question in self.questionsMulti:
             question.save(force_update=True)
+        
         testTime = date(int(timezone.now().year),int(timezone.now().month),int(timezone.now().day))
         daysPass = django_settings.NUM_DAYS_UNCHALLENGED_B4_APPROVED + 1
         diff = timedelta(days=daysPass)
@@ -208,7 +211,7 @@ class TestValidHistory(TestCase):
         self.assertApprovalStatus(pendingList,False, 'P')
         self.assertApprovalStatus(pendingMultiList,True, 'P')
         #sufficient timedelta
-        mockCronValidate(futureTime)        
+        mockCronValidate(futureTime)
         approveList = [0,1,2]
         approveListMulti = [5,6] 
         rejectList = [3,4]
