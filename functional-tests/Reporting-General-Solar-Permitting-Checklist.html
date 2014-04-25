@@ -37,12 +37,32 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
+	<td>css=h3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#graph0 &gt; svg:nth-child(1) &gt; path:nth-child(5)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
 	<td>css=th.header_row</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
 	<td>css=tr.odd &gt; th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report0']/table/tbody/tr[3]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
 	<td></td>
 </tr>
 <tr>
@@ -62,23 +82,8 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/th</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/td</td>
 	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/td</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[3]/th</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>css=th.header_row_right</td>
-	<td>Jurisdictions</td>
 </tr>
 <tr>
 	<td>verifyText</td>
@@ -92,13 +97,18 @@
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[3]/th</td>
+	<td>//div[@id='report0']/table/tbody/tr[3]/th</td>
 	<td>Unanswered</td>
 </tr>
 <tr>
-	<td>verifyElementPresent</td>
-	<td>link=Filter this report...</td>
-	<td></td>
+	<td>verifyText</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
+	<td>Total</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=th.header_row_right</td>
+	<td>Jurisdictions</td>
 </tr>
 </tbody></table>
 </body>
