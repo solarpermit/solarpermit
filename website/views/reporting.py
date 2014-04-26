@@ -354,6 +354,9 @@ def report_on(request, question_id, filter_id=None):
       idx += 1
     data['reports_json'] = json.dumps(data['reports'])
     data['request'] = request
+
+    if 'HTTP_ACCEPT' in request.META and 'json' in request.META['HTTP_ACCEPT']: #hack
+        return HttpResponse(data['reports_json'])
     return render_to_response('reporting/report_on.jinja', data)
 
 class GeographicAreaForm(forms.ModelForm):
