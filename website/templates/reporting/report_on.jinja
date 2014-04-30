@@ -68,20 +68,24 @@
           width: 320px;
           height: 320px;
         }
+        .whatsit .busy-indicator {
+          background-image: none;
+          display: inline-block;
+          height: 16px;
+          width: 16px;
+        }
+        .whatsit.loading .busy-indicator {
+          background-image: url("/media/images/ajax-loader.gif");
+        }
 </style>
 {% endblock %}
 
 {% block forejs %}
-{% compress js %}
-<script src="/media/js/raphael.js"></script>
-<script src="/media/js/g.raphael.js"></script>
-<script src="/media/js/g.pie.js"></script>
-<script src="/media/js/g.bar.js"></script>
-{% endcompress %}
 {% endblock %}
 
 {% block body %}
   <div class="contentOnlyPage">
+    {#
     <h1>{{ report_name }} - Field Answer Reporting</h1>
     {% if question_instruction %}
       <hr/>
@@ -105,6 +109,22 @@
         . <a href="{{url('geoarea-new-for-question', question_id=question_id)}}">Filter this report...</a>
       {% endif %}
     </h3>
+    #}
+  </div>
+  <div id="hidden_controls" style="display: none;">
+    <select>
+      {% for item in reports_index %}
+        <optgroup label="{{item['category']}}">
+          {% for report in item['reports_in_category'] %}
+            {% if report['id'] == question_id %}
+              <option value="{{report['id']}}" selected>{{report['label']}}</option>
+            {% else %}
+              <option value="{{report['id']}}">{{report['label']}}</option>
+            {% endif %}
+          {% endfor %}
+        </optgroup>
+      {% endfor %}
+    </select>
   </div>
 {% endblock %}
 
@@ -112,5 +132,12 @@
   <script>
     var reports = {{reports_json|safe}};
   </script>
+  {% compress js %}
+  <script src="/media/js/raphael.js"></script>
+  <script src="/media/js/g.raphael.js"></script>
+  <script src="/media/js/g.pie.js"></script>
+  <script src="/media/js/g.bar.js"></script>
+  <script src="/static/state-machine.js"></script>
   <script src="/static/reporting/ui.js"></script>
+  {% endcompress %}
 {% endblock %}

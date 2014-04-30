@@ -352,11 +352,30 @@ def report_on(request, question_id, filter_id=None):
                                "table": table,
                                "type": report['type'] })
       idx += 1
-    data['reports_json'] = json.dumps(data['reports'])
-    data['request'] = request
 
     if 'HTTP_ACCEPT' in request.META and 'json' in request.META['HTTP_ACCEPT']: #hack
-        return HttpResponse(data['reports_json'])
+        return HttpResponse(json.dumps({ 'name': question.question,
+                                         'instruction': question.instruction,
+                                         'reports': data['reports']
+                                       }))
+    data['reports_json'] = json.dumps(data['reports'])
+
+    questions = Question.objects.filter(accepted='1').exclude(form_type="CF").order_by("category", "display_order")
+    reports_index = []
+    category_last_encountered = ''
+    for question in questions:
+        if question.category.name != category_last_encountered:
+            category_last_encountered = question.category.name
+            # the category level does not exist create it.
+            reports_index.append({ "category": question.category.name.replace('_', ' ').title(),
+                                   "reports_in_category": [] })
+        # append this report's data to the list - with a link if it exists
+        reports_index[-1]['reports_in_category'].append(question)
+    data['reports_index'] = reports_index
+    data['report_types'] = reports_by_type.keys()
+    data['report_qids'] = reports_by_qid.keys()
+
+    data['request'] = request
     return render_to_response('reporting/report_on.jinja', data)
 
 class GeographicAreaForm(forms.ModelForm):
