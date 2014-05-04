@@ -79,11 +79,20 @@
         .whatsit .busy-indicator {
           background-image: none;
           display: inline-block;
-          height: 16px;
+          height: 1em;
           width: 16px;
+          margin: 0 3px;
         }
         .whatsit.loading .busy-indicator {
           background-image: url("/media/images/ajax-loader.gif");
+        }
+        .selector select {
+          display: inline-block;
+          width: 75%;
+          margin: 0 3px;
+        }
+        .selector a {
+          display: inline-block;
         }
     </style>
   {% endcompress %}
@@ -94,31 +103,6 @@
 
 {% block body %}
   <div class="contentOnlyPage">
-    {#
-    <h1>{{ report_name }} - Field Answer Reporting</h1>
-    {% if question_instruction %}
-      <hr/>
-      <h2>Question's Instruction: {{ question_instruction }}</h2>
-    {% endif %}
-    <hr/>
-    <h3>Current approved values
-      {% if geo_filter %}
-        {% if not filter_is_temporary %}
-          filtered to the {{geo_filter.matches().count()}}
-          jurisdictions in the area named
-          &ldquo;<a href="{{url('geoarea-view', pk=geo_filter.pk)}}">{{ geo_filter.filter_name }}</a>&rdquo;
-        {% else %}
-          filtered to {{geo_filter_matches}} jurisdictions.
-          <a href="{{url_params(url('geoarea-new-for-question',
-                                    question_id=question_id),
-                                **geo_filter_params)
-                   }}">Edit current filter...</a>
-        {% endif %}
-      {% else %}
-        . <a href="{{url('geoarea-new-for-question', question_id=question_id)}}">Filter this report...</a>
-      {% endif %}
-    </h3>
-    #}
   </div>
   <div id="hidden_controls" style="display: none;">
     <select>

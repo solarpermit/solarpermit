@@ -27,8 +27,8 @@ function add_ui(initial_reports) {
                                                                          beforeClose: machine.select });
     machine.selector_ui = $("<div>", { 'class': 'selector' }).append($("<div>", { 'class': 'busy-indicator' }),
                                                                      question_select,
-                                                                     $("<div><span class='instruction'></div>"),
-                                                                     filter_link)
+                                                                     filter_link,
+                                                                     $("<div><span class='instruction'></div>"))
                                                              .appendTo(stuff);
     machine.container = $("<div>").appendTo(stuff);
     stuff.appendTo(".contentOnlyPage");

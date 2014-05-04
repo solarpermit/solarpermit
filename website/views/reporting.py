@@ -323,11 +323,12 @@ def report_on(request, question_id, filter_id=None):
     else:
         data['geo_filter'] = {}
         for key in ['states', 'jurisdictions']:
-            data['geo_filter'][key] = request.GET.getlist(key)
+            p = request.GET.getlist(key)
+            if p:
+              data['geo_filter'][key] = p
         if data['geo_filter']:
             geo_filter = where_clause_for_area(**data['geo_filter'])
             data['geo_filter_matches'] = matches_for_area(**data['geo_filter']).count()
-            data['filter_is_temporary'] = True
     data['current_nav'] = 'reporting'
     data['report_name'] = question.question
     data['question_instruction'] = question.instruction
