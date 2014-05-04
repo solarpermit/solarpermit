@@ -2,32 +2,49 @@
 {% block title %}{% endblock %}
 
 {% block forestyle %}
-<style>
-        table, td, th {
+  {% compress css %}
+    <link rel="stylesheet" type="text/css" href="{{static('autocomplete_light/style.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{static('autocomplete_light/side-by-side.css')}}"/>
+    <style>
+      th {
+        vertical-align: top;
+        text-align: left;
+        padding-left: 1em;
+      }
+      th.division {
+        padding-left: 0;
+      }
+      ul[disabled] {
+        color: lightgray;
+        pointer-events: none;
+      }
+    </style>
+    <style>
+        .whatsit table, .whatsit td, .whatsit th {
                 max-width: 960px;
                 text-align:left;
                 font-size: 14px;
                 border-top: 1px solid #bdbdbd;
                 border-right: 1px solid #bdbdbd;
         }
-        .data_table {
+        .whatsit .data_table {
                 min-width: 320px;
         }
-        td, th {
+        .whatsit td, .whatsit th {
                 padding: 4px;
                 border: 1px solid #bdbdbd;
                 border-top: 0 none;
                 border-right: 0 none;
         }
-        th {
+        .whatsit th {
                 font-weight: normal;
         }
-        td {
+        .whatsit td {
                 text-align: right;
                 color: #000;
                 border-left: 2px solid #999;
         }
-        .even {
+        .whatsit .even {
                 background-color: #ebf1fe;
         }
         .header_row_right {
@@ -41,15 +58,6 @@
                 border-bottom: 2px solid #999;
                 color: #333;
                 font-weight: bold;
-        }
-        hr {
-                border: 0;
-        height: 1px;
-        background: #333;
-        background-image: -webkit-linear-gradient(left, #ccc, #333, #ccc);
-        background-image:    -moz-linear-gradient(left, #ccc, #333, #ccc);
-        background-image:     -ms-linear-gradient(left, #ccc, #333, #ccc);
-        background-image:      -o-linear-gradient(left, #ccc, #333, #ccc);
         }
         .legend-dot {
           border-radius: 50%;
@@ -77,7 +85,8 @@
         .whatsit.loading .busy-indicator {
           background-image: url("/media/images/ajax-loader.gif");
         }
-</style>
+    </style>
+  {% endcompress %}
 {% endblock %}
 
 {% block forejs %}
@@ -125,6 +134,25 @@
         </optgroup>
       {% endfor %}
     </select>
+    <div id="filter_selection">
+      {{ form.media|safe }}
+      <table>
+        <tr><th class="division" colspan="2">Filter criteria:</th></tr>
+        <tr><th><input type="radio" name="type" value="state"
+                       {{ 'checked' if form.initial.states }}
+                       id="type-state" class="type-selection">
+                <label for="type-state">{{ form.states.label }}<label></th>
+            <td>{{ form.states|safe }}
+                {{ form.states.errors|safe }}</td></tr>
+        <tr><th><input type="radio" name="type" value="jurisdiction"
+                       {{ 'checked' if form.initial.jurisdictions }}
+                       id="type-jurisdiction" class="type-selection">
+                <label for="type-jurisdiction">{{ form.jurisdictions.label }}</label></th>
+            <td>{{ form.jurisdictions|safe }}
+                {{ form.jurisdictions.errors|safe }}</td></tr>
+      </table>
+      <button id="add_filter">Filter</button>
+    </div>
   </div>
 {% endblock %}
 
@@ -133,11 +161,15 @@
     var reports = {{reports_json|safe}};
   </script>
   {% compress js %}
-  <script src="/media/js/raphael.js"></script>
-  <script src="/media/js/g.raphael.js"></script>
-  <script src="/media/js/g.pie.js"></script>
-  <script src="/media/js/g.bar.js"></script>
-  <script src="/static/state-machine.js"></script>
-  <script src="/static/reporting/ui.js"></script>
+    {% include 'autocomplete_light/_ajax_csrf.html' %}
+    <script type="text/javascript" src="{{static('autocomplete_light/autocomplete.js')}}"></script>
+    <script type="text/javascript" src="{{static('autocomplete_light/widget.js')}}"></script>
+    <script type="text/javascript" src="{{static('autocomplete_light/side-by-side.js')}}"></script>
+    <script src="/media/js/raphael.js"></script>
+    <script src="/media/js/g.raphael.js"></script>
+    <script src="/media/js/g.pie.js"></script>
+    <script src="/media/js/g.bar.js"></script>
+    <script src="/static/state-machine.js"></script>
+    <script src="/static/reporting/ui.js"></script>
   {% endcompress %}
 {% endblock %}

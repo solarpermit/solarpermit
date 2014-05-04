@@ -316,21 +316,14 @@ def report_on(request, question_id, filter_id=None):
         raise Http404
     data = { 'question_id': question_id }
 
-    def param(p):
-        return request.GET[p] if p in request.GET else None
-
     geo_filter = None
     if filter_id:
         data['geo_filter'] = GeographicArea.objects.get(pk=filter_id)
         geo_filter = data['geo_filter'].where()
     else:
-        data['geo_filter_params'] = {}
         data['geo_filter'] = {}
         for key in ['states', 'jurisdictions']:
-            p = param(key)
-            if p:
-                data['geo_filter_params'][key] = p
-                data['geo_filter'][key] = p.split(",")
+            data['geo_filter'][key] = request.GET.getlist(key)
         if data['geo_filter']:
             geo_filter = where_clause_for_area(**data['geo_filter'])
             data['geo_filter_matches'] = matches_for_area(**data['geo_filter']).count()
@@ -345,6 +338,7 @@ def report_on(request, question_id, filter_id=None):
     idx = 0
     for report in reports:
       query = build_query(question, report['spec'], geo_filter)
+      print query
       cursor = connection.cursor()
       cursor.execute(query)
       table = [{'key': k, 'value': v } for (k,v) in zip([col[0] for col in cursor.description], cursor.fetchone())]
@@ -374,7 +368,7 @@ def report_on(request, question_id, filter_id=None):
     data['reports_index'] = reports_index
     data['report_types'] = reports_by_type.keys()
     data['report_qids'] = reports_by_qid.keys()
-
+    data['form'] = GeographicAreaForm()
     data['request'] = request
     return render_to_response('reporting/report_on.jinja', data)
 

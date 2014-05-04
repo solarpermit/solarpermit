@@ -1,6 +1,7 @@
 $(document).ready(function () {
                     add_ui(reports);
                   });
+$("#add_filter").on("click", $.fancybox.close);
 function add_ui(initial_reports) {
   var machine = new StateMachine('reporting-ui',
                                  'uninitialized',
@@ -19,10 +20,15 @@ function add_ui(initial_reports) {
                                                         machine);
     var question_select = $("#hidden_controls > select").clone()
                                                         .on("change", machine.select);
+    var filter_link = $("<a>", { text: "Filter this report...",
+                                 href: "#filter_selection" }).fancybox({ afterLoad: function (current, previous) {
+                                   
+                                                                                    },
+                                                                         beforeClose: machine.select });
     machine.selector_ui = $("<div>", { 'class': 'selector' }).append($("<div>", { 'class': 'busy-indicator' }),
                                                                      question_select,
                                                                      $("<div><span class='instruction'></div>"),
-                                                                     $("<a>", { text: "Filter this report..." }))
+                                                                     filter_link)
                                                              .appendTo(stuff);
     machine.container = $("<div>").appendTo(stuff);
     stuff.appendTo(".contentOnlyPage");
@@ -33,7 +39,11 @@ function add_ui(initial_reports) {
       machine.req.abort();
     machine.selector_ui.addClass("loading");
     var question = machine.selector_ui.find("select").val();
-    machine.req = $.ajax("/reporting/"+ question +"/",
+    var states = $("#type-state").is(":checked") && $("#id_states").val();
+    var jurisdictions = $("#type-jurisdiction").is(":checked") && $("#id_jurisdictions").val();
+    machine.req = $.ajax(buildURL("/reporting/"+ question +"/",
+                                  { states: states,
+                                    jurisdictions: jurisdictions }),
                          { dataType: 'json' })
                    .done(machine.success)
                    .fail(machine.error);
@@ -131,4 +141,24 @@ function add_ui(initial_reports) {
   function defined(val) {
     return typeof val != "undefined";
   }
+}
+function buildURL(base, params) {
+  var kv = [];
+  $.each(params,
+         function (key, values) {
+           if ($.isArray(values)) {
+             $.each(values,
+                    function (i, value) {
+                      if (value)
+                        kv.push([key, encodeURIComponent(value)]);
+                    });
+           } else {
+             if (values)
+               kv.push([key, encodeURIComponent(values)]);
+           }
+         });
+  kv = kv.map(function (param) { return param[0] +'='+ param[1]; });
+  if (kv)
+    base += '?' + kv.join('&');
+  return base;
 }
