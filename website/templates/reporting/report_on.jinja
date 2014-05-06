@@ -20,6 +20,15 @@
       }
     </style>
     <style>
+        .whatsit {
+          margin: 2em;
+          padding: .5em;
+          border: thin solid lightgray;
+          border-radius: 1em;
+        }
+        #add-another {
+          margin: 0 2em;
+        }
         .whatsit table, .whatsit td, .whatsit th {
                 max-width: 960px;
                 text-align:left;
@@ -70,7 +79,7 @@
         .report {
           max-width: 320px;
           margin-left: 25px;
-          float: left;
+          display: inline-block;
         }
         .graph {
           width: 320px;
@@ -102,8 +111,9 @@
 {% endblock %}
 
 {% block body %}
-  <div class="contentOnlyPage">
+  <div id="all-reports">
   </div>
+  <button id="add-another">Add another report...</button>
   <div id="hidden_controls" style="display: none;">
     <select>
       <option>Choose a question…</option>
@@ -136,7 +146,7 @@
             <td>{{ form.jurisdictions|safe }}
                 {{ form.jurisdictions.errors|safe }}</td></tr>
       </table>
-      <button id="add_filter">Filter</button>
+      <button id="add-filter">Filter</button>
     </div>
   </div>
 {% endblock %}

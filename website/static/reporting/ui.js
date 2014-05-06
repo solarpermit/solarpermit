@@ -1,7 +1,8 @@
 $(document).ready(function () {
                     add_ui(reports);
                   });
-$("#add_filter").on("click", $.fancybox.close);
+$("#add-filter").on("click", $.fancybox.close);
+$("#add-another").on("click", add_ui);
 function add_ui(initial_reports) {
   var machine = new StateMachine('reporting-ui',
                                  'uninitialized',
@@ -31,14 +32,14 @@ function add_ui(initial_reports) {
                                                                      $("<div><span class='instruction'></div>"))
                                                              .appendTo(stuff);
     machine.container = $("<div>").appendTo(stuff);
-    stuff.appendTo(".contentOnlyPage");
+    stuff.appendTo("#all-reports");
     return 'ui-ready';
   }
   function doSelect(event, state) {
     if (machine.req)
       machine.req.abort();
     machine.selector_ui.addClass("loading");
-    var question = machine.selector_ui.find("select").attr("val");
+    var question = machine.selector_ui.find("select").find(":checked").attr("value");
     if (!question)
       return 'ui-ready';
     var states = $("#type-state").is(":checked") && $("#id_states").val();
