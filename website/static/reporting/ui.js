@@ -38,7 +38,9 @@ function add_ui(initial_reports) {
     if (machine.req)
       machine.req.abort();
     machine.selector_ui.addClass("loading");
-    var question = machine.selector_ui.find("select").val();
+    var question = machine.selector_ui.find("select").attr("val");
+    if (!question)
+      return 'ui-ready';
     var states = $("#type-state").is(":checked") && $("#id_states").val();
     var jurisdictions = $("#type-jurisdiction").is(":checked") && $("#id_jurisdictions").val();
     machine.req = $.ajax(buildURL("/reporting/"+ question +"/",

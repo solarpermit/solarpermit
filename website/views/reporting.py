@@ -275,46 +275,24 @@ reports_by_qid = {
 
 ##############################################################################
 #
-# Display Index of Reports
-#
-##############################################################################
-def report_index(request):
-    # get question data
-    data = {}
-    data['current_nav'] = 'reporting'
-
-    questions = Question.objects.filter(accepted='1').exclude(form_type="CF").order_by("category", "display_order")
-
-    reports_index = []
-    category_last_encountered = ''
-    first_run = True
-    for question in questions:
-        if question.category.name != category_last_encountered:
-            category_last_encountered = question.category.name
-            # the category level does not exist create it.
-            reports_index.append({ "category": question.category.name.replace('_', ' ').title(),
-                                   "reports_in_category": [] })
-        # append this report's data to the list - with a link if it exists
-        reports_index[-1]['reports_in_category'].append(question)
-
-    data['reports_index'] = reports_index
-    data['report_types'] = reports_by_type.keys()
-    data['report_qids'] = reports_by_qid.keys()
-    data['request'] = request
-    return render_to_response('reporting/report_index.jinja', data)
-
-##############################################################################
-#
 # Display an individual report on a question_id
 #
 ##############################################################################
-def report_on(request, question_id, filter_id=None):
+def report_on(request, question_id=None, filter_id=None):
     # Check request for validity
-    question_id = int(question_id)
-    question = Question.objects.get(id=question_id)
-    if not question or not (question.id in reports_by_qid or question.display_template in reports_by_type):
-        raise Http404
-    data = { 'question_id': question_id }
+    data = { 'current_nav': 'reporting',
+             'reports': [] }
+    reports = None
+    if question_id:
+      question_id = int(question_id)
+      question = Question.objects.get(id=question_id)
+      if not (question.id in reports_by_qid or question.display_template in reports_by_type):
+          raise Http404
+      data['question_id'] = question_id
+      data['name'] = question.question
+      data['instruction'] = question.instruction
+      reports = (question.id in reports_by_qid and reports_by_qid[question_id]) or \
+                (question.display_template in reports_by_type and reports_by_type[question.display_template])
 
     geo_filter = None
     if filter_id:
@@ -329,30 +307,21 @@ def report_on(request, question_id, filter_id=None):
         if data['geo_filter']:
             geo_filter = where_clause_for_area(**data['geo_filter'])
             data['geo_filter_matches'] = matches_for_area(**data['geo_filter']).count()
-    data['current_nav'] = 'reporting'
-    data['report_name'] = question.question
-    data['question_instruction'] = question.instruction
-    reports = (question.id in reports_by_qid and reports_by_qid[question_id]) or \
-              (question.display_template in reports_by_type and reports_by_type[question.display_template])
 
-    data['reports'] = []
     idx = 0
-    for report in reports:
-      query = build_query(question, report['spec'], geo_filter)
-      print query
-      cursor = connection.cursor()
-      cursor.execute(query)
-      table = [{'key': k, 'value': v } for (k,v) in zip([col[0] for col in cursor.description], cursor.fetchone())]
-      data['reports'].append({ "idx": idx,
-                               "table": table,
-                               "type": report['type'] })
-      idx += 1
+    if reports:
+      for report in reports:
+        query = build_query(question, report['spec'], geo_filter)
+        cursor = connection.cursor()
+        cursor.execute(query)
+        table = [{'key': k, 'value': v } for (k,v) in zip([col[0] for col in cursor.description], cursor.fetchone())]
+        data['reports'].append({ "idx": idx,
+                                 "table": table,
+                                 "type": report['type'] })
+        idx += 1
 
     if 'HTTP_ACCEPT' in request.META and 'json' in request.META['HTTP_ACCEPT']: #hack
-        return HttpResponse(json.dumps({ 'name': question.question,
-                                         'instruction': question.instruction,
-                                         'reports': data['reports']
-                                       }))
+        return HttpResponse(json.dumps(data))
     data['reports_json'] = json.dumps(data['reports'])
 
     questions = Question.objects.filter(accepted='1').exclude(form_type="CF").order_by("category", "display_order")

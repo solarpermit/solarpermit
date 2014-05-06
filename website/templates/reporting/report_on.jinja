@@ -106,6 +106,7 @@
   </div>
   <div id="hidden_controls" style="display: none;">
     <select>
+      <option>Choose a question…</option>
       {% for item in reports_index %}
         <optgroup label="{{item['category']}}">
           {% for report in item['reports_in_category'] %}
