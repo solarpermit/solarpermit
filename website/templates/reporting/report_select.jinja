@@ -1,9 +1,0 @@
-<select>
-  {% for item in reports_index %}
-    <optgroup label="{{item['category']}}">
-      {% for report in item['reports_in_category'] %}
-        <select value="{{report['id']}}">{{report['label']}}</select>
-      {% endfor %}
-    </optgroup>
-  {% endfor %}
-</select>
