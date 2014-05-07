@@ -67,10 +67,9 @@ def build_query(question, field_map, geo_filter=None):
                      "geo_filter": compiled_filter }
 
 def json_match(field_name, value, op="="):
+    # BUG: this should be utf8mb4_unicode_ci; our connection to the database must be using the wrong encoding
     return and_match(not_null_match(json_extract(field_name)),
-                     'json_get(value, "%s") %s "%s"' % (field_name, op, value))
-    return regexp_match('"%(name)s": *"%(value)s"' % { "name": escape_regex_inclusion(field_name),
-                                                       "value": escape_regex_inclusion(value) })
+                     'json_get(value, "%s") %s "%s" COLLATE utf8_unicode_ci' % (field_name, op, value))
 def json_extract(field_name):
     return 'json_get(value, "%s")' % field_name
 def json_valid():
