@@ -6,13 +6,19 @@
     <link rel="stylesheet" type="text/css" href="{{static('autocomplete_light/style.css')}}"/>
     <link rel="stylesheet" type="text/css" href="{{static('autocomplete_light/side-by-side.css')}}"/>
     <style>
+      table {
+        width: 100%;
+      }
       th {
         vertical-align: top;
         text-align: left;
-        padding-left: 1em;
+        width: 20%;
       }
       th.division {
         padding-left: 0;
+      }
+      #id_jurisdictions-wrapper {
+        display: block;
       }
       ul[disabled] {
         color: lightgray;
@@ -130,23 +136,7 @@
       {% endfor %}
     </select>
     <div id="filter_selection">
-      {{ form.media|safe }}
-      <table>
-        <tr><th class="division" colspan="2">Filter criteria:</th></tr>
-        <tr><th><input type="radio" name="type" value="state"
-                       {{ 'checked' if form.initial.states }}
-                       id="type-state" class="type-selection">
-                <label for="type-state">{{ form.states.label }}<label></th>
-            <td>{{ form.states|safe }}
-                {{ form.states.errors|safe }}</td></tr>
-        <tr><th><input type="radio" name="type" value="jurisdiction"
-                       {{ 'checked' if form.initial.jurisdictions }}
-                       id="type-jurisdiction" class="type-selection">
-                <label for="type-jurisdiction">{{ form.jurisdictions.label }}</label></th>
-            <td>{{ form.jurisdictions|safe }}
-                {{ form.jurisdictions.errors|safe }}</td></tr>
-      </table>
-      <button id="add-filter">Filter</button>
+      {% include 'reporting/filter_criteria.jinja' %}
     </div>
   </div>
 {% endblock %}

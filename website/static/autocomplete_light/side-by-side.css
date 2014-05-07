@@ -1,9 +1,9 @@
 .autocomplete-light-widget input.autocomplete {
-    width: 43em;
+    width: 100%;
 }
 
 .autocomplete-light-widget select.autocomplete-light-widget {
-    width: 20em;
+    width: 45%;
     height: 10em;
 }
 

@@ -22,10 +22,12 @@ function add_ui(initial_reports) {
     var question_select = $("#hidden_controls > select").clone()
                                                         .on("change", machine.select);
     var filter_link = $("<a>", { text: "Filter this report...",
-                                 href: "#filter_selection" }).fancybox({ afterLoad: function (current, previous) {
-                                   
-                                                                                    },
-                                                                         beforeClose: machine.select });
+                                 href: "#filter_selection" });
+    filter_link.on("click",
+                   function () {
+                     controller.showModalDialog("#filter_selection",
+                                                { beforeClose: machine.select });
+                   });
     machine.selector_ui = $("<div>", { 'class': 'selector' }).append($("<div>", { 'class': 'busy-indicator' }),
                                                                      question_select,
                                                                      filter_link,
