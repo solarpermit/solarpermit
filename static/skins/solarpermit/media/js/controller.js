@@ -263,7 +263,7 @@ var controller = new function () {
 	}*/
 	
 	this.showModalDialog = function (selector, options) {
-		$.fancybox(selector, this.getMOdalDialogOptions(options));
+		$.fancybox(selector, this.getModalDialogOptions(options));
 		$('#fancybox_close').click(function (){$.fancybox.close();});
 	}
         this.getModalDialogOptions = function (options) {

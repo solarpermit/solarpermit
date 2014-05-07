@@ -88,7 +88,7 @@ function add_ui(initial_reports) {
                              };
                     })();
     var ui = $("<div>", { id: "report"+ report.idx, 'class': "report" }), table;
-    ui.append($("<div>", { id: "graph"+ report.idx }),
+    ui.append($("<div>", { id: "graph"+ report.idx, 'class': "graph" }),
               table = $("<table>", { 'class': "data_table" }));
     table.append($("<tr class='even'><th class='header_row'>Value</th><th class='header_row_right'>Jurisdictions</th></tr>"));
     report.table.forEach(function (row) {

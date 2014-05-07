@@ -4,7 +4,7 @@
 
 {% block body_modal_dialog %}
   {{ form.media|safe }}
-  <table>
+  <table id="filter_criteria_form">
     <tr><th><input type="radio" name="type" value="state"
                    {{ 'checked' if form.initial.states }}
                    id="type-state" class="type-selection">
