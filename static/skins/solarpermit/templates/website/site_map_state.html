@@ -14,7 +14,7 @@
           {% for column in group.columns %}
             <ul class="cssCell">
               {% for jurisdiction in column %}
-                <li><a href="/jurisdiction/{{ jurisdiction.name_for }}">{{ jurisdiction.show_jurisdiction() }}</a></li>
+                <li><a href="/jurisdiction/{{ jurisdiction.name_for_url }}">{{ jurisdiction.show_jurisdiction() }}</a></li>
               {% endfor %}
             </ul>
           {% endfor %}
