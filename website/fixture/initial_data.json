@@ -398,13 +398,55 @@
             "display_order": "3"
 		}
 	},           
+
+        {
+                "model":"website.AnswerChoiceGroup",
+                "pk": 32,
+                "fields":{
+                        "name": "Radio: required, not required"
+                }
+        },
+        {
+                "model":"website.AnswerChoiceGroup",
+                "pk": 33,
+                "fields":{
+                        "name": "Radio: 'Must draw individual modules', N in series in a rectangle allowed"
+                }
+        },
+        {
+                "model":"website.AnswerChoiceGroup",
+                "pk": 34,
+                "fields":{
+                        "name": "Radio: 'Staff has no training in PV solar', Staff has training in PV solar"
+                }
+        },
+        {
+                "model":"website.AnswerChoiceGroup",
+                "pk": 35,
+                "fields":{
+                        "name": "Dropdown: 1-10"
+                }
+        },
+
+        {
+                "model":"website.Template",
+                "pk": 2,
+                "fields":{
+                    "name": "Standard Requirements Template",
+                    "description": "Standard Requirements Template",
+                    "template_type": "RT"
+                }
+        },
+
+
 	{
 		"model": "website.QuestionCategory",
 		"pk":1,
 		"fields":{
 			"name": "General",
 			"description": "General",
-			"accepted": "1"
+			"accepted": "1",
+			"display_order": "1"
 		}
 	},
 	{
@@ -421,7 +463,8 @@
 		"fields":{
 			"name": "Building",
 			"description": "Building",
-			"accepted": "1"
+			"accepted": "1",
+			"display_order": "2"
 		}
 	},
 	{
@@ -430,7 +473,8 @@
 		"fields":{
 			"name": "Clerical",
 			"description": "Clerical",
-			"accepted": "1"
+			"accepted": "1",
+			"display_order": "3"
 		}
 	},    
 	{
@@ -439,7 +483,8 @@
 		"fields":{
 			"name": "Electrical",
 			"description": "Electrical",
-			"accepted": "1"
+			"accepted": "1",
+			"display_order": "4"
 		}
 	},
 	{
@@ -448,7 +493,8 @@
 		"fields":{
 			"name": "Fire",
 			"description": "Fire",
-			"accepted": "1"
+			"accepted": "1",
+			"display_order": "5"
 		}
 	},   
 	{
@@ -457,7 +503,8 @@
 		"fields":{
 			"name": "inspection_process",
 			"description": "Inspection Process",
-			"accepted": "1"
+			"accepted": "1",
+			"display_order": "7"
 		}
 	},     
 	{
@@ -466,7 +513,8 @@
 		"fields":{
 			"name": "Utility",
 			"description": "Utility",
-			"accepted": "1"
+			"accepted": "1",
+			"display_order": "8"
 		}
 	},    
 	{
@@ -475,7 +523,8 @@
 		"fields":{
 			"name": "Zoning",
 			"description": "Zoning",
-			"accepted": "1"
+			"accepted": "1",
+			"display_order": "9"
 		}
 	}, 
 	{
@@ -492,7 +541,8 @@
 		"fields":{
 			"name": "inspection_requirements",
 			"description": "Inspection Requirements",
-			"accepted": "1"
+			"accepted": "1",
+			"display_order": "6"
 		}
 	},
 	{
@@ -561,7 +611,7 @@
 			"question": "Department website",
 			"label": "Department website",
 			"validation_class" : "required",
-			"field_attributes" : "maxLength='200' size='35'",
+			"field_attributes" : "maxLength='200' size='50'",
 			"terminology": "link",	
 			"js": "department_website.js",	
 			"display_template": "url.html",				
@@ -642,6 +692,7 @@
 			"question": "Utilities serving the AHJ",
 			"label": "Utilities serving [AHJ name]",
 			"template": "utilities.html",
+			"js" : "utilities.js",
 			"display_template": "url.html",
 			"terminology": "utility company",
             "has_multivalues": "1",				
@@ -1307,16 +1358,18 @@
 			"form_type": "MF",
 			"answer_choice_group": "33",
 			"display_order": "9",
-			"default_value": "{\"value\":\"must draw individual modules\"}",
+			"default_value": "{\"value\":\"must draw individual modules\", \"form_option\": \"link\", \"link_1\": \"\", \"name_1\": \"\"}",
 			"category": "3",
 			"accepted": "1",
 			"question": "Module drawings",
 			"label": "Module drawings",		
-			"template": "radio_module_drawings.html",	
-			"js": "radio_module_drawings.js",
+			"template": "radio_module_drawings.html",
+			"js": "radio_module_drawings.js",				
 			"display_template": "radio_module_drawings_display.html",				
-			"terminology": "answer",				
-			"qtemplate": "2"
+			"terminology": "drawing",				
+            "has_multivalues": "1",									
+			"qtemplate": "2",
+			"support_attachments": "1"
 		}
 	}, 		
 	{
@@ -1807,17 +1860,20 @@
 		"model": "website.Question",
 		"pk":62,
 		"fields":{
-			"form_type": "T",
+			"form_type": "MF",
 			"display_order": "6",
-			"default_value": "{\"value\":\"\"}",
+			"default_value": "{\"value\":\"\",\"form_option\": \"link\", \"link_1\": \"\", \"name_1\": \"\"}",
 			"category": "4",
 			"accepted": "1",
 			"question": "Required spec sheets",
-			"label": "Required spec sheets",			
-			"terminology": "spec sheet",	
-			"validation_class": "required",	
-            "has_multivalues": "1",									
-			"qtemplate": "2"
+			"label": "Required spec sheets",						
+			"template": "required_spec_sheets.html",
+			"js": "required_spec_sheets.js",			
+			"display_template": "required_spec_sheets_display.html",			
+			"terminology": "spec sheet",
+            "has_multivalues": "1",	
+            "qtemplate": "2",
+			"support_attachments": "1"			
 		}
 	}, 		
 	{
@@ -2559,17 +2615,19 @@
 		"fields":{
 			"form_type": "MF",
 			"display_order": "70",
-			"default_value": "{\"available\":\"no\", \"url\":\"\"}",
+			"default_value": "{\"available\":\"no\", \"url\":\"\", \"form_option\": \"link\", \"link_1\": \"\", \"name_1\": \"\"}",
 			"category": "1",
 			"accepted": "1",
 			"question": "Solar permitting checklist",
 			"label": "Solar permitting checklist",
-			"template": "available_url.html",	
-			"js": "available_url.js",	
-			"display_template": "available_url_display.html",				
-			"terminology": "answer",	
+			"template": "solar_permitting_checklists.html",	
+			"js": "solar_permitting_checklists.js",	
+			"display_template": "solar_permitting_checklists_display.html",				
+			"terminology": "checklist",	
             "qtemplate": "2",          
-            "migration_type": "available_url"
+            "has_multivalues": "1",									
+			"qtemplate": "2",
+			"support_attachments": "1"                     
 		}
 	},
 	{
@@ -2715,19 +2773,22 @@
 		"model": "website.Question",
 		"pk":105,
 		"fields":{
-			"form_type": "T",
+			"form_type": "MF",
 			"display_order": "6",
-			"default_value": "{\"value\":\"\"}",
+			"default_value": "{\"available\":\"no\", \"value\":\"\", \"form_option\": \"link\", \"link_1\": \"\", \"name_1\": \"\"}",			
 			"category": "7",
 			"accepted": "1",
-			"instruction": "Please enter a valid URL. For example: http://www.solarpermit.org",					
+			"instruction": "",					
 			"question": "Online inspection checklist",
 			"label": "Inspection checklist",								
 			"terminology": "answer",
-			"display_template": "url.html",			
-            "has_multivalues": "1",				
-			"validation_class": "required url",						
-			"qtemplate": "2"
+			"template": "inspection_checklists.html",
+			"js": "inspection_checklists.js",			
+			"display_template": "inspection_checklists_display.html",			
+			"terminology": "checklist",
+            "has_multivalues": "1",	
+            "qtemplate": "2",
+			"support_attachments": "1"	  					
 		}
 	}, 		
 	{
@@ -3014,7 +3075,7 @@
 			"label": "Zoning department email",	
 			"instruction": "(e.g. free2rhyme@yahoo.com)",
 			"terminology": "email address",				
-			"field_attributes" : "maxLength='64'",
+			"field_attributes" : "size='50' maxLength='200'",
             "qtemplate": "2"		
 		}
 	}, 		
@@ -3056,17 +3117,20 @@
 		"fields":{
 			"form_type": "MF",
 			"display_order": "35",
-			"default_value": "{\"link_1\": \"\", \"name_1\": \"\"}",
+			"default_value": "{\"form_option\": \"link\", \"link_1\": \"\", \"name_1\": \"\"}",
 			"category": "1",
 			"accepted": "1",
-			"instruction": "Where are online versions of applications and forms available for this jurisdiction?",
+			"instruction": "",
+			"description": "Add permitting forms and applications here. You can either provide a link to a form, or upload a form.",
 			"question": "Online forms",
 			"label": "Forms",
 			"template": "online_forms.html",
-			"display_template": "url.html",			
-			"terminology": "link",
+			"js": "online_forms.js",			
+			"display_template": "online_forms.html",			
+			"terminology": "form",
             "has_multivalues": "1",	
-            "qtemplate": "2"		
+            "qtemplate": "2",
+			"support_attachments": "1"
 		}
 	}, 		
 	{
@@ -3132,32 +3196,32 @@
 	}, 	
 	{
 		"model": "website.Question",
-		"pk":285,
+		"pk":115,
 		"fields":{
-			"form_type": "T",
+			"form_type": "MF",
 			"display_order": "112",
-			"default_value": "{\"value\":\"\"}",
+			"default_value": "{\"link_1\": \"\", \"name_1\": \"\"}",
 			"category": "1",
 			"accepted": "1",
-			"instruction": "Please enter a valid URL. For example: http://www.solarpermit.org",
+			"instruction": "Please enter a valid URL. For example: http://www.solarpermit.org",				
 			"question": "Relevant Links",
-			"label": "Relevant Links",
-			"validation_class" : "required",		
-			"validation_class": "required url",		
-			"display_template": "url.html",
-			"terminology": "link",
-            "has_multivalues": "1",	
-            "qtemplate": "2"		
+			"label": "Relevant links",
+			"template": "relevant_links.html",
+			"js" : "relevant_links.js",
+			"terminology": "link",	
+			"display_template": "url.html",		
+            "has_multivalues": "1",						
+            "qtemplate": "2"            	
 		}
 	}, 		
 	{
 		"model": "website.TemplateQuestion",
-		"pk":285,
+		"pk":115,
 		"fields":{
 			"template": 2,
-			"question": 285
+			"question": 115
 		}
-	},			
+	},				
 	{
 		"model": "website.View",
 		"pk":1,

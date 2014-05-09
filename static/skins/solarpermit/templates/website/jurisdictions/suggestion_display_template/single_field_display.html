@@ -8,11 +8,12 @@
 			{% else %}
 			
 			<div>
+			{% if answer_content.get('value') != None %}
                  {{answer_content.get('value') | replace('\n', '<br/>') | capitalize }}
-                 {% if this_question.field_suffix != None %}
-                 {{this_question.field_suffix}}
+                 {% if current_question_field_suffix != None %}
+                 {{current_question_field_suffix}}
                  {% endif %}
-                             
+            {% endif %}                
             </div>
 
 			{% endif %}		           

@@ -1,11 +1,11 @@
 	<div class="form_field" >
         <div class="label">Company or Organization:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
         {% if orgmembers|length == 0 %}
-        	<div id="form_field_data_org"  >		<!-- class="show_data" style="width:350px;cursor:pointer;"  onmouseout="return show_data('form_field_data_org', 'edit_option_org')" onmouseover="return show_edit_option('form_field_data_org', 'edit_option_org')" onClick="controller.postRequest('/organization/', {ajax: 'open_choose_org'}); return false;"-->
+        	<div id="form_field_data_org"  >		
         		<div style="color:#C1CDCD;font-style:italic;" >None listed yet</div>
         		<div id="edit_option_org" >
                 	
-                	<input type="button" class="smallbutton" value="Add a company or organization..." onClick="controller.postRequest('/organization/', {ajax: 'open_choose_org'}); return false;" >
+                	<input type="button" id="add_org" class="smallbutton" value="Add a company or organization..."  >
 
             	</div>
         	</div>
@@ -13,8 +13,8 @@
         	{% for orgmember in orgmembers %}
         		{% if orgmember.status == 'A'%}
         		<div id="form_field_data_org_{{orgmember.id}}" class="show_data" style="width:500px;padding:20px 5px 5px 0;"  onmouseover="controller.initOrgFieldEvent(this);"  >
-        			<a href="#" class="org_edit_link" onClick="controller.postRequest('/organization/', {ajax: 'open_org_details', orgid: {{orgmember.organization.id}}}); return false;">{{orgmember.organization.name}}</a>
-        			<span style="float:right;visibility:hidden;cursor:pointer;" class='org_remove' id="edit_option_org_{{orgmember.id}}" onClick="set_member_id('{{orgmember.id}}');remove_from_my_profile('{{orgmember.organization.name}}', '{{orgmember.organization.id}}'); return false;">
+        			<a href="#" class="org_edit_link" data-orgid='{{orgmember.organization.id}}' >{{orgmember.organization.name}}</a>
+        			<span style="float:right;visibility:hidden;cursor:pointer;" class='org_remove' id="edit_option_org_{{orgmember.id}}" data-memberid="{{orgmember.id}}" data-orgid="{{orgmember.organization.id}}" data-orgname="{{orgmember.organization.name}}" >
                 		<img src="/media/images/cancel_off.png" alt="cancel off">
             		 </span>
             		 <div class="clearboth"></div>
@@ -26,8 +26,8 @@
                	{% endif %}
 				{% elif orgmember.status == 'P'%}               	
  				<div id="form_field_data_org_{{orgmember.id}}" class="show_data" style="width:500px;padding:20px 5 5 5;"  onmouseout="return show_data('form_field_data_org_{{orgmember.id}}', 'edit_option_org_{{orgmember.id}}')" onmouseover="return show_edit_option('form_field_data_org_{{orgmember.id}}', 'edit_option_org_{{orgmember.id}}')"  >
-					<div class="org_request_join">Request to join <a href="#" style="text-decoration:none" onClick="controller.postRequest('/organization/', {ajax: 'open_org_details', orgid: {{orgmember.organization.id}}}); return false;">{{orgmember.organization.name}}</a> pending
-					<span style="float:right;visibility:hidden;cursor:pointer;" id="edit_option_org_{{orgmember.id}}" onClick="set_org_id('{{orgmember.organization.id}}');cancel_my_request('{{orgmember.organization.name}}', '{{orgmember.organization.id}}'); return false;">
+					<div class="org_request_join">Request to join <a href="#" style="text-decoration:none" class="org_details" data-orgid='{{orgmember.organization.id}}' >{{orgmember.organization.name}}</a> pending
+					<span style="float:right;visibility:hidden;cursor:pointer;" id="edit_option_org_{{orgmember.id}}" class="cancel_request"  data-orgid="{{orgmember.organization.id}}" data-orgname="{{orgmember.organization.name}}" >
 						<img src="/media/images/cancel_off.png" alt="cancel off" >
 					 </span>
 					</div>
@@ -40,30 +40,34 @@
 			{% for orgmember in orgmembers_invite %}						   	             	
         		{% if orgmember.status == 'AI' and orgmember.role.name == 'Administrator' %}
         		<div id="form_field_data_org_{{orgmember.id}}" class="show_data" style="width:500px;margin-top:20px;">
-        			You were invited to join <a href="#" style="text-decoration:none" onClick="controller.postRequest('/organization/', {ajax: 'open_org_details', orgid: {{orgmember.organization.id}}}); return false;">{{orgmember.organization.name}}</a> as an administrator by <a href="#" style="text-decoration:none" onClick="controller.postRequest('/account/', {ajax: 'other_user_profile'}); return false;" >{{orgmember.invitor.username}}</a>.
+        			You were invited to join <a href="#" class="invited_to_join" style="text-decoration:none" data-orgid="{{orgmember.organization.id}}}" >{{orgmember.organization.name}}</a> as an administrator by <a href="#" style="text-decoration:none" class="other_user_profile"  >{{orgmember.invitor.username}}</a>.
         		</div>
         		<div style="padding:20px 0 0 0;" >	
-					<span><a id="accept_invite_btn" href="#" class="mainbutton" onClick="set_member_id('{{orgmember.id}}');accept_invite('{{orgmember.organization.name}}', '{{orgmember.organization.id}}'); return false;">Accept</a></span>
-					<span><a id="decline_invite_btn" href="#" class="mainbutton" onClick="set_member_id('{{orgmember.id}}');decline_invite('{{orgmember.organization.name}}', '{{orgmember.organization.id}}'); return false;">Decline</a>        		
+					<span><a id="accept_invite_btn" href="#" class="mainbutton accept_invite" data-memberid="{{orgmember.id}}" data-orgid="{{orgmember.organization.id}}" data-orgname="{{orgmember.organization.name}}" >Accept</a></span>
+					<span><a id="decline_invite_btn" href="#" class="mainbutton decline_invite" data-memberid="{{orgmember.id}}" data-orgid="{{orgmember.organization.id}}" data-orgname="{{orgmember.organization.name}}" >Decline</a>        		
         		</div>
         		{% elif orgmember.status == 'AI' %}
 				<div id="form_field_data_org_{{orgmember.id}}" class="show_data" style="width:500px;margin-top:20px;">        		
-        			You were invited to join <a href="#" style="text-decoration:none" onClick="controller.postRequest('/organization/', {ajax: 'open_org_details', orgid: {{orgmember.organization.id}}}); return false;">{{orgmember.organization.name}}</a> by <a href="#" style="text-decoration:none" onClick="controller.postRequest('/account/', {ajax: 'other_user_profile'}); return false;">{{orgmember.invitor.username}}</a>.
+        			You were invited to join <a href="#" class="invited_to_join" data-orgid="{{orgmember.organization.id}}}" style="text-decoration:none" >{{orgmember.organization.name}}</a> by <a href="#" style="text-decoration:none" class="other_user_profile" >{{orgmember.invitor.username}}</a>.
         		</div>
 				<div style="padding:20px 0 0 0;" >	
-					<span><a id="accept_invite_btn" href="#" class="mainbutton" onClick="set_member_id('{{orgmember.id}}');accept_invite('{{orgmember.organization.name}}', '{{orgmember.organization.id}}'); return false;">Accept</a></span>
-					<span><a id="decline_invite_btn" href="#" class="mainbutton" onClick="set_member_id('{{orgmember.id}}');decline_invite('{{orgmember.organization.name}}', '{{orgmember.organization.id}}'); return false;">Decline</a></span>			
+					<span><a id="accept_invite_btn" href="#" class="mainbutton accept_invite" data-memberid="{{orgmember.id}}" data-orgid="{{orgmember.organization.id}}" data-orgname="{{orgmember.organization.name}}" >Accept</a></span>
+					<span><a id="decline_invite_btn" href="#" class="mainbutton  decline_invite" data-memberid="{{orgmember.id}}" data-orgid="{{orgmember.organization.id}}" data-orgname="{{orgmember.organization.name}}" >Decline</a></span>			
 				</div>        		
         		{% elif orgmember.status == 'MI' %}
 				<div id="form_field_data_org_{{orgmember.id}}" class="show_data" style="width:500px;margin-top:20px;">        		
-        			You were invited to join <a href="#" style="text-decoration:none" onClick="controller.postRequest('/organization/', {ajax: 'open_org_details', orgid: {{orgmember.organization.id}}}); return false;">{{orgmember.organization.name}}</a> by <a href="#" style="text-decoration:none" onClick="controller.postRequest('/account/', {ajax: 'other_user_profile'}); return false;">{{orgmember.invitor.username}}</a>. If you accept, you will receive an email once the company or administrator has processed the invitation.
+        			You were invited to join <a href="#" class="invited_to_join" data-orgid="{{orgmember.organization.id}}}" style="text-decoration:none" >{{orgmember.organization.name}}</a> by <a href="#" style="text-decoration:none" class="other_user_profile"  >{{orgmember.invitor.username}}</a>. If you accept, you will receive an email once the company or administrator has processed the invitation.
         		</div>
 				<div style="padding:20px 0 0 0;" >	
-					<span><a id="accept_invite_btn" href="#" class="mainbutton" onClick="set_member_id('{{orgmember.id}}');accept_invite('{{orgmember.organization.name}}', '{{orgmember.organization.id}}'); return false;">Accept</a></spann>
-					<span><a id="decline_invite_btn" href="#" class="mainbutton" onClick="set_member_id('{{orgmember.id}}');decline_invite('{{orgmember.organization.name}}', '{{orgmember.organization.id}}'); return false;">Decline</a></span>		
+					<span><a id="accept_invite_btn" href="#" class="mainbutton accept_invite" data-memberid="{{orgmember.id}}" data-orgid="{{orgmember.organization.id}}" data-orgname="{{orgmember.organization.name}}" >Accept</a></spann>
+					<span><a id="decline_invite_btn" href="#" class="mainbutton decline_invite" data-memberid="{{orgmember.id}}" data-orgid="{{orgmember.organization.id}}" data-orgname="{{orgmember.organization.name}}" >Decline</a></span>		
 				</div>        		
         		{% endif %}
         	{% endfor%}
         {% endif %}
     </div>
-  
+{% compress js %}
+	<script type='text/javascript'>
+{% include 'website/form_fields/org.js' %}   
+	</script>
+{% endcompress %}

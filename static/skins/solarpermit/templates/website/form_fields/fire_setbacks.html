@@ -1,18 +1,18 @@
 			<div class="form_field" >  
 				<div class="label">{{question_label}}:</div>           
                 <div class="field">
-                   <input type="radio" name="field_enforced" id="field_enforced_no_{{question_id}}" value="No" {% if enforced == 'No' %} checked {% endif %}  onClick="document.getElementById('yes_with_exceptions_{{question_id}}').style.display='none';document.getElementById('field_exceptions_{{question_id}}').value='';" >Not enforced
+                   <input type="radio" name="field_enforced" id="field_enforced_no_{{question_id}}" value="No" {% if enforced == 'No' %} checked {% endif %}   >Not enforced
                    <br/>
-                   <input type="radio" name="field_enforced" id="field_enforced_yes_{{question_id}}" value="Yes" {% if enforced == 'Yes' %} checked {% endif %}  onClick="document.getElementById('yes_with_exceptions_{{question_id}}').style.display='none';document.getElementById('field_exceptions_{{question_id}}').value='';" >Enforced
+                   <input type="radio" name="field_enforced" id="field_enforced_yes_{{question_id}}" value="Yes" {% if enforced == 'Yes' %} checked {% endif %}   >Enforced
                    </br/>
-                   <input type="radio" name="field_enforced" id="field_enforced_yes_with_exception_{{question_id}}" value="Yes, with exceptions" {% if enforced == 'Yes, with exceptions' %} checked {% endif %} onClick="document.getElementById('yes_with_exceptions_{{question_id}}').style.display='block';" >Enforced with exceptions
+                   <input type="radio" name="field_enforced" id="field_enforced_yes_with_exception_{{question_id}}" value="Yes, with exceptions" {% if enforced == 'Yes, with exceptions' %} checked {% endif %}  >Enforced with exceptions
                 </div>                              
             </div>
 			<div class="field_help_text" style="padding-bottom:5px;">
 				{{instruction}}
 			</div>             
             
-            <div id="yes_with_exceptions_{{question_id}}" {% if required == 'Yes, with exceptions' %} style="display:block;"{% else %} style="display:none;" {% endif %}>
+            <div id="yes_with_exceptions_{{question_id}}" {% if enforced == 'Yes, with exceptions' %} style="display:block;"{% else %} style="display:none;" {% endif %}>
             	<div class="label">Note:</div>     
             	<div class="field">
             		<textarea name="field_note" id="field_note_{{question_id}}" rows="5" cols="30">{{note}}</textarea>

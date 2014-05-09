@@ -4,7 +4,7 @@ class MathUtil():
     
     def is_number(self, s):
         try:
-            float(s)
+            float(s.replace(',', ''))
             return True
         except ValueError:
             return False        

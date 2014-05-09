@@ -12,7 +12,7 @@ from website.models import *
 from website.utils.LogHelper import LogHelper
 from website.utils.answerHelper import AnswerHelper
 
-from website.models import User, UserDetail, Organization, Address, OrganizationAddress, RoleType, OrganizationMember
+from website.models import User, UserDetail, Organization, Address, OrganizationAddress, RoleType, OrganizationMember, Question, AnswerReference
 
 import datetime, random
 import json
@@ -622,6 +622,7 @@ def set_up_data_sprint_19(request):
     return HttpResponseRedirect("/")         
     
 def set_up_county_city_relationship():
+    return
     counties = Jurisdiction.objects.filter(jurisdiction_type='CO').order_by('state', 'name')
     for county in counties:
         cities = Jurisdiction.objects.filter(jurisdiction_type='CI',  state__iexact=county.state, county__istartswith=county.name).order_by('state', 'city') 
@@ -631,6 +632,7 @@ def set_up_county_city_relationship():
             
         
 def match_user_n_details():
+    return
     users = User.objects.all()
     for user in users:
         user_detail = UserDetail.objects.filter(user=user)
@@ -651,6 +653,7 @@ def migrate_temmplatequestion_to_question():
             print "no question for id = " + str(template_question.question_id)
             
 def migrate_organizationMember():
+    return
     members = OrganizationMember.objects.filter(role__id = 3)
     role = RoleType.objects.get(id = 1)
     for member in members:
@@ -1255,3 +1258,77 @@ def correct_fee(request):
     data['answers'] = answers
 
     return requestProcessor.render_to_response(request,'website/fee_correction.html', data, '')  
+
+def prep_4_sprint_32():
+    return
+    question_id = 282   # forms
+    question = Question.objects.get(id=question_id)
+    answers = AnswerReference.objects.filter(question__exact=question)
+    if len(answers) > 0:
+        for answer in answers:
+            if answer.value != '' and answer.value != None:
+                try:
+                    answer_details = json.loads(answer.value)
+                    if 'link_1' in answer_details.keys():
+                        if answer_details['link_1'] != '':
+                            answer_details['form_option'] = 'link'
+                            answer.value = json.dumps(answer_details)
+                            answer.save()
+                except:
+                    pass
+                    
+    question_id = 96    # solar permitting checklist
+    question = Question.objects.get(id=question_id)
+    answers = AnswerReference.objects.filter(question__exact=question)
+    if len(answers) > 0:
+        for answer in answers:
+            if answer.value != '' and answer.value != None:
+                try:
+                    answer_details = json.loads(answer.value)
+                    if 'url' in answer_details.keys():
+                        if answer_details['url'] != '':
+                            answer_details['form_option'] = 'link'
+                            answer_details['link_1'] = answer_details['url']
+                            answer_details['url'] = ''
+                            answer_details['available'] = 'yes'
+                            answer.value = json.dumps(answer_details)
+                            answer.save()     
+                except:
+                    pass  
+                    
+    question_id = 105 # Online inspection checklist
+    question = Question.objects.get(id=question_id)
+    answers = AnswerReference.objects.filter(question__exact=question)
+    if len(answers) > 0:
+        for answer in answers:
+            if answer.value != '' and answer.value != None:
+                try:
+                    answer_details = json.loads(answer.value)
+                    if 'value' in answer_details.keys():
+                        if answer_details['value'] != '':
+                            answer_details['form_option'] = 'link'
+                            answer_details['link_1'] = answer_details['value']
+                            answer_details['value'] = ''
+                            answer_details['available'] = 'yes'
+                            answer.value = json.dumps(answer_details)
+                            answer.save()   
+                except:
+                    pass
+                    
+    question_id = 62 # Required spec sheets
+    question = Question.objects.get(id=question_id)
+    answers = AnswerReference.objects.filter(question__exact=question)
+    if len(answers) > 0:
+        for answer in answers:
+            if answer.value != '' and answer.value != None:
+                try:
+                    answer_details = json.loads(answer.value)
+                    if 'value' in answer_details.keys():
+                        if answer_details['value'] != '':
+                            answer_details['form_option'] = 'link'
+                            answer_details['link_1'] = answer_details['value']
+                            answer_details['value'] = ''
+                            answer.value = json.dumps(answer_details)
+                            answer.save()  
+                except:
+                    pass  

@@ -1,37 +1,74 @@
-		var uploader_input = document.getElementById("file-uploader");
-    if (uploader_input != null) {
-        var uploader = new qq.FileUploader(
-            {
-                element: document.getElementById("file-uploader"),
-                action: "/jurisdiction/answer_uploadfile/",
-                customHeaders: {"X-CSRFToken": js_csrf },
-                debug: true,
-                multiple: true,
-                uploadButtonText: "Select File to Attach",
-                onComplete: function(id, fileName, response) {
-                                if (response.error){
-                                		$(".qq-upload-failed-text").html(response.error);
-                                    //$("#filename").val();
-                                    return;
-                                } else {
-                                		if ($("#filename").val() == ''){
-                                			$("#filename").val(fileName);
-                                		} else {
-                                			fileName1 = $("#filename").val() + ','+ fileName;
-                                			$("#filename").val(fileName1);
-                                		}
-	                                  if ($("#file_store_name").val() == ''){
-                                			$("#file_store_name").val(response.store_name);
-                                		} else {
-                                			file_store_name1 = $("#file_store_name").val() + ','+ response.store_name;
-                                			$("#file_store_name").val(file_store_name1);
-                                		} 
-                                    if($("#error_message").is(":visible"))     $("#error_message").hide();
-                                    //$("#file_store_name").val(response.store_name);
-                                }
-                            },
-                            params: {
-                                'csrfmiddlewaretoken': js_csrf,
-                              }
-        });
+
+{% include 'website/form_fields/link_or_file.js' %}    
+
+controller.setUpFormSubmit('#form_{{question_id}}', '#save_{{question_id}}');
+controller.setUpFormSubmit('#form_edit_{{answer_id}}', '#save_edit_{{answer_id}}');
+
+if ($('#save_{{question_id}}').length > 0)
+	controller.activateButton('#save_{{question_id}}');      
+else
+	controller.activateButton('#save_edit_{{answer_id}}'); 
+	
+$('#field_value_draw_{{question_id}}').click(function(event) {
+    $target = $(event.target);
+	if ($('#field_value_draw_{{question_id}}').is(':checked')) 
+    {
+        $('#link_or_file_{{question_id}}').show();
+        if ($('#save_{{question_id}}').length > 0)
+        	controller.disableButton('#save_{{question_id}}');      
+        else
+        	controller.disableButton('#save_edit_{{answer_id}}');          
     }
+
+});
+
+$('#field_value_series_{{question_id}}').click(function(event) {
+    $target = $(event.target);
+	if ($('#field_value_series_{{question_id}}').is(':checked')) 
+    {
+        $('#link_or_file_{{question_id}}').hide();    
+        if ($('#save_{{question_id}}').length > 0)
+        	controller.activateButton('#save_{{question_id}}');      
+        else
+        	controller.activateButton('#save_edit_{{answer_id}}');             
+    }
+
+});    
+
+
+var submitCount_q_{{question_id}} = 0;
+var submitCount_a_{{answer_id}} = 0;
+
+$('#save_{{question_id}}').click(function(event) {
+	if (++submitCount_q_{{question_id}} == 1)
+	{	
+		if ($('#field_value_draw_{{question_id}}').is(':checked')) 
+			success = validateLinkOrFile(true);
+		else
+			success = true;
+				
+		if (success)
+			success = controller.submitHandler(event, submitCount_q_{{question_id}});	
+		else
+			submitCount_q_{{question_id}} = 0;
+	}
+
+	return false;
+});
+
+$('#save_edit_{{answer_id}}').click(function(event) {
+	if (++submitCount_a_{{answer_id}} == 1)
+	{
+		if ($('#field_value_draw_{{question_id}}').is(':checked')) 
+			success = validateLinkOrFile(false);
+		else
+			success = true;
+			
+		if (success)
+			success = controller.submitHandler(event, submitCount_a_{{answer_id}});	
+		else
+			submitCount_a_{{answer_id}} = 0;
+	}
+	
+	return false;
+});

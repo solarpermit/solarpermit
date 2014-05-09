@@ -1,3 +1,18 @@
+
+
+//initialize forms and buttons
+controller.setUpFormSubmit('#form_{{question_id}}', '#save_{{question_id}}');
+controller.setUpFormSubmit('#form_edit_{{answer_id}}', '#save_edit_{{answer_id}}');
+
+/* MOVED TO CONTROLLER */
+/*
+function processUrlField(id) {
+	var value = $('#'+id).val();
+	value = controller.urlValidScheme(value);
+	$('#'+id).val(value);
+	$('#'+id).addClass('url');
+}
+
 //set up ajax form submit, includes IE8 fix
 function setUpFormSubmit(form_selector, button_selector) {
 	$(button_selector).removeAttr('disabled');
@@ -30,8 +45,4 @@ function submitActions($form, $button) {
 	return false;
 }
 
-
-
-//initialize forms and buttons
-setUpFormSubmit('#form_{{question_id}}', '#save_{{question_id}}');
-setUpFormSubmit('#form_edit_{{answer_id}}', '#save_edit_{{answer_id}}');
+*/

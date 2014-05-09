@@ -1,8 +1,8 @@
 			{% if not request.user.is_authenticated() %}
 				<div id="sign_in_block">
-					<div class="sign_in_block">	
+					<div class="sign_in_block" >	
 						{% if unauthenticated_page_message == "The information on this page is available to all visitors of the National Solar Permitting Database.  If you would like to add information to the database and interact with the solar community, please sign in below or "%} 				
-						<p>{{ unauthenticated_page_message }} <a href='#' onClick="controller.postRequest('/account/', {ajax: 'create_account'}); return false;">create an account</a>.</p>
+						<p>{{ unauthenticated_page_message }} <a id="sign_in_create_account_button" href='#'>create an account</a>.</p>
 						{% else %}
 						<p>{{ unauthenticated_page_message }} </p>
 						{% endif %}
@@ -11,28 +11,31 @@
 							<input type='hidden' name="ajax" value='login' />
 					      	<input type="hidden" name="caller" value="sign_in_block" />
 					      	<input type="hidden" name="unauthenticated_page_message" value="{{unauthenticated_page_message}}" />
-					    	<div style="width:100%;">
-								<table>
+					    	<div style="width:95%;">
+								<table >
 									<tr>
 										<td>
-											<div class="form_field">
+											<div class="form_field" style="height:25px;">
 												<div class="label">Username or email address:</div>
 												<div class="field"><input tabIndex="1" type="text" name="username" id="username" value="{{username}}" class="required" style="width:250px; height:20px;"></div>
-												<div class="field_help_text"></div>
+												
 												<div id="form_sign_in_field_username" class="error_div">{{form_sign_in_username}}</div> 
 											</div>               
 										</td>
 										<td>
-											<div class="form_field">
+											<div class="form_field" style="height:25px;">
 												<div class="label" >Password:</div>
 												<div class="field" ><input tabIndex="2" type="password" name="password" id="password" value="" class="required" style="width:250px; height:20px;"></div>
-												<div class="field_help_text" ></div>
+												
 												<div id="form_sign_in_field_password" class="error_div">{{form_sign_in_password}}</div>  
 											</div> 											
 										</td>
 										<td >
-											<div style="margin-top:6px;">
-												<input type="submit" id="form_sign_in_submit_button" class="mainbutton" onClick="controller.submitForm('#form_sign_in');return false;" value="Sign in" title="Sign in">
+											<div class="form_field" style="height:25px;">
+												<div class="label" >&nbsp;</div>
+												<div class="field" >
+												<input type="submit" id="form_sign_in_submit_button" class="mainbutton"  value="Sign in" title="Sign in">
+												</div>
 											</div>
 										</td>
 									</tr>
@@ -41,11 +44,11 @@
 										<td colspan="3">
 										{#
 											<div class="form_field" >
-												<span class="field" ><input type="checkbox" name="keep_me_signed_in" id="keep_me_signed_in" value="1" class="" >Keep me signed in <span style="float:right;"><a style="" href="#" onClick="controller.postRequest('/account/', {ajax: 'trouble_signing_in'}); return false;" >Trouble signing in?</a></span></span>
+												<span class="field" ><input type="checkbox" name="keep_me_signed_in" id="keep_me_signed_in" value="1" class="" >Keep me signed in <span style="float:right;"><a style="" href="#" id="trouble_signing_in"  >Trouble signing in?</a></span></span>
 												<div class="field_help_text"></div>
 											</div> 
 										#}
-											<span class="form_field_error_message" >{{form_sign_in_fail_reason}}</span>                 
+											<span class="form_field_error_message" >&nbsp;{{form_sign_in_fail_reason}}</span>                 
 										</td>
 									</tr>
 									

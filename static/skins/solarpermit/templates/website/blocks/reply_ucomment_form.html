@@ -1,8 +1,8 @@
 <form id="id_reply_comment" name="create_comment" action=".">
 	<input type="hidden" name="ajax" value="ucomment_create_submit" />
 	<input type="hidden" name="jurisdiction_id" value="{{comment.jurisdiction.id}}" />
-	<input type="hidden" name="entity_id" value="{{comment.entity_id}}" />
-	<input type="hidden" name="entity_name" value="{{comment.entity_name}}" />
+	<input type="hidden" name="entity_id" value="{{comment.jurisdiction.id}}" />
+	<input type="hidden" name="entity_name" value="Unincorporate" />
 	<input type="hidden" name="comment_type" value="{{comment.comment_type}}" />
 	<input type="hidden" name="parent_comment" value="{{comment.id}}" />
 	<div class="form_field">
@@ -11,5 +11,5 @@
             </div>        
     </div>
   	<input id="reply_comment_btn" type="submit" class="smallbutton" value="Post reply">
-	<input type="button" id="id_cancel_create" class="smallbutton" onClick="controller.postRequest('/jurisdiction_comment/', {ajax: 'cancel_reply', cid: {{comment.id}}});return false;"  title="Cancel" value="Cancel">
+	<input type="button" id="id_cancel_create" class="smallbutton"  title="Cancel" value="Cancel">
 </form>

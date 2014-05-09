@@ -23,3 +23,11 @@ $('.organization_radio.unbind').click(function (event) {
 });
 $('.organization_radio.unbind').removeClass('unbind'); //remove unbind class
 
+
+	$('.org').click(function() {
+		$target = $(event.target);
+		var orgId = $target.data('orgid');
+		controller.postRequest('/organization/', {ajax: 'choose_org_details', orgid: orgId});
+		return false;
+					
+	});	

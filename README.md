@@ -1,8 +1,9 @@
-solarpermit-1.3.30
+solarpermit-1.3.37
 ===============
 
 Web Based Tool for Tracking Solar Permitting Requirements in The United States
 
+Please see the wiki for additional documentaiton - [https://github.com/solarpermit/solarpermit/wiki](https://github.com/solarpermit/solarpermit/wiki)
 
 Initial Source Release
 ================
@@ -15,6 +16,11 @@ Install Instructions
 1.  Install Dependencies
     A. Apache 2
     B. MySQL Server
+        a. Install the mysql_json UDF
+            1. git submodule update --init    (checks out the source code)
+            2. cd deps/mysql_json
+            3. make
+            4. make install
     C. mod_wsgi
     D. Please See dependencies.txt
         a.  This file is written to be used with pip for easily handling python requirements - i.e. "pip install -r dependencies.txt"
@@ -36,7 +42,10 @@ Install Instructions
         a.  replace "/path/to/software" on line 3.
     B. Change settings... do not edit settings.py, use settings_local.py to
        override
-5. Load SQL to database
+5. Configure Database
+    A. CREATE DATABASE solarpermit;
+    B. ./manage.py syncdb (if this fails due to a missing SQL table, run migrate website)
+    C. ./manage.py migrate website
 6. Restart Apache
       
 Need help?  Have questions?

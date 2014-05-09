@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://dev.solarpermit.org/" />
+<title>Site-Map-Link-About</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">Site-Map-Link-About</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/sitemap/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>//div[@id='main-wrapper']/div[4]/h2[5]</td>
+	<td>Jurisdictions</td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=About SolarPermit.org</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=About SolarPermit.org</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForText</td>
+	<td>css=div.contentOnlyPage &gt; h1</td>
+	<td>About SolarPermit.org</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=p</td>
+	<td>SolarPermit.org hosts the National Solar Permitting Database, a free, online database of information related to solar permitting requirements of cities and counties across the country. Developed by Clean Power Finance and supported by a Department of Energy grant, SolarPermit.org organizes and simplifies solar permitting processes by compiling the information in a single location. Using the community-based platform, users of the database keep the information up-to-date and relevant. The project's goal is to minimize the time and resources required to and support the mass-market adoption of solar.</td>
+</tr>
+</tbody></table>
+</body>
+</html>

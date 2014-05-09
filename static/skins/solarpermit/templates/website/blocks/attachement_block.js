@@ -60,6 +60,16 @@ speed : "normal",
 slideBy : 3
 }); 
 
+$(".attachement_save").click(function (){
+	answerid = $(this).data('answerid');
+	return controller.submitForm('#attach-form');
+});
+
+$(".attachement_cancel").click(function(){
+	answerid = $(this).data('answerid');
+	$('#qa_'+answerid+'_attachements').hide('slow');
+});
+
 var uploader_input = document.getElementById("file-uploader");
     if (uploader_input != null) {
         var uploader = new qq.FileUploader(

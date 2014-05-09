@@ -18,6 +18,7 @@
 					<input type="hidden" id="select_orgid" value="">
 					<input type="hidden" id="select_orgname" value="">
 					<input type="hidden" id="sort_dir" value="desc">
+					<input type="hidden" id="sort_by_date_added_dir" value="">					
 					<span><input type="button" id="org_add_my_btn" href="#" class="smallbutton disabled" disabled="disabled" value="Add to My Profile"></span>
 					<span><input type="button" id="org_details_btn" href="#" class="smallbutton disabled" disabled="disabled" value="View Details"></span>
 					<span><input type="button" id="org_new_btn" href="#" class="smallbutton {% if can_create_org == 'false' %}disabled{% endif %}" {% if can_create_org == 'false' %}disabled="disabled"{% endif %} value="Create New"></span>
@@ -26,8 +27,8 @@
 			<div class="listing_header">
 				<table><tr>
 					<td style="width: 30px;">&nbsp;</td>
-					<td style="width: 200px;"><p class="sort-up"><a id='search_org_sort' href='#' class="header_link">Name</a></td>
-					<td><a href="#"  class="header_link">Date added</a></td>
+					<td style="width: 200px;"><p id="search_org_sort_dir" class="sort-up"><a id='search_org_sort' href='#' class="header_link">Name</a></td>
+					<td><p id='search_org_sort_by_date_added_dir' ><a id='search_org_sort_by_date_added' href="#"  class="header_link">Date added</a></td>
 				</tr></table>
 			</div>
 			<div id="org_list" class="listing_list" style="height: 200px;overflow: scroll;">

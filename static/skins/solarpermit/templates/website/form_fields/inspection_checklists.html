@@ -1,0 +1,19 @@
+                        
+            <div class="form_field" >  
+                <div class="label">{{question_label}}:</div>           
+                <div class="field">
+                   <input type="radio" name="field_available" id="field_available_no_{{question_id}}" value="no" {% if available == 'no' or available == 'No' %} checked {% endif %}   >Not available
+                   <br/>
+                   <input type="radio" name="field_available" id="field_available_yes_{{question_id}}" value="yes" {% if available == 'yes' or available == 'Yes' %} checked {% endif %}   >Available               
+                </div>                                
+            </div>
+
+            <div id="link_or_file_{{question_id}}" {% if available == 'yes' or value == 'Yes' %} style="display:block;"{% else %} style="display:none;" {% endif %} >
+                {% include 'website/form_fields/link_or_file.html' %}
+            </div>
+            
+            <div class="form_field" >  
+                <div class="field_help_text">
+                    {{instruction}}
+                </div>                                 
+            </div>                        

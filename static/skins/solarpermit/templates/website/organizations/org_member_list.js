@@ -103,6 +103,19 @@ $('#org_members_list a.unbind').bind('click', function(event){
 
 $('#org_members_list .unbind').removeClass('unbind');
 
+$('.approve_btn').click(function (){
+	mid = $(this).data('mid');
+	controller.postRequest('/organization/', {ajax: 'handle_pending_request', type: 'approve', mid: mid });
+	return false;
+});
+
+$('.deny_btn').click(function (){
+	mid = $(this).data('mid');
+	controller.postRequest('/organization/', {ajax: 'handle_pending_request', type: 'deny', mid: mid });
+	return false;
+});
+
+
 function showSaveButton() {
 	$('#save_members_btn').show();
 	//bind event now since can't do it when hidden

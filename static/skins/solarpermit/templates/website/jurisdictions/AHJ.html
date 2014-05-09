@@ -1,6 +1,50 @@
 {% extends "base.html" %}
     
-
+{% block forejs %}
+{% compress js %}
+<script type='text/javascript'>
+$(document).ready(function() {
+	$("#form_sign_in_submit_button").click(function (){
+		controller.submitForm('#form_sign_in');
+		return false;
+	});
+	
+	$("#sign_in_create_account_button").click(function (){
+		controller.postRequest('/account/', {ajax: 'create_account'}); 
+		return false;
+	});
+    
+    $("#ahj_send_feedback").click(function (){
+        controller.postRequest('/info/', {ajax: 'send_feedback'}); 
+        return false;
+    });
+    
+    $("#ahj_create_jurisdiction_ucomment").click(function (){
+        controller.postRequest('.', {ajax: 'create_jurisdiction_ucomment'}); 
+        return false;
+    });
+    
+    $(".ucommentReplyBtn").click(function(){
+		cid = $(this).data("cid");
+		controller.postRequest('.', {ajax: 'reply_comment', cid: cid});
+		return false;
+	});
+	
+	$(".ucommentDeleteBtn").click(function () {
+		cid = $(this).data("cid");
+		controller.postRequest('.', {ajax: 'remove_comment', cid: cid});
+		return false;
+	});
+	
+	$(".ucommentFlagBtn").click(function () {
+		cid = $(this).data("cid");
+		controller.postRequest('.', {ajax: 'flag_comment', cid: cid});
+		return false;
+	});       
+});
+</script>
+{% endcompress %}
+{% endblock %}
 <!-- template jurisdiction_state_browse.html -->
 
 
@@ -22,32 +66,35 @@
 
 
 {% block forestyle %}
+{% compress css %}
 	<link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css" />
+{% endcompress %}
 {% endblock %}
 
 
 {% block top_main_content %}
 			<span style="padding-left:10px;">
 {% if jurisdiction.jurisdiction_type!='U' and jurisdiction.jurisdiction_type!='SC'  and jurisdiction.jurisdiction_type != 'CINP' and jurisdiction.jurisdiction_type != 'CONP' %}
-{% if last_contributed_date == ''  or last_contributed_date == None %}
-				This page is empty and has not been edited{% if request.user.is_authenticated() %} - <img width="12" height="12" src="/media/images/add-to-favorites.png" alt="Add to Favorites" > {% if jurisdiction.user_favorite_jurisdiction(user) %} <a id="favorite-a" href="#" title="Remove {{jurisdiction.show_jurisdiction('long')}} from your favorite jurisdictions">Remove from favorites</a> {% else %} <a id="favorite-a" href="#" title="Add {{jurisdiction.show_jurisdiction('long')}} to your favorite jurisdictions"> Add to favorites</a> {% endif %}{% endif %}
-{% else %}
-    {% if last_contributed_by != None %}
-				<span id="jurisdicton_last_updated">Last updated {{last_contributed_date}} by <a href='#' id='id_jurisdicton_last_updated' onmouseover="controller.postRequest('/account/', {ajax: 'user_profile_short', user_id: '{{last_contributed_by.id}}',  unique_list_id: 'jurisdicton_last_updated'  });"  >{{last_contributed_by.get_profile().get_display_name()}}</a></span>
+    {% if last_contributed_date == ''  or last_contributed_date == None %}
+    				This page is empty and has not been edited
     {% else %}
-                <span id="jurisdicton_last_updated">Last updated {{last_contributed_date}} by </span>    
+        {% if last_contributed_by != None %}
+    				<span id="jurisdicton_last_updated">Last updated {{last_contributed_date}} by <a href='#' id='id_jurisdicton_last_updated' onmouseover="controller.postRequest('/account/', {ajax: 'user_profile_short', user_id: '{{last_contributed_by.id}}',  unique_list_id: 'jurisdicton_last_updated'  });"  >{{last_contributed_by.get_profile().get_display_name()}}</a></span>
+        {% else %}
+                    <span id="jurisdicton_last_updated">Last updated {{last_contributed_date}} by </span>    
+        {% endif %}
+
     {% endif %}
-{% if request.user.is_authenticated() %}
-					- <img width="12" height="12" src="/media/images/add-to-favorites.png" alt="Add to Favorites">
-{% if jurisdiction.user_favorite_jurisdiction(user) %}
-					<a id="favorite-a" href="#" title="Remove {{jurisdiction.show_jurisdiction('long')}} from your favorite jurisdictions">Remove from favorites</a>
-{% else %}
-					<a id="favorite-a" href="#" title="Add {{jurisdiction.show_jurisdiction('long')}} to your favorite jurisdictions">Add to favorites</a>
-{% endif %}
-{% endif %}
-{% endif %}
-{# superfluous? -RG {% else %} #}
-{% endif %}
+    {% if request.user.is_authenticated() %}
+        {% if jurisdiction.user_favorite_jurisdiction(user) %}
+                            - <span id="favorite-a-image"><img width="12" height="12" src="/media/images/add-to-favorites.png" alt="Add to Favorites"></span>
+                            <a id="favorite-a" href="#" title="Remove {{jurisdiction.show_jurisdiction('long')}} from your favorite jurisdictions">Remove from favorites</a>
+        {% else %}
+                            - <span id="favorite-a-image"><img width="12" height="12" src="/media/images/add-to-favorites-hollow.png" alt="Add to Favorites"></span>
+                            <a id="favorite-a" href="#" title="Add {{jurisdiction.show_jurisdiction('long')}} to your favorite jurisdictions">Add to favorites</a>
+        {% endif %}
+    {% endif %}    
+
 			</span>
             {% if non_question_categories == False %}
             <span style="padding-left:10px;">
@@ -55,6 +102,7 @@
             {% if empty_data_fields_hidden | int == 1 %}Empty data fields hidden.  Uncheck to show.{% else %}Empty data fields visible. Check to hide.{% endif %}
             </span>
             {% endif %}
+{% endif %}
 {% endblock %}
 
 
@@ -64,8 +112,8 @@
 			<div id="category_bg_block" class="cssCell" >
 {% include '/website/jurisdictions/AHJ_categories.html' %}
 			</div>
-        <div class="data-container" >
-			<div class="ahj-tab cssCell" >
+        <div class="data-container cssCell" >
+			<div class="ahj-tab " >
 
 {% include "/website/accounts/sign_in.html" %}              <!-- this is required for all all AHJ pages-->
 {% include "/website/jurisdictions/AHJ_top_contributors.html" %}
@@ -76,7 +124,7 @@
             {% endif %}
             <div class="clearboth"></div>
         </div>    
-        <div id="ahj_tab_content" style="float:left">
+        <div id="ahj_tab_content cssTable" style="width:100%">
             {% block category_content %}    
             
             {% endblock %}

@@ -1,0 +1,13 @@
+			{% if answer_content.get('free-form') != None and answer_content.get('free-form') != '' %} 
+			<div >
+				{{answer_content.get('free-form')  | truncate(30, True) }}
+
+			</div>
+			{% else %}
+
+			<div>
+				{% include 'website/jurisdictions/suggestion_display_template/link_or_file.html' %}                   
+            </div>
+            			
+			
+			{% endif %}		            

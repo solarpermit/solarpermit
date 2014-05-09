@@ -129,7 +129,7 @@ class UserSearch(models.Model):
                   
 class UserPageView(models.Model):
     user = models.ForeignKey(User, blank=True, null=True, db_index=True)
-    url = models.CharField(max_length=210, blank=True, null=True, db_index=False)
+    url = models.CharField(max_length=1024, blank=True, null=True, db_index=False)
     #view_datetime = models.DateTimeField(blank=True, null=True)    
     last_page_view_date = models.DateField(blank=True, null=True) #now used to store every single page view, not the last!
     #create_datetime = models.DateTimeField(auto_now_add=True, blank=True, null=True)

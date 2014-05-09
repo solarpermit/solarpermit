@@ -3,18 +3,15 @@
                 <div class="field">
                    <input type="radio" name="field_value" id="field_value_draw_{{question_id}}" value="must draw individual modules" {% if value == 'must draw individual modules' or value == 'Must draw individual modules' %} checked {% endif %}   > Must draw individual modules
                    <br/><input type="radio" name="field_value" id="field_value_series_{{question_id}}" value="n in series in a rectangle allowed" {% if value == 'n in series in a rectangle allowed' or value == 'N in series in a rectangle allowed' %} checked {% endif %}   > "N in series" in a rectangle allowed
-                </div>  
-                <div class="field">
-                <p><b>Add Attachement:</b> We accept <b>.pdf</b> files</p>
-                <div id="drawing_file">
-                	<div id="file-uploader"></div>
-                	<input id="filename" name="filename" type="hidden" value=""/>
-	                <input id="file_store_name" name="file_store_name" type="hidden" value=""/>
-                	<!--a href="">Select File to Attach</a-->
-                </div>
-                </div>           
+                </div>                                
+            </div>
+            
+            <div id="link_or_file_{{question_id}}" {% if value == 'must draw individual modules' or value == 'Must draw individual modules' %} style="display:block;"{% else %} style="display:none;" {% endif %} >
+            	{% include 'website/form_fields/link_or_file.html' %}
+            </div>
+            
+			<div class="form_field" >  
 				<div class="field_help_text">
 					{{instruction}}
 				</div>                                 
-            </div>
-            
+            </div>            

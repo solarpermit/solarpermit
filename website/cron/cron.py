@@ -5,7 +5,6 @@ from website.utils.httpUtil import HttpRequestProcessor
 from website.utils.cleanCommentViewsHelper import CleanCommentViews
 from website.utils.notificationSentHelper import NotificationHelper
 from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
-from website.utils.templateUtil import TemplateUtil
 
 def run_cron(request, forceRun):
     objCronHelper = CronHelper()
@@ -30,9 +29,6 @@ def run_cron(request, forceRun):
     
     if forceRun == 'validate': # 
         runValidateAnswersCron(objCronHelper)
-        
-    if forceRun == 'sitemap': # 
-        runSiteMapCron(objCronHelper)
         
     if objCronHelper.EveryXHours(24, -1):
         runCleanUserCommentViewsCron(objCronHelper)
@@ -86,10 +82,3 @@ def runValidateAnswersCron(objCronHelper):
     aaa = FieldValidationCycleUtil()
     aaa.cron_validate_answers()
     objCronHelper.WriteHTML('<br/>Validate Answers Done!<br/>')
-
-def runSiteMapCron(objCronHelper):
-    objCronHelper.WriteHTML('Generate Site Map<br/>')
-    template_util = TemplateUtil()
-    template_util.update_site_map()
-    objCronHelper.WriteHTML(template_util.strMsg)
-    objCronHelper.WriteHTML('Generate Site Map Done!<br/>')

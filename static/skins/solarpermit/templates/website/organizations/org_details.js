@@ -1,5 +1,4 @@
-   
-	var uploader_input = document.getElementById("file-uploader");
+    var uploader_input = document.getElementById("file-uploader");
     if (uploader_input != null) {
         var uploader = new qq.FileUploader(
             {
@@ -72,6 +71,10 @@ function accept_invite_from_org_details(){
 	var member_id = '{{orgmember.id}}';
 	controller.postRequest('/organization/', {ajax: 'accept_invite', mid: member_id});
 }
+
+$('#fancybox_close').click(function() {
+	$.fancybox.close();
+});
 
 $('#org_details_accept_btn').click(function (){
 	var org_name = '{{organization.name}}';
@@ -196,3 +199,78 @@ function cancel_change_right(){
 		});
 	});
 }
+
+$('#tabs1_a').click(function() {
+	orgid = $(this).data('orgid');
+	controller.postRequest('/organization/', {ajax: 'org_details', orgid: orgid});
+});
+
+$('#tabs2_a').click(function() {
+	orgid = $(this).data('orgid');
+	controller.postRequest('/organization/', {ajax: 'pending_request', orgid: orgid});
+});
+
+$('#org_details_cancel_btn').click(function() {
+	return controller.postRequest('/organization/', {ajax: 'choose_org'});
+});
+
+$('#org_details_close_btn').click(function() {
+	$.fancybox.close();
+});
+
+$('#invite_btn').click(function (){
+	orgid = $(this).data('orgid');
+	controller.postRequest('/organization/', {ajax: 'select_users', orgid: orgid}); 
+	return false;
+});
+
+$('#save_orgname').click(function() {
+	controller.submitForm('#form_org_details_orgname');
+	return false;
+});
+
+$("#form_org_details_orgname").submit(function (event){
+	controller.submitForm('#form_org_details_orgname');
+	return false;
+})
+
+$('#save_logo').click(function(ev) {
+	disabled_save = $(this).attr('disabled');
+    if (disabled_save === 'disabled') {
+    	return false;
+    }
+	$('#save_logo').attr('disabled', 'disabled');
+	controller.submitForm('#form_org_details_logo');
+	return false;
+});
+
+$("#form_org_details_logo").submit(function (event){
+	//event.preventDefault();
+	controller.submitForm('#form_org_details_logo');
+	return false;
+})
+
+$('#save_website').click(function() {
+	controller.submitForm('#form_org_details_website'); 
+	return false;
+});
+
+$("#form_org_details_website").submit(function (event){
+	controller.submitForm('#form_org_details_website');
+	return false;
+})
+
+	$('#choose_org').click(function() {
+		$target = $(event.target);
+		controller.postRequest('/organization/', {ajax: 'choose_org'});
+		return false;
+					
+	});	
+	
+	$('#select_users').click(function() {
+		$target = $(event.target);
+		var orgId = $target.data('orgid');
+		controller.postRequest('/organization/', {ajax: 'select_users', orgid: orgId});
+		return false;
+					
+	});				

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+
+{% block title %}News{% endblock %}
+{% block body %}
+<div class="contentOnlyPage">
+	<h1>News</h1>
+
+	<h2>Solar Permitting Study</h2>
+	<p>We completed a study of 273 solar installers in the top 12 states for solar that encompasses more than 90% of the residential solar market.  The study assesses the current challenges with solar permitting and identifies specific opportunities for improvement.  See the facts and insights that could help you grow your business.</p>
+	<p><a target="_blank" href="/media/upfiles/SolarPermit_Infographic_v04.pdf">Download</a> the infographic for a quick summary of the key statistics. SolarPermit_Infographic_v04.pdf file</p>
+	<p><a target="_blank" href="/media/upfiles/Permitting_Study_Executive_Summary_060513.pdf">Download</a> the Permitting Study Executive Summary for an overview of the study's key findings.</p>
+	<p><a target="_blank" href="/media/upfiles/CPF-DOE_Permitting_Study_Dec2012_Final.pdf">Download</a> the full Permitting Study for complete findings and analysis.</p>
+	
+        {% if pressreleases %}
+        <h2>Press Releases</h2>
+          {% for pr in pressreleases %}
+            <p>{{ pr.published }} — <a id="pr-{{ pr.pk }}" target="_blank" href="{{ pr.url }}">{{ pr.title }}</a>
+          {% endfor %}
+        {% endif %}
+
+        {% if articles %}
+          <h2>News Coverage</h2>
+          {% for article in articles %}
+            <p>{{ article.published }} — <a id="article-{{ article.pk }}" target="_blank" href="{{ article.url }}">{{ article.title }}</a> — {{ article.publisher }}
+          {% endfor %}
+        {% endif %}
+
+        {% if events %}
+          <h2>Events</h2>
+          {% for event in events %}
+            <p><a id="event-{{ event.pk }}" target="_blank" href="{{ event.url }}">{{ event.title }}</a> —
+              {{ event.start.date() }} through {{ event.end.date() }} in
+              <a href="{{ url('website.views.AHJ.view_AHJ_by_name', name=event.location.name) }}">{{ event.location.show_jurisdiction() }}</a>
+          {% endfor %}
+        {% endif %}
+</div>
+<div class="bottomclearboth"></div>
+{% endblock %}

@@ -8,9 +8,13 @@ $questionLabel.each(function () {
 	var $target = $container.find('div.label');
 	var questionId = $container.data('id');
 	var pendingAids = $container.data('paids');
+	var jurId = $container.data('jurid');
 	var $editButton = $container.find('#edit_button_'+pendingAids);
 	if ($editButton.length > 0) {
-		$target.attr('onclick', $editButton.attr('onclick'));
+		//$target.attr('onclick', $editButton.attr('onclick'));
+		$target.click(function (){
+			return controller.suggestionField.clickEditBt(pendingAids, 'answer', jurId, questionId, pendingAids);
+		});
 	}
 	var showIcon = $target.data('icon');
 	if (showIcon == 'Y') {
@@ -45,7 +49,41 @@ $questionLabel.each(function () {
 			$container.removeClass("editdiv");
 			//hide_edit_cancel_btns(pendingAids);
 		});
+		var is_print = $target.data('print');
+		if (is_print == 'F'){
+			$target.click(function (){
+				return controller.suggestionField.clickAddLabel(jurId, questionId);
+			});
+		}
 	}
+});
+
+$('.canedit').click(function() {
+	answer_id = $(this).data('answerid');
+	terminology = $(this).data('terminology');
+	jur_id = $(this).data('jurid');
+	qid = $(this).data('qid');
+	return controller.suggestionField.clickEditBt(answer_id,terminology,jur_id,qid,answer_id);
+});
+
+$('.canvoteup').click(function() {
+	answer_id = $(this).data('answerid');
+	terminology = $(this).data('terminology');
+	canvotedown = $(this).data('canvotedown');
+	
+	set_entity(answer_id, terminology);
+	vote_up(canvotedown);
+	return false;
+});
+
+$('.canvotedown').click(function() {
+	answer_id = $(this).data('answerid');
+	terminology = $(this).data('terminology');
+	canvoteup = $(this).data('canvoteup');
+	
+	set_entity(answer_id, terminology);
+	vote_down(canvoteup);
+	return false;
 });
 
 var $historyTooltip = $('.need_history');
@@ -127,6 +165,7 @@ $('#remove_from_quirks_{{question_id}}').click(function(event)
 	controller.postRequest('.', {ajax: 'remove_from_views', jurisdiction_id: jid, question_id: questionId, entity_name: 'quirks', destination: '' });
 });
 
+/*
 $('#q_action_link_{{question_id}}').mouseover(function(event) 
 {   
     var $target = $(event.target);
@@ -138,4 +177,4 @@ $('#q_action_link_{{question_id}}').mouseover(function(event)
     $('#ahj_actions_{{question_id}}').hide();
     $('#more_{{question_id}}').attr('src','/media/images/more_off.png');
 });
-
+*/

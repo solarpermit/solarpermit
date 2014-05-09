@@ -14,7 +14,7 @@ from django.shortcuts import render
 
 from django.shortcuts import render_to_response, redirect
 from website.utils.mathUtil import MathUtil
-from website.utils.paginationUtil import PaginationUtil
+
 from website.utils.geoHelper import GeoHelper
 from website.models import Jurisdiction, Zipcode, UserSearch, Question, AnswerReference, OrganizationMember, QuestionCategory, Comment, UserCommentView, Template, ActionCategory, JurisdictionContributor, Action, UserDetail
 
@@ -30,28 +30,12 @@ import urllib
 
 JURISDICTION_PAGE_SIZE = 30 #page size for endless scroll
 
-def jurisdiction_details(request, id):
-    requestProcessor = HttpRequestProcessor(request)
-    data = {}
-    try:
-        jurisdiction = Jurisdiction.objects.get(id=id)
-    except:
-        jurisdiction = None
-    data['jurisdiction'] = jurisdiction
-    
-    #save to user recent search
-    user = request.user
-    if user.is_authenticated() and jurisdiction != None:
-        save_recent_search(user, jurisdiction)
-        
-    return requestProcessor.render_to_response(request,'website/jurisdictions/jurisdiction.html', data, '')      
 
 #dispatch to either state map or listing within state
 def jurisdiction_browse_improved(request):
     requestProcessor = HttpRequestProcessor(request)
     state = requestProcessor.getParameter('state')
     q_state = requestProcessor.getParameter('q')    
-    ##print 'jurisdiction_browse_improved'
     if state ==None or state =='':
         if q_state !=None and q_state !='':    
             state = q_state
@@ -81,7 +65,7 @@ def get_state_jurisdictions(request, state='', sort_by='', sort_dir='', page_num
     data['get_state_jurisdiction'] = True
     requestProcessor = HttpRequestProcessor(request)
     search_str = requestProcessor.getParameter('text_2') 
-    if search_str == None:
+    if search_str == None or search_str == 'Search':
         search_str = ''       
     filter = requestProcessor.getParameter('filter')
     if filter == None:
@@ -99,9 +83,23 @@ def get_state_jurisdictions(request, state='', sort_by='', sort_dir='', page_num
                 data['only_jurisditions_with_data'] = request.session['only_jurisditions_with_data']
             else:
                 data['only_jurisditions_with_data'] = 1
-                
     request.session['only_jurisditions_with_data'] = data['only_jurisditions_with_data']          
-     
+
+    if sort_by == '' or sort_by == None:
+        sort_by = 'name'
+    elif sort_by == 'last':
+        sort_by = 'last_contributed'
+
+    if sort_dir == '' or sort_dir == None:
+        sort_dir = 'asc'
+    if sort_dir == 'asc':
+        order_by_str = sort_by
+    else:
+        order_by_str = '-'+sort_by
+
+    data['sort_by'] = sort_by
+    data['sort_dir'] = sort_dir
+
     data['secondary_search_str'] = search_str
     data['filter'] = filter
         
@@ -122,20 +120,11 @@ def get_state_jurisdictions(request, state='', sort_by='', sort_dir='', page_num
     sort_columns['county'] = 'asc'
     sort_columns['last_contributed'] = 'asc'
     sort_columns['last_contributed_by'] = 'asc'
-
-    if sort_by == '' or sort_by == None:
-        sort_by = 'name'
-    data['sort_by'] = sort_by
-    
-    if sort_dir == '' or sort_dir == None:
-        sort_dir = 'asc'
-    data['sort_dir'] = sort_dir
+   
     data['current_nav'] = 'browse'
     href = '/jurisdiction/browse/?state=' + state
 
     search_params = {}
-    pagingation_obj = PaginationUtil('get', search_params, href)
-    pagingation_obj.set_up_sorting_by_columns(sort_columns, sort_desc_img, sort_asc_img, sort_class)
 
     #data['page_title'] = "Browse Jurisdiction: " + state
 
@@ -165,31 +154,15 @@ def get_state_jurisdictions(request, state='', sort_by='', sort_dir='', page_num
     range_end = page_number * JURISDICTION_PAGE_SIZE
     data['next_page_param'] = 'page='+str(page_number + 1)
     
-    #print search_str
-    #print sort_by
-    #print type
-    #print filter
-    
-    #print range_start
-    #print range_end
     objects = Jurisdiction.objects.none() 
-    if sort_by == '' or sort_by == None:     
-        pass
-    else:
-        order_by_str = pagingation_obj.get_order_by_str(sort_by, sort_dir) 
+        
         
     if search_str == '':
-        #print 'search_str = blank'
         if filter == 'all' or filter == '' or filter == None:
-            #print 'filter = all'
             if data['only_jurisditions_with_data'] == 1:
-                #print 'only_jur_with_data'
-                #print 'state = ' + str(state)
                 objects |= Jurisdiction.objects.filter(last_contributed__isnull = False, state__iexact=state)     
                 objects |= Jurisdiction.objects.filter(state__iexact=state, jurisdiction_type__in=('U', 'SCFO'), parent__last_contributed__isnull=False)   
             else:
-                #print 'only_ur_without_data'
-                #print 'state = ' + str(state)
                 objects |= Jurisdiction.objects.filter(last_contributed__isnull = True, state__iexact=state)       
                     
         elif filter == 'county' or filter == 'city' or filter == 'state':
@@ -215,21 +188,14 @@ def get_state_jurisdictions(request, state='', sort_by='', sort_dir='', page_num
             else:
                 objects |= Jurisdiction.objects.filter(name__icontains=search_str, state__iexact=state, jurisdiction_type__in=type, last_contributed__isnull = True)  
                             
-    #print len(objects)
     if sort_by == '' or sort_by == None:
         objects = objects.order_by('name', 'county')
     else:                        
         objects = objects.order_by(order_by_str) 
-    #print len(objects)   
     
     data['count'] = len(objects)    
-    #print len(objects)
     data['list'] = objects[range_start:range_end]
-    print data['list']
-    #pagingation_obj.set_up_pagination(objects, page_num, django_settings.MAX_REC_PER_PAGE)   
-    #data['list'] = pagingation_obj.getCurrentPageItems()
-    #data['pagination'] = pagingation_obj.getPaginationData()
-    data['sort'] = pagingation_obj.get_sorting_html_all_columns()   
+
 
     #data['system_message_type'] = 'success'
     #data['system_message_text'] = 'A lot of data found for your consumption'    
@@ -243,11 +209,9 @@ def get_state_jurisdictions(request, state='', sort_by='', sort_dir='', page_num
     
     dajax = Dajax()
     ajax = requestProcessor.getParameter('ajax')
-    #print ajax
     if (ajax != None):
         #handle ajax calls
         if ajax == 'filter':
-            print ajax
             body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/jurisdiction_list.html', data, '') 
             dajax.assign('#jurisdiction_list','innerHTML', body)
             if page_number == 1: #initialize jscroll if page 1
@@ -295,8 +259,6 @@ def check_search_level(search_str):
         search_level = 'county' 
     elif search_str.find('city') > -1:  
         search_level = 'city'
-    elif search_str.find('county') > -1:  
-        search_level = 'state'
     else:
         search_level = ''
     
@@ -312,24 +274,18 @@ def exclude(search_str):
     return exclude
 
 def scrub_text_search_str(search_str):
-    search_str_only_a_z = re.sub("[^A-Za-z]", ' ', search_str)
-    #print "search_str_only_a_z :: " + str(search_str_only_a_z)
-    search_str_only_a_z = search_str_only_a_z.lower().replace('borough', '')    
-    search_str_only_a_z = search_str_only_a_z.lower().replace('borough of', '')    
-    search_str_only_a_z = search_str_only_a_z.lower().replace('parish', '')    
-    search_str_only_a_z = search_str_only_a_z.lower().replace('parish of', '')
-    search_str_only_a_z = search_str_only_a_z.lower().replace('county', '')    
-    search_str_only_a_z = search_str_only_a_z.lower().replace('county of', '')
-    search_str_only_a_z = search_str_only_a_z.lower().replace('city and county of', '')  
-    search_str_only_a_z = search_str_only_a_z.lower().replace('state of', '')       
-    search_str_only_a_z = search_str_only_a_z.lower().replace('of', '')      
-    search_str_only_a_z = search_str_only_a_z.lower().replace('state', '')  
-    search_str_only_a_z = search_str_only_a_z.lower().replace('city', '')              
-        
-    search_str_only_a_z_no_space_either_side = search_str_only_a_z.strip()
-    
-    return search_str_only_a_z_no_space_either_side
-
+    search_str_only_a_z = re.sub("[^A-Za-z]", ' ', search_str).lower()
+    search_str_only_a_z = search_str_only_a_z.replace('borough of', '')
+    search_str_only_a_z = search_str_only_a_z.replace('borough', '')
+    search_str_only_a_z = search_str_only_a_z.replace('parish of', '')
+    search_str_only_a_z = search_str_only_a_z.replace('parish', '')
+    search_str_only_a_z = search_str_only_a_z.replace('county of', '')
+    search_str_only_a_z = search_str_only_a_z.replace('county', '')
+    search_str_only_a_z = search_str_only_a_z.replace('city and county of', '')
+    search_str_only_a_z = search_str_only_a_z.replace('state of', '')
+    search_str_only_a_z = search_str_only_a_z.replace('state', '')
+    search_str_only_a_z = search_str_only_a_z.replace('city', '')
+    return search_str_only_a_z.strip()
 
 #get the nearby jurisdictions given a center point and starting distance range
 def getNearbyJs(geoHelper, center, distance, iteration):
@@ -360,137 +316,18 @@ def sortNearbyJs(geoHelper, center, nearbyJs):
             'lon': jurisdiction.longitude
         }
         j_obj['distance'] = geoHelper.getDistance(center, j_point)
-        ##print str(j_obj['distance'])
         j_list.append(j_obj)
     
     j_list.sort(key=lambda j_obj: j_obj['distance'])
     
     sortedJs = []
     for j_obj in j_list:
-        ##print str(j_obj['distance'])
         jurisdiction = j_obj['jurisdiction']
         jurisdiction.distance = j_obj['distance']
         jurisdiction.unit = 'mi'
         sortedJs.append(jurisdiction)
     return sortedJs
     
-def jurisdiction_search(request):    
-    requestProcessor = HttpRequestProcessor(request)
-            
-    dajax = Dajax()
-    ajax = requestProcessor.getParameter('ajax')
-    if (ajax != None):
-        #handle ajax calls
-        if (ajax == 'nearby'):
-            jid = requestProcessor.getParameter('jid')
-            if (jid != None):
-                try:
-                    data = {}
-                    data['list'] = []
-                    
-                    jurisdiction = Jurisdiction.objects.get(id=jid)
-                    
-                    #neabyTemplate = '<div style="width:600px;"><b>Nearby: &nbsp;&nbsp; </b> '
-                    
-                    geoHelper = GeoHelper()
-                    center = {}
-                    center['lat'] = jurisdiction.latitude
-                    center['lon'] = jurisdiction.longitude
-                    
-                    nearbyJs = getNearbyJs(geoHelper, center, geoHelper.initialDistance, 1)
-                    
-                    for j in nearbyJs:
-                        if j.id != jurisdiction.id:
-                            #neabyTemplate += j.name+' ('+str(j.latitude)+','+str(j.longitude)+') '
-                            data['list'].append(j)
-                    #neabyTemplate += 'Range is: '+str(range['latMin'])+' to '+str(range['latMax'])+', '+str(range['lonMin'])+' to '+str(range['lonMax'])
-                    
-                    #neabyTemplate += '</div>'
-                    
-                    body = requestProcessor.decode_jinga_template(request, 'website/jurisdiction_search_nearby.html', data, '') 
-                    dajax.assign('#nearby_'+jid, 'innerHTML', body)
-                    #dajax.script('$("#nearby_link_'+jid+'").hide();')
-                except:
-                    pass
-            return HttpResponse(dajax.json())
-        
-        return HttpResponse(dajax.json())
-    
-    data = {'page_class': 'meta'}
-    data['breadcrum'] = 'no'
-    data['page'] = 'general_search'
-    data['nav'] = 'yes'    
-    form = None
-
-    jurisdiction_search_str = requestProcessor.getParameter('text') 
-    if jurisdiction_search_str == None:
-        jurisdiction_search_str = ''                                  
-
-        
-    data['jurisdiction_search_str'] = jurisdiction_search_str         
-    
-    page = requestProcessor.getParameter('page')
-    if page != None and page != '':
-        page_number = int(page)
-    else:
-        page_number = 1
-    range_start = (page_number - 1) * JURISDICTION_PAGE_SIZE
-    range_end = page_number * JURISDICTION_PAGE_SIZE
-    data['next_page_param'] = 'page='+str(page_number + 1)
-    
-    data['message'] = ''
-    mathUtil = MathUtil()
-    if mathUtil.is_number(jurisdiction_search_str) == False:
-        data['search_by'] = 'search_by_name';
-        scrubbed_jurisdiction_search_str = scrub_text_search_str(jurisdiction_search_str)
-        if jurisdiction_search_str.__len__() >= 2:
-            
-            objects_all_types = jurisdiction_text_search(jurisdiction_search_str,scrubbed_jurisdiction_search_str, '', range_start, range_end)
-            
-            redirect_url = '/jurisdiction/'
-                
-            if len(objects_all_types) == 1:
-                redirect_url = redirect_url + str(objects_all_types[0].get_name_for_url())
-                
-                return redirect(redirect_url)
-            else:
-                data['list'] = objects_all_types
-                                
-
-        else:
-            data['message'] = 'This search field requires at least 2 alphabetic (a-z) characters.';
-    else:
-        data['search_by'] = 'search_by_zip';
-        nearbyJs = {}
-        #geo based approach
-        zipcodes = Zipcode.objects.filter(zip_code=jurisdiction_search_str)
-        
-        #TODO: if zip code not found, look for next zip code up
-        if len(zipcodes) < 1:
-            zipcodes = Zipcode.objects.filter(zip_code__gt=jurisdiction_search_str)[0:1]
-        
-        if len(zipcodes) > 0:
-            zipcode = zipcodes[0] #should be only one anyway
-            
-            geoHelper = GeoHelper()
-            center = {}
-            center['lat'] = zipcode.latitude
-            center['lon'] = zipcode.longitude
-            #zip code data problem - longitude needs to be inverted:
-            center['lon'] = float(-center['lon'])
-            
-            nearbyJs = getNearbyJs(geoHelper, center, geoHelper.initialDistance, 1)
-
-            data['list'] = nearbyJs
-        
-    request.session['jurisdiction_search_str'] = jurisdiction_search_str 
-    
-    if page_number != 1:
-        #for endless scroll next page, only render the list
-        return requestProcessor.render_to_response(request,'website/jurisdictions/jurisdiction_list.html', data, '')      
-    else:
-        return requestProcessor.render_to_response(request,'website/jurisdictions/jurisdiction_search.html', data, '')      
-
 def jurisdiction_autocomplete(request):
     MAX_RESULT_COUNT = 7
     
@@ -504,37 +341,19 @@ def jurisdiction_autocomplete(request):
     output += '<div>' #a div to enclose everything
     output += '<ul id="search_results">'
     
-    jurisdiction_ids = []
+    jurisdictions = []
     
     mathUtil = MathUtil()
     if mathUtil.is_number(text) == False:
-    
-        #county j name starts with text
-        jurisdiction_ids1 = Jurisdiction.objects.filter(county__istartswith=text, jurisdiction_type='CO').order_by('county', 'state').values_list('id', flat=True)[:MAX_RESULT_COUNT]
-        for id in jurisdiction_ids1:
-            jurisdiction_ids.append(id)    
-        
-        if len(jurisdiction_ids) < MAX_RESULT_COUNT:
-            count_needed = MAX_RESULT_COUNT - len(jurisdiction_ids)
-            #city j name starts with text
-            jurisdiction_ids2 = Jurisdiction.objects.filter(city__istartswith=text, jurisdiction_type__in=('CI', 'U')).exclude(id__in=jurisdiction_ids).order_by('city', 'state').values_list('id', flat=True)[:MAX_RESULT_COUNT]
-            for id in jurisdiction_ids2:
-                jurisdiction_ids.append(id)
-            
-            if len(jurisdiction_ids) < MAX_RESULT_COUNT:
-                count_needed = MAX_RESULT_COUNT - len(jurisdiction_ids)
-                #county j name contains text
-                jurisdiction_ids3 = Jurisdiction.objects.filter(county__icontains=text, jurisdiction_type='CO').exclude(id__in=jurisdiction_ids).order_by('county', 'state').values_list('id', flat=True)[:count_needed]
-                for id in jurisdiction_ids3:
-                    jurisdiction_ids.append(id)
-        
-                if len(jurisdiction_ids) < MAX_RESULT_COUNT:
-                    count_needed = MAX_RESULT_COUNT - len(jurisdiction_ids)
-                    #city j name contains text
-                    jurisdiction_ids4 = Jurisdiction.objects.filter(city__icontains=text, jurisdiction_type__in=('CI', 'U')).exclude(id__in=jurisdiction_ids).order_by('city', 'state').values_list('id', flat=True)[:count_needed]
-                    for id in jurisdiction_ids4:
-                        jurisdiction_ids.append(id)
-    
+        jurisdictions = jurisdiction_text_search(text,
+                                                 scrub_text_search_str(text),
+                                                 "",
+                                                 check_search_level(text) or 'all',
+                                                 'name',
+                                                 0,
+                                                 MAX_RESULT_COUNT,
+                                                 exclude(text),
+                                                 '')
     else:
         #is number, so zipcode based search
         zipcodes = Zipcode.objects.filter(zip_code__startswith=text)[0:1]
@@ -547,10 +366,7 @@ def jurisdiction_autocomplete(request):
             zipcode = zipcodes[0] #should be only one anyway
             
             geoHelper = GeoHelper()
-            geoHelper.initialDistance = 1 #km, initial distance to use for nearby search
-            geoHelper.maxDistance = 50 #km, max distance for nearby search
-            geoHelper.maxIteration = 10 #max number of iteration to get nearby items
-            geoHelper.targetCount = MAX_RESULT_COUNT - 2 #target number of nearby items to get
+            geoHelper.targetCount = MAX_RESULT_COUNT #target number of nearby items to get
             geoHelper.targetMargin = 2 #+ and - this number of items from the target number to stop
             
             center = {}
@@ -559,13 +375,9 @@ def jurisdiction_autocomplete(request):
             #zip code data problem - longitude needs to be inverted:
             center['lon'] = float(-center['lon'])
             
-            nearbyJs = getNearbyJs(geoHelper, center, geoHelper.initialDistance, 1)
-            nearbyJs = nearbyJs[:MAX_RESULT_COUNT]
-            for nearbyJ in nearbyJs:
-                jurisdiction_ids.append(nearbyJ.id)
-    
-    #sort by query again
-    jurisdictions = Jurisdiction.objects.filter(id__in=jurisdiction_ids).order_by('city', 'county', 'state')[:MAX_RESULT_COUNT]
+            jurisdictions = getNearbyJs(geoHelper, center, geoHelper.initialDistance, 1)
+            jurisdictions = sortNearbyJs(geoHelper, center, jurisdictions)
+            jurisdictions = jurisdictions[:MAX_RESULT_COUNT]
     
     for jurisdiction in jurisdictions:
         output += '<li><a href="/jurisdiction/'+str(jurisdiction.id)+'">'+jurisdiction.show_jurisdiction()+'</a></li>'
@@ -628,15 +440,13 @@ def jurisdiction_search_improved(request):
     
     
     secondary_search_str = requestProcessor.getParameter('text_2') 
-    if secondary_search_str == None:
+    if secondary_search_str == None or secondary_search_str=='Search':
         secondary_search_str = ''                                  
     data['secondary_search_str'] = secondary_search_str      
 
     search_level = check_search_level(primary_search_str)
-    #print 'filter by search level :: ' + str(search_level)
     
     primary_exclude = exclude(primary_search_str)
-    #print 'primary_exclude :: ' + str(primary_exclude)    
         
     filter = requestProcessor.getParameter('filter')
     if filter == None:
@@ -646,7 +456,6 @@ def jurisdiction_search_improved(request):
             filter = 'all'
 
     data['filter'] = filter   
-    #print 'filter :: ' + str(filter)
 
     sort_by = requestProcessor.getParameter('sort_by')
     if sort_by == None:
@@ -699,18 +508,12 @@ def jurisdiction_search_improved(request):
     mathUtil = MathUtil()
     if mathUtil.is_number(primary_search_str) == False:
         data['search_by'] = 'search_by_name';
-        #print primary_search_str        
         scrubbed_primary_search_str = scrub_text_search_str(primary_search_str)
-        #print scrubbed_primary_search_str
-        #print secondary_search_str
         
         sec_exclude = exclude(secondary_search_str)
-        #print 'sec_exclude :: ' + str(sec_exclude)    
             
         if primary_search_str.__len__() >= 2:
-            
-
-            objects_all_types = jurisdiction_text_search(primary_search_str,scrubbed_primary_search_str, secondary_search_str,filter, order_by_str, range_start, range_end, primary_exclude, sec_exclude )
+            objects_all_types = jurisdiction_text_search(primary_search_str, scrubbed_primary_search_str, secondary_search_str,filter, order_by_str, range_start, range_end, primary_exclude, sec_exclude)
             redirect_url = '/jurisdiction/'
                 
             if len(objects_all_types) == 1 and ajax == None: #don't redirect if ajax
@@ -718,8 +521,6 @@ def jurisdiction_search_improved(request):
                 return redirect(redirect_url)
             else:
                 data['list'] = objects_all_types
-                                
-
         else:
             data['message'] = 'This search field requires at least 2 alphabetic (a-z) characters.';
     else:
@@ -788,8 +589,6 @@ def jurisdiction_text_search(primary_search_str, scrubbed_primary_search_str, se
     counter = 0
     
     objects = Jurisdiction.objects.none()   
-    #print 'scrubbed_primary_search_str :: '
-    #print scrubbed_primary_search_str
     if scrubbed_primary_search_str != '':
         list_words = scrubbed_primary_search_str.split(' ')
         
@@ -828,7 +627,6 @@ def jurisdiction_text_search(primary_search_str, scrubbed_primary_search_str, se
         search_words.append(words.strip())  
         search_words.append(scrubbed_primary_search_str)   
         search_words.append(primary_search_str)            
-        #print search_words
         objects = query(state_list, search_words, secondary_search_str, filter, order_by_str, range_start, range_end, primary_exclude, sec_exclude)
         '''
         if state_list:
@@ -851,28 +649,22 @@ def query(state_list, search_words, secondary_search_str, filter, order_by_str, 
     objects = Jurisdiction.objects.none()  
     
     if secondary_search_str == '':  
-        #print '1'          
         if state_list:
-            #print '2'
             for search_word in search_words:  
                 if filter == 'county':  
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__iexact='CO').order_by(order_by_str, 'state')
+                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('CO', 'CC')).order_by(order_by_str, 'state')
                 elif filter == 'city':
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('CI', 'U')).order_by(order_by_str, 'state')       
+                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('CI', 'U', 'CC')).order_by(order_by_str, 'state')       
                 elif filter == 'state':
                     objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('S')).order_by(order_by_str, 'state')                              
                 else:
-                    #print 'filter :: ' + filter
-                    #print 'search word :: ' + search_word
                     objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values()).order_by(order_by_str, 'state')               
-                    #print len(objects)
         else:
-            #print 3
             for search_word in search_words:    
                 if filter == 'county':  
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__iexact='CO').order_by(order_by_str, 'state') 
+                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('CO', 'CC')).order_by(order_by_str, 'state') 
                 elif filter == 'city':
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('CI', 'U')).order_by(order_by_str, 'state')        
+                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('CI', 'U', 'CC')).order_by(order_by_str, 'state')        
                 elif filter == 'state':
                     objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('S')).order_by(order_by_str, 'state')                             
                 else:
@@ -882,9 +674,9 @@ def query(state_list, search_words, secondary_search_str, filter, order_by_str, 
         if state_list:
             for search_word in search_words:  
                 if filter == 'county':  
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__iexact='CO').filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                                    
+                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('CO', 'CC')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                                    
                 elif filter == 'city':
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('CI', 'U')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                 
+                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('CI', 'U', 'CC')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                 
                 elif filter == 'state':
                     objects |= Jurisdiction.objects.filter(name__icontains=search_word, state__in=state_list.values(), jurisdiction_type__in=('S')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                 
                 else:
@@ -893,9 +685,9 @@ def query(state_list, search_words, secondary_search_str, filter, order_by_str, 
         else:
             for search_word in search_words:    
                 if filter == 'county':  
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__iexact='CO').filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                                            
+                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('CO', 'CC')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                                            
                 elif filter == 'city':
-                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('CI','U')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state') 
+                    objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('CI','U', 'CC')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state') 
                 elif filter == 'state':
                     objects |= Jurisdiction.objects.filter(name__icontains=search_word, jurisdiction_type__in=('S')).filter(name__icontains=secondary_search_str).order_by(order_by_str, 'state')                                  
                 else:

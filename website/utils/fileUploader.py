@@ -1,7 +1,6 @@
 import time
 import os
 import string
-import pprint
 class qqFileUploader(object):
 
     def __init__(self, allowedExtensions = [], sizeLimit = 1024):
@@ -24,6 +23,8 @@ class qqFileUploader(object):
         except:
             isHtx = True
         fileName = djangoRequest.REQUEST.get('qqfile')
+        if len(fileName) > 65:
+            fileName = fileName[0:20]+fileName[(len(fileName) -30):len(fileName)]
         #if fileName == None:
         #    fileName = djangoRequest.FILES['qqfile'].name
         #    isHtx = False
@@ -47,7 +48,7 @@ class qqFileUploader(object):
                 for chunk in f.chunks():
                     file.write(chunk)
                 file.close()
-            return {"success": True, "filename": fileName,  "store_name":file_store_name,  "json": '{"success": true,"store_name":"'+file_store_name+'"}'}
+            return {"success": True, "filename": fileName,  "store_name":file_store_name,  "json": '{"success": true,"store_name":"'+file_store_name+'", "fileName":"'+fileName+'"}'}
 
 
                 

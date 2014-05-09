@@ -25,13 +25,13 @@
                         <a href="/jurisdiction/{{parent_jurisdiction.name_for_url}}/" title="View {{ parent_jurisdiction.name | title }} {{parent_jurisdiction.get_county_equivalent_name() | title }} ">{{ parent_jurisdiction.show_jurisdiction()}}</a>.
                 </p>
                 
-                <p>See something wrong with this page? OR is this AHJ wrongly categorized? <a onclick="controller.postRequest('/info/', {ajax: 'send_feedback'}); return false;" style="" href="#">Click here to let us know</a>.</p>
+                <p>See something wrong with this page? OR is this AHJ wrongly categorized? <a id="ahj_send_feedback" style="" href="#">Click here to let us know</a>.</p>
 
 {% endif %}
 			</div>
 {% if request.user.is_authenticated() %}
 			<div id="u-city-comments">
-			<a class="mainbutton" href="#" onClick="controller.postRequest('.',{ajax: 'create_jurisdiction_ucomment'});return false;">Add a new comment...</a>
+			<a class="mainbutton" href="#" id="ahj_create_jurisdiction_ucomment" >Add a new comment...</a>
 			<ul class="ul-level-1">
 				{% include '/website/blocks/ucomment_list.html' %}
 			</ul>

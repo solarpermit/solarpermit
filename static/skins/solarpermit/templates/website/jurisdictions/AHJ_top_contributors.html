@@ -1,17 +1,17 @@
-<div id="top-contribution">
+
 <h4 class="title">Top Contributors:</h4>
 <table style="width:100%;">
 	<tr>
 
 	{% if top_contributors | length == 0 %}
-		<td class="first">&nbsp;</td>
+		<td class="first">See your company name and logo here.  <a href="/contributions" >Find out how</a>.</td>
 		<td class="second">&nbsp;</td>
 		<td class="second">&nbsp;</td>
 	{% elif top_contributors | length == 1 %}
 		{% for contributor in top_contributors %}
-        <td class="first"><a href="{{contributor[0].get_clickable_website()}}" target="_blank" >{% if contributor[0].logo != '' %}<img src="{{contributor[0].get_logo_thumbnail('32x32')}}" >{% endif %}<span >{{contributor[0].name}}</span></a></td>
+        <td class="first"><a href="{{contributor[0].get_clickable_website()}}" target="_blank" >{% if contributor[0].logo != '' %}<img src="{{contributor[0].get_logo_thumbnail('36x36')}}" >{% endif %}<span style="width:100%;padding-right:5px">{{contributor[0].name}}</span></a></td>
         {% endfor %}	
-		<td class="second">&nbsp;</td>
+		<td class="second">See your company name and logo here.  <a href="/contributions" >Find out how</a>.</td>
 		<td class="second">&nbsp;</td>        
     {% elif top_contributors | length == 2 %}
 		{% for contributor in top_contributors %}
@@ -21,9 +21,9 @@
         {% else %}
         	{% set class_name = 'second' %}
         {% endif %}
-        <td class="{{ class_name }}"><a href="{{contributor[0].get_clickable_website()}}" target="_blank" >{% if contributor[0].logo != '' %}<img src="{{contributor[0].get_logo_thumbnail('32x32')}}" >{% endif %}<span  >{{contributor[0].name}}</span></a></td>
+        <td class="{{ class_name }}"><a href="{{contributor[0].get_clickable_website()}}" target="_blank" >{% if contributor[0].logo != '' %}<img src="{{contributor[0].get_logo_thumbnail('36x36')}}" >{% endif %}<span style="width:100%;padding-right:5px" >{{contributor[0].name}}</span></a></td>
         {% endfor %}	
-		<td class="second">&nbsp;</td>  
+		<td class="second">See your company name and logo here.  <a href="/contributions" >Find out how</a>.</td>  
 	{% elif top_contributors | length >= 3 %}
 		{% for contributor in top_contributors %}
 		
@@ -33,11 +33,11 @@
 				{% else %}
 					{% set class_name = 'second' %}
 				{% endif %}
-				<td class="{{ class_name }}"><a href="{{contributor[0].get_clickable_website()}}" target="_blank" >{% if contributor[0].logo != '' %}<img src="{{contributor[0].get_logo_thumbnail('32x32')}}" >{% endif %}<span  >{{contributor[0].name}}</span></a></td>
+				<td class="{{ class_name }}"><a href="{{contributor[0].get_clickable_website()}}" target="_blank" >{% if contributor[0].logo != '' %}<img src="{{contributor[0].get_logo_thumbnail('36x36')}}" >{% endif %}<span style="width:100%;padding-right:5px" >{{contributor[0].name}}</span></a></td>
 			{% endif %}
 		{% endfor %}	 		       	
     {% endif %}
  
 	</tr>
 </table>
-</div>    
+ 

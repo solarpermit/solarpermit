@@ -14,7 +14,6 @@ from django.shortcuts import render
 
 from django.shortcuts import render_to_response, redirect
 from website.utils.mathUtil import MathUtil
-from website.utils.paginationUtil import PaginationUtil
 from website.utils.geoHelper import GeoHelper
 from website.models import Jurisdiction, Zipcode, UserSearch, Question, AnswerReference, OrganizationMember, QuestionCategory, Comment, UserCommentView, Template, ActionCategory, JurisdictionContributor, Action, UserDetail, OrganizationMember
 from website.models import View, ViewQuestions, ViewOrgs

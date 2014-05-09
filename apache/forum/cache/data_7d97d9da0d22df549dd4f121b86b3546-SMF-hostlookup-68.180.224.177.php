@@ -1,0 +1,1 @@
+<?php if (!defined('SMF')) die; if (1399583355 < time()) $expired = true; else{$expired = false; $value = 's:21:"b100097.yse.yahoo.net";';}?>

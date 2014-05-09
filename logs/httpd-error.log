@@ -1,0 +1,52 @@
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135] mod_wsgi (pid=98742): Target WSGI script '/usr/home/renic/solarpermit_staging/apache/django.wsgi' cannot be loaded as Python module.
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135] mod_wsgi (pid=98742): Exception occurred processing WSGI script '/usr/home/renic/solarpermit_staging/apache/django.wsgi'.
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135] Traceback (most recent call last):
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135]   File "/usr/home/renic/solarpermit_staging/apache/django.wsgi", line 12, in <module>
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135]     command.validate()
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135]   File "/usr/local/lib/python2.7/site-packages/django/core/management/base.py", line 280, in validate
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135]     num_errors = get_validation_errors(s, app)
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135]   File "/usr/local/lib/python2.7/site-packages/django/core/management/validation.py", line 35, in get_validation_errors
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135]     for (app_name, error) in get_app_errors().items():
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135]   File "/usr/local/lib/python2.7/site-packages/django/db/models/loading.py", line 166, in get_app_errors
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135]     self._populate()
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135]   File "/usr/local/lib/python2.7/site-packages/django/db/models/loading.py", line 72, in _populate
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135]     self.load_app(app_name, True)
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135]   File "/usr/local/lib/python2.7/site-packages/django/db/models/loading.py", line 94, in load_app
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135]     app_module = import_module(app_name)
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135]   File "/usr/local/lib/python2.7/site-packages/django/utils/importlib.py", line 35, in import_module
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135]     __import__(name)
+[Fri May 09 02:34:57 2014] [error] [client 172.15.56.135] ImportError: No module named compressor
+[Fri May 09 10:07:50 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 10:07:51 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 10:07:51 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 10:07:51 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 03:07:51 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 03:13:24 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 03:13:24 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 03:13:24 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 10:14:25 2014] [error] [client 172.15.56.135] File does not exist: /usr/home/renic/solarpermit_staging/static/skins/solarpermit/media/style/images, referer: http://staging.solarpermit.org/
+[Fri May 09 17:00:12 2014] [error] [client 38.104.129.98] File does not exist: /usr/home/renic/solarpermit_staging/static/skins/solarpermit/media/style/images, referer: http://staging.solarpermit.org/profile/
+[Fri May 09 17:00:13 2014] [error] [client 38.104.129.98] File does not exist: /usr/home/renic/solarpermit_staging/static/skins/solarpermit/media/style/images, referer: http://staging.solarpermit.org/profile/
+[Fri May 09 10:11:13 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 10:11:13 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 10:11:14 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 10:11:14 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 17:11:33 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 17:11:33 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 17:16:40 2014] [error] [client 38.104.129.98] File does not exist: /usr/home/renic/solarpermit_staging/static/skins/solarpermit/media/style/images, referer: http://staging.solarpermit.org/profile/
+[Fri May 09 10:35:50 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 10:35:50 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 10:35:50 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 10:35:50 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 15:04:25 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 15:04:25 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 15:04:25 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 15:04:25 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 15:28:41 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 15:28:42 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 15:28:42 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 22:28:53 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 22:28:53 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 22:28:53 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 22:28:53 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored
+[Fri May 09 22:28:53 2014] [error] Exception KeyError: KeyError(34401711104,) in <module 'threading' from '/usr/local/lib/python2.7/threading.pyc'> ignored

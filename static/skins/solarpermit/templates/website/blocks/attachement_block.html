@@ -1,66 +1,4 @@
-<div id="vote-div">
-	 {% for answer in answers %}
-     {%      set answer_obj = answer.get('answer') %}
-     {% if answer_obj.id == answer1.id%}
-     	<span class="vote_panel">                    
-                            {% if answer.get('can_vote_up') == 'true' %}
-                                {{answer.get('total_up_votes')}}
-                                <input type="button" id="voteup_{{answer_obj.id}}" name="voteup_{{answer_obj.id}}" value="Approve" class="voteup" onClick="set_entity('{{answer_obj.id}}', '{{terminology}}');vote_up('{{answer.get('can_vote_down')}}');return false;">
-                            {% else %}
-                                <span class="cannot_vote">
-                                {{answer.get('total_up_votes')}}
-                                <input type="button" id="voteup_{{answer_obj.id}}" name="voteup_{{answer_obj.id}}" value="Approve" class="voteup disabled" >  
-                                </span> 
-                            {% endif %}
- 
-                            {% if answer.get('can_vote_down') == 'true' %}    
-                                <input type="button" id="votedown_{{answer_obj.id}}" name="votedown_{{answer_obj.id}}" value=" " class="votedown" onClick="set_entity('{{answer_obj.id}}', '{{terminology}}');vote_down('{{answer.get('can_vote_up')}}');return false;" title="Reject">
-                                
-                                {% if answer.get('down_vote_last') | int > 0 %}
-                                    <span class="last_down_votes need_down_tip" id="down_vote_last_{{answer_obj.id}}"  data-last="{{answer.get('down_vote_last')}}" data-date="{{answer.get('last_down_vote_date')}}" title="{{terminology}}" >
-                                {% else %}
-                                    <span >
-                                {% endif %} 
-                                    {{answer.get('total_down_votes')}}   
-                                </span>    
-                                                                
-                            {% else %}
-                                <input type="button" id="votedown_{{answer_obj.id}}" name="votedown_{{answer_obj.id}}" value=" " class="votedown disabled" >
-                                
-                                {% if answer.get('down_vote_last') | int > 0 %}
-                                    <span class="last_down_votes need_down_tip" id="down_vote_last_{{answer_obj.id}}"  data-last="{{answer.get('down_vote_last')}}" data-date="{{answer.get('last_down_vote_date')}}" title="{{terminology}}" >
-                                {% else %}
-                                    <span class="cannot_vote">
-                                {% endif %}                           
-                                    {{answer.get('total_down_votes')}}   
-                                </span>                                
-                                
-                                
-                            {% endif %} 
-                        </span>
-     {% endif %}
-     {% endfor %}
-</div>
-<div id="attachement_slider">
-	<div class="click_bt">
-		<div class="back" style="float:left;"><a title="Back" href="#" style="display: none;">Prev</a></div>
-		<div class="next" style="float:right;"><a title="Next" href="#" style="{% if attachements | length > 3 %}display: block;{% else %} display: none; {% endif %}">Next</a></div>
-	</div>
-	<div class="slider-dat">
-		<ul>
-			{% for attach in attachements%}
-				<li>
-				<div>
-				<a href="/media{{attach.file_upload}}" target=_blank><img width="64" alt="pdf_files" src="/media/images/pdf.png"></a>
-				</div>
-				<div style="text-align: center;">
-				<a alt="{{attach.file_name}}" href="/media{{attach.file_upload}}" target=_blank>{{attach.file_name | truncate(5, True)}}</a>
-				</div>
-				</li>
-			{% endfor %}
-		</ul>
-	</div>
-</div>
+
 <form method="post" action="." accept-charset="utf-8" id="attach-form">
 <input type="hidden" name="ajax" value="save_attachements">
 <input type="hidden" name="answer_id" value="{{answer1.id}}">
@@ -73,6 +11,6 @@
                 	<!--a href="">Select File to Attach</a-->
                 </div>
                 </div>
-<input type="button" title="" onclick="return controller.submitForm('#attach-form');" class="smallbutton" id="save_{{answer1.id}}" value="Save" name="Save">
-<input type="button" title="" onclick="$('#qa_{{answer1.id}}_attachements').hide('slow');" class="smallbutton" id="cancel_{{answer1.id}}" value="Cancel" name="Cancel">
+<input class="attachement_save" data-answerid="{{{{answer1.id}}}}" type="button" title="" class="smallbutton" id="save_{{answer1.id}}" value="Save" name="Save">
+<input class="attachement_cancel" data-answerid="{{{{answer1.id}}}}" type="button" title="" class="smallbutton" id="cancel_{{answer1.id}}" value="Cancel" name="Cancel">
 </form>

@@ -5,11 +5,11 @@
 	{% if c.approval_status != 'F' and c.approval_status != 'R' %}
 	<p>{{c.comment}}</p>
 	<div id="button-div-{{c.id}}" >
-		<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'reply_comment', cid: {{c.id}}});return false;">Reply</a>
+		<a class="smallbutton ucommentReplyBtn" href="#" data-cid={{c.id}} >Reply</a>
 		{% if user.id == c.user.id %}
-		<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'remove_comment', cid: {{c.id}}});return false;">Delete</a>
+		<a class="smallbutton ucommentDeleteBtn" href="#" data-cid={{c.id}} >Delete</a>
 		{% endif %}
-		<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'flag_comment', cid: {{c.id}}});return false;">Flag</a>
+		<a class="smallbutton ucommentFlagBtn" href="#" data-cid={{c.id}} >Flag</a>
 	</div>
 	{% else %}
 	<p>This comment had been flagged as inappropriate and is hidden pending review.</p>
@@ -24,11 +24,11 @@
 				{% if c1.approval_status != 'F' and c1.approval_status != 'R' %}
 				<p>{{c1.comment}}</p>
 				<div id="button-div-{{c1.id}}" >
-					<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'reply_comment', cid: {{c1.id}}});return false;">Reply</a> 
+					<a class="smallbutton ucommentReplyBtn" data-cid={{c1.id}} href="#" >Reply</a> 
 					{% if user.id == c1.user.id %}
-					<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'remove_comment', cid: {{c1.id}}});return false;">Delete</a>
+					<a class="smallbutton ucommentDeleteBtn" data-cid={{c1.id}} href="#" >Delete</a>
 					{% endif %}
-					<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'flag_comment', cid: {{c1.id}}});return false;">Flag</a>
+					<a class="smallbutton ucommentFlagBtn" data-cid={{c1.id}} href="#" >Flag</a>
 				</div>
 				{% else %}
 				<p>This comment had been flagged as inappropriate and is hidden pending review.</p>
@@ -43,11 +43,11 @@
 						{% if c2.approval_status != 'F' and c2.approval_status != 'R' %}
 						<p>{{c2.comment}}</p>
 						<div id="button-div-{{c2.id}}" >
-							<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'reply_comment', cid: {{c2.id}}});return false;">Reply</a>
+							<a class="smallbutton ucommentReplyBtn" href="#" data-cid={{c2.id}} >Reply</a>
 							{% if user.id == c2.user.id %}
-							<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'remove_comment', cid: {{c2.id}}});return false;">Delete</a>
+							<a class="smallbutton ucommentDeleteBtn" href="#" data-cid={{c2.id}} >Delete</a>
 							{% endif %} 
-							<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'flag_comment', cid: {{c2.id}}});return false;">Flag</a>
+							<a class="smallbutton ucommentFlagBtn" href="#" data-cid={{c2.id}} >Flag</a>
 						</div>
 						{% else %}
 						<p>This comment had been flagged as inappropriate and is hidden pending review.</p>
@@ -64,9 +64,9 @@
 									<p>{{c3.comment}}</p>
 									<div id="button-div-{{c3.id}}" >
 										{% if user.id == c3.user.id %}
-										<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'remove_comment', cid: {{c3.id}}});return false;">Delete</a>
+										<a class="smallbutton ucommentDeleteBtn" data-cid={{c3.id}} href="#" >Delete</a>
 										{% endif %}
-										<a class="smallbutton" href="#" onClick="controller.postRequest('.', {ajax: 'flag_comment', cid: {{c3.id}}});return false;">Flag</a>
+										<a class="smallbutton ucommentFlagBtn" data-cid={{c3.id}} href="#" >Flag</a>
 									</div>
 									{% else %}
 									<p>This comment had been flagged as inappropriate and is hidden pending review.</p>

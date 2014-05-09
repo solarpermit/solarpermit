@@ -19,7 +19,6 @@ from django.conf import settings
 from jinja2 import FileSystemLoader, Environment
 
 from website.utils.mathUtil import MathUtil
-from website.utils.paginationUtil import PaginationUtil
 from website.models import Organization, RoleType, OrganizationMember, UserDetail
 #from sorl.thumbnail.main import get_thumbnail
 from sorl.thumbnail import get_thumbnail
@@ -71,15 +70,34 @@ def organization(request):
             if text == None:
                 text = ''
 
-            sort_dir = requestProcessor.getParameter('sort_dir')    
-            if sort_dir == None:
-                sort_dir = 'desc'        
-
-            if sort_dir == 'desc':
-                order_by_str = '-name'
-            else:
-                order_by_str = 'name'   
-
+            sort_dir = requestProcessor.getParameter('sort_dir')  
+            sort_by_date_added_dir = requestProcessor.getParameter('sort_by_date_added_dir')   
+            
+            if sort_dir == None and sort_by_date_added_dir == None:
+                data['sort_dir']  = '&sort_dir='+str(sort_dir)
+                order_by_str = 'name'
+              
+            if sort_dir != None and sort_by_date_added_dir == None:
+                data['sort_dir']  = '&sort_dir='+str(sort_dir)
+                if sort_dir == 'desc':
+                    order_by_str = '-name'
+                else:
+                    order_by_str = 'name'      
+                
+            if sort_dir == None and sort_by_date_added_dir != None:
+                data['sort_by_date_added_dir']  = '&sort_by_date_added_dir='+str(sort_by_date_added_dir)
+                if sort_by_date_added_dir == 'desc':
+                    order_by_str = '-create_datetime'
+                else:
+                    order_by_str = 'create_datetime'       
+                    
+            if sort_dir != None and sort_by_date_added_dir != None:
+                data['sort_dir']  = '&sort_dir='+str(sort_dir)
+                if sort_dir == 'desc':
+                    order_by_str = '-name'
+                else:
+                    order_by_str = 'name'       
+                    
             if text != '':
                 organizations = Organization.objects.filter(name__icontains=text, status = 'A').order_by(order_by_str)[0:ORGANIZATION_PAGE_SIZE]
             else:
@@ -87,7 +105,7 @@ def organization(request):
                 
             data['next_page_param'] = 'page=2'
             data['search_param'] = '&text='+text
-            data['sort_dir']  = '&sort_dir='+str(sort_dir)
+            #data['sort_dir']  = '&sort_dir='+str(sort_dir)
             data['organizations'] = organizations
 
             body = requestProcessor.decode_jinga_template(request,'website/organizations/organization_list.html', data, '')
@@ -242,9 +260,11 @@ def organization(request):
                 data['orgmembers_invite'] = data_org_members['orgmembers_invite']
                 body = requestProcessor.decode_jinga_template(request,'website/form_fields/org.html', data, '') 
                 dajax.assign('#my_org_list','innerHTML', body)   
+                script = requestProcessor.decode_jinga_template(request, 'website/form_fields/org.js', data, '')
+                dajax.script(script)                 
                 
                                                     
-                user_org_in_header_body = "<a id='update_org_info_link' href='#' onclick=\"controller.postRequest('/organization/', {ajax: 'open_org_details', orgid: "+str(org.id)+" }); return false;\">"+str(org.name)+"</a>"         
+                user_org_in_header_body = "<a id='update_org_info_link' href='#' data-ajax='open_org_details' data-orgid='"+str(org.id)+"' >"+str(org.name)+"</a>"         
                 dajax.assign('#user_org','innerHTML', user_org_in_header_body)      
 
                 data['orgid'] = org.id                     
@@ -264,11 +284,6 @@ def organization(request):
                 dajax.script(script)                  
 
                 return HttpResponse(dajax.json())                                                        
-                
-                #except Exception, e:
-                    #print e.message
-                    #error_message[msg_key] = e.message
-                    #print data
 
             if len(error_message) > 0:
                 for msg_key in error_message.keys():
@@ -400,6 +415,9 @@ def organization(request):
             body = requestProcessor.decode_jinga_template(request,'website/form_fields/org.html', data, '') 
             dajax.assign('#my_org_list','innerHTML', body)  
             
+            user_org_in_header_body = "<a id='update_org_info_link' href='#' data-ajax='open_org_details' data-orgid='"+str(org.id)+"' >"+str(org.name)+"</a>"         
+            dajax.assign('#user_org','innerHTML', user_org_in_header_body)               
+            
             org_admins = OrganizationMember.objects.filter(organization=org, role__name='Administrator').order_by('user__username')
             data['org_admins'] = org_admins               
                             
@@ -410,7 +428,8 @@ def organization(request):
             dajax.script(script)
             script = requestProcessor.decode_jinga_template(request, 'website/organizations/org_member_list.js', data, '')
             dajax.script(script)
-
+            script = requestProcessor.decode_jinga_template(request, 'website/form_fields/org.js', data, '')
+            dajax.script(script)
             return HttpResponse(dajax.json())     
         if ajax == 'org_details_members_change':
             org_id = requestProcessor.getParameter('orgid')
@@ -443,7 +462,7 @@ def organization(request):
                         template = 'remove_member_org.html'
                         send_org_email(email_data, to_mail, subject,  template)
                     except:
-                        print('Failed to send remove from org email to ' + org_member.user.email)
+                        pass
             
             role_list = []
             members_list = []
@@ -488,7 +507,7 @@ def organization(request):
                             template = 'change_org_right.html'
                             send_org_email(email_data, to_mail, subject,  template)
                         except:
-                            print('Failed to send role change email to ' + member.user.email)
+                            pass
                 
                 dajax.script('jQuery.fancybox.close();')  
                 dajax.script("controller.showMessage('Changes saved.', 'success')") 
@@ -514,8 +533,10 @@ def organization(request):
             
             body = requestProcessor.decode_jinga_template(request,'website/form_fields/org.html', data, '') 
             dajax.assign('#my_org_list','innerHTML', body)     
+            script = requestProcessor.decode_jinga_template(request, 'website/form_fields/org.js', data, '')
+            dajax.script(script)             
             
-            user_org_in_header_body = "<a href='#' id='update_org_info_link' onclick=\"controller.postRequest('/organization/', {ajax: 'open_choose_org'}); return false;\" title='Tip: Help your organization gain recognition by listing it in your profile'>Update your Organization Info</a>"         
+            user_org_in_header_body = "<a href='#' id='update_org_info_link' data-ajax='open_choose_org' title='Tip: Help your organization gain recognition by listing it in your profile'>Update your Organization Info</a>"         
             dajax.assign('#user_org','innerHTML', user_org_in_header_body)    
             
             dajax.script('jQuery.fancybox.close();')  
@@ -576,6 +597,9 @@ def organization(request):
             
             body = requestProcessor.decode_jinga_template(request,'website/form_fields/org.html', data, '') 
             dajax.assign('#my_org_list','innerHTML', body) 
+            
+            script = requestProcessor.decode_jinga_template(request, 'website/form_fields/org.js', data, '')
+            dajax.script(script)            
                             
             '''    
             data['userid'] = user.id                
@@ -749,7 +773,7 @@ def organization(request):
             dajax.assign('#main_content','innerHTML', body)    
             '''
             
-            user_org_in_header_body = "<a href='#' id='update_org_info_link' onclick=\"controller.postRequest('/organization/', {ajax: 'open_choose_org'}); return false;\" title='Tip: Help your organization gain recognition by listing it in your profile'>Update your Organization Info</a>"         
+            user_org_in_header_body = "<a href='#' id='update_org_info_link' data-ajax='open_choose_org' title='Tip: Help your organization gain recognition by listing it in your profile'>Update your Organization Info</a>"         
             dajax.assign('#user_org','innerHTML', user_org_in_header_body)               
             
             dajax.script('jQuery.fancybox.close();')  
@@ -1051,23 +1075,6 @@ def organization(request):
             #except:
             #    org_member = OrganizationMember()
             
-        '''
-        if (ajax == 'view_org_details'):
-            org_id = requestProcessor.getParameter('orgid')
-            org = Organization.objects.get(id = org_id)
-            org_members = OrganizationMember.objects.filter(organization = org, status = 'A')
-            
-            data['organization'] = org
-            data['org_members'] = org_members
-            data['owners'] = org.get_owners()
-            body = requestProcessor.decode_jinga_template(request,'website/organizations/organization_details_view.html', data, '')
-            dajax.assign('#fancyboxformDiv','innerHTML', body)
-            script = requestProcessor.decode_jinga_template(request, 'website/organizations/organization_details_view.js', data, '')
-            dajax.script(script)
-            dajax.script('controller.showModalDialog("#fancyboxformDiv");')
-            return HttpResponse(dajax.json())
-        '''    
-        
         #add script to open fancybox if command starts with 'open'
         if ajax.startswith('open'):
             dajax.script('controller.showModalDialog("#fancyboxformDiv");')
@@ -1098,12 +1105,42 @@ def organization_search(request):
     range_end = page_number * ORGANIZATION_PAGE_SIZE
     data['next_page_param'] = 'page='+str(page_number + 1)
     
+    ### ordering param ###
+    sort_dir = requestProcessor.getParameter('sort_dir')  
+    sort_by_date_added_dir = requestProcessor.getParameter('sort_by_date_added_dir')   
+            
+    if sort_dir == None and sort_by_date_added_dir == None:
+        data['sort_dir']  = '&sort_dir='+str(sort_dir)
+        order_by_str = 'name'
+              
+    if sort_dir != None and sort_by_date_added_dir == None:
+        data['sort_dir']  = '&sort_dir='+str(sort_dir)
+        if sort_dir == 'desc':
+            order_by_str = '-name'
+        else:
+            order_by_str = 'name'      
+                
+    if sort_dir == None and sort_by_date_added_dir != None:
+        data['sort_by_date_added_dir']  = '&sort_by_date_added_dir='+str(sort_by_date_added_dir)
+        if sort_by_date_added_dir == 'desc':
+            order_by_str = '-create_datetime'
+        else:
+            order_by_str = 'create_datetime'       
+                    
+    if sort_dir != None and sort_by_date_added_dir != None:
+        data['sort_dir']  = '&sort_dir='+str(sort_dir)
+        if sort_dir == 'desc':
+            order_by_str = '-name'
+        else:
+            order_by_str = 'name'       
+                    
     if search_text != '':
-        organizations = Organization.objects.filter(name__icontains=search_text, status = 'A').order_by('name')[range_start:range_end]
+        organizations = Organization.objects.filter(name__icontains=text, status = 'A').order_by(order_by_str)[range_start:range_end]
         data['search_param'] = '&text='+search_text
     else:
-        organizations = Organization.objects.filter(status = 'A').order_by('name')[range_start:range_end]
-        data['search_param'] = ''
+        organizations = Organization.objects.filter(status = 'A').order_by(order_by_str)[range_start:range_end]
+        data['search_param'] = '&text='
+    
         
     data['organizations'] = organizations
     

@@ -1,8 +1,8 @@
 			<div class="form_field" >  
 				<div class="label">{{question_label}}:</div>           
                 <div class="field">
-                   <input type="radio" name="field_apply" id="field_apply_in_person_{{question_id}}" value="in person" {% if apply == 'in person' or apply == 'In person' %} checked {% endif %}  onClick="show_hide_remotely_options()" >Must request in person
-                   <br/><input type="radio" name="field_apply" id="field_apply_remotely_{{question_id}}" value="remotely" {% if apply == 'remotely' or apply == 'Remotely' %} checked {% endif %}  onClick="show_hide_remotely_options()" >Can request remotely
+                   <input type="radio" name="field_apply" id="field_apply_in_person_{{question_id}}" value="in person" {% if apply == 'in person' or apply == 'In person' %} checked {% endif %}   >Must request in person
+                   <br/><input type="radio" name="field_apply" id="field_apply_remotely_{{question_id}}" value="remotely" {% if apply == 'remotely' or apply == 'Remotely' %} checked {% endif %}   >Can request remotely
                 </div>                              
             </div>
 
@@ -10,7 +10,7 @@
 
 					<div class="form_field">			
 						<div class="field">
-							<input type="checkbox" name="field_request_by_phone" id="field_request_by_phone_{{question_id}}" value="yes" {% if request_by_phone == 'yes' %}checked{% endif %} onClick="show_hide_other()" >Can request via phone
+							<input type="checkbox" name="field_request_by_phone" id="field_request_by_phone_{{question_id}}" value="yes" {% if request_by_phone == 'yes' %}checked{% endif %} >Can request via phone
 							<span id="phone_{{question_id}}" {% if request_by_phone == 'yes' or request_by_phone == 'Yes' %} style="display:block;"{% else %} style="display:none;" {% endif %}>
 								&nbsp;&nbsp;Phone: <input type="text" name="field_phone" id="field_phone" value="{{phone}}" class="required phoneUS" style="width:210px" maxLength="64" >	  							
 							</span>
@@ -19,7 +19,7 @@
 					</div>	
 					<div class="form_field">					
 						<div class="field">
-							<input type="checkbox" name="field_request_by_fax" id="field_request_by_fax_{{question_id}}" value="yes" {% if request_by_fax == 'yes' %}checked{% endif %} onClick="show_hide_other()" >Can request via fax
+							<input type="checkbox" name="field_request_by_fax" id="field_request_by_fax_{{question_id}}" value="yes" {% if request_by_fax == 'yes' %}checked{% endif %}  >Can request via fax
 							<span id="fax_{{question_id}}" {% if request_by_fax == 'yes' or request_by_fax == 'Yes' %} style="display:block;"{% else %} style="display:none;" {% endif %}>
 								&nbsp;&nbsp;Fax: <input type="text" name="field_fax" id="field_fax" value="{{fax}}" class="required phoneUS" style="width:210px" maxLength="64" >	  							
 							</span>	
@@ -28,7 +28,7 @@
 					</div>
 					<div class="form_field">						
 						<div class="field">
-							<input type="checkbox" name="field_request_by_email" id="field_request_by_email_{{question_id}}" value="yes" {% if request_by_email == 'yes' %}checked{% endif %} onClick="show_hide_other()" >Can request via email	
+							<input type="checkbox" name="field_request_by_email" id="field_request_by_email_{{question_id}}" value="yes" {% if request_by_email == 'yes' %}checked{% endif %}  >Can request via email	
 							<span id="email_{{question_id}}" {% if request_by_email == 'yes' or request_by_email == 'Yes' %} style="display:block;"{% else %} style="display:none;" {% endif %}>
 								&nbsp;&nbsp;Email: <input type="text" id="email" name="field_email"  value="{{email}}" class="required email" style="width:210px" maxLength="200" >		  							
 							</span>																									  

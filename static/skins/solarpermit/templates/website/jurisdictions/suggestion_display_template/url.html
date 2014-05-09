@@ -7,10 +7,15 @@
 			{% else %}
 			
 			<div>
-			{% if answer_content.get('name_1') != None %}
-				<a href="{{answer_content.get('link_1')}}" target='_blank' >{{answer_content.get('name_1')   }}</a>   
+			{% if answer_content.get('link_1') != None and answer_content.get('link_1') != '' %}
+				{% if answer_content.get('name_1') != None and answer_content.get('name_1') != '' %}
+					<a href="{{answer_content.get('link_1')}}" target='_blank' >{{answer_content.get('name_1') | truncate(30, True)  }}</a> 
+				{% else %}
+					<a href="{{answer_content.get('link_1')}}" target='_blank' >{{answer_content.get('link_1') | truncate(30, True)  }}</a> 
+				{% endif %}
+				  
 			{% elif answer_content.get('value') != None %}     
-				<a href="{{answer_content.get('value')}}" target='_blank' >{{answer_content.get('value')  }}</a>   			
+				<a href="{{answer_content.get('value')}}" target='_blank' >{{answer_content.get('value')  | truncate(30, True) }}</a>   			
 			{% endif %}                      
             </div>
             			

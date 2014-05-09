@@ -41,3 +41,17 @@ function hide_comment_a(){
 	$('#old_list').show();
 	$('#id_a_hide').bind('click', function(){show_comment_a();});;
 }
+
+$('#add_new_comment_bt').click(function (){
+	controller.postRequest('/jurisdiction_comment/',{ajax: 'create_jurisdiction_comment', jurisdiction_id: {{jurisdiction.id}}, answer_id: {{answer.id}} });
+	return false;
+});
+
+$('#show_old_comments_link').click(function() {
+	jid = $(this).data('jid')
+	old_id = $(this).data('oldid')
+	controller.postRequest('/jurisdiction_comment/',{ajax: 'show_old_comments', jurisdiction_id: jid, answer_id: old_id });
+	return false;
+});
+
+

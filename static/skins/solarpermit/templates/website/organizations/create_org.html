@@ -2,10 +2,10 @@
 
 {% block modal_dialog_title %}Choose a Company or Organization{% endblock %}
 
-{% block modal_dialog_header %}<a style="font-size:16px" href="#" onClick="return controller.postRequest('/organization/', {ajax: 'open_choose_org'});" >Overview</a> &gt; Create a new company or organization{% endblock %}
+{% block modal_dialog_header %}<a style="font-size:16px" href="#" id="open_choose_org"  >Overview</a> &gt; Create a new company or organization{% endblock %}
 
 {% block modal_dialog_message %}{{form_create_org_fail_reason}}{% endblock %}
-{% block modal_dialog_form_top %}<form id="{{form_create_org_id}}" name="form_create_org" action="/organization/" onSubmit="return controller.submitForm('#{{form_create_org_id}}');" method="post" accept-charset="utf-8" novalidate="novalidate">{% endblock %}
+{% block modal_dialog_form_top %}<form id="{{form_create_org_id}}" name="form_create_org" action="/organization/" method="post" accept-charset="utf-8" novalidate="novalidate">{% endblock %}
 {% block body_modal_dialog %}
     
 
@@ -37,8 +37,8 @@
     
     <div class="form_field">
         <div class="label">Company or Organization website:</div>
-        <div class="field"><input tabindex="3" type="text" name="website" id="{{form_create_org_id}}_field_website" value="{{website}}" maxLength="200" class="required url" style="width:300px" ></div>
-        <div class="field_help_text">Please enter a valid url (http://www.myorg.com)</div>
+        <div class="field"><input tabindex="3" type="text" name="website" id="{{form_create_org_id}}_field_website" value="{{website}}" maxLength="200" class="required domainOrUrl" style="width:300px" ></div>
+        <div class="field_help_text">Enter the domain name or URL of the website. For example, www.mycompany.com.</div>
         <div class="error_div"></div>    
     </div>
     
@@ -55,11 +55,9 @@
 
 
 {% block modal_dialog_action %}
-    <!--span><a disabled href="#" id="{{form_create_org_id}}_submit_button" class="mainbutton disabled" onClick="controller.submitForm('#{{form_create_org_id}}');"  title="Complete the form above to create a new organization." >Save</a></span>
-    <span><a href="#" id="create_org_cancel" class="mainbutton" onClick="controller.postRequest('/organization/', {ajax: 'open_choose_org'}); return false;"  title="Cancel">Cancel</a></span-->
-    
-    <input type="submit" tabindex="4" id="{{form_create_org_id}}_submit_button" class="mainbutton disabled"  title="Complete the form above to create a new organization." value="Save">
-    <input type="button" tabindex="5" id="create_org_cancel" class="mainbutton" onClick="controller.postRequest('/organization/', {ajax: 'open_choose_org'}); return false;"  title="Cancel" value="Cancel">
+  
+    <input type="submit" tabindex="4"  id="{{form_create_org_id}}_submit_button" class="mainbutton disabled"  title="Complete the form above to create a new organization." value="Save">
+    <input type="button" tabindex="5" id="create_org_cancel" class="mainbutton"   title="Cancel" value="Cancel">
     
 {% endblock %}
 

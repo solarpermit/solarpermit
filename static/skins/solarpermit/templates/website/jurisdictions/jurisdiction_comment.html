@@ -2,7 +2,7 @@
 
 {% block modal_dialog_title %}Comments on {{label}}{% endblock %}
 
-{% block modal_dialog_header %}<a class="mainbutton" href="#" onClick="controller.postRequest('/jurisdiction_comment/',{ajax: 'create_jurisdiction_comment', jurisdiction_id: {{jurisdiction.id}}, answer_id: {{answer.id}} });return false;" >Add a new comment...</a>{% endblock %}
+{% block modal_dialog_header %}<a id="add_new_comment_bt" class="mainbutton" href="#"  >Add a new comment...</a>{% endblock %}
 
 {% block modal_dialog_message %}{% endblock %}
 
@@ -20,7 +20,7 @@
           {{answer_text}}
 	</div>
 	<div id="show_commnet_div" style="margin-top:10px;">
-	<a href="#" onClick="controller.postRequest('/jurisdiction_comment/',{ajax: 'show_old_comments', jurisdiction_id: {{jurisdiction.id}}, answer_id: {{old_answer.id}} });return false;"><img src="/media/images/arrow_right.png" id="profile_action_indicator" style="vertical-align:middle;" alt="show old comments" > Show old comments</a>
+	<a id="show_old_comments_link" data-oldid="{{old_answer.id}}" data-jid="{{jurisdiction.id}}" href="#"><img src="/media/images/arrow_right.png" id="profile_action_indicator" style="vertical-align:middle;" alt="show old comments" > Show old comments</a>
     </div>
     <div id="old_list" class="comment-list">
     <ul class="ul-level-1">

@@ -24,7 +24,6 @@ class AutoVivification(dict):
             value = self[item] = type(self)()
             return value
 
-
 def searchState(request):
     conn = MySQLdb.connect (host=settings.DATABASES['default']['HOST'],
                            user=settings.DATABASES['default']['USER'],
@@ -182,7 +181,6 @@ def searchState(request):
     
                 pass
             if buildQuestionID:
-                #print queryComments
                 c = 0
                 i = len(descriptionQuestions)
                 while c < i: 
@@ -222,7 +220,6 @@ def searchState(request):
                 while buildCount > buildInc:
                     output += "\t\t<question>\n"
                     try:
-                        #print "in the try"
                         if jurisdictionQuestions:
                             for key, value in jurisdictionQuestions[buildInc].items():
                                 raw = str(jurisdictionQuestions[buildInc][key])
@@ -236,15 +233,11 @@ def searchState(request):
                                 raw = str(jurisdictionAnswers[buildInc][key])
                                 phased = raw.replace("&", "&amp;")
                                 output += str(buildDescriptionAnswers[key]) + saxutils.escape(saxutils.unescape(phased)) + "</" + saxutils.escape(saxutils.unescape(key)) + ">\n"
-                        #print "done with try"
     
                         commentInc = 0
                         commentCount = len(jurisdictionComments)
-                        #print commentCount
-                        #print "second nasty loop"
                         while commentInc < commentCount: 
                             try:
-                                #print "in the try"
                                 if jurisdictionComments[commentInc]["entity_id"] == entity_id:
                                     output += "\t\t\t\t<comments>\n"
                                     for key, value in jurisdictionComments[commentInc].items():
@@ -252,18 +245,15 @@ def searchState(request):
                                         phased = raw.replace("&", "&amp;")
                                         output += str(buildDescriptionComments[key]) + saxutils.escape(saxutils.unescape(phased)) + "</" + saxutils.escape(saxutils.unescape(key)) + ">\n"
                                     output += "\t\t\t\t</comments>\n"
-                                #print "finished the try"
                             except IndexError:
                                 pass
                             commentInc = commentInc + 1
                         output += "\t\t\t</answer>\n"
                     except IndexError:
-                        print "passed on " + str(buildInc)
                         pass
                     output += "\t\t</question>\n"
                     buildInc = buildInc + 1
             else:
-                #print "nothing here"
                 pass
             
             output += "\t</jurisdiction>\n"

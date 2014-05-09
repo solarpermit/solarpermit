@@ -1,0 +1,281 @@
+{% extends "/website/jurisdictions/AHJ_data.html" %}
+{% block category_content %}
+  {% if cqa | length == 0 %}
+    {% if category == 'favorite_fields' %}
+      <div class="ahj_page_message">This tab displays your favorite data
+      fields. This allows you to easily track the permitting
+      requirements that you care about. Adding a field to the favorites
+      tab is easy.
+        <img style="border:1px blue solid;margin:20px;"
+             src="/media/images/favorites_quirks_howtos.png"
+             alt="favorites_quirks_howtos">
+      </div>
+    {% elif category == "quirks" %}
+      <div class="ahj_page_message">This tab displays quirky permitting
+      requirements. No one has marked one of the requirements as a
+      quirk, but it is easy to do.
+        <img style="border:1px blue solid;margin:20px;float:left;"
+             src="/media/images/favorites_quirks_howtos.png"
+             alt="favorites_quirks_howtos">
+      </div>
+    {% elif category == "attachments" %}
+      <div class="ahj_page_message">This tab displays answers with
+      attachments. No attachments have been uploaded yet.</div>
+    {% elif category == "all_info" %}
+      <div class="ahj_page_message">No one has entered in data for this
+      jurisdiction yet. Uncheck the checkbox above to see all data
+      fields.</div>
+    {% else %}
+      <div class="ahj_page_message">No one has entered in data for this
+      {{category}} category yet. Uncheck the checkbox above to see all
+      data fields.</div>
+    {% endif %}
+  {% endif %}
+
+  {% for category_id in cqa %}
+    <div data-debug-category-id="{{category_id}}">
+      {# display the new category here #}
+      <div class="ahj_category_header"
+           style="width:100%;float:left;">
+        {{ cqa[category_id]['cat_description'] | capitalize }}
+      </div>
+  
+      {% for question_id in cqa[category_id]['sorted_question_ids'] %}
+        <div data-debug-question-id="{{question_id}}">
+          {% set question = cqa[category_id]['questions'][question_id] %}
+          {% if question['has_multivalues'] | int == 1 %}
+            {% if question['answers'] %}
+              <div class="suggestion_btn_placement" id="suggest_value_btn_{{question_id}}">
+                <input type="button"
+                       class="smallbutton add_another_value"
+                       id="add_another_value_{{question_id}}"
+                       value="Add another {{question['terminology']}}"
+                       data-id="{{question_id}}"
+                       data-jid="{{jurisdiction.id}}">
+              </div>
+            {% endif %}
+          {% endif %}  
+          <div style="margin:10px;width:100%">&nbsp;</div>
+          <div id="div_question_content_{{question_id}}" style="margin-left:25px;">
+            {% if question.logged_in_user_suggested_a_value %}
+              {% set icon = 'Y' %}
+              {% set label_tooltip = 'Sorry, you have already provided an answer.' %}
+            {% else %}
+              {% set icon = 'Y' %}
+              {% set label_tooltip = '' %}
+            {% endif %}
+            <div style="width:100%;"
+                 class="qasv_content need_tooltip"
+                 id="child_of_div_{{question_id}}"
+                 data-id="{{question_id}}"
+                 data-paids="{{question['pending_answer_ids']}}"
+                 data-jurid="{{jurisdiction.id}}">
+              <div class="label"
+                   title="{{question['terminology']}}"
+                   data-icon="{{icon}}"
+                   data-label_tooltip="{{label_tooltip}}"
+                   {% if not question.logged_in_user_suggested_a_value %}
+                   onClick="controller.suggestionField.clickAddLabel({{jurisdiction.id}}, {{question_id}});"
+                   {% endif %}>
+                <span style="float:left;visibility:visible;display:none;padding-right:5px"
+                      id="edit_question_{{question_id}}">
+                  <img width="10"
+                       src="/media/images/edit.png"
+                       alt="edit">
+                </span>
+                <span style="float:left;">{{question['label'] | replace('[AHJ name]', jurisdiction.name) }}</span>
+              </div>
+              {% with current_question_id = question['question_id'] %}
+                {% include 'website/jurisdictions/ahj_actions.html' %}
+              {% endwith %}
+            </div>
+            {% if question['description'] != None and question['description'] != '' %}
+              <div style="float:left;width:100%" class="description">{{question['description']}}</div>
+            {% endif %}
+            {% if not question.logged_in_user_suggested_a_value %}
+              <div id="qa_{{question_id}}_add" class="cssCell suggestion_edit_box" style="display:none">
+                <form id="form_{{question_id}}" name="name_{{question_id}}" action="."  method="post" accept-charset="utf-8">
+                  <input type="hidden" name="ajax" value="suggestion_submit" />
+                  <input type="hidden" name="jurisdiction_id" value="{{jurisdiction.id}}" />
+                  <input type="hidden" name="question_id" value="{{question_id}}" />
+                  <div id="qa_{{question_id}}_fields"></div>
+                  <div>
+                    <input type="submit" name="save_{{question_id}}" value="Save" id="save_{{question_id}}" class="smallbutton" title="">
+                    <input type="button" name="Cancel" value="Cancel" id="cancel_{{question_id}}" class="smallbutton" onClick="controller.closeSuggestion('{{question_id}}');"  title="">
+                  </div>
+                </form>
+              </div>
+            {% endif %}
+            {% if not question['answers'] %}
+              <div class="prompt"
+                   style="float:left;width:100%;margin-bottom:20px">
+                {% if user.is_authenticated() %}
+                  No info available yet...
+                {% else %}
+                  Please sign in to suggest {{question['terminology']}}.
+                {% endif %}
+              </div>
+            {% else %}
+              <div style="float:left;width:100%;display:none" class="question_messages" id="question_messages_{{question_id}}"></div>
+            {% endif %}
+            {% for answer in question['answers'] %}
+              <div data-debug-answer-id="{{answer.id}}">
+                <div class="cssTable" style="float:left;width:100%;margin-bottom:20px">
+                  <div class="cssRow" id="qa_{{question_id}}_data">
+                  <div class="cssCell suggestion_left" style="">
+                    {% if question['answers'] %}
+                      <div class="suggestion_header" id="suggestion_header_{{answer['id']}}">
+                        {{ answer_heading }}
+                      </div>
+                    {% endif %}
+                    <div class="field answer_field"
+                         id="{{answer['id']}}"
+                         {% if answer['creator_id'] == user.id and answer['approval_status'] == 'P' %}
+                         onmouseover="controller.initSuggestionFieldEvent(this);"
+                         {% endif %}>
+                      {% if answer['creator_id'] == user.id and answer['approval_status'] == 'P' %}
+                        {# need to take into account if votes have been registered for this answer #}
+                        <span class="cancel_btn" id="cancel_btn_{{answer['id']}}" title="Cancel your message" style="width:20px;float:left;">
+                          <input class="cancelbt field_mo_l3 cancel_this_value"
+                                 type="button"
+                                 value=""
+                                 data-id="{{answer['id']}}">
+                        </span>
+                        <span class="edit_btn" id="edit_btn_{{answer['id']}}" title="Edit your suggestion" style="width:35px;float:left">
+                          <input class="editbt canedit field_mo_l1 edit_this_value"
+                                 id="edit_button_{{answer['id']}}"
+                                 type="button" value=""
+                                 data-id="{{answer['id']}}"
+                                 data-questions_terminology="{{question['terminology']}}"
+                                 data-jurid="{{jurisdiction.id}}"
+                                 data-qid="{{question_id}}">
+                        </span>
+                      {% endif %}
+                      {% with %}
+                        {% set answer_content = answer['content'] %}
+                        {% set current_question_field_suffix = answer['field_suffix'] %}
+                        {% if answer['display_template'] == '' or question['display_template'] == None %}
+                          {% include 'website/jurisdictions/suggestion_display_template/single_field_display.html' %}
+                        {% else %}
+                          {% include 'website/jurisdictions/suggestion_display_template/'+answer['display_template'] %}
+                        {% endif %}
+                      {% endwith %}
+                      {% if answer['support_attachments'] | int == 1 %}
+                        <div id="attachment_{{answer['id']}}" style="display:none"></div>
+                      {% endif %}
+                    </div>
+                    <div class="valhis">
+                      {% if user.is_authenticated(): %}
+                        {% if answer['approval_status'] == 'A' %}
+                          <div id="validation_history_div_{{answer['id']}}" style="display:none;"></div>
+                          <a class="comments need_history need_history_dialog"
+                             data-id="{{answer['id']}}"
+                             id="validation_history_{{answer['id']}}"
+                             href="javascript:void(0);"
+                             title="">
+                            Validation history</a> -
+                          <a class="comments need_comment"
+                             href="#"
+                             data-id="{{answer['id']}}"
+                             data-jid="{{jurisdiction.id}}"
+                             id="answer_comment_{{answer['id']}}">
+                            Add a comment
+                          </a>
+                        {% else %}
+                          <div class="valhis">
+                            <a id="answer_comment_{{answer['id']}}"
+                               href="#"
+                               class="comments need_comment"
+                               data-id="{{answer['id']}}"
+                               data-jid="{{jurisdiction.id}}"
+                               onClick="controller.postRequest('/jurisdiction_comment/', {ajax: 'open_jurisdiction_comment', urisdiction_id: {{jurisdiction.id}}, entity_id: {{answer['id']}}, entity_name: 'AnswerReference'}); return false;">
+                              Add a comment
+                            </a>
+                          </div>
+                        {% endif %}
+                      {% else %}
+                        <div id="validation_history_div_{{answer['id']}}" style="display:none;"></div>
+                        <a data-id="{{answer['id']}}"
+                           id="validation_history_{{answer['id']}}"
+                           href="#" class="comments need_history"
+                           title="">
+                          Validation history
+                        </a> -
+                        <span class="prompt_small">Sign in to add a comment</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div class="csscell suggestion_right">
+                    {% with current_answer_id = answer['id'] %}
+                      {% include '/website/jurisdictions/ahj_answer_votes.html' %}
+                    {% endwith %}
+                    {% if user.is_superuser == 1 and answer['approval_status'] != 'A' %}
+                      <div>
+                        <input id="approve_this_value_{{answer['id']}}"
+                               type="button"
+                               class="smallbutton approve_this_value"
+                               value="Approve this {{question['terminology']}}"
+                               data-id="{{answer['id']}}"
+                               data-questions_terminology="{{question['terminology']}}">
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+                {% if answer['created_by'] == user.id and answer['status'] == 'P' %}
+                  <div class="cssRow">
+                    <div class="cssCell">
+                      <div id="qa_answer_{{answer['id']}}_edit" class="suggestion_edit_box" style="display:none">
+                        <form id="form_edit_{{answer['id']}}"
+                              name="name_edit_{{answer['id']}}"
+                              action="." 
+                              method="post"
+                              accept-charset="utf-8">
+                          <input type="hidden" name="ajax" value="suggestion_edit_submit" />
+                          <input type="hidden" name="jurisdiction_id" value="{{jurisdiction.id}}" />
+                          <input type="hidden" name="question_id" value="{{answer['question_id']}}" />
+                          <input type="hidden" name="answer_id" value="{{answer['id']}}" />
+                          <div id="qa_{{answer['id']}}_edit_fields"></div>
+                          <div>
+                            <input type="submit"
+                                   name="save_edit_{{answer['id']}}"
+                                   value="Save"
+                                   id="save_edit_{{answer['id']}}"
+                                   class="smallbutton" title="">
+                            <input type="button"
+                                   name="Cancel cancelEdit" value="Cancel"
+                                   id="cancel_edit_{{answer['id']}}"
+                                   class="smallbutton"
+                                   onClick="controller.closeSuggestionEditAnswer('{{answer['id']}}');"
+                                   title="">
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    
+      {# display the custom field here, at end of each category section #}
+      <div style="float:left;width:100%">
+        <div id="div_custom_question_content_{{category_id}}" style="margin-left:25px;"></div>
+        <div class="label">Don't see the info you're looking for here?</div>
+        <div>Check out the other sections to the left or create a custom field to share more info with the community.</div>
+      </div>
+      <div>
+        <input type="button"
+               id="create_custom_field_btn_{{category_id}}"
+               name="create_custom_field_btn"
+               value="Create a custom field..."
+               class="smallbutton create_custom_field_btn"
+               data-jurisdiction_id="{{jurisdiction.id}}"
+               data-category_id="{{category_id}}"
+               data-current_category="{{category}}"/>
+      </div>
+    </div>
+  {% endfor %}
+{% endblock %}
