@@ -46,7 +46,7 @@ Install Instructions
     A. CREATE DATABASE solarpermit;
     B. ./manage.py syncdb (if this fails due to a missing SQL table, run migrate website)
     C. ./manage.py migrate website
-6. Restart Apache
+6. Restart Apache 
       
 Need help?  Have questions?
 
