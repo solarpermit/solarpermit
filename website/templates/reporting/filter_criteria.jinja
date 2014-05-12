@@ -1,0 +1,25 @@
+{% extends "base_modal_dialog.html" %}
+
+{% block modal_dialog_title %}Filter criteria{% endblock %}
+
+{% block body_modal_dialog %}
+  {{ form.media|safe }}
+  <table id="filter_criteria_form">
+    <tr><th><input type="radio" name="type" value="state"
+                   {{ 'checked' if form.initial.states }}
+                   id="type-state" class="type-selection">
+            <label for="type-state">{{ form.states.label }}<label></th>
+        <td>{{ form.states|safe }}
+            {{ form.states.errors|safe }}</td></tr>
+    <tr><th><input type="radio" name="type" value="jurisdiction"
+                   {{ 'checked' if form.initial.jurisdictions }}
+                   id="type-jurisdiction" class="type-selection">
+            <label for="type-jurisdiction">{{ form.jurisdictions.label }}</label></th>
+        <td>{{ form.jurisdictions|safe }}
+            {{ form.jurisdictions.errors|safe }}</td></tr>
+  </table>
+{% endblock %}
+
+{% block modal_dialog_action %}
+  <button id="add-filter">Filter</button>
+{% endblock %}

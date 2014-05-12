@@ -33,7 +33,7 @@ def build_query(question, field_map, geo_filter=None):
     # since they specialize in where clauses, while writing a simpler
     # one of our own that specializes in select clauses. Both of them
     # bear more than a passing resemblance to lisp, of course.
-    indent = "                     ";
+    indent = "                      ";
     sep = ",\n"+indent
     # convert everything to unsigned, even though they are already
     # unsigned. This prevents django from occasionally thinking that
@@ -67,10 +67,9 @@ def build_query(question, field_map, geo_filter=None):
                      "geo_filter": compiled_filter }
 
 def json_match(field_name, value, op="="):
+    # BUG: this should be utf8mb4_unicode_ci; our connection to the database must be using the wrong encoding
     return and_match(not_null_match(json_extract(field_name)),
-                     'json_get(value, "%s") %s "%s"' % (field_name, op, value))
-    return regexp_match('"%(name)s": *"%(value)s"' % { "name": escape_regex_inclusion(field_name),
-                                                       "value": escape_regex_inclusion(value) })
+                     'json_get(value, "%s") %s "%s" COLLATE utf8_unicode_ci' % (field_name, op, value))
 def json_extract(field_name):
     return 'json_get(value, "%s")' % field_name
 def json_valid():
@@ -117,7 +116,8 @@ def gte(a, b):
 def between(v, a, b):
     if a > b:
         (a, b) = (b, a)
-    return "%s BETWEEN %s AND %s" % (v, a, b)
+    return and_match(gt(v, a),
+                     lte(v, b))
 
 def parenthesize(match):
     return "("+ match +")"
@@ -228,12 +228,20 @@ def time_window_report():
                         ("Full Day (greater than 4 hours)", json_match("time_window", "8"))])
     return hist(add_sum_total(summarize(add_other(add_freeform(spec)))))
 
+def size_cap_report():
+    spec = OrderedDict([("<5 kW", lt(json_extract("value"), 5)),
+                        ("5-10 kW", between(json_extract("value"), 5, 10)),
+                        ("10-15 kW", between(json_extract("value"), 10, 15)),
+                        ("15-20 kW", between(json_extract("value"), 15, 20)),
+                        (">20 kW", gte(json_extract("value"), 20))])
+    return hist(add_sum_total(summarize(add_other(spec))))
+
 reports_by_type = {
     "available_url_display.html": [coverage_report(), yes_no_field("available")],
     "radio_with_exception_display.html": [coverage_report(), yes_no_exception_field("required")],
     "plan_check_service_type_display.html": [coverage_report(), plan_check_service_type_report()],
     "radio_compliant_sb1222_with_exception.html": [coverage_report(), yes_no_exception_field("compliant")],
-    "inspection_checklists_display.html": [coverage_report(), yes_no_field("value")],
+    "inspection_checklists_display.html": [coverage_report(), yes_no_field("available")],
     "radio_has_training_display.html": [coverage_report(), yes_no_field("value")],
     "phone_display.html": [coverage_report()],
     "url.html": [coverage_report()],
@@ -241,7 +249,6 @@ reports_by_type = {
     "radio_submit_PE_stamped_structural_letter_with_exception_display.html": [coverage_report(), yes_no_exception_field("required")],
     "hours_display.html": [coverage_report()], # histogram
     "turn_around_time_display.html": [coverage_report(), turn_around_report()],
-    "available_url_display.html": [coverage_report()],
     "permit_cost_display.html": [coverage_report()], # check the spec, probably needs histograms and stuff
     "radio_required_for_page_sizes_display.html": [coverage_report(), yes_no_field("required")], # should do more for the required values
     "radio_required_for_scales_display.html": [coverage_report()], # likewise
@@ -256,13 +263,13 @@ reports_by_type = {
     "radio_inspection_approval_copies_display.html": [coverage_report(), inspection_approval_report()],
     "signed_inspection_approval_delivery_display.html": [coverage_report()],
     "radio_vent_spanning_rules_with_exception_display.html": [coverage_report(), yes_no_exception_field("allowed")],
-    "solar_permitting_checklists_display.html": [coverage_report()],
+    "solar_permitting_checklists_display.html": [coverage_report(), yes_no_field("available")],
     "radio_available_with_exception_display.html": [coverage_report(), yes_no_exception_field("available")],
     "time_window_display.html": [coverage_report(), time_window_report()],
     "radio_has_training_display.html": [coverage_report(), yes_no_field("value")],
     "radio_licensing_required_display.html": [coverage_report(), yes_no_field("required")],
     "online_forms.html": [coverage_report()],
-    None: [coverage_report()]
+    None: [coverage_report()],
 }
 
 reports_by_qid = {
@@ -270,24 +277,64 @@ reports_by_qid = {
 #        'query': '''SELECT (SELECT count(*) FROM (SELECT value FROM `website_answerreference` WHERE question_id = '15' AND jurisdiction_id NOT IN ('1','101105') AND approval_status LIKE 'A' GROUP BY jurisdiction_id ASC, create_datetime DESC) AS tmp1 WHERE value LIKE '%value"%"yes%') as Yes, (SELECT count(*) FROM (SELECT value FROM `website_answerreference` WHERE question_id = '15' AND jurisdiction_id NOT IN ('1','101105') AND approval_status LIKE 'A' GROUP BY jurisdiction_id ASC, create_datetime DESC) AS tmp2 WHERE value LIKE '%value"%"no%' ) as No, (SELECT count(*) FROM (SELECT value FROM `website_answerreference` WHERE question_id = '15' AND jurisdiction_id NOT IN ('1','101105') AND approval_status LIKE 'A' GROUP BY jurisdiction_id ASC, create_datetime DESC) AS tmp3) as Total FROM website_answerreference LIMIT 1''',
 #        'keys_in_order': ['Yes', 'No', 'Total'],
 #    },
-    15: [coverage_report(), yes_no_field("value")]
+    15: [coverage_report(), yes_no_field("value")],
+    71: [coverage_report(), size_cap_report()],
 }
 
 ##############################################################################
 #
-# Display Index of Reports
+# Display an individual report on a question_id
 #
 ##############################################################################
-def report_index(request):
-    # get question data
-    data = {}
-    data['current_nav'] = 'reporting'
+def report_on(request, question_id=None, filter_id=None):
+    # Check request for validity
+    data = { 'current_nav': 'reporting',
+             'reports': [] }
+    reports = None
+    if question_id:
+      question_id = int(question_id)
+      question = Question.objects.get(id=question_id)
+      if not (question.id in reports_by_qid or question.display_template in reports_by_type):
+          raise Http404
+      data['question_id'] = question_id
+      data['name'] = question.question
+      data['instruction'] = question.instruction
+      reports = (question.id in reports_by_qid and reports_by_qid[question_id]) or \
+                (question.display_template in reports_by_type and reports_by_type[question.display_template])
+
+    geo_filter = None
+    if filter_id:
+        data['geo_filter'] = GeographicArea.objects.get(pk=filter_id)
+        geo_filter = data['geo_filter'].where()
+    else:
+        data['geo_filter'] = {}
+        for key in ['states', 'jurisdictions']:
+            p = request.GET.getlist(key)
+            if p:
+              data['geo_filter'][key] = p
+        if data['geo_filter']:
+            geo_filter = where_clause_for_area(**data['geo_filter'])
+            data['geo_filter_matches'] = matches_for_area(**data['geo_filter']).count()
+
+    idx = 0
+    if reports:
+      for report in reports:
+        query = build_query(question, report['spec'], geo_filter)
+        cursor = connection.cursor()
+        cursor.execute(query)
+        table = [{'key': k, 'value': v } for (k,v) in zip([col[0] for col in cursor.description], cursor.fetchone())]
+        data['reports'].append({ "idx": idx,
+                                 "table": table,
+                                 "type": report['type'] })
+        idx += 1
+
+    if 'HTTP_ACCEPT' in request.META and 'json' in request.META['HTTP_ACCEPT']: #hack
+        return HttpResponse(json.dumps(data))
+    data['reports_json'] = json.dumps(data['reports'])
 
     questions = Question.objects.filter(accepted='1').exclude(form_type="CF").order_by("category", "display_order")
-
     reports_index = []
     category_last_encountered = ''
-    first_run = True
     for question in questions:
         if question.category.name != category_last_encountered:
             category_last_encountered = question.category.name
@@ -296,63 +343,10 @@ def report_index(request):
                                    "reports_in_category": [] })
         # append this report's data to the list - with a link if it exists
         reports_index[-1]['reports_in_category'].append(question)
-
     data['reports_index'] = reports_index
     data['report_types'] = reports_by_type.keys()
     data['report_qids'] = reports_by_qid.keys()
-    data['request'] = request
-    return render_to_response('reporting/report_index.jinja', data)
-
-##############################################################################
-#
-# Display an individual report on a question_id
-#
-##############################################################################
-def report_on(request, question_id, filter_id=None):
-    # Check request for validity
-    question_id = int(question_id)
-    question = Question.objects.get(id=question_id)
-    if not question or not (question.id in reports_by_qid or question.display_template in reports_by_type):
-        raise Http404
-    data = { 'question_id': question_id }
-
-    def param(p):
-        return request.GET[p] if p in request.GET else None
-
-    geo_filter = None
-    if filter_id:
-        data['geo_filter'] = GeographicArea.objects.get(pk=filter_id)
-        geo_filter = data['geo_filter'].where()
-    else:
-        data['geo_filter_params'] = {}
-        data['geo_filter'] = {}
-        for key in ['states', 'jurisdictions']:
-            p = param(key)
-            if p:
-                data['geo_filter_params'][key] = p
-                data['geo_filter'][key] = p.split(",")
-        if data['geo_filter']:
-            geo_filter = where_clause_for_area(**data['geo_filter'])
-            data['geo_filter_matches'] = matches_for_area(**data['geo_filter']).count()
-            data['filter_is_temporary'] = True
-    data['current_nav'] = 'reporting'
-    data['report_name'] = question.question
-    data['question_instruction'] = question.instruction
-    reports = (question.id in reports_by_qid and reports_by_qid[question_id]) or \
-              (question.display_template in reports_by_type and reports_by_type[question.display_template])
-
-    data['reports'] = []
-    idx = 0
-    for report in reports:
-      query = build_query(question, report['spec'], geo_filter)
-      cursor = connection.cursor()
-      cursor.execute(query)
-      table = [{'key': k, 'value': v } for (k,v) in zip([col[0] for col in cursor.description], cursor.fetchone())]
-      data['reports'].append({ "idx": idx,
-                               "table": table,
-                               "type": report['type'] })
-      idx += 1
-    data['reports_json'] = json.dumps(data['reports'])
+    data['form'] = GeographicAreaForm()
     data['request'] = request
     return render_to_response('reporting/report_on.jinja', data)
 
