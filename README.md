@@ -1,4 +1,4 @@
-solarpermit-1.3.37
+solarpermit-1.3.42
 ===============
 
 Web Based Tool for Tracking Solar Permitting Requirements in The United States
