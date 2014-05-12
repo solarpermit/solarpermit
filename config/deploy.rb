@@ -17,7 +17,7 @@ set :branch, "master"
 set :user, "www-data"
 set :applicationdir, 'solarproconnect'
 set :keep_releases, 8
-set :deploy_to, "/opt/#{application}"
+set :deploy_to, "/opt/cpf/#{application}"
 
 set(:previous_release) { releases[0,releases.length-1].grep(/Release/).length > 0 ? File.join(releases_path, releases[0,releases.length-1].grep(/Release/).last) : nil }
 
