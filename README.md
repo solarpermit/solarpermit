@@ -53,8 +53,8 @@ Install Instructions
     F. ./manage.py migrate compress_jinja
 6. Restart Apache
 7. Set up Cron jobs
-    A. periodically run ./manage.py validate_answers
-    B. there might be others, we don't actually know
+    A. periodically run ./manage.py validate_answers -- this can be done every hour.
+    B. there are other cron jobs, but omitting them will not prevent deployment.
       
 Need help?  Have questions?
 
