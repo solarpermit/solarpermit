@@ -49,7 +49,7 @@ after :deploy,
   "syncdb",
   "migrate_website",
   "migrate_tracking",
-  "mitrate_compress_jinja",
+  "migrate_compress_jinja",
   "restart_gunicorn",
   "restart_nginx",
   "run_chef"
@@ -57,22 +57,22 @@ after :deploy,
 #not sure if this is needed.... 
 desc "run syncdb"
 task :syncdb do
-  sudo "/opt/solarpermit/migrate.py syncdb"
+  run "/opt/cpf/solarpermit/current/manage.py syncdb"
 end
 
 desc "run migrate website"
 task :migrate_website do
-  sudo "/opt/solarpermit/migrate.py migrate website"
+ run "/opt/cpf/solarpermit/current/manage.py migrate website"
 end
 
 desc "run migrate tracking"
 task :migrate_tracking do
-  sudo "/opt/solarpermit/migrate.py migrate tracking"
+ run "/opt/cpf/solarpermit/current/manage.py migrate tracking"
 end
 
 desc "run migrate compress_jinja"
 task :migrate_compress_jinja do
-  sudo "/opt/solarpermit/migrate.py migrate compress_jinja"
+ run "/opt/cpf/solarpermit/current/manage.py migrate compress_jinja"
 end
 
 desc "restart nginx server"
