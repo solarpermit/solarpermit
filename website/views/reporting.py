@@ -104,6 +104,10 @@ def or_match(*args):
 def not_match(match):
     return parenthesize('NOT (%s)' % match)
 
+def eq(a, b):
+    return "%s = %s" % (a, b)
+def ne(a, b):
+    return "%s != %s" % (a, b)
 def lt(a, b):
     return "%s < %s" % (a, b)
 def gt(a, b):
@@ -176,27 +180,24 @@ def yes_no_exception_field(field_name):
     return pie(add_sum_total(summarize(add_other(spec))))
 
 # macros, man, macros.
-# also, shouldn't this go by multiples of 5? presumably it's business days…
 def turn_around_report():
-    bins = OrderedDict([("Same day", json_match("time_unit", "hour(s)")),
-                        ("1-2 days", and_match(json_match("time_unit", "day(s)"),
-                                               lte(json_extract("time_qty"), 2))),
-                        ("3-7 days", or_match(and_match(json_match("time_unit", "day(s)"),
-                                                        between(json_extract("time_qty"), 3, 7)),
-                                              and_match(json_match("time_unit", "week(s)"),
-                                                        json_match("time_qty", "1")))),
-                        ("8-14 days", or_match(and_match(json_match("time_unit", "day(s)"),
-                                                         between(json_extract("time_qty"), 8, 14)),
-                                               and_match(json_match("time_unit", "week(s)"),
-                                                         json_match("time_qty", "2")))),
-                        ("15-21 days", or_match(and_match(json_match("time_unit", "day(s)"),
-                                                          between(json_extract("time_qty"), 15, 21)),
-                                                and_match(json_match("time_unit", "week(s)"),
-                                                          json_match("time_qty", "3")))),
-                        ("22+ days", or_match(and_match(json_match("time_unit", "day(s)"),
-                                                        gte(json_extract("time_qty"), 22)),
-                                              and_match(json_match("time_unit", "week(s)"),
-                                                        gte(json_extract("time_qty"), 4))))])
+    is_hours = json_match("time_unit", "hour(s)");
+    is_days = json_match("time_unit", "day(s)");
+    is_weeks = json_match("time_unit", "week(s)");
+    qty = json_extract("time_qty")
+    bins = OrderedDict([("Same day", and_match(is_hours, lte(qty, 8))),
+                        ("1-2 days", or_match(and_match(is_hours, between(qty, 9, 48)),
+                                              and_match(is_days, lte(qty, 2)))),
+                        ("3-5 days", or_match(and_match(is_days, between(qty, 3, 5)),
+                                              and_match(is_weeks, eq(qty, 1)))),
+                        ("6-10 days", or_match(and_match(is_days, between(qty, 6, 10)),
+                                               and_match(is_weeks, eq(qty, 2)))),
+                        ("11-15 days", or_match(and_match(is_days, between(qty, 11, 15)),
+                                                and_match(is_weeks, eq(qty, 3)))),
+                        ("16-20 days", or_match(and_match(is_days, between(qty, 16, 20)),
+                                                and_match(is_weeks, eq(qty, 4)))),
+                        ("21+ days", or_match(and_match(is_days, gte(qty, 21)),
+                                              and_match(is_weeks, gte(qty, 5))))])
     return hist(add_sum_total(summarize(add_other(add_freeform(bins)))))
 
 def plan_check_service_type_report():
