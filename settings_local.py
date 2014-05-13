@@ -2,16 +2,16 @@
 #To use this, rename to settings_local.py for your site.
 
 DEBUG = True
-INTERNAL_IPS = ('127.0.0.1', '184.72.43.187','172.15.56.135','38.104.129.98')
+INTERNAL_IPS = ('127.0.0.1', '23.253.204.16','10.210.32.248')
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'solarpermit_staging',
+        'NAME': 'solarpermit',
         'HOST': 'localhost',
         'PORT': '3306',
-        'USER': 'solarpermit',
-        'PASSWORD': 'thedarknessisspreading!',
+        'USER': 'solarpermit_user',
+        'PASSWORD': 'asdf238yr9n9237vnaa56av3',
     'OPTIONS' : { 'init_command': 'SET storage_engine=INNODB;',}
     }
 }
