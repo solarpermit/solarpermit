@@ -31,7 +31,7 @@ function add_ui(initial_reports) {
     machine.selector_ui = $("<div>", { 'class': 'selector' }).append($("<div>", { 'class': 'busy-indicator' }),
                                                                      question_select,
                                                                      filter_link,
-                                                                     $("<div><span class='instruction'></div>"))
+                                                                     $("<div><span class='description'></div>"))
                                                              .appendTo(stuff);
     machine.container = $("<div>").appendTo(stuff);
     stuff.appendTo("#all-reports");
@@ -64,10 +64,10 @@ function add_ui(initial_reports) {
   }
   function show_reports(event, state, data) {
     machine.container.empty();
-    if (data.instruction)
-      machine.selector_ui.find(".instruction").text(data.instruction);
+    if (data.description)
+      machine.selector_ui.find(".description").html(data.description);
     else
-      machine.selector_ui.find(".instruction").empty();
+      machine.selector_ui.find(".description").empty();
     $.each(data.reports,
            function (idx, report) {
              show_report(report, machine.container);

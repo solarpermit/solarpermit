@@ -237,11 +237,17 @@ def size_cap_report():
                         (">20 kW", gte(json_extract("value"), 20))])
     return hist(add_sum_total(summarize(add_other(spec))))
 
+def sb1222_report():
+    spec = OrderedDict([("Yes", json_match("compliant", "yes")),
+                        ("Yes, with evidence", json_match("compliant", "yes, with exceptions")),
+                        ("No", json_match("compliant", "no"))])
+    return pie(add_sum_total(summarize(add_other(spec))))
+
 reports_by_type = {
     "available_url_display.html": [coverage_report(), yes_no_field("available")],
     "radio_with_exception_display.html": [coverage_report(), yes_no_exception_field("required")],
     "plan_check_service_type_display.html": [coverage_report(), plan_check_service_type_report()],
-    "radio_compliant_sb1222_with_exception.html": [coverage_report(), yes_no_exception_field("compliant")],
+    "radio_compliant_sb1222_with_exception.html": [coverage_report(), sb1222_report()],
     "inspection_checklists_display.html": [coverage_report(), yes_no_field("available")],
     "radio_has_training_display.html": [coverage_report(), yes_no_field("value")],
     "phone_display.html": [coverage_report()],
@@ -299,7 +305,7 @@ def report_on(request, question_id=None, filter_id=None):
           raise Http404
       data['question_id'] = question_id
       data['name'] = question.question
-      data['instruction'] = question.instruction
+      data['description'] = question.description
       reports = (question.id in reports_by_qid and reports_by_qid[question_id]) or \
                 (question.display_template in reports_by_type and reports_by_type[question.display_template])
 
