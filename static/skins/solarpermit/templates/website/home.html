@@ -350,6 +350,7 @@
 {% endblock %}
 
 {% block forejs %}
+  {% compress js %}
 	<script src="/media/js/raphael.js"></script>
 	<script src="/media/js/color.jquery.js"></script>
 	<script src="/media/js/jquery.usmap.js"></script>
@@ -564,7 +565,7 @@
 		});
 	</script>
 	
-
+  {% endcompress %}
 {% endblock %}
 
 
@@ -736,7 +737,7 @@
 									<div class="cssTable" >
 										<div class="cssRow" >	
 											<div class="cssCell numCol" style="padding:15px 0 0px 0px;">
-												<img src="/media/images/1.png" alt="1" />
+												<img src="/media/images/1.png" alt="1" width="36" height="56"/>
 											</div>
 											<div class="cssCell padRight " style="padding:15px 0 0px 5px;width:200px;">
 												Get Permitting Data
@@ -749,7 +750,7 @@
 									<div class="cssTable" >
 										<div class="cssRow" >	
 											<div class="cssCell numCol" style="padding:15px 0 0px 25px;">
-												<img src="/media/images/2.png" alt="2" />
+												<img src="/media/images/2.png" alt="2" width="42" height="57"/>
 											</div>
 											<div class="cssCell padRight" style="padding:15px 0 0px 15px;">
 												Participate in the Community
