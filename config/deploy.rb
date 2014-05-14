@@ -49,7 +49,7 @@ after :deploy,
   "syncdb",
   "migrate_website",
   "migrate_tracking",
-  "migrate_compress_jinja",
+  "compress_jinja",
   "restart_gunicorn",
   "restart_nginx",
   "run_chef"
@@ -70,9 +70,9 @@ task :migrate_tracking do
  run "/opt/cpf/solarpermit/current/manage.py migrate tracking"
 end
 
-desc "run migrate compress_jinja"
-task :migrate_compress_jinja do
- run "/opt/cpf/solarpermit/current/manage.py migrate compress_jinja"
+desc "run compress_jinja"
+task :compress_jinja do
+ run "/opt/cpf/solarpermit/current/manage.py compress_jinja"
 end
 
 desc "restart nginx server"
