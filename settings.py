@@ -6,7 +6,7 @@ reload(sys) # reload sys to force utf-8
 sys.setdefaultencoding('utf-8') # forces utf-8 encoded strings
 import site
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 INTERNAL_IPS = ('127.0.0.1',)
 #SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
@@ -311,6 +311,12 @@ TRACK_IGNORE_URLS = ['tracking', 'admin']
 # Jinja2 integration via django-jinja
 JINJA2_EXTENSIONS = ['jinja2.ext.WithExtension',
                      'compressor.contrib.jinja2ext.CompressorExtension']
+JINJA2_GLOBALS = {
+    # note, this does not work for string values
+    'INTERNAL_IPS': INTERNAL_IPS,
+    'ENABLE_GOOGLE_ANALYTICS': ENABLE_GOOGLE_ANALYTICS,
+    'FORUM_INTEGRATION': FORUM_INTEGRATION,
+}
 
 # django-autocomplete; has nothing to do with our current search autocomplete
 AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/'

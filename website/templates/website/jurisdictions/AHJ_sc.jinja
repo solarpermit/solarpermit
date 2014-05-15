@@ -1,0 +1,17 @@
+{% extends "/website/jurisdictions/AHJ.jinja" %}
+    
+
+<!-- template jurisdiction_state_browse.html -->
+
+
+{% block body %}
+    <div>
+    <ul style='font-weight:bold' >Field offices:
+				{% for scfo_jurisdiction in scfo_jurisdictions %}
+                 <li><a href="/jurisdiction/{{scfo_jurisdiction.name_for_url}}/" title="View {{ scfo_jurisdiction.name | title }} {{scfo_jurisdiction.get_county_equivalent_name() | title }} ">{{ scfo_jurisdiction.show_jurisdiction()}}</a></li>
+                {% endfor %}
+    </ul>
+    </div>
+
+<div class="bottomclearboth"></div>
+{% endblock %}

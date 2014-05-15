@@ -1800,13 +1800,14 @@ input_error{
 	display:none;
 }
 
-.left_nav {
+.left_nav a {
+        display: block;
 	background-color:#ebf1fe;
 	text-align:left;
 	/* line-height:35px; /* DEPR */
 	padding-top: 7px;
 	padding-bottom: 7px;
-	cursor:pointer;        
+	cursor:pointer;
 	font-size: 14px;
 	color:#64798b;
 	padding-left:20px;
@@ -1822,6 +1823,7 @@ input_error{
 	background-color:#0479ac;
 	color:#ffffff;
 	cursor:default;
+        text-decoration: none;
 }
 .left_nav:hover {
 	background-color:#c4d2f6;

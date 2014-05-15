@@ -244,38 +244,38 @@ def sb1222_report():
     return pie(add_sum_total(summarize(add_other(spec))))
 
 reports_by_type = {
-    "available_url_display.html": [coverage_report(), yes_no_field("available")],
-    "radio_with_exception_display.html": [coverage_report(), yes_no_exception_field("required")],
-    "plan_check_service_type_display.html": [coverage_report(), plan_check_service_type_report()],
-    "radio_compliant_sb1222_with_exception.html": [coverage_report(), sb1222_report()],
-    "inspection_checklists_display.html": [coverage_report(), yes_no_field("available")],
-    "radio_has_training_display.html": [coverage_report(), yes_no_field("value")],
-    "phone_display.html": [coverage_report()],
-    "url.html": [coverage_report()],
-    "address_display.html": [coverage_report()],
-    "radio_submit_PE_stamped_structural_letter_with_exception_display.html": [coverage_report(), yes_no_exception_field("required")],
-    "hours_display.html": [coverage_report()], # histogram
-    "turn_around_time_display.html": [coverage_report(), turn_around_report()],
-    "permit_cost_display.html": [coverage_report()], # check the spec, probably needs histograms and stuff
-    "radio_required_for_page_sizes_display.html": [coverage_report(), yes_no_field("required")], # should do more for the required values
-    "radio_required_for_scales_display.html": [coverage_report()], # likewise
-    "radio_required_display.html": [coverage_report()],
-    "radio_covered_with_exception_display.html": [coverage_report(), yes_no_exception_field("allowed")],
-    "radio_studer_vent_rules_with_exception_display.html": [coverage_report(), yes_no_exception_field("allowed")],
-    "radio_module_drawings_display.html": [coverage_report(), module_drawings_report()],
-    "radio_allowed_with_exception_display.html": [coverage_report(), yes_no_exception_field("allowed")],
-    "required_spec_sheets_display.html": [coverage_report()],
-    "homeowner_requirements_display.html": [coverage_report()], # two yes/no answers in one
-    "fire_setbacks_display.html": [coverage_report(), yes_no_exception_field("enforced")],
-    "radio_inspection_approval_copies_display.html": [coverage_report(), inspection_approval_report()],
-    "signed_inspection_approval_delivery_display.html": [coverage_report()],
-    "radio_vent_spanning_rules_with_exception_display.html": [coverage_report(), yes_no_exception_field("allowed")],
-    "solar_permitting_checklists_display.html": [coverage_report(), yes_no_field("available")],
-    "radio_available_with_exception_display.html": [coverage_report(), yes_no_exception_field("available")],
-    "time_window_display.html": [coverage_report(), time_window_report()],
-    "radio_has_training_display.html": [coverage_report(), yes_no_field("value")],
-    "radio_licensing_required_display.html": [coverage_report(), yes_no_field("required")],
-    "online_forms.html": [coverage_report()],
+    "available_url_display": [coverage_report(), yes_no_field("available")],
+    "radio_with_exception_display": [coverage_report(), yes_no_exception_field("required")],
+    "plan_check_service_type_display": [coverage_report(), plan_check_service_type_report()],
+    "radio_compliant_sb1222_with_exception": [coverage_report(), sb1222_report()],
+    "inspection_checklists_display": [coverage_report(), yes_no_field("available")],
+    "radio_has_training_display": [coverage_report(), yes_no_field("value")],
+    "phone_display": [coverage_report()],
+    "url": [coverage_report()],
+    "address_display": [coverage_report()],
+    "radio_submit_PE_stamped_structural_letter_with_exception_display": [coverage_report(), yes_no_exception_field("required")],
+    "hours_display": [coverage_report()], # histogram
+    "turn_around_time_display": [coverage_report(), turn_around_report()],
+    "permit_cost_display": [coverage_report()], # check the spec, probably needs histograms and stuff
+    "radio_required_for_page_sizes_display": [coverage_report(), yes_no_field("required")], # should do more for the required values
+    "radio_required_for_scales_display": [coverage_report()], # likewise
+    "radio_required_display": [coverage_report()],
+    "radio_covered_with_exception_display": [coverage_report(), yes_no_exception_field("allowed")],
+    "radio_studer_vent_rules_with_exception_display": [coverage_report(), yes_no_exception_field("allowed")],
+    "radio_module_drawings_display": [coverage_report(), module_drawings_report()],
+    "radio_allowed_with_exception_display": [coverage_report(), yes_no_exception_field("allowed")],
+    "required_spec_sheets_display": [coverage_report()],
+    "homeowner_requirements_display": [coverage_report()], # two yes/no answers in one
+    "fire_setbacks_display": [coverage_report(), yes_no_exception_field("enforced")],
+    "radio_inspection_approval_copies_display": [coverage_report(), inspection_approval_report()],
+    "signed_inspection_approval_delivery_display": [coverage_report()],
+    "radio_vent_spanning_rules_with_exception_display": [coverage_report(), yes_no_exception_field("allowed")],
+    "solar_permitting_checklists_display": [coverage_report(), yes_no_field("available")],
+    "radio_available_with_exception_display": [coverage_report(), yes_no_exception_field("available")],
+    "time_window_display": [coverage_report(), time_window_report()],
+    "radio_has_training_display": [coverage_report(), yes_no_field("value")],
+    "radio_licensing_required_display": [coverage_report(), yes_no_field("required")],
+    "online_forms": [coverage_report()],
     None: [coverage_report()],
 }
 

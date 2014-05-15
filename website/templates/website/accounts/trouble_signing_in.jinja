@@ -1,0 +1,54 @@
+{% extends "base_modal_dialog.jinja" %}
+
+{% block modal_dialog_title %}
+  {% if login_status == 'account_locked' %}
+  Account Temporarily Locked 
+  {% else %}
+  Trouble Signing In?
+  {% endif %}
+{% endblock %}
+
+{% block modal_dialog_message %}{{form_create_account_fail_reason}}{% endblock %}
+{% block modal_dialog_form_top %} 
+    <form id="form_trouble_signing_in" name="form_trouble_signing_in" action="/account/" method="post" accept-charset="utf-8" {# onSubmit="controller.submitForm('#form_trouble_signing_in');return false;"#}
+                                                                                                                                                             >{% endblock %}
+{% block body_modal_dialog %}
+
+  
+  <input type="hidden" name="ajax" value="trouble_signing_in_submit" >
+  
+  
+  {% if login_status == 'account_locked' %}
+  <p>
+  Due to multiple failed sign in attempts, your account has been temporarily locked.  Please try again later.
+  </p>
+  <p>
+  You may sign in immediately if you reset your password.  Please enter your email address below.  You will receive an email shortly that will allow you to reset your password.
+  </p>
+  {% endif %}
+  {% if login_status != 'account_locked' %}
+  <p>
+  Please enter your email address below.  You will receive an email shortly that will allow you to reset your password.
+  </p>    
+  {% endif %}
+
+  
+        <div class="form_field">
+            <div class="label">Email Address:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+            <div class="field"><input type="text" name="email" id="form_trouble_signing_in_field_email" value="{{email}}" class="required email" style="width:300px; height:20px;" ></div>
+            <div class="field_help_text"></div>
+            <div class="error_div"></div>
+        </div>
+        <div class="form_field">
+            <span class="form_field_error_message" >{{form_trouble_signing_in_fail_reason}}</span>
+        </div>     
+  
+{% endblock %}
+
+
+{% block modal_dialog_action %}
+    <input disabled="disabled" type="submit" name="trouble_signing_in" id="form_trouble_signing_in_submit_button" class="mainbutton disabled" value="OK" title="Send an email to reset the password for this account." >
+    <input type="button" name="cancel" value="Cancel" id="trouble_signing_in_cancel" class="mainbutton"  title="Cancel" value="Cancel">
+{% endblock %}
+
+{% block modal_dialog_form_bottom %}</form>{% endblock %}

@@ -1,0 +1,79 @@
+{% extends "base.jinja" %}
+
+{% block forestyle %}
+  <style>
+    iframe#introVideo {
+      float: right;
+      padding-left: 25px;
+      padding-right: 25px;
+    }
+    .contentOnlyPage {
+      width: auto ! important;
+    }
+    p {
+      text-indent: 1em;
+    }
+  </style>
+{% endblock %}
+{% block title %}About{% endblock %}
+{% block body %}
+<div class="contentOnlyPage">
+  <iframe id="introVideo" src="//player.vimeo.com/video/78766933" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+	<h1>About SolarPermit.org</h1>
+	<p>SolarPermit.org hosts the National Solar Permitting Database, a free, online database of information related to solar permitting requirements of cities and counties across the country. Developed by Clean Power Finance and supported by a Department of Energy grant, SolarPermit.org organizes and simplifies solar permitting processes by compiling the information in a single location. Using the community-based platform, users of the database keep the information up-to-date and relevant. The project's goal is to minimize the time and resources required to and support the mass-market adoption of solar.</p>
+	<h2>How it Works</h2>
+	<p>SolarPermit.org is an interactive, crowd-sourced website - similar to Wikipedia - for solar permitting requirements. The database is populated primarily by solar installers based on their experiences in the Authority Having Jurisdictions (AHJs) where they do business. Users vote to give a &quot;thumbs up&quot; or &quot;thumbs down&quot; to verify new information added to the site and ensure accuracy.</p>
+	<h2>Comprehensive Permitting Information</h2> 
+	<p>The database contains jurisdiction pages for over 18,000 United States cities and counties. Each page includes over 100 data fields to give users an easy way to track a wide range of information about permitting requirements and processes.  Here is some of the information you can expect to find:</p>
+	<ul>
+		<li>Contact information</li>
+		<li>Turnaround times</li>
+		<li>Fees</li>
+		<li>Specifications for system designs</li>
+		<li>Inspection processes</li>
+		<li>Common errors</li>
+	</ul>
+	<h2>Contact Us</h2>
+	<p>Please contact <a href="mailto:feedback@solarpermit.org">feedback@solarpermit.org</a> if you have any questions or you would like to share your feedback on the database.</p>
+{#
+	<h1>About SolarPermit.org</h1>
+	<p>Solarpermit.org is a free, online database that hosts permitting information and data for cities and counties across the nation. With funding and support from the DOE, Solarpermit.org will help simplify the solar permitting process by providing contact information, specifications for system designs, and information on fees, number of inspections, common errors, etc. for solar permits in popular jurisdictions. By creating a single destination to search, find, and obtain information on permitting requirements, installers can radically cut down the time and resources required to complete a solar permit for a given jurisdiction.</p>
+	<h2>Frequently Asked Questions</h2> 
+	<p>We've included answers to some of the most frequently asked questions that we receive. If you don't find your question here, please email <a href="mailto:permitting@cleanpowerfinance.com">permitting@cleanpowerfinance.com</a> and we'll promptly review.</p>
+	<ol>
+		<li>
+			<strong>How does SolarPermit.org work?</strong>
+			<br />
+			<p>Solarpermit.org is an interactive, crowd-sourced website - similar to Wikipedia - for solar permitting requirements. The database is populated by installers, for installers. Users can submit info about the permitting process in any jurisdiction under the following categories: Building, Clerical, Electrical, Fire, Inspections, Utility, Zoning, and Other.</p>
+			<p>Solarpermit.org will use a community voting system to verify any new information that is added to the database. Users can approve or dispute new information via a thumbs up/ thumbs down voting tool. Once the information has been validated, it will be publicly displayed.</p>
+		</li>
+		<li>
+			<strong>How will it help my organization?</strong>
+			<br />
+			<p>Assembling permitting information into a single, accessible, online location will help installers quickly and efficiently submit accurate permits in familiar and new jurisdictions - and less time spent on the permitting process will leave more time to install solar. The database will reduce confusion, errors, and rework, which in turn will reduce the overall cost of solar.</p>
+		</li>
+		<li>
+			<strong>How much does it cost to use the database?</strong>
+			<br />
+			<p>Solarpermit.org is funded, in part, by a U.S. Department of Energy (DOE) <a href="http://www1.eere.energy.gov/solar/sunshot/index.html" target="_blank">SunShot Initiative</a> grant and is free.</p>
+		</li>
+		<li>
+			<strong>Why is Clean Power Finance and Department of Energy doing this? What's in it for Clean Power Finance and Department of Energy?</strong>
+			<br />
+			<p>CPF, in partnership with other industry stakeholders, received a grant from the DOE to help reduce soft costs in the solar industry - a problem that affects CPF and the entire U.S. solar industry.  The DOE understood that many of the inefficiencies that occur during permitting process are not only unnecessary, but addressable, and offered funding to those looking to tackle the problem. Clean Power Finance is particularly interested in reducing soft costs because we serve installers, distributors, manufacturers, and financiers, and reducing permitting costs for the solar industry benefits our customers.</p>
+		</li>
+		<li>
+			<strong>I already know the requirements in my area, why do I need the database?</strong>
+			<br />
+			<p>The database gives stakeholders access - and lowers the barrier to entry - to myriad new local markets. Additionally, permitting conditions can change in your local AHJ - and may even differ based on your AHJ point-of-contact - which can delay your progress. Solarpermit.org will keep you well-informed with tips and relevant information on requirements, processing times, etc., which will allow you to better manage your business as these changes occur.</p>
+		</li>
+		<li>
+			<strong>I have a system that works, why should I abandon that to use your database?</strong>
+			<br />
+			<p>Using Solarpermit.org will decrease the resources that you need to allocate to the permitting process. Because permitting requirements can (and likely will) change over time, your labor costs may remain relatively high to keep ahead of these changes. As a shared database, the resources required to document permitting requirements will be distributed throughout the industry, thus lowering the resources that you must commit to permitting. Additionally, using the database will increase the likelihood that you discover changes to your AHJ's permitting process.</p>
+		</li>
+	</ol>
+#} 
+</div>
+
+{% endblock %}  			
