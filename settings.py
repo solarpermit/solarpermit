@@ -121,7 +121,6 @@ SECRET_KEY = 'zj8k!s68ar4m#zqk7o%)!e+^(cfme2%^86u#jb5&f&$-!qui=1'
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django_jinja.loaders.AppLoader',
-    'django_jinja.loaders.FileSystemLoader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -155,10 +154,9 @@ FILE_UPLOAD_HANDLERS = (
 )
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(PROJECT_ROOT, 'static', 'skins', 'solarpermit', 'templates'),
+    # we shouldn't need this, but until we have a proper jinja
+    # integration via django-jinja we won't have access to AppLoader
+    os.path.join(PROJECT_ROOT, 'website', 'templates'),
 )
 
 ALLOWED_UPLOAD_FILE_TYPES = ('.jpg', '.jpeg', '.gif', '.bmp', '.png', '.tiff', '.txt', '.doc', '.pdf', '.zip', '.html', 'xlsx', '.docx', '.mp3', '.wmv', '.mp4')
