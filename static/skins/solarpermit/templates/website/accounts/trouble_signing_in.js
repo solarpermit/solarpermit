@@ -18,14 +18,13 @@ $('#trouble_signing_in_cancel').click(function(event) {
 	jQuery.fancybox.close();
     return false;
 });
+$('#fancybox_close').click(function(event) {
+	jQuery.fancybox.close();
+	return false;
+});
 
 $('#form_trouble_signing_in_field_email').keyup(function() {
 	controller.validateFormAndActivateSubmit('#form_trouble_signing_in', '#form_trouble_signing_in_submit_button');
-});
-
-$('#trouble_signing_in_close').click(function(event) {
-	jQuery.fancybox.close();
-    return false;
 });
 
 //initialize forms and buttons

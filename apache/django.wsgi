@@ -1,6 +1,6 @@
 import os, sys
 
-sys.path.insert(0, '/home/renic/solarpermit_staging')
+sys.path.insert(0, '/path/to/software')
 
 import settings
 

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}{% endblock %}
+{% block forestyle %}{% endblock %}
+{% block forejs %}{% endblock %}
+{% block body %}
+  <p>Name: {{ object.name }}</p>
+  <p>Description: {{ object.description }}</p>
+  <p>Criteria:
+    <ul>
+      {% if object.states %}
+        {% for state in object.states %}
+          <li>{{state}}</li>
+        {% endfor %}       
+      {% else %}
+        {% for jurisdiction in object.jurisdictions.all() %}
+          <li>
+            <a href="{{ url('website.views.AHJ.view_AHJ_by_name', jurisdiction.name_for_url) }}">
+              {{ jurisdiction.get_jurisdiction_display() }}
+            </a>
+          </li>
+        {% endfor %}
+      {% endif %}
+    </ul></p>
+  <p>Matches {{ object.matches().count() }} total jurisdictions:
+    <ul>
+      {% for jurisdiction in object.matches().all() %}
+        <li>
+          <a href="{{ url('website.views.AHJ.view_AHJ_by_name', jurisdiction.name_for_url) }}">
+            {{ jurisdiction.get_jurisdiction_display() }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul></p>
+{% endblock %}

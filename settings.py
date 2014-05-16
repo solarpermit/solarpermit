@@ -110,8 +110,8 @@ STATICFILES_DIRS = (
 # various locations.
 STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
-    'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
@@ -120,9 +120,8 @@ SECRET_KEY = 'zj8k!s68ar4m#zqk7o%)!e+^(cfme2%^86u#jb5&f&$-!qui=1'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    'django_jinja.loaders.AppLoader',
+    'django_jinja.loaders.FileSystemLoader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -194,11 +193,14 @@ INSTALLED_APPS = (
     'followit',  
     'sorl.thumbnail',
     'dajax',
+    'localflavor',
     'website',
     'compressor',
     'django_extensions',
     #'debug_toolbar',    
     'tracking',
+    'django_jinja',
+    'autocomplete_light',
 )
 
 #setup memcached for production use!
@@ -307,5 +309,13 @@ TRACK_AJAX_REQUESTS = True
 TRACK_ANONYMOUS_USERS = True
 TRACK_PAGEVIEWS = True
 TRACK_IGNORE_URLS = ['tracking', 'admin']
+
+# Jinja2 integration via django-jinja
+JINJA2_EXTENSIONS = ['jinja2.ext.WithExtension',
+                     'compressor.contrib.jinja2ext.CompressorExtension']
+
+# django-autocomplete; has nothing to do with our current search autocomplete
+AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/'
+AUTOCOMPLETE_JQUERY_ALREADY_INCLUDED = True
 
 from settings_local import *

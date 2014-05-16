@@ -1,4 +1,4 @@
-solarpermit-1.3.42
+solarpermit-1.3.37
 ===============
 
 Web Based Tool for Tracking Solar Permitting Requirements in The United States
@@ -15,7 +15,7 @@ Install Instructions
 
 1.  Install Dependencies
     A. Apache 2
-    B. MySQL Server
+    B. MySQL Server, version 5.5 or newer
         a. Install the mysql_json UDF
             1. git submodule update --init    (checks out the source code)
             2. cd deps/mysql_json
@@ -24,6 +24,8 @@ Install Instructions
     C. mod_wsgi
     D. Please See dependencies.txt
         a.  This file is written to be used with pip for easily handling python requirements - i.e. "pip install -r dependencies.txt"
+    E. Optional Items
+        a.  Closure JS compiler, for JS minification
 2.  Setup Apache to allow vhosts
 3.  Setup the specific vhost
     A.  See apache/solarpermit_apache_inc.conf
@@ -43,10 +45,16 @@ Install Instructions
     B. Change settings... do not edit settings.py, use settings_local.py to
        override
 5. Configure Database
-    A. CREATE DATABASE solarpermit;
+    A. CREATE DATABASE solarpermit CHARACTER SET utf8mb4 COLLATE utf8_unicode_ci;
     B. ./manage.py syncdb (if this fails due to a missing SQL table, run migrate website)
-    C. ./manage.py migrate website
-6. Restart Apache 
+    C. Optionally import an SQL dump
+    D. ./manage.py migrate website
+    E. ./manage.py migrate tracking
+    F. ./manage.py migrate compress_jinja
+6. Restart Apache
+7. Set up Cron jobs
+    A. periodically run ./manage.py validate_answers -- this can be done every hour.
+    B. there are other cron jobs, but omitting them will not prevent deployment.
       
 Need help?  Have questions?
 

@@ -1,0 +1,12 @@
+.autocomplete-light-widget input.autocomplete {
+    width: 100%;
+}
+
+.autocomplete-light-widget select.autocomplete-light-widget {
+    width: 45%;
+    height: 10em;
+}
+
+.autocomplete-light-widget .deck-container div {
+    display: inline-block;
+}

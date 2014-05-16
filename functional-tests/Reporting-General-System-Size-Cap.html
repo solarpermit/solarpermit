@@ -28,7 +28,7 @@
 <tr>
 	<td>waitForText</td>
 	<td>css=h3</td>
-	<td>Current Approved Values in the Database</td>
+	<td>Current approved values . Filter this report...</td>
 </tr>
 <tr>
 	<td>verifyText</td>
@@ -37,7 +37,27 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
+	<td>css=div.contentOnlyPage &gt; h1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=h3</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#graph0 &gt; svg:nth-child(1)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
 	<td>css=th.header_row</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=th.header_row_right</td>
 	<td></td>
 </tr>
 <tr>
@@ -47,28 +67,13 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>css=td</td>
+	<td>//div[@id='report0']/table/tbody/tr[3]/th</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/th</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
 	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[4]/td</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>css=th.header_row_right</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>css=th.header_row_right</td>
-	<td>Jurisdictions</td>
 </tr>
 <tr>
 	<td>verifyText</td>
@@ -82,8 +87,18 @@
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[3]/th</td>
+	<td>//div[@id='report0']/table/tbody/tr[3]/th</td>
 	<td>Unanswered</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
+	<td>Total</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=th.header_row_right</td>
+	<td>Jurisdictions</td>
 </tr>
 </tbody></table>
 </body>

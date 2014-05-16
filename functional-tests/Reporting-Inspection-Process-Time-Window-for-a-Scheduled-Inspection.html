@@ -28,7 +28,7 @@
 <tr>
 	<td>waitForText</td>
 	<td>css=h3</td>
-	<td>Current Approved Values in the Database</td>
+	<td>Current approved values . Filter this report...</td>
 </tr>
 <tr>
 	<td>verifyText</td>
@@ -128,11 +128,16 @@
 <tr>
 	<td>verifyText</td>
 	<td>//div[@id='report1']/table/tbody/tr[6]/th</td>
-	<td>Other</td>
+	<td>Freeform</td>
 </tr>
 <tr>
 	<td>verifyText</td>
 	<td>//div[@id='report1']/table/tbody/tr[7]/th</td>
+	<td>Other</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[8]/th</td>
 	<td>Total</td>
 </tr>
 <tr>
@@ -211,6 +216,16 @@
 	<td></td>
 </tr>
 <tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[8]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[8]/td</td>
+	<td></td>
+</tr>
+<tr>
 	<td>storeText</td>
 	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(2) &gt; td:nth-child(2)</td>
 	<td>answered</td>
@@ -253,22 +268,32 @@
 <tr>
 	<td>storeText</td>
 	<td>css=tr.odd:nth-child(6) &gt; td:nth-child(2)</td>
-	<td>other</td>
+	<td>freeForm</td>
 </tr>
 <tr>
 	<td>storeText</td>
 	<td>css=tr.even:nth-child(7) &gt; td:nth-child(2)</td>
+	<td>other</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.odd:nth-child(8) &gt; td:nth-child(2)</td>
 	<td>total2</td>
 </tr>
 <tr>
 	<td>verifyEval</td>
-	<td>parseInt(storedVars['exact_time_given']) + parseInt(storedVars['2_hours']) + parseInt(storedVars['half_day']) + parseInt(storedVars['full_day']) + parseInt(storedVars['other'])</td>
+	<td>parseInt(storedVars['exact_time_given']) + parseInt(storedVars['2_hours']) + parseInt(storedVars['half_day']) + parseInt(storedVars['full_day']) + parseInt(storedVars['other']) + parseInt(storedVars['freeForm'])</td>
 	<td>${total2}</td>
 </tr>
 <tr>
 	<td>verifyEval</td>
 	<td>parseInt(storedVars['answered']) === parseInt(storedVars['total2'])</td>
 	<td>true</td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>link=Filter this report...</td>
+	<td></td>
 </tr>
 </tbody></table>
 </body>
