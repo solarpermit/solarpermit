@@ -1,8 +1,12 @@
 from django.http import HttpResponseRedirect
 from django.conf.urls.defaults import patterns, include, handler404, handler500, url
 from django.conf import settings
-from website.views import home, account, info, jurisdiction, organization, custom_field, maintenance, siteadmin
+from website.views import home, account, info, jurisdiction, organization, custom_field, maintenance, siteadmin, reporting
 from website.views.news import *
+
+import autocomplete_light
+# import every app/autocomplete_light_registry.py
+autocomplete_light.autodiscover()
 
 from django.contrib import admin
 admin.autodiscover()
@@ -43,8 +47,8 @@ else:
     
         #(r'^jurisdiction/(?P<id>.*)/(?P<category>.*)/$', 'website.views.AHJ.view_AHJ'),    
         #(r'^jurisdiction/(?P<id>.*)/$', 'website.views.AHJ.view_AHJ'),
-        (r'^jurisdiction/(?P<name>.*)/(?P<category>.*)/$', 'website.views.AHJ.view_AHJ_by_name'),    
-        (r'^jurisdiction/(?P<name>.*)/$', 'website.views.AHJ.view_AHJ_by_name'),          
+        (r'^jurisdiction/(?P<name>.*)/(?P<category>.*)/$', 'website.views.AHJ.view_AHJ_by_name'),
+        url(r'^jurisdiction/(?P<name>.*)/$', 'website.views.AHJ.view_AHJ_by_name', name="ahj_by_name"),
         #(r'^jurisdiction_id/(?P<id>.*)/(?P<category>.*)/$', 'website.views.AHJ.view_AHJ'), 
         #(r'^jurisdiction_id/(?P<id>.*)/$', 'website.views.AHJ.view_AHJ'), 
               
@@ -108,8 +112,24 @@ else:
         (r'^tracking/', include('tracking.urls')),
 
         #### reporting pages
-        (r'^reporting/$', 'website.views.reporting.report_index'),
-        (r'^reporting/(?P<question_id>\d+)/$', 'website.views.reporting.report_on'))
+        url(r'^reporting/$', reporting.report_on),
+        url(r'^reporting/filter/$', reporting.GeographicAreaList.as_view(),
+                                    name='geoarea-list'),
+        url(r'^reporting/filter/new/$', reporting.GeographicAreaCreate.as_view(),
+                                        name='geoarea-new'),
+        url(r'^reporting/filter/edit/(?P<pk>\d+)/$', reporting.GeographicAreaUpdate.as_view(),
+                                                     name='geoarea-edit'),
+        url(r'^reporting/filter/(?P<pk>\d+)/$', reporting.GeographicAreaDetail.as_view(),
+                                                name='geoarea-view'),
+        url(r'^reporting/(?P<question_id>\d+)/$', reporting.report_on,
+                                                  name='report'),
+        url(r'^reporting/(?P<question_id>\d+)/filter/$', reporting.GeographicAreaCreate.as_view(),
+                                                         name='geoarea-new-for-question'),
+        url(r'^reporting/(?P<question_id>\d+)/(?P<filter_id>\d+)/$', reporting.report_on,
+                                                                     name='report-with-filter'),
+
+        #### these urls power most of the autocomplete fields; notably the search field has a one-off implementation
+        url(r'^autocomplete/', include('autocomplete_light.urls')))
 
     ## admin
     urlpatterns += patterns('',
@@ -120,3 +140,4 @@ else:
     if 'rosetta' in settings.INSTALLED_APPS:
         urlpatterns += patterns('',
                                 url(r'^rosetta/', include('rosetta.urls')))
+

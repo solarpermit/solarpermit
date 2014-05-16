@@ -11,8 +11,18 @@
 <tr><td rowspan="1" colspan="3">Dallas_TX_Attachments</td></tr>
 </thead><tbody>
 <tr>
+	<td>open</td>
+	<td>/jurisdiction/dallas-tx/</td>
+	<td></td>
+</tr>
+<tr>
 	<td>waitForTitle</td>
 	<td>Dallas, Rockwall County, TX - National Solar Permitting Database</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>id=attachments</td>
 	<td></td>
 </tr>
 <tr>
@@ -21,9 +31,14 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForText</td>
+	<td>css=div.ahj_page_message</td>
+	<td>This tab displays answers with attachments. No attachments have been uploaded yet.</td>
+</tr>
+<tr>
 	<td>verifyText</td>
-	<td>css=h3.ahj_category_header</td>
-	<td>Attachments</td>
+	<td>css=div.ahj_page_message</td>
+	<td>This tab displays answers with attachments. No attachments have been uploaded yet.</td>
 </tr>
 </tbody></table>
 </body>

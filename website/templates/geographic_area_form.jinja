@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}New Geographic Filter{% endblock %}
+{% block forestyle %}
+  {% compress css %}
+    <link rel="stylesheet" type="text/css" href="{{static('autocomplete_light/style.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{static('autocomplete_light/side-by-side.css')}}"/>
+    <style>
+      #main-wrapper {
+        margin-left: 1em;
+      }
+      th {
+        vertical-align: top;
+        text-align: left;
+        padding-left: 1em;
+      }
+      th.division {
+        padding-left: 0;
+      }
+      ul[disabled] {
+        color: lightgray;
+        pointer-events: none;
+      }
+    </style>
+  {% endcompress %}
+{% endblock %}
+{% block forejs %}
+  {% compress js %}
+    {% include 'autocomplete_light/_ajax_csrf.html' %}
+    <script type="text/javascript" src="{{static('autocomplete_light/autocomplete.js')}}"></script>
+    <script type="text/javascript" src="{{static('autocomplete_light/widget.js')}}"></script>
+    <script type="text/javascript" src="{{static('autocomplete_light/side-by-side.js')}}"></script>
+  {% endcompress %}
+{% endblock %}
+{% block body %}
+  <form action="" method="post">{% csrf_token %}
+    {{ form.media|safe }}
+    <table>
+      <tr><th class="division" colspan="2">Filter criteria:</th></tr>
+      <tr><th><input type="radio" name="type" value="state"
+                     {{ 'checked' if form.initial.states }}
+                     id="type-state" class="type-selection">
+              <label for="type-state">{{ form.states.label }}<label></th>
+          <td>{{ form.states|safe }}
+              {{ form.states.errors|safe }}</td></tr>
+      <tr><th><input type="radio" name="type" value="jurisdiction"
+                     {{ 'checked' if form.initial.jurisdictions }}
+                     id="type-jurisdiction" class="type-selection">
+              <label for="type-jurisdiction">{{ form.jurisdictions.label }}</label></th>
+          <td>{{ form.jurisdictions|safe }}
+              {{ form.jurisdictions.errors|safe }}</td></tr>
+      <tr><th class="division" colspan="2">Save filter{% if question_id %} (optional){% endif %}:</th></tr>
+      <tr><th>{{ form.filter_name.label_tag() }}</th>
+          <td>{{ form.filter_name|safe }}
+              {{ form.filter_name.errors|safe }}</td></tr>
+      <tr><th>{{ form.description.label_tag() }}{% if not question_id %}<br/>(optional){% endif %}</th>
+          <td>{{ form.description|safe }}
+              {{ form.description.errors|safe }}</td></tr>
+    </table>
+    <input type="submit" value="Save"/>
+  </form>
+{% endblock %}
+{% block endjs %}
+  <script>
+    //debugger;
+    function setDisabled(n, radio) {
+      var elem = $(radio).closest("tr").find("td input, td select, td ul");
+      if (radio.checked)
+        elem.removeAttr("disabled");
+      else
+        elem.attr("disabled", true);
+    }
+    var radios = $(".type-selection");
+    radios.change(function () {
+                    radios.each(setDisabled);
+                  })
+          .trigger("change");
+  </script>
+{% endblock %}

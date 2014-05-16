@@ -61,8 +61,13 @@
               {% set icon = 'Y' %}
               {% set label_tooltip = 'Sorry, you have already provided an answer.' %}
             {% else %}
-              {% set icon = 'Y' %}
-              {% set label_tooltip = '' %}
+              {% if user.is_authenticated() %}
+                {% set icon = 'Y' %}
+                {% set label_tooltip = '' %}
+              {% else %}
+                {% set icon = 'N' %}
+                {% set label_tooltip = '' %}
+              {% endif %}
             {% endif %}
             <div style="width:100%;"
                  class="qasv_content need_tooltip"

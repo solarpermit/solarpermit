@@ -55,7 +55,7 @@ class TestFavoritesAndQuirks(TestCase):
 
         # shouldn't work when we're not logged in
         (status, content) = add_to_favorites(client, self.ahj[0], self.questions[0])
-        self.assertEqual(200, status)
+        self.assertEqual(401, status)
         self.assertEqual(None, content)
 
         # but once authenticated...
@@ -96,7 +96,7 @@ class TestFavoritesAndQuirks(TestCase):
 
         # shouldn't work when we're not logged in
         (status, content) = add_to_quirks(client, self.ahj[0], self.questions[0])
-        self.assertEqual(200, status)
+        self.assertEqual(401, status)
         self.assertEqual(None, content)
 
         # but once authenticated...
