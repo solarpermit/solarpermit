@@ -1,0 +1,30 @@
+{% extends "base_second_dialog.jinja" %}
+
+{% block modal_dialog_title %}Confirm action{% endblock %}
+
+{% block modal_dialog_header %}Before you remove {{organization.name}} from your profile, you must first select a new administrator. {% endblock %}
+
+{% block modal_dialog_message %}{% endblock %}
+
+{% block body_modal_dialog %}
+	<form>
+		<input type="hidden" id="mid" name="mid" value="">
+		<div class="listing">
+			<h3>Select a new administrator</h3>
+			<div class="listing_list">
+				<div id="admin_select_list" class="endlesslist" style="height: 200px;overflow: scroll;">
+				{% for member in other_members %}
+					<div class="selectable" data-mid="{{member.id}}">
+						{{member.user.username}}
+					</div>
+				{% endfor %}
+				</div>
+			</div>
+		</div>
+	</form>
+{% endblock %}
+
+{% block modal_dialog_action %}
+<span><a id="admin_select_next_btn" href="#" class="mainbutton disabled">Next</a></span>
+<span><a id="admin_select_cancel_btn" href="#" class="mainbutton">Cancel</a></span>
+{% endblock %}

@@ -721,7 +721,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                 body = ''
      
             dajax.assign('#qa_'+str(question_id) + '_fields','innerHTML', body)
-    
+
             #if 'js' in data and data['js'] != None and data['js'] != '':
             for js in data['js']:
                 script ="var disable_pre_validation = false;" #set open pre validation by default, we can overwrite it under each field js file. 

@@ -1,0 +1,11 @@
+{% block content %}
+    {% if errors %}
+        <ul id=tracking-errors>
+            {% for e in errors %}
+            <li>{{ e|safe }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% include "tracking/snippets/pages.jinja" %}                
+{% endblock %}

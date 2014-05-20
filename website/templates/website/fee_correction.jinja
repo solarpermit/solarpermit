@@ -1,0 +1,21 @@
+{% extends "base.jinja" %}
+
+
+{% block body %}
+<br>
+<br>
+<p><br><strong>Fee correction - fee were adjusted for the following jurisdiction</strong></p>
+{% for answer in answers %}
+<b>{{answer.jurisdiction_id}}</b>&nbsp;{{answer.id}}</br>
+
+{% endfor %}
+
+<b>Number of corrected records:</b>{{ answers | length }}
+
+
+{% endblock %}
+
+
+
+
+

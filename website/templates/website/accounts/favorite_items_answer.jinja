@@ -1,0 +1,14 @@
+{% for answer in answers %}
+{%      set answer_obj = answer.get('answer') %}
+	{% if answer.get('suggestion_header') %}
+    	<div class="label suggestion_header" >{{answer.get('suggestion_header')}}</div>    
+    {% endif %} 
+    <div class="field" style="font-style:normal;">
+    {% set answer_content = answer.get('answer_content') %}
+    	{% if this_question.display_template == '' or this_question.display_template == None %}
+            {% include "website/jurisdictions/suggestion_display_template/single_field_display.jinja" %}
+        {% else %}
+            {% include 'website/jurisdictions/suggestion_display_template/'+this_question.display_template+'.jinja' %}
+        {% endif %}               
+    </div>   
+{% endfor %}
