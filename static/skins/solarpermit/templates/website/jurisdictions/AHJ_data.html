@@ -304,30 +304,42 @@ $(document).ready(function() {
              
         
         var $historyTooltip = $('.need_history');
+/*        $historyTooltip.tooltip({track: true, 
+            items: "div",
+            content: function() {
+            return $('#validation_history_div_'+$historyTooltip.data('id')).html();
+            }
+        }); */
+
         $historyTooltip.mouseover(function (event) {
-            //alert('validaetion');
             var $target = $(event.target);
-            //var $target = $(event.target);
-            //$target.removeClass('need_history');
             var answerId = $target.data('id');
-            //alert(answerId);
-            controller.postRequest('.', {ajax: 'validation_history', entity_id: answerId, entity_name: 'requirement', destination: '' });
-            $target.tooltip({track: true, 
-                content: function() {
-                    return $('#validation_history_div_'+answerId).html();
-                }
-            });
+            var hasTooltip = $target.data('hasTooltip');
+
+            console.log("mousedover!");
+            if (!hasTooltip) {
+                controller.postRequest('.', {ajax: 'validation_history', entity_id: answerId, entity_name: 'requirement', destination: '' }, function(data) {
+                                                    $target.tooltip({track: true, 
+                                                        items: "div",
+                                                        content: function() {
+                                                        return $('#validation_history_div_'+answerId).html();
+                                                        }
+                                                    });
+//                                                    $target.tooltip("option", { track: true, show: true });
+                                                    $target.tooltip("open");
+//                                                    $target.tooltip( "option", "track", true);
+                                         });
+                $target.data('hasTooltip', true);
+            }
         });
         var $historyDialog = $('.need_history_dialog');
         $historyDialog.click(function (event) {
             var $target = $(event.target);
-            //$target.removeClass('need_history_dialog');
             var answerId = $target.data('id');
-            //alert('history dialog');
             $target.click(function () {
                 controller.postRequest('.', {ajax: 'validation_history', entity_id: answerId, entity_name: 'requirement', destination: 'dialog' });
             });
-        });        
+        });
         
         var $commentsDialog = $('.need_comment');
         $commentsDialog.each(function () {

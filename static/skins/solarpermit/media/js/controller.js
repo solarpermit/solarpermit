@@ -203,7 +203,7 @@ var controller = new function () {
 	}
 	
 	// post request to server with given url and parameters
-	this.postRequest = function (url, params) {
+        this.postRequest = function (url, params, callback) {
         if ("doNotShowMessage" in params)
         {
             if (params['doNotShowMessage'] != 'y')
@@ -226,12 +226,18 @@ var controller = new function () {
 			}, params);
 		}
 		jQuery.ajax({
-			type:'post',
-			data:params, 
-			url:url,
-			dataType: 'json',
-			success:function(data,textStatus){controller.handleResponse(data);},
-			error:function(XMLHttpRequest,textStatus,errorThrown){}
+		    type:'post',
+		    data:params, 
+		    url:url,
+		    dataType: 'json',
+		    success:function(data,textStatus){
+			console.log("successed on " + params['ajax']);
+			controller.handleResponse(data); 
+			if (callback) { 
+			    callback(data); 
+			} 
+		    },
+                    error:function(XMLHttpRequest,textStatus,errorThrown){}
 		});
 		return false;
 	}
