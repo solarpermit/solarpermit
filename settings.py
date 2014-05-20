@@ -72,12 +72,12 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'static/skins/solarpermit/media')
-LOG_ROOT = os.path.join(os.path.dirname(__file__), 'static/skins/solarpermit/media/log')
+MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'media')
+LOG_ROOT = os.path.join(os.path.dirname(__file__), 'log')
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = '/media/'
+MEDIA_URL = '/media/upfiles/'
 
 PROJECT_ROOT = os.path.dirname(__file__)
 # Absolute path to the directory static files should be collected to.
@@ -88,7 +88,7 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
+STATIC_URL = '/media/'
 
 FIXTURE_DIRS = ( 
                 os.path.join(os.path.dirname(__file__), 'website/fixture'),
@@ -111,8 +111,6 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -121,6 +119,12 @@ SECRET_KEY = 'zj8k!s68ar4m#zqk7o%)!e+^(cfme2%^86u#jb5&f&$-!qui=1'
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django_jinja.loaders.AppLoader',
+)
+TEMPLATE_DIRS = (
+    # because we're not using the FileSystemLoader to find templates,
+    # we wouldn't really need this to be set except that
+    # django-compressor requries it.
+    os.path.join(os.path.dirname(__file__), 'website', 'templates')
 )
 
 MIDDLEWARE_CLASSES = (
@@ -143,20 +147,11 @@ LOGIN_URL = '/sign_in'
 
 ROOT_URLCONF = 'urls'
 
-FILE_UPLOAD_TEMP_DIR = os.path.join(
-                                os.path.dirname(__file__), 
-                                'tmp'
-                            ).replace('\\','/')
+FILE_UPLOAD_TEMP_DIR = os.path.join(os.path.dirname(__file__), 'tmp').replace('\\','/')
 
 FILE_UPLOAD_HANDLERS = (
     'django.core.files.uploadhandler.MemoryFileUploadHandler',
     'django.core.files.uploadhandler.TemporaryFileUploadHandler',
-)
-
-TEMPLATE_DIRS = (
-    # we shouldn't need this, but until we have a proper jinja
-    # integration via django-jinja we won't have access to AppLoader
-    os.path.join(PROJECT_ROOT, 'website', 'templates'),
 )
 
 ALLOWED_UPLOAD_FILE_TYPES = ('.jpg', '.jpeg', '.gif', '.bmp', '.png', '.tiff', '.txt', '.doc', '.pdf', '.zip', '.html', 'xlsx', '.docx', '.mp3', '.wmv', '.mp4')
@@ -195,7 +190,7 @@ INSTALLED_APPS = (
     'website',
     'compressor',
     'django_extensions',
-    #'debug_toolbar',    
+    'debug_toolbar',    
     'tracking',
     'django_jinja',
     'autocomplete_light',
@@ -268,8 +263,6 @@ FIRST_MAX_FAILED_LOGIN_ATTEMPTS = 5
 SECOND_MAX_FAILED_LOGIN_ATTEMPTS = 8
 TIME_PERIOD_FOR_FAILED_LOGIN_ATTEMPTS = 5
 
-FEEDBACK_EMAIL = 'kvo@aerio.com'
-
 #from jinja.contrib import djangosupport
 #djangosupport.configure()
 
@@ -290,7 +283,7 @@ PAGE_COLUMNS = 5 #number of columns in multiple column listing page
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = True
 COMPRESS_URL = '/media/'
-COMPRESS_ROOT = os.path.join(PROJECT_ROOT, 'static/skins/solarpermit/media')
+COMPRESS_ROOT = os.path.join(PROJECT_ROOT, 'website', 'static')
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',
                         'compressor.filters.cssmin.CSSMinFilter']
 COMPRESS_JS_FILTERS = ['compressor.filters.closure.ClosureCompilerFilter']
