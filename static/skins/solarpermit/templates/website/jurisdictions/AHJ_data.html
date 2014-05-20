@@ -326,6 +326,8 @@ $(document).ready(function() {
             }
         });
 
+       $historyTooltip.click(function (e) { e.preventDefault(); });
+
 // Is this code actually in use?
         var $historyDialog = $('.need_history_dialog');
         $historyDialog.click(function (event) {
