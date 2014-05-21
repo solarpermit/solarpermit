@@ -40,4 +40,4 @@ closure==20140110
 django-localflavor
 django-jinja
 -e git+https://github.com/yourlabs/django-autocomplete-light.git@v2#egg=django-autocomplete-light
-
+Pygments==1.6
