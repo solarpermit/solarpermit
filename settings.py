@@ -189,8 +189,6 @@ INSTALLED_APPS = (
     'localflavor',
     'website',
     'compressor',
-    'django_extensions',
-    'debug_toolbar',    
     'tracking',
     'django_jinja',
     'autocomplete_light',
@@ -316,3 +314,7 @@ AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/'
 AUTOCOMPLETE_JQUERY_ALREADY_INCLUDED = True
 
 from settings_local import *
+
+if DEBUG:
+    INSTALLED_APPS += ('django_extensions',
+                       'debug_toolbar')
