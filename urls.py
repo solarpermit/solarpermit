@@ -104,6 +104,7 @@ else:
         (r'^information-accuracy-disclaimer/', info.information_accuracy_disclaimer),   
         (r'^grant-info/', info.grant_info), 
         (r'^tou/', info.terms_of_use), 
+        (r'^upload/', info.upload),
             
         #### api calls
         (r'^api1/', 'website.views.api.searchState'),
