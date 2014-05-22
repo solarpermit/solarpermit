@@ -16,7 +16,7 @@
 # ALSO - Please be advised that closure requires Java to be installed on your
 # server.
 #
-Django==1.5.5
+Django==1.5.8
 django-celery==3.0.21
 django-countries==1.5
 django-dajax==0.8.4
