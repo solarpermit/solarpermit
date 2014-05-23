@@ -4,6 +4,7 @@ from django.http import HttpRequest
 # for jinja2
 from django.conf import settings
 from django.template.loader import render_to_string
+from django.template import Context, RequestContext
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from website.models import UserSearch
@@ -66,4 +67,4 @@ class HttpRequestProcessor():
         return render(request, filename.replace(".html", ".jinja"), context, content_type=mimetype)
     
     def decode_jinga_template(self, request, filename, context={}, mimetype=''):
-        return render_to_string(filename.replace(".html", ".jinja"), context)
+        return render_to_string(filename.replace(".html", ".jinja"), context, RequestContext(request, context))
