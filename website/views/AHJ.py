@@ -237,7 +237,10 @@ def jurisdiction_comment(request):
             data['site_url'] = django_settings.SITE_URL
             data['requestProcessor'] = requestProcessor
             data['request'] = request
-            send_email(data, to_mail)
+
+            email_host = django_settings.EMAIL_HOST
+            if email_host:
+                send_email(data, to_mail)
             
             dajax.assign('#comment_'+str(cid), 'innerHTML', '<p>This comment has been flagged as inappropriate and is hidden pending review.</p>')
         
@@ -418,7 +421,10 @@ def view_unincorporated_AHJ(request, jurisdiction):
             data['site_url'] = django_settings.SITE_URL
             data['requestProcessor'] = requestProcessor
             data['request'] = request
-            send_email(data, to_mail, subject='Flag Comment', template='flag_ucomment.html')
+            
+            email_host = [django_settings.EMAIL_HOST]
+            if email_host:
+                send_email(data, to_mail, subject='Flag Comment', template='flag_ucomment.html')
             
             dajax.assign('#comment_'+str(cid), 'innerHTML', '<p>This comment had been flagged as inappropriate and is hidden pending review.</p>')
         if ajax == 'remove_comment':

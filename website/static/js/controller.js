@@ -231,7 +231,6 @@ var controller = new function () {
 		    url:url,
 		    dataType: 'json',
 		    success:function(data,textStatus){
-			console.log("successed on " + params['ajax']);
 			controller.handleResponse(data); 
 			if (callback) { 
 			    callback(data); 
