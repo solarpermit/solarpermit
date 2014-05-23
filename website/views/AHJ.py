@@ -239,7 +239,7 @@ def jurisdiction_comment(request):
             data['request'] = request
             send_email(data, to_mail)
             
-            dajax.assign('#comment_'+str(cid), 'innerHTML', '<p>This comment had been flagged as inappropriate and is hidden pending review.</p>')
+            dajax.assign('#comment_'+str(cid), 'innerHTML', '<p>This comment has been flagged as inappropriate and is hidden pending review.</p>')
         
         if ajax == 'show_old_comments':
             entity_id = requestProcessor.getParameter('answer_id')
