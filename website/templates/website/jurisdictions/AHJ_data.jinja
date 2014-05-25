@@ -90,9 +90,7 @@ $(document).ready(function() {
 
                 if (document.URL.search(/empty_data_fields_hidden=/i) < 0)
                 {
-		    console.log(document.URL);
                     if (document.URL.indexOf('=') < 0) {
-		        console.log("No = found.");
 		        if (document.URL.search('\\?$') < 0)
 			    url = durl + '?' + query_string
 			else
