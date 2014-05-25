@@ -41,7 +41,7 @@
       </div>
   
       {% for question_id in cqa[category_id]['sorted_question_ids'] %}
-        <div data-debug-question-id="{{question_id}}">
+        <div data-debug-question-id="{{question_id}}" class="question-container">
           {% set question = cqa[category_id]['questions'][question_id] %}
           {% if question['has_multivalues'] | int == 1 %}
             {% if question['answers'] %}
@@ -124,7 +124,7 @@
               <div style="float:left;width:100%;display:none" class="question_messages" id="question_messages_{{question_id}}"></div>
             {% endif %}
             {% for answer in question['answers'] %}
-              <div data-debug-answer-id="{{answer.id}}">
+              <div data-debug-answer-id="{{answer.id}}" class="answer-container">
                 <div class="cssTable" style="float:left;width:100%;margin-bottom:20px">
                   <div class="cssRow" id="qa_{{question_id}}_data">
                   <div class="cssCell suggestion_left" style="">

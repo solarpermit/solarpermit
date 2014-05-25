@@ -85,15 +85,21 @@ $(document).ready(function() {
                     query_string = 'empty_data_fields_hidden=' + 0;
 
                 durl = document.URL; 
-                drularray = durl.split('#');
-                durl = drularray[0]    
+                durlarray = durl.split('#');
+                durl = durlarray[0]
 
                 if (document.URL.search(/empty_data_fields_hidden=/i) < 0)
                 {
-                    if (document.URL.search('/=/') < 0)
-                        url = durl + '?' + query_string
-                    else
+		    console.log(document.URL);
+                    if (document.URL.indexOf('=') < 0) {
+		        console.log("No = found.");
+		        if (document.URL.search('\\?$') < 0)
+			    url = durl + '?' + query_string
+			else
+			    url = durl + query_string
+                    } else {
                         url = durl + '&' + query_string
+		    }
                 }
                 else
                 {
@@ -102,7 +108,7 @@ $(document).ready(function() {
                 }
                 //alert(url);                                               
                 location.href= url
-            });        
+            });
 
 });
 </script>
