@@ -238,9 +238,7 @@ def jurisdiction_comment(request):
             data['requestProcessor'] = requestProcessor
             data['request'] = request
 
-            email_host = django_settings.EMAIL_HOST
-            if email_host:
-                send_email(data, to_mail)
+            send_email(data, to_mail)
             
             dajax.assign('#comment_'+str(cid), 'innerHTML', '<p>This comment has been flagged as inappropriate and is hidden pending review.</p>')
         
@@ -296,6 +294,10 @@ def jurisdiction_comment(request):
     return
 
 def send_email(data, to_mail, subject='Flag Comment', template='flag_comment.html'): 
+    email_host = django_settings.EMAIL_HOST
+    if not email_host:
+        return
+
     #tp = django_get_template('website/emails/' + template)
     #c = Context(data)
     #body = tp.render(c)
