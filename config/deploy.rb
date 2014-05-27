@@ -1,3 +1,4 @@
+require 'mysql2'
 require 'capistrano/ext/multistage'
 default_run_options[:pty] = true
 
@@ -62,7 +63,24 @@ end
 
 desc "run migrate website"
 task :migrate_website do
- run "/opt/cpf/solarpermit/current/manage.py migrate website"
+  if fetch(:release_name) == "Release1.3.46" then
+    run "/opt/cpf/solarpermit/current/manage.py migrate website 0097"
+    client = Mysql2::Client.new(:host => "localhost", :username => "root",
+                                :password => fetch(:db_password),
+                                :database => fetch(:db_database))
+    # assume the functions were already created, and therefore might be incorrect
+    client.query("DROP FUNCTION IF EXISTS json_get")
+    client.query("DROP FUNCTION IF EXISTS json_valid")
+    # now create them correctly
+    client.query("CREATE FUNCTION json_get RETURNS string SONAME 'mysql_json.so'")
+    client.query("CREATE FUNCTION json_valid RETURNS integer SONAME 'mysql_json.so'")
+    # and skip the related migrations
+    client.query("INSERT INTO south_migrationhistory (app_name, migration, applied) VALUES ('website', '0098_create_json_UDF_functions', NOW())")
+    client.query("INSERT INTO south_migrationhistory (app_name, migration, applied) VALUES ('website', '0099_udf_function_return_type', NOW())")
+    run "/opt/cpf/solarpermit/current/manage.py migrate website 0101"
+    client.query("INSERT INTO south_migrationhistory (app_name, migration, applied) VALUES ('website', '0102_udf_function_return_type_utf8mb4', NOW())")
+  end
+  run "/opt/cpf/solarpermit/current/manage.py migrate website"
 end
 
 desc "run migrate tracking"
