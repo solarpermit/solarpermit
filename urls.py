@@ -106,12 +106,7 @@ else:
         (r'^tou/', info.terms_of_use), 
             
         #### api calls
-        (r'^api1/', 'website.views.api.searchState'), #legacy
-        (r'^api/read/states', 'website.views.api2.list_states'),
-        (r'^api/read/jurisdiction_list', 'website.views.api2.list_jurisdictions'),
-        (r'^api/read/jurisdiction', 'website.views.api2.get_jurisdiction'),
-        #(r'^api/read/question', 'website.views.api2.get_question'),
-        (r'^api/write/suggest_answer', 'website.views.api2.submit_suggestion'),
+        (r'^api1/', 'website.views.api.searchState'),
         
         #### django-tracking2
         (r'^tracking/', include('tracking.urls')),
