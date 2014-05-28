@@ -16,32 +16,7 @@
 	<link rel="shortcut icon" href="/media/images/solarpermit_favicon.png"/>
         {% endcompress %}
 
-        <script type="text/javascript">
-                var True = true, False = false; // admittedly this is a little silly
-                var js_csrf = '{{csrf_token}}',
-                    IS_AUTHENTICATED = {{request.user.is_authenticated()}};
-                    PASSWORD_RESET_KEY = '{{reset_password_key}}',
-                    INVITATION_KEY = '{{invitation_key}}',
-                    CURRENT_ORGID = '{{orgid}}',
-                    SYSTEM_MESSAGE = { type: '{{system_message_type}}',
-                                       text: '{{system_message_text}}' },
-                    ACTION_KEY = '{{action_key}}';
-        </script>
-        {% block jsdata %}{% endblock %}
-
         {% compress js %}
-	<script src="/media/js/jquery-1.11.0.js"></script>	
-	<script src="/media/js/jquery.validate.js"></script>
-	<script src="/media/js/additional-methods.js"></script>
-	<script src="/media/js/jquery.simplemodal.js"></script>
-	<script src="/media/js/jquery.jscroll.custom.js"></script>	
-	<script src="/media/js/controller.js"></script>
-	<script src="/media/js/jquery.dajax.core.js"></script>
-	<script src="/media/js/jquery-ui-1.10.4.custom.js"></script>
-	<script src="/media/js/fileuploader.js"></script>			
-	
-	<script type="text/javascript" src="/media/js/flexcomplete/jquery.flexcomplete.js"></script>
-	
 	<!--[if lt IE 9]>
 		<script>
 			// declare html5 blocks for ie8 and ie7
@@ -55,253 +30,6 @@
 		</script>
 	<![endif]-->
         {% endcompress %}
-        {% block forejs %}{% endblock %}
-	{% compress js %}
-	<script type="text/javascript">
-		function reload_page()
-		{
-			location.reload();
-			return false;
-		}
-				
-		function set_error_class() {
-		    document.getElementById('username').style.backgroundColor="#FCC";
-		    document.getElementById('password').style.backgroundColor="#FCC"; 
-		}
-
-{#		function close_simple_popup(div) {
-			obj = document.getElementById(div);
-			obj.innerHTML = '';
-			obj.style.display='none';		
-		}
-
-		function open_simple_popup(id, div)	{
-			obj = document.getElementById(div);
-			if (obj.style.display == 'none') {}
-				var left = $('#id_'+id).position().left + 5;
-				var top = $('#id_'+id).position().top + 20;   
-				obj.style.left = left+'px';
-				obj.style.top = top+'px';
-				document.getElementById(div).style.display='block';
-			} else {
-				document.getElementById(div).style.display='none';
-			}
-		}		#}
-
-		var org_id = 0;
-		var member_id = 0;
-
-		function set_org_id(orgid)
-		{
-			org_id = orgid;
-		}
-
-		function set_member_id(memberid)
-		{
-			member_id = memberid;
-		}
-
-		function cancel_request()
-		{
-			controller.postRequest('/organization/', {ajax: 'cancel_org_request', orgid: org_id, caller:'user_profile'});
-		}
-
-
-
-
-		
-
-		function show_data(data_obj_id, edit_option_id)
-		{   
-			document.getElementById(data_obj_id).className = 'show_data';
-			document.getElementById(edit_option_id).style.visibility = 'hidden';			
-			return false;
-		}
-
-		function show_edit_option(data_obj_id, edit_option_id)
-		{   
-			document.getElementById(data_obj_id).className = 'show_edit_option';
-			document.getElementById(edit_option_id).style.visibility = 'visible';
-			document.getElementById(edit_option_id).style.display = 'block';				
-			return false;
-		}
-
-		function switch_to_edit(data_obj_id, edit_obj_id)
-		{   
-			$('#'+edit_obj_id).show();
-			$('#'+data_obj_id).hide();
-		
-			return false;
-		}		
-
-		function switch_to_data(data_obj_id, edit_obj_id)
-		{   
-			$('#'+edit_obj_id).hide();
-			$('#'+data_obj_id).show();
-
-			return false;
-		}	
-
-		function submit_edit(form_id, field_name)
-		{	//alert(field_name);
-			document.getElementById('name').value = field_name;
-			controller.submitForm('#'+form_id);		
-			return false;
-		}		
-
-		function onload(action_key)
-		{	
-			if (action_key == 'reset_password')
-			{	
-				controller.postRequest('.', {ajax: 'launch_reset_password', reset_password_key: RESET_PASSWORD_KEY}); 
-			}
-
-			if (action_key == 'create_account')
-			{	
-                                if (!IS_AUTHENTICATED) {
-                                        controller.postRequest('/account/', {ajax: 'create_account', invitation_key: INVITATION_KEY});
-                                }
-			}		
-
-			if (action_key == "user_profile")
-			{
-				controller.postRequest('/account/', {ajax: 'user_profile'});
-			}
-			
-			if (action_key == "request_org")
-			{
-				controller.postRequest('/organization/', {ajax: 'open_org_details', orgid: CURRENT_ORGID});
-			}
-			
-			controller.showMessage(SYSTEM_MESSAGE.text, SYSTEM_MESSAGE.type);
-
-		}
-	</script>
-	
-	<script type='text/javascript'>
-		
-		$(document).ready(function() {
-			onload(ACTION_KEY); {# // moved from onload attribute in body tag #}
-			
-			$('.headRight #create_account_button').click(function() {
-				controller.postRequest('/account/', {ajax: 'create_account'}); return false;
-			});
-			
-			$('.searchfielddev a.search-a').click(function(){
-				$('#search_form').submit();return false;
-			});
-			
-			$('#update_org_info_link').tooltip({track: true});
-			$('#update_org_info_link').click(
-					function(event) {
-							
-							$target = $(event.target);
-							var ajaxVal = $target.data('ajax');
-							var orgId = $target.data('orgid');
-							controller.postRequest('/organization/', {ajax: ajaxVal, orgid: orgId}); 			
-
-							return false;
-					}
-			);
-			$('#send_feedback').click(
-					function(event) {
-							
-							$target = $(event.target);
-							controller.postRequest('/info/', {ajax: 'send_feedback'});		
-
-							return false;
-					}
-			);
-			$('#give_feedback').click(
-					function(event) {
-							
-							$target = $(event.target);
-							controller.postRequest('/info/', {ajax: 'send_feedback'});		
-
-							return false;
-					}
-			);	
-			$('#logout_with_forum').click(
-					function(event) {
-							
-							$target = $(event.target);
-							controller.lsslogout('/logout');	
-					}
-			);								
-			
-{#			// profile menu #} 
-			$('.profile_header_link').hover(
-					function(){
-						$('.headRight ul').show();
-						$('body').bind('mousemove.profile_header', function (event) {
-							$target = $('.profile_header_link');
-							//capture initial mouse location
-							var startX = $target.data('mouseX');
-							if (!startX) {
-								$target.data('mouseX', event.pageX);
-								startX = event.pageX;
-							}
-							var startY = $target.data('mouseY');
-							if (!startY) {
-								$target.data('mouseY', event.pageY);
-								startY = event.pageY;
-							}
-							var dX = event.pageX - startX;
-							var dY = event.pageY - startY;
-							//see if mouse moves out of range
-							if ((dX > $target.width()) || (dX < -100) ||
-									(dY > $target.height() + 50) || (dY < -50)) {
-								$('.headRight ul').hide();
-								$('body').unbind('mousemove.profile_header');
-							}
-						});
-					}); {# //shows the profile menu on hover of username #}
-			$('.headRight ul').hover(
-					function(){
-						$('body').unbind('mousemove.profile_header'); //no need now that is hovering here
-					},
-					function(){
-						$('.headRight ul').hide();
-						$('body').unbind('mousemove.profile_header');
-					}); {# //hides the profile menu on mouseout #}
-			$('.profile_header_link').click(function(){ {# //allow clicking on the username to still function #}
-				if ($('.headRight ul').css('display') == 'block') {
-					$('.headRight ul').hide();
-				} else {
-					$('.headRight ul').show();
-				}
-			});
-			
-			
-			
-			
-	    	$('#search_field').flexcomplete({
-	    	    list_groups: [
-	    	        {id: 'recent_results', local: true, container: '#recent_results', header: 'Recent', max_items: 3},
-	    	        {id: 'search_results', local: false, container: '#search_results', header: 'Suggestions', max_items: 7}
-	    	    ],
-	    	    search_url: '/jurisdiction/autocomplete/',
-	    	    search_parameter: 'q',
-	    	    top_margin: 6,
-	    	    footer: 'Press Enter to search'
-		    }); 
-													
-			$('#fancybox_close').click(function(){
-				$.fancybox.close();
-				return false;
-			}); 																						                                     
-		});
-	</script>
-	<!--[if lte IE 9]>
-	<script type="text/javascript" src="/media/js/placeholder_ie_fix.js"></script>
-	<script type='text/javascript'>
-	$(document).ready(function() {
-	    placeholder_ie_fix('#search_field');
-	    placeholder_ie_fix('#jurisdiction_search #text_2');	    
-	});
-	</script>
-	<![endif]-->
-{% endcompress %}
 </head>
 
 <body>
@@ -353,9 +81,258 @@
 
 {% include "website/footer.html" %}
 
-{% compress js %}
-{% include "website/fancybox_scripts.html" %}
-{% endcompress %}
+  <script type="text/javascript">
+    var True = true, False = false; // admittedly this is a little silly
+    var js_csrf = '{{csrf_token}}',
+        IS_AUTHENTICATED = {{request.user.is_authenticated()}};
+        PASSWORD_RESET_KEY = '{{reset_password_key}}',
+        INVITATION_KEY = '{{invitation_key}}',
+        CURRENT_ORGID = '{{orgid}}',
+        SYSTEM_MESSAGE = { type: '{{system_message_type}}',
+                           text: '{{system_message_text}}' },
+        ACTION_KEY = '{{action_key}}';
+  </script>
+  {% block jsdata %}{% endblock %}
+  
+  {% block forejs %}{% endblock %}
+  {% compress js %}
+    <script src="/media/js/jquery-1.11.0.js"></script>	
+    <script src="/media/js/jquery.validate.js"></script>
+    <script src="/media/js/additional-methods.js"></script>
+    <script src="/media/js/jquery.simplemodal.js"></script>
+    <script src="/media/js/jquery.jscroll.custom.js"></script>	
+    <script src="/media/js/controller.js"></script>
+    <script src="/media/js/jquery.dajax.core.js"></script>
+    <script src="/media/js/jquery-ui-1.10.4.custom.js"></script>
+    <script src="/media/js/fileuploader.js"></script>			
+    <script type="text/javascript" src="/media/js/flexcomplete/jquery.flexcomplete.js"></script>	
+    {% include "website/fancybox_scripts.html" %}
+    <script type="text/javascript">
+    	function reload_page()
+    	{
+    		location.reload();
+    		return false;
+    	}
+    			
+    	function set_error_class() {
+    	    document.getElementById('username').style.backgroundColor="#FCC";
+    	    document.getElementById('password').style.backgroundColor="#FCC"; 
+    	}
+    
+    	var org_id = 0;
+    	var member_id = 0;
+    
+    	function set_org_id(orgid)
+    	{
+    		org_id = orgid;
+    	}
+    
+    	function set_member_id(memberid)
+    	{
+    		member_id = memberid;
+    	}
+    
+    	function cancel_request()
+    	{
+    		controller.postRequest('/organization/', {ajax: 'cancel_org_request', orgid: org_id, caller:'user_profile'});
+    	}
+    
+    
+    
+    
+    	
+    
+    	function show_data(data_obj_id, edit_option_id)
+    	{   
+    		document.getElementById(data_obj_id).className = 'show_data';
+    		document.getElementById(edit_option_id).style.visibility = 'hidden';			
+    		return false;
+    	}
+    
+    	function show_edit_option(data_obj_id, edit_option_id)
+    	{   
+    		document.getElementById(data_obj_id).className = 'show_edit_option';
+    		document.getElementById(edit_option_id).style.visibility = 'visible';
+    		document.getElementById(edit_option_id).style.display = 'block';				
+    		return false;
+    	}
+    
+    	function switch_to_edit(data_obj_id, edit_obj_id)
+    	{   
+    		$('#'+edit_obj_id).show();
+    		$('#'+data_obj_id).hide();
+    	
+    		return false;
+    	}		
+    
+    	function switch_to_data(data_obj_id, edit_obj_id)
+    	{   
+    		$('#'+edit_obj_id).hide();
+    		$('#'+data_obj_id).show();
+    
+    		return false;
+    	}	
+    
+    	function submit_edit(form_id, field_name)
+    	{	//alert(field_name);
+    		document.getElementById('name').value = field_name;
+    		controller.submitForm('#'+form_id);		
+    		return false;
+    	}		
+    
+    	function onload(action_key)
+    	{	
+    		if (action_key == 'reset_password')
+    		{	
+    			controller.postRequest('.', {ajax: 'launch_reset_password', reset_password_key: RESET_PASSWORD_KEY}); 
+    		}
+    
+    		if (action_key == 'create_account')
+    		{	
+                            if (!IS_AUTHENTICATED) {
+                                    controller.postRequest('/account/', {ajax: 'create_account', invitation_key: INVITATION_KEY});
+                            }
+    		}		
+    
+    		if (action_key == "user_profile")
+    		{
+    			controller.postRequest('/account/', {ajax: 'user_profile'});
+    		}
+    		
+    		if (action_key == "request_org")
+    		{
+    			controller.postRequest('/organization/', {ajax: 'open_org_details', orgid: CURRENT_ORGID});
+    		}
+    		
+    		controller.showMessage(SYSTEM_MESSAGE.text, SYSTEM_MESSAGE.type);
+    
+    	}
+    </script>
+    
+    <script type='text/javascript'>
+    	
+    	$(document).ready(function() {
+    		onload(ACTION_KEY); {# // moved from onload attribute in body tag #}
+    		
+    		$('.headRight #create_account_button').click(function() {
+    			controller.postRequest('/account/', {ajax: 'create_account'}); return false;
+    		});
+    		
+    		$('.searchfielddev a.search-a').click(function(){
+    			$('#search_form').submit();return false;
+    		});
+    		
+    		$('#update_org_info_link').tooltip({track: true});
+    		$('#update_org_info_link').click(
+    				function(event) {
+    						
+    						$target = $(event.target);
+    						var ajaxVal = $target.data('ajax');
+    						var orgId = $target.data('orgid');
+    						controller.postRequest('/organization/', {ajax: ajaxVal, orgid: orgId}); 			
+    
+    						return false;
+    				}
+    		);
+    		$('#send_feedback').click(
+    				function(event) {
+    						
+    						$target = $(event.target);
+    						controller.postRequest('/info/', {ajax: 'send_feedback'});		
+    
+    						return false;
+    				}
+    		);
+    		$('#give_feedback').click(
+    				function(event) {
+    						
+    						$target = $(event.target);
+    						controller.postRequest('/info/', {ajax: 'send_feedback'});		
+    
+    						return false;
+    				}
+    		);	
+    		$('#logout_with_forum').click(
+    				function(event) {
+    						
+    						$target = $(event.target);
+    						controller.lsslogout('/logout');	
+    				}
+    		);								
+    		
+    		// profile menu
+    		$('.profile_header_link').hover(
+    				function(){
+    					$('.headRight ul').show();
+    					$('body').bind('mousemove.profile_header', function (event) {
+    						$target = $('.profile_header_link');
+    						//capture initial mouse location
+    						var startX = $target.data('mouseX');
+    						if (!startX) {
+    							$target.data('mouseX', event.pageX);
+    							startX = event.pageX;
+    						}
+    						var startY = $target.data('mouseY');
+    						if (!startY) {
+    							$target.data('mouseY', event.pageY);
+    							startY = event.pageY;
+    						}
+    						var dX = event.pageX - startX;
+    						var dY = event.pageY - startY;
+    						//see if mouse moves out of range
+    						if ((dX > $target.width()) || (dX < -100) ||
+    								(dY > $target.height() + 50) || (dY < -50)) {
+    							$('.headRight ul').hide();
+    							$('body').unbind('mousemove.profile_header');
+    						}
+    					});
+    				}); {# //shows the profile menu on hover of username #}
+    		$('.headRight ul').hover(
+    				function(){
+    					$('body').unbind('mousemove.profile_header'); //no need now that is hovering here
+    				},
+    				function(){
+    					$('.headRight ul').hide();
+    					$('body').unbind('mousemove.profile_header');
+    				}); {# //hides the profile menu on mouseout #}
+    		$('.profile_header_link').click(function(){ {# //allow clicking on the username to still function #}
+    			if ($('.headRight ul').css('display') == 'block') {
+    				$('.headRight ul').hide();
+    			} else {
+    				$('.headRight ul').show();
+    			}
+    		});
+    		
+    		
+    		
+    		
+        	$('#search_field').flexcomplete({
+        	    list_groups: [
+        	        {id: 'recent_results', local: true, container: '#recent_results', header: 'Recent', max_items: 3},
+        	        {id: 'search_results', local: false, container: '#search_results', header: 'Suggestions', max_items: 7}
+        	    ],
+        	    search_url: '/jurisdiction/autocomplete/',
+        	    search_parameter: 'q',
+        	    top_margin: 6,
+        	    footer: 'Press Enter to search'
+    	    }); 
+    												
+    		$('#fancybox_close').click(function(){
+    			$.fancybox.close();
+    			return false;
+    		}); 																						                                     
+    	});
+    </script>
+    <!--[if lte IE 9]>
+    <script type="text/javascript" src="/media/js/placeholder_ie_fix.js"></script>
+    <script type='text/javascript'>
+    $(document).ready(function() {
+        placeholder_ie_fix('#search_field');
+        placeholder_ie_fix('#jurisdiction_search #text_2');	    
+    });
+    </script>
+    <![endif]-->
+  {% endcompress %}
 {% block endjs %}{% endblock %}
 
 {# close comment tags on lines 340 and 353 to active tracking code #}
