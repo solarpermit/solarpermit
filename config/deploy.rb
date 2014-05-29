@@ -47,10 +47,10 @@ end
 #after "deploy:finalize_update"
 
 after :deploy,
+  "config_it",
   "syncdb",
   "migrate_website",
   "migrate_tracking",
-  "config_it",
   "compress_jinja",
   "restart_gunicorn",
   "restart_nginx",
