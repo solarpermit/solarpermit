@@ -1,8 +1,9 @@
 #This file is for the dev site.  Can be used as example for other sites.
 #To use this, rename to settings_local.py for your site.
 
-DEBUG = True
-INTERNAL_IPS = ('127.0.0.1', '23.253.204.16','10.210.32.248')
+DEBUG = False
+
+INTERNAL_IPS = ('127.0.0.1', '23.253.204.16','10.210.32.248', '50.0.51.28')
 
 DATABASES = {
     'default': {

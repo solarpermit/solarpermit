@@ -6,12 +6,12 @@ reload(sys) # reload sys to force utf-8
 sys.setdefaultencoding('utf-8') # forces utf-8 encoded strings
 import site
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 INTERNAL_IPS = ('127.0.0.1',)
 #SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
-SOLARPERMIT_VERSION = '1.3.37'
+SOLARPERMIT_VERSION = '1.3.46'
 SAMPLE_JURISDICTIONS=['1', '101105']
 
 ADMINS = (
@@ -116,7 +116,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'zj8k!s68ar4m#zqk7o%)!e+^(cfme2%^86u#jb5&f&$-!qui=1'
+SECRET_KEY = "JF\\'rpkwVfMQV&p&M2fvfeQ3TqFz;E\\+vg*d&>XaazG'mCIC/ I2$,:='ogj&bo2"
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
