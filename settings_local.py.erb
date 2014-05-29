@@ -28,6 +28,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 CSRF_COOKIE_DOMAIN = "<%= domain_name %>"
 SITE_URL = "http://<%= domain_name %>/"
+ALLOWED_HOSTS = ["<%= domain_name %>", "localhost"]
 
 SERVER_EMAIL = 'thatguyrenic@gmail.com'
 DEFAULT_FROM_EMAIL = 'no-reply@solarpermit.org'
