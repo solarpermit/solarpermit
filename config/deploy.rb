@@ -50,6 +50,7 @@ after :deploy,
   "syncdb",
   "migrate_website",
   "migrate_tracking",
+  "config_it",
   "compress_jinja",
   "restart_gunicorn",
   "restart_nginx",
@@ -88,6 +89,12 @@ task :migrate_tracking do
  run "/opt/cpf/solarpermit/current/manage.py migrate tracking"
 end
 
+desc "configure site"
+task :config_it do
+  local_config = from_template("settings_local.py.erb")
+  put local_config, "/opt/cpf/solarpermit/current/settings_local.py"
+end
+
 desc "run compress_jinja"
 task :compress_jinja do
  run "/opt/cpf/solarpermit/current/manage.py compress_jinja"
@@ -109,3 +116,12 @@ task :run_chef do
   sudo "/usr/bin/chef-client"
 end
 
+def get_binding
+  binding # So that everything can be used in templates generated for the servers
+end
+
+def from_template(file)
+  require 'erb'
+  template = File.read(File.join(File.dirname(__FILE__), "..", file))
+  result = ERB.new(template).result(self.get_binding)
+end

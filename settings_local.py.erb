@@ -26,8 +26,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     #'django.core.context_processors.csrf', #necessary for csrf protection
 )
 
-CSRF_COOKIE_DOMAIN = 'staging.solarpermit.org'
-SITE_URL = "http://staging.solarpermit.org"
+CSRF_COOKIE_DOMAIN = "<%= domain_name %>"
+SITE_URL = "http://<%= domain_name %>/"
 
 SERVER_EMAIL = 'thatguyrenic@gmail.com'
 DEFAULT_FROM_EMAIL = 'no-reply@solarpermit.org'
