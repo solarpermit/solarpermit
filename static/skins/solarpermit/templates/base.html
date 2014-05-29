@@ -16,7 +16,6 @@
 	<link rel="shortcut icon" href="/media/images/solarpermit_favicon.png"/>
         {% endcompress %}
 
-        {% compress js %}
 	<!--[if lt IE 9]>
 		<script>
 			// declare html5 blocks for ie8 and ie7
@@ -29,7 +28,6 @@
 			document.createElement('hgroup');
 		</script>
 	<![endif]-->
-        {% endcompress %}
 </head>
 
 <body>
@@ -94,7 +92,6 @@
   </script>
   {% block jsdata %}{% endblock %}
   
-  {% block forejs %}{% endblock %}
   {% compress js %}
     <script src="/media/js/jquery-1.11.0.js"></script>	
     <script src="/media/js/jquery.validate.js"></script>
@@ -333,7 +330,8 @@
     </script>
     <![endif]-->
   {% endcompress %}
-{% block endjs %}{% endblock %}
+  {% block forejs %}{% endblock %}
+  {% block endjs %}{% endblock %}
 
 {# close comment tags on lines 340 and 353 to active tracking code #}
 {% if ENABLE_GOOGLE_ANALYTICS %}
