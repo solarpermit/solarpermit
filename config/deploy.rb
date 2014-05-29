@@ -65,7 +65,7 @@ desc "run migrate website"
 task :migrate_website do
   if fetch(:release_name) == "Release1.3.46" then
     run "/opt/cpf/solarpermit/current/manage.py migrate website 0097"
-    client = Mysql2::Client.new(:host => "10.210.32.229", :username => "root",
+    client = Mysql2::Client.new(:host => "localhost", :username => "root",
                                 :password => fetch(:db_password),
                                 :database => fetch(:db_database))
     # assume the functions were already created, and therefore might be incorrect
