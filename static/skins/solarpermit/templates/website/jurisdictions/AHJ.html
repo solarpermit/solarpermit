@@ -43,6 +43,79 @@ $(document).ready(function() {
 	});       
 });
 </script>
+<script type="text/javascript">{# note to self: redesign markup to use standard a href -RG #}
+$(document).ready(function() {
+    $('#favorite_fields').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/favorite_fields/";
+        return false;
+    });                         
+ 
+    $('#quirks').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/quirks/";
+        return false;
+    });     
+    
+    $('#attachments').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/attachments/";
+        return false;
+    });     
+
+    $('#all_info').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/";
+        return false;
+    });     
+    
+    $('#general').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/general/";
+        return false;
+    });     
+
+    $('#building').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/building/";
+        return false;
+    });     
+    
+    $('#clerical').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/clerical/";
+        return false;
+    });     
+    
+    $('#electrical').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/electrical/";
+        return false;
+    });     
+    
+    $('#fire').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/fire/";
+        return false;
+    });     
+    
+    $('#inspections_requirements').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/inspection_requirements/";
+        return false;
+    });
+    
+    $('#inspection_process').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/inspection_process/";
+        return false;
+    });      
+    
+    $('#utility').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/utility/";
+        return false;
+    });      
+
+    $('#zoning').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/zoning/";
+        return false;
+    });      
+        
+    $('#projectpermit').click(function(){
+        location.href = "/jurisdiction/{{jurisdiction.name_for_url}}/projectpermit/";
+        return false;
+    });                                                         
+});
+</script>
 {% endcompress %}
 {% endblock %}
 <!-- template jurisdiction_state_browse.html -->
