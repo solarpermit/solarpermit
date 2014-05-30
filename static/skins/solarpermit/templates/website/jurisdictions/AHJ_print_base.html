@@ -287,9 +287,9 @@
 {% include "website/jurisdictions/AHJ_print_footer.html" %}
 
 {% compress js %}
-        {% block endjs %}{% endblock %}
         {% include "website/fancybox_scripts.html" %}
 {% endcompress %}
+{% block endjs %}{% endblock %}
 
 </div>
 </body>
