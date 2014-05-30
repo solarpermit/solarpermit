@@ -89,7 +89,7 @@
           //$('#id_sort_update').css('background-position', '85px left');
           document.getElementById('sort_by').value = 'updated'
         }
-      }else{
+      } else {
         document.getElementById('sort_dir').value = 'asc';
         $('.sort-down').removeClass('sort-down');
         if (sort_by == 'name'){
@@ -112,6 +112,7 @@
       return false;
     }
     $(document).ready(function() {
+      document.getElementById('sort_dir').value = 'asc';
       $('#jurisdiction_list').jscroll();
       $('#text_2').bind('keyup', function (event) {
         var $target = $(event.target);

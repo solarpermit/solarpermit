@@ -475,13 +475,11 @@ def jurisdiction_search_improved(request):
     data['sort_by'] = sort_by   
     
     sort_dir = requestProcessor.getParameter('sort_dir') 
-    if sort_dir == None:
-        sort_dir = ''                                  
-    data['sort_dir'] = sort_dir   
 
     #order_by_str = pagingation_obj.get_order_by_str(sort_by, sort_dir)   
     if sort_dir == '' or sort_dir == None:
         sort_dir = 'asc'
+    data['sort_dir'] = sort_dir   
   
     sort_desc_img = django_settings.SORT_DESC_IMG
     sort_asc_img = django_settings.SORT_ASC_IMG
