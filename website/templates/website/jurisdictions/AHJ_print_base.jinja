@@ -286,8 +286,8 @@
 </div>
 {% include "website/jurisdictions/AHJ_print_footer.jinja" %}
 
+{% block endjs %}{% endblock %}
 {% compress js %}
-        {% block endjs %}{% endblock %}
         {% include "website/fancybox_scripts.jinja" %}
 {% endcompress %}
 
