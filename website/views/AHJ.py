@@ -722,8 +722,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                     fee_info = validation_util_obj.process_fee_structure(answer)
                     for key in fee_info.keys():
                         data[key] = fee_info.get(key)    
-                                      
-                
                 body = requestProcessor.decode_jinga_template(request,'website/form_fields/'+data['question_template']+'.jinja', data, '')
             else:
                 body = ''
