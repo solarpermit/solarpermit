@@ -392,7 +392,7 @@ def jurisdiction_autocomplete(request):
             jurisdictions = jurisdictions[:MAX_RESULT_COUNT]
     
     for jurisdiction in jurisdictions:
-        output += '<li><a href="/jurisdiction/'+str(jurisdiction.id)+'">'+jurisdiction.show_jurisdiction()+'</a></li>'
+        output += '<li><a href="/jurisdiction/'+str(jurisdiction.name_for_url)+'/">'+jurisdiction.show_jurisdiction()+'</a></li>'
     
     output += '</ul>'
     output += '</div>'
