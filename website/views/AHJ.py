@@ -724,7 +724,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                         data[key] = fee_info.get(key)    
                                       
                 
-                body = requestProcessor.decode_jinga_template(request,'website/form_fields/'+data['question_template'], data, '')    
+                body = requestProcessor.decode_jinga_template(request,'website/form_fields/'+data['question_template']+'.jinja', data, '')
             else:
                 body = ''
      

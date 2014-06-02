@@ -122,7 +122,7 @@
                 </div>
                 <div class="csscell suggestion_right" >                                           
             {% set answer_id = current_answer_id %}
-            {%    include '/website/jurisdictions/ahj_answer_votes.html'  %}
+            {% include "/website/jurisdictions/ahj_answer_votes.jinja" %}
             {% if user.is_superuser == 1 and answer.approval_status != 'A' %}
                     <div>
                         <input id="approve_this_value_{{current_answer_id}}" type="button" class="smallbutton approve_this_value" value="Approve this {{terminology}}" data-id="{{current_answer_id}}" data-terminology="{{terminology}}" >

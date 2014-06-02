@@ -39,25 +39,13 @@
            style="width:100%;float:left;">
         {{ cqa[category_id]['cat_description'] | capitalize }}
       </div>
-  
+
       {% for question_id in cqa[category_id]['sorted_question_ids'] %}
         <div data-debug-question-id="{{question_id}}" class="question-container">
           {% set question = cqa[category_id]['questions'][question_id] %}
-          {% if question['has_multivalues'] | int == 1 %}
-            {% if question['answers'] %}
-              <div class="suggestion_btn_placement" id="suggest_value_btn_{{question_id}}">
-                <input type="button"
-                       class="smallbutton add_another_value"
-                       id="add_another_value_{{question_id}}"
-                       value="Add another {{question['terminology']}}"
-                       data-id="{{question_id}}"
-                       data-jid="{{jurisdiction.id}}">
-              </div>
-            {% endif %}
-          {% endif %}  
           <div style="margin:10px;width:100%">&nbsp;</div>
           <div id="div_question_content_{{question_id}}" style="margin-left:25px;">
-            {% if question.logged_in_user_suggested_a_value %}
+            {% if not question.has_multivalues or question.logged_in_user_suggested_a_value %}
               {% set icon = 'Y' %}
               {% set label_tooltip = 'Sorry, you have already provided an answer.' %}
             {% else %}
@@ -79,7 +67,7 @@
                    title="{{question['terminology']}}"
                    data-icon="{{icon}}"
                    data-label_tooltip="{{label_tooltip}}"
-                   {% if not question.logged_in_user_suggested_a_value %}
+                   {% if question.has_multivalues or not question.logged_in_user_suggested_a_value %}
                    onClick="controller.suggestionField.clickAddLabel({{jurisdiction.id}}, {{question_id}});"
                    {% endif %}>
                 <span style="float:left;visibility:visible;display:none;padding-right:5px"
@@ -97,7 +85,7 @@
             {% if question['description'] != None and question['description'] != '' %}
               <div style="float:left;width:100%" class="description">{{question['description']}}</div>
             {% endif %}
-            {% if not question.logged_in_user_suggested_a_value %}
+            {% if question.has_multivalues or not question.logged_in_user_suggested_a_value %}
               <div id="qa_{{question_id}}_add" class="cssCell suggestion_edit_box" style="display:none">
                 <form id="form_{{question_id}}" name="name_{{question_id}}" action="."  method="post" accept-charset="utf-8">
                   <input type="hidden" name="ajax" value="suggestion_submit" />
@@ -232,7 +220,7 @@
                       <div id="qa_answer_{{answer['id']}}_edit" class="suggestion_edit_box" style="display:none">
                         <form id="form_edit_{{answer['id']}}"
                               name="name_edit_{{answer['id']}}"
-                              action="." 
+                              action="."
                               method="post"
                               accept-charset="utf-8">
                           <input type="hidden" name="ajax" value="suggestion_edit_submit" />
@@ -264,7 +252,7 @@
           </div>
         </div>
       {% endfor %}
-    
+
       {# display the custom field here, at end of each category section #}
       <div style="float:left;width:100%">
         <div id="div_custom_question_content_{{category_id}}" style="margin-left:25px;"></div>
