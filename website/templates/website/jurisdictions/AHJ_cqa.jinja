@@ -45,7 +45,7 @@
           {% set question = cqa[category_id]['questions'][question_id] %}
           <div style="margin:10px;width:100%">&nbsp;</div>
           <div id="div_question_content_{{question_id}}" style="margin-left:25px;">
-            {% if not question.has_multivalues or question.logged_in_user_suggested_a_value %}
+            {% if (not question.has_multivalues) and question.logged_in_user_suggested_a_value %}
               {% set icon = 'Y' %}
               {% set label_tooltip = 'Sorry, you have already provided an answer.' %}
             {% else %}
