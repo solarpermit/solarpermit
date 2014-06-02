@@ -159,11 +159,6 @@
     
     {% if current_question_has_multivalues | int == 1 %}
         {% if question_has_answers == True %}
-            {% set add_btn_value = 'Add another ' + terminology %}               
-        <div class="suggestion_btn_placement" id="suggest_value_btn_{{current_question_id}}">
-            <input type="button" class="smallbutton add_another_value" id="add_another_value_{{current_question_id}}" value="{{add_btn_value}}" data-id="{{current_question_id}}" data-jid="{{jurisdiction.id}}" >
-        </div>
-                                         
         <div id="qa_{{current_question_id}}_add" class="suggestion_edit_box" syle="display:none;padding-bottom:10px;">
                                         
             <form id="form_{{current_question_id}}" name="name_{{current_question_id}}" action="."  method="post" accept-charset="utf-8">
