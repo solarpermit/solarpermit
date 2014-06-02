@@ -25,7 +25,7 @@
   {% endif %}
 {% endblock %}
 
-<div style="boder-bottom:1px solid #ffffff;"></div><!-- closing tag moved out of following block to prevent validation error -->
+<div style="border-bottom:1px solid #ffffff;"></div><!-- closing tag moved out of following block to prevent validation error -->
 
 {% block top_main_content %}
   {% include "website/jurisdictions/jurisdiction_filter.jinja" %}
@@ -34,7 +34,7 @@
       <tr>
 	<td style="width:10px;padding-left:10px"></td>
 	<td style="width:300px;">
-	  <p id="id_sort_name" class="sort-up">
+	  <p id="id_sort_name" {% if search_by != 'search_by_zip' %}class="sort-up"{% endif %}>
             <a id='name' href='/jurisdiction/search/' class="header_link">Name</a>
           </p>
 	</td>
@@ -48,8 +48,8 @@
             <a href="/jurisdiction/search/" class="header_link">Updated by</a>
           </p>
         </td>
-        <td style="width:100px;font-style:italic;text-align:left">
-          {% if search_by == 'search_by_zip' %}Distance (miles){% endif %}
+        <td style="width:200px;font-style:italic;text-align:left">
+          {% if search_by == 'search_by_zip' %}<p id="id_sort_distance" class="sort-up"><a href="/jurisdiction/search/" class="header_link">Distance (miles)</a></p>{% endif %}
         </td>
         <td style="width:50%;font-style:italic;text-align:left"></td>
       </tr>
@@ -81,12 +81,15 @@
           $('#id_sort_last').addClass('sort-down');
           //$('#id_sort_last').css('background-position', '85px left');
           document.getElementById('sort_by').value = 'last'
+	} else if (sort_by == 'distance') {
+	  $('#id_sort_distance').addClass('sort-down');
+	  document.getElementById('sort_by').value = 'distance'
         } else {
           $('#id_sort_update').addClass('sort-down');
           //$('#id_sort_update').css('background-position', '85px left');
           document.getElementById('sort_by').value = 'updated'
         }
-      }else{
+      } else {
         document.getElementById('sort_dir').value = 'asc';
         $('.sort-down').removeClass('sort-down');
         if (sort_by == 'name'){
@@ -96,6 +99,9 @@
           $('#id_sort_last').addClass('sort-up');
           //$('#id_sort_last').css('background-position', '85px left');
           document.getElementById('sort_by').value = 'last'
+	} else if (sort_by == 'distance') {
+	  $('#id_sort_distance').addClass('sort-up');
+	  document.getElementById('sort_by').value = 'distance'
         } else {
           $('#id_sort_update').addClass('sort-up');
           //$('#id_sort_update').css('background-position', '85px left');
@@ -106,6 +112,7 @@
       return false;
     }
     $(document).ready(function() {
+      document.getElementById('sort_dir').value = 'asc';
       $('#jurisdiction_list').jscroll();
       $('#text_2').bind('keyup', function (event) {
         var $target = $(event.target);
@@ -124,6 +131,9 @@
       });
       $('#id_sort_update a').click(function(){
         return sort('updated');
+      });
+      $('#id_sort_distance a').click(function(){
+        return sort('distance');
       });
 
       $('.show_user_profile').mouseover(function(){

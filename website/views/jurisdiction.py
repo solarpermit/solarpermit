@@ -25,6 +25,7 @@ from website.utils.datetimeUtil import DatetimeHelper
 from django.contrib.auth.models import User
 import json
 import datetime
+import pytz
 from htmlentitiesdecode import decode as entity_decode
 import urllib
 
@@ -290,44 +291,54 @@ def scrub_text_search_str(search_str):
 #get the nearby jurisdictions given a center point and starting distance range
 def getNearbyJs(geoHelper, center, distance, iteration):
     range = geoHelper.getSquare(center, distance)
-    nearbyJs = Jurisdiction.objects.filter(latitude__gt=range['latMin'], latitude__lt=range['latMax'], longitude__gt=range['lonMin'], longitude__lt=range['lonMax']).order_by('name')
+
+    nearbyJs = Jurisdiction.objects.filter(latitude__gt=range['latMin'], latitude__lt=range['latMax'], longitude__gt=range['lonMin'], longitude__lt=range['lonMax'])
+    nearbyJsCount = nearbyJs.count()
     
+    margin = nearbyJsCount - geoHelper.targetCount
+
     #if already reached max iteration, just return results
     if iteration >= geoHelper.maxIteration:
         return nearbyJs
     #see if result count is already within target +/- margin
-    margin = len(nearbyJs) - geoHelper.targetCount
     if margin <= geoHelper.targetMargin and margin >= -geoHelper.targetMargin:
         return nearbyJs
     #already at max distance and still less than targetCount, just return result
-    if distance >= geoHelper.maxDistance and len(nearbyJs) <= geoHelper.targetCount:
+    if distance >= geoHelper.maxDistance and nearbyJsCount <= geoHelper.targetCount:
         return nearbyJs
         
-    newDistance = geoHelper.reviseDistance(distance, len(nearbyJs))
+    newDistance = geoHelper.reviseDistance(distance, nearbyJsCount)
     return getNearbyJs(geoHelper, center, newDistance, iteration + 1)
 
-def sortNearbyJs(geoHelper, center, nearbyJs):
-    j_list = []
-    for jurisdiction in nearbyJs:
-        j_obj = {}
-        j_obj['jurisdiction'] = jurisdiction
+def addDistanceToJs(geoHelper, center, jList):
+    newList = []
+    for jurisdiction in jList:
         j_point = {
             'lat': jurisdiction.latitude,
             'lon': jurisdiction.longitude
         }
-        j_obj['distance'] = geoHelper.getDistance(center, j_point)
-        j_list.append(j_obj)
-    
-    j_list.sort(key=lambda j_obj: j_obj['distance'])
-    
-    sortedJs = []
-    for j_obj in j_list:
-        jurisdiction = j_obj['jurisdiction']
-        jurisdiction.distance = j_obj['distance']
+        jurisdiction.distance = geoHelper.getDistance(center, j_point)
         jurisdiction.unit = 'mi'
-        sortedJs.append(jurisdiction)
-    return sortedJs
+        newList.append(jurisdiction)
+    return newList
     
+def sortJs(jList, sort_by, sort_dir):
+    default = None
+    if sort_dir == '' or sort_dir == 'asc':
+        direction = False
+    else:
+        direction = True
+
+    if sort_by == None or sort_by == '':
+        sort_by = 'distance'
+    elif sort_by == 'last_contributed':
+        mindatetime = datetime.datetime(datetime.MINYEAR, 1, 1, tzinfo=pytz.utc)
+        default = mindatetime
+
+    jList.sort(key=lambda j_obj: getattr(j_obj, sort_by) or default, reverse=direction)
+
+    return jList
+
 def jurisdiction_autocomplete(request):
     MAX_RESULT_COUNT = 7
     
@@ -376,7 +387,8 @@ def jurisdiction_autocomplete(request):
             center['lon'] = float(-center['lon'])
             
             jurisdictions = getNearbyJs(geoHelper, center, geoHelper.initialDistance, 1)
-            jurisdictions = sortNearbyJs(geoHelper, center, jurisdictions)
+            jurisdictions = addDistanceToJs(geoHelper, center, jurisdictions)
+            jurisdictions = sortJs(jurisdictions, '', '')
             jurisdictions = jurisdictions[:MAX_RESULT_COUNT]
     
     for jurisdiction in jurisdictions:
@@ -463,37 +475,14 @@ def jurisdiction_search_improved(request):
     data['sort_by'] = sort_by   
     
     sort_dir = requestProcessor.getParameter('sort_dir') 
-    if sort_dir == None:
-        sort_dir = ''                                  
-    data['sort_dir'] = sort_dir   
 
     #order_by_str = pagingation_obj.get_order_by_str(sort_by, sort_dir)   
-    if sort_by == '' or sort_by == None:
-        sort_by = 'name'
-    else:
-        if sort_by == 'name':
-            sort_by = 'name'
-        elif sort_by == 'last':
-            sort_by = 'last_contributed'
-        else:
-            sort_by = 'last_contributed_by'
     if sort_dir == '' or sort_dir == None:
         sort_dir = 'asc'
+    data['sort_dir'] = sort_dir   
   
     sort_desc_img = django_settings.SORT_DESC_IMG
     sort_asc_img = django_settings.SORT_ASC_IMG
-           
-    if sort_dir == 'asc':           
-        order_by_str = sort_by
-        data['image_src'] = sort_asc_img
-        data['sort_dir_txt'] = 'ascending' 
-        data['sort_dir'] = 'asc'       
-    else:
-        order_by_str = '-'+sort_by
-        data['image_src'] = sort_desc_img
-        data['sort_dir_txt'] = 'descending'
-        data['sort_dir'] = 'desc'
-        
     
     page = requestProcessor.getParameter('page')
     if page != None and page != '':
@@ -507,6 +496,28 @@ def jurisdiction_search_improved(request):
     data['message'] = ''
     mathUtil = MathUtil()
     if mathUtil.is_number(primary_search_str) == False:
+        if sort_by == '' or sort_by == None:
+            sort_by = 'name'
+        else:
+            if sort_by == 'name':
+                sort_by = 'name'
+            elif sort_by == 'last':
+                sort_by = 'last_contributed'
+            else:
+                sort_by = 'last_contributed_by'
+        data['sort_by'] = sort_by
+
+        if sort_dir == 'asc':           
+            order_by_str = sort_by
+            data['image_src'] = sort_asc_img
+            data['sort_dir_txt'] = 'ascending' 
+            data['sort_dir'] = 'asc'       
+        else:
+            order_by_str = '-'+sort_by
+            data['image_src'] = sort_desc_img
+            data['sort_dir_txt'] = 'descending'
+            data['sort_dir'] = 'desc'
+
         data['search_by'] = 'search_by_name';
         scrubbed_primary_search_str = scrub_text_search_str(primary_search_str)
         
@@ -524,6 +535,26 @@ def jurisdiction_search_improved(request):
         else:
             data['message'] = 'This search field requires at least 2 alphabetic (a-z) characters.';
     else:
+        if sort_by == '' or sort_by == None or sort_by == 'distance':
+            sort_by = 'distance'
+        else:
+            if sort_by == 'name':
+                sort_by = 'name'
+            elif sort_by == 'last':
+                sort_by = 'last_contributed'
+            else:
+                sort_by = 'last_contributed_by'
+        data['sort_by'] = sort_by
+
+        if sort_dir == 'asc':           
+            data['image_src'] = sort_asc_img
+            data['sort_dir_txt'] = 'ascending' 
+            data['sort_dir'] = 'asc'       
+        else:
+            data['image_src'] = sort_desc_img
+            data['sort_dir_txt'] = 'descending'
+            data['sort_dir'] = 'desc'
+
         data['search_by'] = 'search_by_zip'
         if page_number != 1:
             #for zip search, currently doesn't have endless scroll next page, return blank
@@ -547,11 +578,11 @@ def jurisdiction_search_improved(request):
             #zip code data problem - longitude needs to be inverted:
             center['lon'] = float(-center['lon'])
             
-            nearbyJs = getNearbyJs(geoHelper, center, geoHelper.initialDistance, 1 )
-                
-            #sort by distance
-            nearbyJs = sortNearbyJs(geoHelper, center, nearbyJs)
-                    
+            nearbyJs = getNearbyJs(geoHelper, center, geoHelper.initialDistance, 1)
+
+            nearbyJs = addDistanceToJs(geoHelper, center, nearbyJs)
+            nearbyJs = sortJs(nearbyJs, sort_by, sort_dir)
+            
             data['list'] = nearbyJs
         
     request.session['primary_search_str'] = primary_search_str 
