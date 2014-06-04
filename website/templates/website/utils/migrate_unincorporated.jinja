@@ -1,0 +1,11 @@
+{% extends "base.jinja" %}
+{% block title %}Unincorporated Jurisdiction Data Import{% endblock %}
+{% block page_title %}Unincorporated Jurisdiction Data Import{% endblock %}
+{% block body %}
+<ul>
+	<li>Number of unincorporated jurisdiction added: {{unincorporated_add_num}}</li>
+	<li>Number of unincorporated jurisdiction updated: {{unincorporated_update_num}}</li>
+	<li>Number of unincorporated jurisdiction without a matching parent: {{unincorporated_without_parent_num}}</li>
+	<li>Missing parent jurisdictions: {{miss_parent_jurisdiction}}</li>
+</ul>
+{% endblock %}

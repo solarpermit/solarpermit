@@ -1,0 +1,26 @@
+{% extends "base.jinja" %}
+
+
+{% block body %}
+<br>
+<br>
+<p><br><strong>No error.  Thank you.</strong></p>
+Number of orgs from nspd: {{nspd_organizations}}<br/>
+Number of orgs migrated to doe: {{org_added}}<br/>
+Number of orgs not migrated to doe: {{org_existed}}<br/>
+Possible reason for orgs not being migrated to doe:<br/>
++ matching orgname<br/><br/>
+
+Number of users from nspd: {{nspd_users}}<br/>
+Number of matching users: {{matching_users}}<br/>
+Number of users migrated to doe: {{user_added}}<br/>
+Number of users not migrated to doe: {{user_existed}}<br/><br/>
+
+
+
+{% endblock %}
+
+
+
+
+

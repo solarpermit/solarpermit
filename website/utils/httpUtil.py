@@ -2,19 +2,13 @@ import json
 from django.http import HttpRequest
 
 # for jinja2
-from django.http import HttpResponse
 from django.conf import settings
-from jinja2 import FileSystemLoader, Environment
-from jinja2.ext import WithExtension
-from compressor.contrib.jinja2ext import CompressorExtension
-from django.template import RequestContext, Template, Context
+from django.template.loader import render_to_string
+from django.template import Context, RequestContext
+from django.shortcuts import render
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from website.models import UserSearch
 
-from website.models import UserFavorite, UserSearch
-
-from website.utils.datetimeUtil import DatetimeHelper
-import datetime
 # this class help to handle missing url parameters gracefully
 class HttpRequestProcessor():
     request = HttpRequest #copy of the HttpRequest instance
@@ -65,53 +59,12 @@ class HttpRequestProcessor():
             return '' #return blank to avoid processing at the view
     
     # for jinja2
-    def render_to_response(self, request, filename, context={},mimetype=''):
-        #add recent items to context
+    def render_to_response(self, request, filename, context={}, mimetype=''):
+        # don't add any new callers to this; you should be calling the
+        # django render_to_response directly
         user = request.user
         context['user_searches'] = UserSearch.get_user_recent(user)
-        context['INTERNAL_IPS'] = settings.INTERNAL_IPS   
-        context['ENABLE_GOOGLE_ANALYTICS'] = settings.ENABLE_GOOGLE_ANALYTICS   
-        context['SOLARPERMIT_VERSION'] = "?v="+str(settings.SOLARPERMIT_VERSION)                 
-        context['FORUM_INTEGRATION'] = settings.FORUM_INTEGRATION   
-                
-        template_dirs = settings.TEMPLATE_DIRS
-        if mimetype == '':
-            mimetype = settings.DEFAULT_CONTENT_TYPE
-        env = Environment(loader=FileSystemLoader(template_dirs),
-                          extensions=[CompressorExtension, WithExtension])
-        env.globals['url'] = lambda view, **kwargs: reverse(view, kwargs=kwargs)
-        
-        request_context = RequestContext(request, context)
-        csrf = request_context.get('csrf_token')
- 
-        context['csrf_token'] = csrf
-        context['request'] = request
-        template = env.get_template(filename)
-        rendered = template.render(**context)
-        return HttpResponse(rendered,mimetype=mimetype)
+        return render(request, filename.replace(".html", ".jinja"), context, content_type=mimetype)
     
     def decode_jinga_template(self, request, filename, context={}, mimetype=''):
-        template_dirs = settings.TEMPLATE_DIRS
-        if mimetype == '':
-            mimetype = settings.DEFAULT_CONTENT_TYPE
-        env = Environment(loader=FileSystemLoader(template_dirs),
-                          extensions=[CompressorExtension, WithExtension])
-        env.globals['url'] = lambda view, **kwargs: reverse(view, kwargs=kwargs)
-        
-        context['INTERNAL_IPS'] = settings.INTERNAL_IPS  
-        context['ENABLE_GOOGLE_ANALYTICS'] = settings.ENABLE_GOOGLE_ANALYTICS   
-        context['SOLARPERMIT_VERSION'] = "?v="+str(settings.SOLARPERMIT_VERSION)  
-        context['FORUM_INTEGRATION'] = settings.FORUM_INTEGRATION                    
-                            
-        request_context = RequestContext(request, context)
-        csrf = request_context.get('csrf_token')
-      
-        context['csrf_token'] = csrf
-        context['request'] = request        
-        template = env.get_template(filename)
-        rendered = template.render(**context)        
-
-
-                
-        return rendered
-        
+        return render_to_string(filename.replace(".html", ".jinja"), context, RequestContext(request, context))

@@ -1,0 +1,72 @@
+{% extends "base_modal_dialog.jinja" %}
+
+{% block modal_dialog_title %}Choose a Company or Organization{% endblock %}
+
+{% block modal_dialog_header %}<a style="font-size:16px" href="#" id="open_choose_org"  >Overview</a> &gt; Create a new company or organization{% endblock %}
+
+{% block modal_dialog_message %}{{form_create_org_fail_reason}}{% endblock %}
+{% block modal_dialog_form_top %}<form id="{{form_create_org_id}}" name="form_create_org" action="/organization/" method="post" accept-charset="utf-8" novalidate="novalidate">{% endblock %}
+{% block body_modal_dialog %}
+    
+
+  <input type="hidden" name="ajax" value="create_org_submit" >
+    <input type="hidden" name="caller" value="{{caller}}" >
+<!--<div class="form_help_text">All fields are required.</div>-->
+
+<div class="form_fields_container">
+    <div class="form_field">
+        <div class="label">Company or Organization name:</div>
+        <div class="field"><input tabindex="1" type="text" name="name" id="{{form_create_org_id}}_field_name" value="{{name}}" maxLength="64" class="required" style="width:300px" ></div>
+        <!--<div class="field_help_text">20 characters maximum</div>-->
+        <div class="error_div"></div>
+    </div>
+    
+                <div class="form_field">
+                    <div class="label">Company or Organization logo:</div>
+                    
+ 
+                    
+                    <div id="file-uploader">
+                        
+                    </div>
+                    
+                    <input type="hidden" class="answer" id="id_logo" name="logo" value="">
+                    <input id="filename" name="filename" type="hidden" value=""/>
+                    <input id="file_store_name" name="file_store_name" type="hidden" value=""/>
+                </div>    
+    
+    <div class="form_field">
+        <div class="label">Company or Organization website:</div>
+        <div class="field"><input tabindex="3" type="text" name="website" id="{{form_create_org_id}}_field_website" value="{{website}}" maxLength="200" class="required domainOrUrl" style="width:300px" ></div>
+        <div class="field_help_text">Enter the domain name or URL of the website. For example, www.mycompany.com.</div>
+        <div class="error_div"></div>    
+    </div>
+    
+    <div class="form_field">
+        <div class="label">Company or Organization moderator:</div>
+        <div class="">{{user.get_profile().get_display_name()}}</div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+
+
+{% block modal_dialog_action %}
+  
+    <input type="submit" tabindex="4"  id="{{form_create_org_id}}_submit_button" class="mainbutton disabled"  title="Complete the form above to create a new organization." value="Save">
+    <input type="button" tabindex="5" id="create_org_cancel" class="mainbutton"   title="Cancel" value="Cancel">
+    
+{% endblock %}
+
+{% block modal_dialog_form_bottom %}</form>{% endblock %}
+
+{% block modal_dialog_script %}
+<script type="text/javascript">
+ //end document ready
+
+</script>
+{% endblock %}
+

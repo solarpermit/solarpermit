@@ -1,9 +1,0 @@
-{% for answer in answers %}	
-		{%      set answer_obj = answer.get('answer') %}
-		{% set answer_content = answer.get('answer_content') %}	
-		{% if this_question.display_template == '' or this_question.display_template == None %}
-            {% include 'website/jurisdictions/suggestion_display_template/single_field_display.html' %}
-        {% else %}
-            {% include 'website/jurisdictions/suggestion_display_template/'+this_question.display_template %}
-        {% endif %} 
-{% endfor %}        

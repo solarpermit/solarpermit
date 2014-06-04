@@ -237,9 +237,10 @@ def jurisdiction_comment(request):
             data['site_url'] = django_settings.SITE_URL
             data['requestProcessor'] = requestProcessor
             data['request'] = request
+
             send_email(data, to_mail)
             
-            dajax.assign('#comment_'+str(cid), 'innerHTML', '<p>This comment had been flagged as inappropriate and is hidden pending review.</p>')
+            dajax.assign('#comment_'+str(cid), 'innerHTML', '<p>This comment has been flagged as inappropriate and is hidden pending review.</p>')
         
         if ajax == 'show_old_comments':
             entity_id = requestProcessor.getParameter('answer_id')
@@ -293,6 +294,10 @@ def jurisdiction_comment(request):
     return
 
 def send_email(data, to_mail, subject='Flag Comment', template='flag_comment.html'): 
+    email_host = django_settings.EMAIL_HOST
+    if not email_host:
+        return
+
     #tp = django_get_template('website/emails/' + template)
     #c = Context(data)
     #body = tp.render(c)
@@ -418,7 +423,10 @@ def view_unincorporated_AHJ(request, jurisdiction):
             data['site_url'] = django_settings.SITE_URL
             data['requestProcessor'] = requestProcessor
             data['request'] = request
-            send_email(data, to_mail, subject='Flag Comment', template='flag_ucomment.html')
+            
+            email_host = [django_settings.EMAIL_HOST]
+            if email_host:
+                send_email(data, to_mail, subject='Flag Comment', template='flag_ucomment.html')
             
             dajax.assign('#comment_'+str(cid), 'innerHTML', '<p>This comment had been flagged as inappropriate and is hidden pending review.</p>')
         if ajax == 'remove_comment':
@@ -714,14 +722,12 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                     fee_info = validation_util_obj.process_fee_structure(answer)
                     for key in fee_info.keys():
                         data[key] = fee_info.get(key)    
-                                      
-                
-                body = requestProcessor.decode_jinga_template(request,'website/form_fields/'+data['question_template'], data, '')    
+                body = requestProcessor.decode_jinga_template(request,'website/form_fields/'+data['question_template']+'.jinja', data, '')
             else:
                 body = ''
      
             dajax.assign('#qa_'+str(question_id) + '_fields','innerHTML', body)
-    
+
             #if 'js' in data and data['js'] != None and data['js'] != '':
             for js in data['js']:
                 script ="var disable_pre_validation = false;" #set open pre validation by default, we can overwrite it under each field js file. 

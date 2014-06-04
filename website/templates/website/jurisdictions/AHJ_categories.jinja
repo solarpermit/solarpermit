@@ -1,0 +1,97 @@
+{% if user.is_authenticated() %}
+  <div id="favorite_fields"
+       class="left_nav{{favorite_fields}}">
+    <a href="/jurisdiction/{{jurisdiction.name_for_url}}/favorite_fields/">
+      Favorite Fields
+      <img style="vertical-align:bottom"
+           src="/media/images/favorite_icon.png"
+           alt="favorite fields">
+      <span id="favfieldscount">{{user_number_of_favorite_fields}}</span>
+    </a>
+  </div>
+{% endif %}
+<div id="quirks" class="left_nav{{quirks}}">
+  <a href="/jurisdiction/{{jurisdiction.name_for_url}}/quirks/">
+    Quirks
+    <img style="vertical-align:bottom"
+         src="/media/images/exception_icon.png"
+         alt="quirks">
+    <span id="quirkcount">{{quirk_number_of_questions}}</span>
+  </a>
+</div>
+<div id="attachments" class="left_nav{{attachments}}">
+  <a href="/jurisdiction/{{jurisdiction.name_for_url}}/attachments/">
+    Attachments
+  </a>
+</div>
+<div id="all_info" class="left_nav{{all_info}}">
+  <a href="/jurisdiction/{{jurisdiction.name_for_url}}/">
+    All Info
+  </a>
+</div>
+<div id="general" class="left_nav{{general}}">
+  <a href="/jurisdiction/{{jurisdiction.name_for_url}}/general/">
+    General
+  </a>
+</div>
+<div id="building" class="left_nav{{building}}">
+  <a href="/jurisdiction/{{jurisdiction.name_for_url}}/building/">
+    Building
+  </a>
+</div>
+<div id="clerical" class="left_nav{{clerical}}">
+  <a href="/jurisdiction/{{jurisdiction.name_for_url}}/clerical/">
+    Clerical
+  </a>
+</div>
+<div id="electrical" class="left_nav{{electrical}}">
+  <a href="/jurisdiction/{{jurisdiction.name_for_url}}/electrical/">
+    Electrical
+  </a>
+</div>
+<div id="fire" class="left_nav{{fire}}">
+  <a href="/jurisdiction/{{jurisdiction.name_for_url}}/fire/">
+    Fire
+  </a>
+</div>
+<div id="inspections_requirements" class="left_nav{{inspection_requirements}}">
+  <a href="/jurisdiction/{{jurisdiction.name_for_url}}/inspection_requirements/">
+    Inspection Requirements
+  </a>
+</div>
+<div id="inspection_process" class="left_nav{{inspection_process}}">
+  <a href="/jurisdiction/{{jurisdiction.name_for_url}}/inspection_process/">
+    Inspection Process
+  </a>
+</div>
+<div id="utility" class="left_nav{{utility}}">
+  <a href="/jurisdiction/{{jurisdiction.name_for_url}}/utility/">
+    Utility
+  </a>
+</div>
+<div id="zoning" class="left_nav{{zoning}}">
+  <a href="/jurisdiction/{{jurisdiction.name_for_url}}/zoning/">
+    Zoning
+  </a>
+</div>
+{% if user.is_staff == 1 or user.is_superuser == 1 or 'projectpermit' in accessible_views %}
+  <div id="projectpermit" class="left_nav{{projectpermit}}">
+    <a href="/jurisdiction/{{jurisdiction.name_for_url}}/projectpermit/">
+      ProjectPermit.org
+    </a>
+  </div>
+{% endif %}
+{% if user.is_staff == 1 or user.is_superuser == 1 %}				
+  <div id="migrationresult" class="left_nav{{migrationresult}}">
+    <a href="/jurisdiction/migration/result/{{jurisdiction_id}}/"
+       target="_blank">
+      Migration Result</a>
+  </div>
+{% endif %}
+
+<!-- temporary fix to address menu overlapping footer on jurisdiction page -->
+<style>
+	footer {
+		margin-left: 140px;
+	}
+</style>

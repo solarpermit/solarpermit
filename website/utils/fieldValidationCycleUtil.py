@@ -620,7 +620,7 @@ class FieldValidationCycleUtil():
             jurisdiction_obj = Jurisdiction()             
             value = jurisdiction_obj.get_formatted_jurisdiction_address(answer)  
                   
-        elif question.template == 'radio_with_exception.html':
+        elif question.template == 'radio_with_exception':
             if 'radio' in answer:
                 value = "<div>"+answer['radio']
                 if answer['radio'] == 'Yes, with exceptions':
@@ -987,15 +987,15 @@ class FieldValidationCycleUtil():
     
     def get_question_template(self, question):
         if question.form_type == 'CF':
-            question_template = 'textarea.html'
+            question_template = 'textarea'
         elif question.form_type == 'T':
-            question_template = 'text_field.html'
+            question_template = 'text_field'
         elif question.form_type == 'TA':
-            question_template = 'textarea.html'       
+            question_template = 'textarea'
         elif question.form_type == 'R':
-            question_template = 'radio_field.html'     
+            question_template = 'radio_field'
         elif question.form_type == 'DD':
-            question_template = 'dropdown_field.html'                               
+            question_template = 'dropdown_field'
         else:
             question_template = question.template
             

@@ -1,0 +1,51 @@
+{% extends "website/jurisdictions/AHJ_print_base.jinja" %}
+    
+<!-- template jurisdiction_state_browse.html -->
+{% block title %}{{jurisdiction.get_jurisdiction_display('title')}}{% endblock %}
+{% block breadcrum %}<span style="padding-left:10px;"><a href="{{home}}" >Home</a> &gt; <a href="/jurisdiction/browse/?state={{state}}">{{state_long_name}}</a> {% if city != None %} &gt; {{city}}{% endif %}</span>{% endblock %}
+{% block page_title %}{{jurisdiction.get_jurisdiction_display('page_title')}} {% endblock %}
+{% block forestyle %}
+{% compress css %}
+<link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css" />
+<link rel="stylesheet" type="text/css" href="/media/style/ahjprint.css" />
+{% endcompress %}
+{% endblock %}
+{% block top_main_content %}
+{% endblock %}
+
+{% block body %}
+<div class="ahj-tab general">
+<!--<h3 class="title">{{category_name}}</h3>-->
+
+                    <div id="ahj_tab_content cssTable" class="cssTable" style="width:100%">
+                        <div class="cssRow">
+                            <div class="cssCell" style="width:590px;">
+                        {% block category_content %}    
+                        
+                        {% endblock %}
+                            </div>
+            
+                            <div class="cssCell" style="float:left">
+                            {% if show_google_map == True %}
+                            {% include "website/blocks/google_map.jinja" %}
+                            {% endif %}
+                            </div>
+                         
+                        </div>
+                    </div>
+</div>
+
+
+
+{% endblock %}
+
+
+{% block endjs %}
+<script type='text/javascript'>
+var isPrint = true;
+$(document).ready(function() {
+	window.print();
+
+});
+</script>
+{% endblock %}

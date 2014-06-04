@@ -6,7 +6,7 @@ reload(sys) # reload sys to force utf-8
 sys.setdefaultencoding('utf-8') # forces utf-8 encoded strings
 import site
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 INTERNAL_IPS = ('127.0.0.1',)
 #SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
@@ -72,12 +72,12 @@ USE_L10N = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'static/skins/solarpermit/media')
-LOG_ROOT = os.path.join(os.path.dirname(__file__), 'static/skins/solarpermit/media/log')
+MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'media')
+LOG_ROOT = os.path.join(os.path.dirname(__file__), 'log')
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = '/media/'
+MEDIA_URL = '/media/upfiles/'
 
 PROJECT_ROOT = os.path.dirname(__file__)
 # Absolute path to the directory static files should be collected to.
@@ -88,7 +88,7 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
+STATIC_URL = '/media/'
 
 FIXTURE_DIRS = ( 
                 os.path.join(os.path.dirname(__file__), 'website/fixture'),
@@ -111,8 +111,6 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -121,7 +119,12 @@ SECRET_KEY = 'zj8k!s68ar4m#zqk7o%)!e+^(cfme2%^86u#jb5&f&$-!qui=1'
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django_jinja.loaders.AppLoader',
-    'django_jinja.loaders.FileSystemLoader',
+)
+TEMPLATE_DIRS = (
+    # because we're not using the FileSystemLoader to find templates,
+    # we wouldn't really need this to be set except that
+    # django-compressor requries it.
+    os.path.join(os.path.dirname(__file__), 'website', 'templates')
 )
 
 MIDDLEWARE_CLASSES = (
@@ -144,21 +147,11 @@ LOGIN_URL = '/sign_in'
 
 ROOT_URLCONF = 'urls'
 
-FILE_UPLOAD_TEMP_DIR = os.path.join(
-                                os.path.dirname(__file__), 
-                                'tmp'
-                            ).replace('\\','/')
+FILE_UPLOAD_TEMP_DIR = os.path.join(os.path.dirname(__file__), 'tmp').replace('\\','/')
 
 FILE_UPLOAD_HANDLERS = (
     'django.core.files.uploadhandler.MemoryFileUploadHandler',
     'django.core.files.uploadhandler.TemporaryFileUploadHandler',
-)
-
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(PROJECT_ROOT, 'static', 'skins', 'solarpermit', 'templates'),
 )
 
 ALLOWED_UPLOAD_FILE_TYPES = ('.jpg', '.jpeg', '.gif', '.bmp', '.png', '.tiff', '.txt', '.doc', '.pdf', '.zip', '.html', 'xlsx', '.docx', '.mp3', '.wmv', '.mp4')
@@ -196,8 +189,6 @@ INSTALLED_APPS = (
     'localflavor',
     'website',
     'compressor',
-    'django_extensions',
-    #'debug_toolbar',    
     'tracking',
     'django_jinja',
     'autocomplete_light',
@@ -270,8 +261,6 @@ FIRST_MAX_FAILED_LOGIN_ATTEMPTS = 5
 SECOND_MAX_FAILED_LOGIN_ATTEMPTS = 8
 TIME_PERIOD_FOR_FAILED_LOGIN_ATTEMPTS = 5
 
-FEEDBACK_EMAIL = 'kvo@aerio.com'
-
 #from jinja.contrib import djangosupport
 #djangosupport.configure()
 
@@ -292,7 +281,7 @@ PAGE_COLUMNS = 5 #number of columns in multiple column listing page
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = True
 COMPRESS_URL = '/media/'
-COMPRESS_ROOT = os.path.join(PROJECT_ROOT, 'static/skins/solarpermit/media')
+COMPRESS_ROOT = os.path.join(PROJECT_ROOT, 'website', 'static')
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',
                         'compressor.filters.cssmin.CSSMinFilter']
 COMPRESS_JS_FILTERS = ['compressor.filters.closure.ClosureCompilerFilter']
@@ -311,11 +300,22 @@ TRACK_PAGEVIEWS = True
 TRACK_IGNORE_URLS = ['tracking', 'admin']
 
 # Jinja2 integration via django-jinja
+DEFAULT_JINJA2_TEMPLATE_INTERCEPT_RE = r'.*(?:jinja|js)$'
 JINJA2_EXTENSIONS = ['jinja2.ext.WithExtension',
                      'compressor.contrib.jinja2ext.CompressorExtension']
+JINJA2_GLOBALS = {
+    # note, this does not work for string values
+    'INTERNAL_IPS': INTERNAL_IPS,
+    'ENABLE_GOOGLE_ANALYTICS': ENABLE_GOOGLE_ANALYTICS,
+    'FORUM_INTEGRATION': FORUM_INTEGRATION,
+}
 
 # django-autocomplete; has nothing to do with our current search autocomplete
 AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/'
 AUTOCOMPLETE_JQUERY_ALREADY_INCLUDED = True
 
 from settings_local import *
+
+if DEBUG:
+    INSTALLED_APPS += ('django_extensions',
+                       'debug_toolbar')

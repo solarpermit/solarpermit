@@ -1,0 +1,160 @@
+{% extends "base.jinja" %}
+{% block title %}Jurisdiction Search{% endblock %}
+
+{% if breadcrum == 'yes' %}
+  {% block breadcrum %}
+    {% if caller == 'state_jurisdictions' %}
+      <span style="padding-left:10px;"><a href="{{home}}" >Home</a> &gt; {{state_long_name}}</span>
+    {% endif %}
+  {% endblock %}
+{% endif %}
+
+{% block page_title %}
+  {% if caller == 'state_jurisdictions' %}
+    Jurisdictions in {{state_long_name}}
+  {% elif jurisdiction_search_str != '' %}
+    <span style="padding-left: 20px;color: #333333;font-family:'Times New Roman',Times,serif;font-size: 24px;font-weight: normal;">
+      <input name="search_back" id="search_back" type="image"
+             src="/media/images/Back.png" title="Back" alt="Back"/>
+        &nbsp;&nbsp;
+        {% if search_by == 'search_by_zip' %}
+          Jurisdictions near {% else %}Results for
+        {% endif %}
+        "{{primary_search_str}}"
+    	</span>
+  {% endif %}
+{% endblock %}
+
+<div style="border-bottom:1px solid #ffffff;"></div><!-- closing tag moved out of following block to prevent validation error -->
+
+{% block top_main_content %}
+  {% include "website/jurisdictions/jurisdiction_filter.jinja" %}
+  <div class="column_header_row" >
+    <table style="width:100%;table-layout:fixed;">
+      <tr>
+	<td style="width:10px;padding-left:10px"></td>
+	<td style="width:300px;">
+	  <p id="id_sort_name" {% if search_by != 'search_by_zip' %}class="sort-up"{% endif %}>
+            <a id='name' href='/jurisdiction/search/' class="header_link">Name</a>
+          </p>
+	</td>
+	<td style="width:200px;text-align:left">
+          <p id="id_sort_last">
+            <a href="/jurisdiction/search/" class="header_link">Last updated</a>
+          </p>
+        </td>
+	<td style="width:200px;text-align:left">
+          <p id="id_sort_update">
+            <a href="/jurisdiction/search/" class="header_link">Updated by</a>
+          </p>
+        </td>
+        <td style="width:200px;font-style:italic;text-align:left">
+          {% if search_by == 'search_by_zip' %}<p id="id_sort_distance" class="sort-up"><a href="/jurisdiction/search/" class="header_link">Distance (miles)</a></p>{% endif %}
+        </td>
+        <td style="width:50%;font-style:italic;text-align:left"></td>
+      </tr>
+    </table>
+  </div>
+{% endblock %}
+
+{% block body %}
+  <div id="jurisdiction_list" class="listing">
+    {% if list %}
+      {% include "website/jurisdictions/jurisdiction_list.jinja" %}
+    {% else %}
+      Your search could not be processed. Please try a more detailed search.
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block endjs %}
+  <script type='text/javascript'>
+    function sort(sort_by)
+    {
+      if (document.getElementById('sort_dir').value == 'asc'){
+        document.getElementById('sort_dir').value = 'desc';
+        $('.sort-up').removeClass('sort-up');
+        if (sort_by == 'name'){
+          $('#id_sort_name').addClass('sort-down');
+          document.getElementById('sort_by').value = 'name'
+        } else if (sort_by == 'last'){
+          $('#id_sort_last').addClass('sort-down');
+          //$('#id_sort_last').css('background-position', '85px left');
+          document.getElementById('sort_by').value = 'last'
+	} else if (sort_by == 'distance') {
+	  $('#id_sort_distance').addClass('sort-down');
+	  document.getElementById('sort_by').value = 'distance'
+        } else {
+          $('#id_sort_update').addClass('sort-down');
+          //$('#id_sort_update').css('background-position', '85px left');
+          document.getElementById('sort_by').value = 'updated'
+        }
+      } else {
+        document.getElementById('sort_dir').value = 'asc';
+        $('.sort-down').removeClass('sort-down');
+        if (sort_by == 'name'){
+          $('#id_sort_name').addClass('sort-up');
+          document.getElementById('sort_by').value = 'name'
+        } else if (sort_by == 'last'){
+          $('#id_sort_last').addClass('sort-up');
+          //$('#id_sort_last').css('background-position', '85px left');
+          document.getElementById('sort_by').value = 'last'
+	} else if (sort_by == 'distance') {
+	  $('#id_sort_distance').addClass('sort-up');
+	  document.getElementById('sort_by').value = 'distance'
+        } else {
+          $('#id_sort_update').addClass('sort-up');
+          //$('#id_sort_update').css('background-position', '85px left');
+          document.getElementById('sort_by').value = 'updated'
+        }
+      }
+      controller.submitForm('#jurisdiction_search');
+      return false;
+    }
+    $(document).ready(function() {
+      document.getElementById('sort_dir').value = 'asc';
+      $('#jurisdiction_list').jscroll();
+      $('#text_2').bind('keyup', function (event) {
+        var $target = $(event.target);
+        if ((event.which != 38) &&
+            (event.which != 40) &&
+            (event.which != 13)) {
+          //var searchText = $target.val();
+          controller.submitForm('#jurisdiction_search');
+        }
+      });
+      $('#id_sort_name #name').click(function(){
+        return sort('name');
+      });
+      $('#id_sort_last a').click(function(){
+        return sort('last');
+      });
+      $('#id_sort_update a').click(function(){
+        return sort('updated');
+      });
+      $('#id_sort_distance a').click(function(){
+        return sort('distance');
+      });
+
+      $('.show_user_profile').mouseover(function(){
+        user_id = $(this).data('userid');
+        item_id = $(this).data('itmeid');
+        controller.postRequest('/account/', {ajax: 'user_profile_short', user_id: user_id, unique_list_id: item_id  });
+      });
+
+      $('.show_user_profile').mouseover(function(){
+        document.getElementById('simple_popup_div_on_page').style.display='none';
+      });
+      $('#search_back').click(function(){
+        history.back();
+      });
+    });
+    $(document).ready(function() {
+      $('#only_jurisditions_with_data').click(function(){
+        $('#jurisdiction_search').submit();
+      });
+    });
+  </script>
+{% endblock %}
+
+<!-- end template jurisdiction_search.html -->
