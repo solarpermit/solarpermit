@@ -22,10 +22,7 @@ var add_fee_item_btn_html = "<input type='button' name='add_another_fee_item_btn
      
 
 var fee_type_count = {{highest_fee_type_id}};
-var highest_fee_item_ids = Array();
-{% for key in highest_fee_item_ids.keys() %}
-highest_fee_item_ids[{{key}}] = {{highest_fee_item_ids.get(key)}};
-{% endfor %}
+var highest_fee_item_ids = {{highest_fee_item_ids|json}};
 
 function add_fee_type_row()
 {

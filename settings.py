@@ -300,6 +300,7 @@ TRACK_PAGEVIEWS = True
 TRACK_IGNORE_URLS = ['tracking', 'admin']
 
 # Jinja2 integration via django-jinja
+DEFAULT_JINJA2_TEMPLATE_INTERCEPT_RE = r'(?:jinja|js)$'
 JINJA2_EXTENSIONS = ['jinja2.ext.WithExtension',
                      'compressor.contrib.jinja2ext.CompressorExtension']
 JINJA2_GLOBALS = {
