@@ -16,6 +16,7 @@ class Address(models.Model):
     create_datetime = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     modify_datetime = models.DateTimeField(auto_now=True, blank=True, null=True)    
     def __unicode__(self):
-        return self.address1+', '+self.address2+', '+self.city+', '+self.state+' '+self.zip_code
+        return ", ".join(filter(lambda s: s is not None,
+                                [self.address1, self.address2, self.city, self.state, self.zip_code]))
     class Meta:
         app_label = 'website'
