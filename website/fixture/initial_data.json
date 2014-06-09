@@ -611,7 +611,7 @@
 			"question": "Department website",
 			"label": "Department website",
 			"validation_class" : "required",
-			"field_attributes" : "maxlength=200 size=50",
+			"field_attributes" : "type=url maxlength=200 size=50",
 			"terminology": "link",	
 			"js": "department_website.js",	
 			"display_template": "url",				

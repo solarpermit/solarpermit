@@ -1,7 +1,7 @@
     <div class="form_field">
             {% if question_label is defined  %}<div class="label">{{question_label}}:</div>{% endif %}  
             <div class="field">
-                <input type="text" name="field_{{name}}" id="{{id}}" value="{{value}}" class="{{class}} {{validation_class}}" style="{{style}}" {{field_attributes}} >&nbsp;{{field_suffix}}
+                <input name="field_{{name}}" id="{{id}}" value="{{value}}" class="{{class}} {{validation_class}}" style="{{style}}" {{field_attributes}} type="text">&nbsp;{{field_suffix}}
             </div>        
             <div class="field_help_text">
                 {{instruction}}
