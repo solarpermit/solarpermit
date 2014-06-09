@@ -1152,14 +1152,11 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
     else:
         data['accessible_views'] = []
 
+    show_google_map = False
     (question_ids, view) = get_questions_in_category(user, jurisdiction, category)
     data['view'] = view
     records = get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, question_ids = question_ids)
-
-    answers_contents = {}
-    #data_answer = {}
-    #answers_html = {}
-    show_google_map = False
+    data['answers_votes'] = get_jurisdiction_voting_info('VoteRequirement', jurisdiction, user)
     records_by_category = {}
     for rec in records:
         cid = rec['category_id']
@@ -1173,6 +1170,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             records_by_category[cid]['sorted_question_ids'].append(qid)
             rec['answers'] = []
             rec['logged_in_user_suggested_a_value'] = False
+            rec['user_can_suggest'] = True
             rec['terminology'] = Question().get_question_terminology(qid)
             rec['pending_answer_ids'] = []
             records_by_category[cid]['questions'][qid] = rec
@@ -1184,6 +1182,12 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                 question['pending_answer_ids'].append(rec['id'])
             rec['content'] = json.loads(rec['value'])
             question['logged_in_user_suggested_a_value'] = rec['creator_id'] == user.id
+            votes = data['answers_votes'].get(rec['id'], None)
+            question['user_can_suggest'] = question['has_multivalues'] or \
+                                           (rec['creator_id'] == user.id and \
+                                            (not votes or 
+                                             (votes['total_up_votes'] == 0 and \
+                                              votes['total_down_votes'] == 0)))
 
         if rec['question_id'] == 4:
             show_google_map = True
@@ -1193,7 +1197,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                 fee_info = validation_util_obj.process_fee_structure(json.loads(rec['value']) )                   
                 for key in fee_info.keys():
                     data[key] = fee_info.get(key)
-    data['answers_votes'] = get_jurisdiction_voting_info('VoteRequirement', jurisdiction, user)
 
     if category == 'all_info' or show_google_map == True:
         data['show_google_map'] = show_google_map
@@ -1203,7 +1206,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
         data['google_api_key'] = django_settings.GOOGLE_API_KEY     
 
     data['cqa'] = records_by_category
-    data['answers_contents'] = answers_contents   
         
     if category != 'favorite_fields' and category != 'quirks':           
         request.session['empty_data_fields_hidden'] = data['empty_data_fields_hidden']    
@@ -1692,118 +1694,45 @@ def get_question_answers_dajax(request, jurisdiction, question, data):
     return dajax
 
 def get_question_data(request, jurisdiction, question, data):
-    validation_util_obj = FieldValidationCycleUtil()      
-    requestProcessor = HttpRequestProcessor(request)    
+    validation_util_obj = FieldValidationCycleUtil()
+    requestProcessor = HttpRequestProcessor(request)
     user = request.user
     questions = Question.objects.filter(id=question.id)
-    
-    display_answers = []    
-    answers_headings = {}   
-    login_user_suggested_a_value = True   
-    pending_editable_answer_ids_array = [] 
-    answers_with_attachments = []   
-    answers_comments_text = {} 
-    
-    template_ids = TemplateQuestion.objects.filter(question = questions).values_list('template_id')  
+    # TODO: use a join
+    template_ids = TemplateQuestion.objects.filter(question = questions).values_list('template_id')
     templates = Template.objects.filter(id__in=template_ids)
-    question_answers = get_jurisdiction_answers(jurisdiction, templates, questions) 
-    
-    data['jurisdiction'] = jurisdiction      
-    data['question'] = question       
-    data['user'] = user       
- 
-    if len(question_answers) > 0:     
-        question_approved_answers = question_answers.filter(approval_status = 'A')     
-        question_pending_answers = question_answers.filter(approval_status = 'P')
-        
-        '''                                         
-        if question.id == 4:
-            data['show_google_map'] = True
-            ################# get the correct address for google map ####################         
-            data['str_address'] = question.get_addresses_for_map(jurisdiction)  
-            data['google_api_key'] = django_settings.GOOGLE_API_KEY 
-            #############################################################################         
-        '''             
-        answers_contents = {}    
-        answers_attachments = {}
 
-    
-        for answer in question_approved_answers:
-            this_answer_question = answer.question
-            display_answers.append(answer)
+    data['user'] = user
+    data['jurisdiction'] = jurisdiction
+    data['answers_votes'] = get_jurisdiction_voting_info('VoteRequirement', jurisdiction, user, questions = [question.id])
+    data['question_id'] = question.id
+    data['question'] = question.__dict__.copy()
+    data['question']['answers'] = []
+    data['question']['logged_in_user_suggested_a_value'] = False
+    data['question']['user_can_suggest'] = True
+    data['question']['terminology'] = Question().get_question_terminology(question.id)
+    data['question']['pending_answer_ids'] = []
 
-            if this_answer_question.id == 16:
-                fee_info = validation_util_obj.process_fee_structure(json.loads(answer.value) )                   
-                for key in fee_info.keys():
-                    data[key] = fee_info.get(key)               
-                
-            answer_content = json.loads(answer.value)    
-            answers_contents[answer.id] = answer_content        
-                
-            if this_answer_question.support_attachments == 1:
-                answers_with_attachments.append(answer)
-                #answers_attachments[answer.id] = []  
-                
-            answers_comments_text[answer.id] = get_answer_comment_txt(jurisdiction, answer, user)
-            
-            if answer.creator_id == user.id: 
-                login_user_suggested_a_value = True            
-                
-            if this_answer_question.has_multivalues == 0:
-                break;                       
-                
-        for answer in question_pending_answers:
-            this_answer_question = answer.question
-            display_answers.append(answer)
-
-            if this_answer_question.id == 16:
-                fee_info = validation_util_obj.process_fee_structure(json.loads(answer.value) )                   
-                for key in fee_info.keys():
-                    data[key] = fee_info.get(key)               
-                
-            answer_content = json.loads(answer.value)    
-            answers_contents[answer.id] = answer_content        
-                
-            if this_answer_question.support_attachments == 1:
-                answers_with_attachments.append(answer)        
-                #answers_attachments[answer.id] = []        
-                
-            answers_comments_text[answer.id] = get_answer_comment_txt(jurisdiction, answer, user)       
-            
-            if answer.creator_id == user.id: 
-                login_user_suggested_a_value = True
-            
-            if answer.approval_status == 'P':
-                pending_editable_answer_ids_array.append(answer.id)                      
-                     
-        if len(answers_with_attachments) > 0:
-            attachments = AnswerAttachment.objects.filter(answer_reference__in=answers_with_attachments)    # to gather all the attachments for all the answers.
-            for attachment in attachments:
-                #answers_attachments[attachment.answer_reference.id] = attachment[0]    # to build dict of attachment per answer, for ease of retrival   
-                answers_attachments[attachment.answer_reference.id] ={}
-                answers_attachments[attachment.answer_reference.id]['file_name'] = str(attachment.file_name)    # to build dict of attachment per answer, for ease of retrival 
-                answers_attachments[attachment.answer_reference.id]['file_upload'] = str(attachment.file_upload)                  
-        
-        if len(display_answers) > 0:        
-            answers_headings = get_answers_headings(question_answers, user)                    
-        
-        data['question_messages'] = get_question_messages(question, question_answers, user)     
-
-        data['display_answers'] = display_answers 
-        data['answers_contents'] = answers_contents
-        data['answers_headings'] = answers_headings    
-        data['answers_attachments'] = answers_attachments
-        data['question_pending_editable_answer_ids_array'] = pending_editable_answer_ids_array         
-
-        data['question_login_user_suggested_a_value'] = login_user_suggested_a_value     
-        data['user'] = user
-        data['answers_comments_text'] = answers_comments_text
-    else:
-        data['display_answers'] = display_answers     # 0 records
-        data['question_login_user_suggested_a_value'] = False
-        
+    answers = get_jurisdiction_answers(jurisdiction, templates, questions)
+    for answer_obj in answers:
+        answer = answer_obj.__dict__.copy()
+        data['question']['answers'].append(answer)
+        if answer['creator_id'] == user.id and answer['approval_status'] == 'P':
+            data['question']['pending_answer_ids'].append(answer['id'])
+        answer['content'] = json.loads(answer['value'])
+        votes = data['answers_votes'].get(answer['id'], None)
+        data['question']['user_can_suggest'] = data['question']['has_multivalues'] or \
+                                               (answer['creator_id'] == user.id and \
+                                                (not votes or
+                                                 (votes['total_up_votes'] == 0 and \
+                                                  votes['total_down_votes'] == 0)))
+        if answer['question_id'] == 16:
+            fee_info = validation_util_obj.process_fee_structure(json.loads(answer['value']) )
+            for key in fee_info.keys():
+                data[key] = fee_info.get(key)
+        answer['attachments'] = answer_obj.answerattachment_set
+    data['display_headings'] = get_answers_headings(answers, user)
     return data
-
 
 def get_answer_voting_info(category_name, jurisdiction, login_user, answer_ids):
     action_category = ActionCategory.objects.filter(name__iexact=category_name)
