@@ -725,7 +725,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                 body = requestProcessor.decode_jinga_template(request,'website/form_fields/'+data['question_template']+'.jinja', data, '')
             else:
                 body = ''
-     
+
             dajax.assign('#qa_'+str(question_id) + '_fields','innerHTML', body)
 
             #if 'js' in data and data['js'] != None and data['js'] != '':
@@ -1192,7 +1192,9 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             if rec['question_id'] == 16:
                 fee_info = validation_util_obj.process_fee_structure(json.loads(rec['value']) )                   
                 for key in fee_info.keys():
-                    data[key] = fee_info.get(key)               
+                    data[key] = fee_info.get(key)
+    data['answers_votes'] = get_jurisdiction_voting_info('VoteRequirement', jurisdiction, user)
+
     if category == 'all_info' or show_google_map == True:
         data['show_google_map'] = show_google_map
         ################# get the correct address for google map #################### 

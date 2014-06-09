@@ -199,9 +199,7 @@
                     </div>
                   </div>
                   <div class="csscell suggestion_right">
-                    {% with current_answer_id = answer['id'] %}
-                      {% include "/website/jurisdictions/ahj_answer_votes.jinja" %}
-                    {% endwith %}
+                    {% include "/website/jurisdictions/ahj_answer_votes.jinja" %}
                     {% if user.is_superuser == 1 and answer['approval_status'] != 'A' %}
                       <div>
                         <input id="approve_this_value_{{answer['id']}}"
