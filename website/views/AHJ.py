@@ -767,7 +767,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                     for key in fee_info.keys():
                         data[key] = fee_info.get(key) 
                                         
-                body = requestProcessor.decode_jinga_template(request,'website/form_fields/'+data['question_template'], data, '')    
+                body = requestProcessor.decode_jinga_template(request,'website/form_fields/'+data['question_template']+'.jinja', data, '')    
             else:
                 body = ''
     
@@ -1677,8 +1677,9 @@ def get_question_answers_dajax(request, jurisdiction, question, data):
     data = get_question_data(request, jurisdiction, question, data)
     body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_cqa_qa.html', data, '')
     dajax.assign('#div_question_content_'+str(question.id),'innerHTML', body)
-    script = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_cqa_qa.js' , data, '')
-    dajax.script(script)   
+    import os
+    with open(os.path.join(django_settings.PROJECT_ROOT, 'website/static/jurisdictions/AHJ_cqa_qa.js')) as f:
+        dajax.script(f.read())
     
     if data['category'] == 'all_info':          
         question_categories = QuestionCategory.objects.filter(accepted=1)
