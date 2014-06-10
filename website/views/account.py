@@ -812,7 +812,7 @@ def validate_change_password_form_data(data, form_id):
 
 def send_email_password_reset(data): 
     subject = 'Request to reset password'
-    tp = get_template('website/emails/request_reset_password.html')
+    tp = get_template('website/emails/request_reset_password.jinja')
     c = Context(data)
     body = tp.render(c)
     from_mail = django_settings.DEFAULT_FROM_EMAIL
@@ -824,7 +824,7 @@ def send_email_password_reset(data):
 
 def send_new_account_confirmation(data):
     subject = 'Thank you for registering for the National Solar Permitting Database'
-    tp = get_template('website/emails/new_account_confirmation.html')
+    tp = get_template('website/emails/new_account_confirmation.jinja')
     c = Context(data)
     body = tp.render(c)
     from_mail = django_settings.DEFAULT_FROM_EMAIL
