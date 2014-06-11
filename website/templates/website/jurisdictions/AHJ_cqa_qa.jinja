@@ -105,7 +105,7 @@
                 {% include "website/jurisdictions/suggestion_display_template/"+question['display_template']+".jinja" %}
               {% endif %}
             {% endwith %}
-            {% if question.support_attachments %}
+            {% if question.support_attachments and 'attachments' in answer %}
               <div id="attachment_{{current_answer_id}}" style="">
                 {% with attachment = answer['attachments'][0] %}
                   {% include "website/jurisdictions/suggestion_display_template/file_uploading_display.jinja" %}

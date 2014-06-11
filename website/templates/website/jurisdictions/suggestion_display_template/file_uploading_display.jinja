@@ -1,6 +1,6 @@
 <div style="padding-top:5px;">
   {% if attachment %}
-    { for attach in attachments #}
+    {# for attach in attachments #}
     <div>
       <a href="/media{{attachment.get('file_upload')}}" target="_blank">
         <img width="48" alt="pdf_files" src="/media/images/pdf.png">
@@ -12,5 +12,5 @@
       </a>
     </div>
     {# endfor #}
-    {% endif %}
+  {% endif %}
 </div>
