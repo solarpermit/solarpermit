@@ -29,6 +29,7 @@ from django.db import connections, transaction
 
 from BeautifulSoup import BeautifulSoup
 from website.utils.fileUploader import qqFileUploader
+from django.utils.safestring import mark_safe
 
 JURISDICTION_PAGE_SIZE = 30 #page size for endless scroll
     
@@ -106,7 +107,7 @@ def jurisdiction_comment(request):
             data['answer'] = af
             #data['answer_text'] = aa.get_formatted_value(af.value, af.question)
             answer_text = requestProcessor.decode_jinga_template(request,'website/blocks/display_answer.html', data, '')
-            data['answer_text'] = answer_text            
+            data['answer_text'] = mark_safe(answer_text)
             data['jurisdiction'] = jurisdiction
             label = af.question.question
             if len(af.question.question) > 75:
@@ -125,7 +126,7 @@ def jurisdiction_comment(request):
                         old_data[key] = old_question_content.get(key)
                     #data['old_answer_text'] = aa.get_formatted_value(old_answer.value, old_answer.question)
                     old_answer_text = requestProcessor.decode_jinga_template(request,'website/blocks/display_answer.html', old_data, '')
-                    data['old_answer_text'] = old_answer_text
+                    data['old_answer_text'] = mark_safe(old_answer_text)
                 else:
                     data['old_answer'] = None
                     data['old_answer_text'] = ''
@@ -285,7 +286,7 @@ def jurisdiction_comment(request):
             body = requestProcessor.decode_jinga_template(request,'website/blocks/comments_list.html', data, '')
             dajax.assign('#old_list ul', 'innerHTML', body)
             scripts = requestProcessor.decode_jinga_template(request,'website/blocks/comments_list.js' , data, '')
-            dajax.script(script)
+            dajax.script(scripts)
             dajax.assign('#show_commnet_div', 'innerHTML', '<a id="id_a_hide" href="#"><img src="/media/images/arrow_down.png" style="vertical-align:middle;" alt="Hide old comments"> Hide old comments </a>')
             script = requestProcessor.decode_jinga_template(request,'website/jurisdictions/jurisdiction_comment.js' , data, '')
             dajax.script(script)

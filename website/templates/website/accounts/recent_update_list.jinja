@@ -3,11 +3,11 @@
 		{% if update.title_flag == True %}
 		<a href='/jurisdiction/{{update.jurisdiction.name_for_url}}/'><strong>{{update.jurisdiction.show_jurisdiction('short')}}</strong></a>
 		{% endif %}
-		<p class="recent-updates-p">{{update.type}}</p>
+		<p class="recent-updates-p">{{update.type|safe}}</p>
 		{% if update.question_type == 'CF' %}
 		<p class="recent-updates-p"> {{update.question}}</p>
 		{% endif %}
-		<p class="recent_updates_value">{{update.answer}}</p>
+		<p class="recent_updates_value">{{update.answer|safe}}</p>
 	</div>
 	<br>
 {% endfor %}
