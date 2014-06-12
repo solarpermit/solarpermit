@@ -1184,11 +1184,11 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             rec['content'] = json.loads(rec['value'])
             question['logged_in_user_suggested_a_value'] = rec['creator_id'] == user.id
             votes = data['answers_votes'].get(rec['id'], None)
-            question['user_can_suggest'] = question['has_multivalues'] or \
-                                           (rec['creator_id'] == user.id and \
-                                            (not votes or 
-                                             (votes['total_up_votes'] == 0 and \
-                                              votes['total_down_votes'] == 0)))
+            if rec['creator_id'] == user.id:
+                question['user_can_suggest'] = question['has_multivalues'] or \
+                                               (not votes or \
+                                                (votes['total_up_votes'] == 0 and \
+                                                 votes['total_down_votes'] == 0))
 
         if rec['question_id'] == 4:
             show_google_map = True
