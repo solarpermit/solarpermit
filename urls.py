@@ -47,6 +47,7 @@ else:
     
         #(r'^jurisdiction/(?P<id>.*)/(?P<category>.*)/$', 'website.views.AHJ.view_AHJ'),    
         #(r'^jurisdiction/(?P<id>.*)/$', 'website.views.AHJ.view_AHJ'),
+        (r'^jurisdiction/$', 'website.views.jurisdiction.get_jurisdiction_name'),
         (r'^jurisdiction/(?P<name>.*)/(?P<category>.*)/$', 'website.views.AHJ.view_AHJ_by_name'),
         url(r'^jurisdiction/(?P<name>.*)/$', 'website.views.AHJ.view_AHJ_by_name', name="ahj_by_name"),
         #(r'^jurisdiction_id/(?P<id>.*)/(?P<category>.*)/$', 'website.views.AHJ.view_AHJ'), 
