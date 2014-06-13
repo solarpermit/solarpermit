@@ -5,78 +5,84 @@ from south.v2 import DataMigration
 from django.db import models
 
 class Migration(DataMigration):
+    def update(self, orm, pk, value):
+        ans = orm.AnswerReference.objects.get(pk=pk)
+        ans.value = value
+        ans.save()
 
     def forwards(self, orm):
-        orm.Jurisdiction.get(10).value = '{"note": "10-35 business days", "time_unit": "day(s)", "time_qty": "35"}'
-        orm.Jurisdiction.get(10588).value = '{"from_am_pm": "am", "from_min": "30", "to_am_pm": "pm", "note": "Monday - Friday", "from_hour": "8", "to_hour": "4", "to_min": "30"}'
-        orm.Jurisdiction.get(13148).value = '{"from_am_pm": "am", "from_min": "30", "to_am_pm": "pm", "note": "Monday - Friday", "from_hour": "8", "to_hour": "4", "to_min": "30"}'
-        orm.Jurisdiction.get(13273).value = '{"from_am_pm": "am", "from_min": "00", "to_am_pm": "pm", "note": "Monday, Wednesday",  "from_hour": "12", "to_hour": "1", "to_min": "00"}'
-        orm.Jurisdiction.get(14425).value = '{"note": "if under 10 kW- same day; if over 10 kW under 2 weeks", "time_unit": "day(s)", "time_qty": "10"}'
-        orm.Jurisdiction.get(21641).value = '{"value": "http://amherstma.gov"}'
-        orm.Jurisdiction.get(21643).value = '{"dead_load_calculations": "yes", "required": "yes", "equality": "greater than", "url_or_email_for_submissions": "http://www.amherstma.gov/DocumentCenter/Home/View/3130", "free_form": "zoning permit required for ground mount and special use systems", "note": "Building and Electrical Application required"}'
-        orm.Jurisdiction.get(21672).value = '{"dead_load_calculations": "yes", "required": "yes", "equality": "greater than", "url_or_email_for_submissions": "", "free_form": "snow and wind load calculations also required" "note": "Building and Electrical Permit required"}'
-        orm.Jurisdiction.get(21693).value = '{"from_am_pm": "am", "to_am_pm": "pm"}'
-        orm.Jurisdiction.get(21700).value = '{"dead_load_calculations": "yes", "required": "yes", "equality": "greater than", "url_or_email_for_submissions": "", "free_form": "Usually come with manufacturers specs" "note": "Building and Electrical Permit required"}'
-        orm.Jurisdiction.get(21728).value = '{"dead_load_calculations": "", "required": "", "equality": "greater than", "url_or_email_for_submissions": "", "free_form": "2 sets of plans to go with application" "note": ""}'
-        orm.Jurisdiction.get(21758).value = '{"dead_load_calculations": "yes", "required": "yes", "equality": "greater than", "url_or_email_for_submissions": "http://www.amherstma.gov/DocumentCenter/Home/View/3130", "free_form": "zoning permit required for ground mount and special use systems" "note": "Building and Electrical Application required"}'
-        orm.Jurisdiction.get(21786).value = '{"value": "http://www.bouldercolorado.gov/index.php?option=com_content&task=view&id=10&itemid=22"}'
-        orm.Jurisdiction.get(21815).value = '{"value": "http://www.buckeyeaz.gov"}'
-        orm.Jurisdiction.get(21844).value = '{"value": "http://www.cityofcalabasas.com"}'
-        orm.Jurisdiction.get(21870).value = '{"value": "http://www.carefree.org"}'
-        orm.Jurisdiction.get(21898).value = '{"value": "http://www.carlsbadca.gov/services/departments/building/pages/default.aspx"}'
-        orm.Jurisdiction.get(21917).value = '{"value": "Yes", "URL": "http://www.carlsbadca.gov/services/departments/building/DocumentsB1.65%20WEB-ResidentialPermit%20app.pdf"}'
-        orm.Jurisdiction.get(21924).value = '{"value": "http://www.cavecreek.org"}'
-        orm.Jurisdiction.get(21945).value = '{"value": "Yes", "URL": "http://www.cavecreek.org/DocumentCenter/view/2149"}'
-        orm.Jurisdiction.get(21953).value = '{"value": "http://www.cayuga-heights.ny.us/zoning.html"}'
-        orm.Jurisdiction.get(21974).value = '{"value": "No", "URL": ""}'
-        orm.Jurisdiction.get(21982).value = '{"value": "http://www.cerritos.us"}'
-        orm.Jurisdiction.get(22011).value = '{"value": "http://www.chulavistaca.gov/City_services/Development_services/Planning_Building/default.asp"}'
-        orm.Jurisdiction.get(22030).value = '{"value": "yes", "URL": "http://www.chulavistaca.gov/City_services/Development_services/planning_building/PDF/form_4562.pdf"}'
-        orm.Jurisdiction.get(22038).value = '{"value": "http://www.mansfieldtwp-nj.com/index.php"}'
-        orm.Jurisdiction.get(22058).value = '{"value": "no"}'
-        orm.Jurisdiction.get(22065).value = '{"value": "http://www.mansfieldtwp-nj.com/index.php"}'
-        orm.Jurisdiction.get(22085).value = '{"value": "no"}'
-        orm.Jurisdiction.get(22092).value = '{"value": "http://www.ci.commerce.ca.us"}'
-        orm.Jurisdiction.get(22112).value = '{"value": "no"}'
-        orm.Jurisdiction.get(22120).value = '{"value": "http://www.coronado.ca.us"}'
-        orm.Jurisdiction.get(22141).value = '{"value": "no"}'
-        orm.Jurisdiction.get(22149).value = '{"value": "http://www.coronado.ca.us"}'
-        orm.Jurisdiction.get(22169).value = '{"value": "no"}'
-        orm.Jurisdiction.get(22186).value = '{"value": "Every other Friday"}'
-        orm.Jurisdiction.get(22204).value = '{"value": "http://www.accessduarte.com"}'
-        orm.Jurisdiction.get(22226).value = '{"value": "no"}'
-        orm.Jurisdiction.get(22234).value = '{"value": "http://www.eastla.lacounty.info"}'
-        orm.Jurisdiction.get(22256).value = '{"value": "no"}'
-        orm.Jurisdiction.get(22264).value = '{"value": "http://www.ci.el-cajon.ca.us/dept/comm/build_intro.html"}'
-        orm.Jurisdiction.get(22311).value = '{"value": "no"}'
-        orm.Jurisdiction.get(22319).value = '{"value": "http://www.bouldercounty.org/property/build/pages/buildingpermitreqs.aspx"}'
-        orm.Jurisdiction.get(22338).value = '{"value": "no"}'
-        orm.Jurisdiction.get(22366).value = '{"value": "no"}'
-        orm.Jurisdiction.get(22395).value = '{"value": "no"}'
-        orm.Jurisdiction.get(22420).value = '{"value": "no"}'
-        orm.Jurisdiction.get(22575).value = '{"from_am_pm": "pm", "free-form": "", "from_min": "00", "to_am_pm": "pm", "from_hour": "6", "to_hour": "8", "to_min": "00"}'
-        orm.Jurisdiction.get(22591).value = '{"value": "25%", "note": "Not available"}'
-        orm.Jurisdiction.get(22622).value = '{"value": "25%", "note": "Not available"}'
-        orm.Jurisdiction.get(22635).value = '{"dead_load_calculations": "", "required": "No", "equality": "greater than", "url_or_email_for_submissions": "", "note": "Calculations not required but usually provided"}'
-        orm.Jurisdiction.get(22652).value = ''
-        orm.Jurisdiction.get(22665).value = '{"value": "25%-30%", "note": ""}'
-        orm.Jurisdiction.get(22683).value = '{"dead_load_calculations": "", "required": "No", "equality": "greater than", "url_or_email_for_submissions": "", "free_form": "", "note": "Not Available"}'
-        orm.Jurisdiction.get(22683).value = '{"value": "Not Availaable", "note": ""}'
-        orm.Jurisdiction.get(22696).value = '{"dead_load_calculations": "", "required": "Yes", "equality": "greater than", "url_or_email_for_submissions": "", "note": "Electrical calcs"}'
-        orm.Jurisdiction.get(22710).value = '{"value": "no"}'
-        orm.Jurisdiction.get(22714).value = '{"value": "Not Available", "note": "Average system size"}'
-        orm.Jurisdiction.get(22727).value = '{"dead_load_calculations": "", "required": "No", "equality": "greater than", "url_or_email_for_submissions": "", "note": ""}'
-        orm.Jurisdiction.get(22741).value = '{"available": "No", "value":, "Solar permitting checklist", "URL": "http://www.cityoflamesa.com"}'
-        orm.Jurisdiction.get(22745).value = '{"value": "Not Available", "note": "Average system size"}'
-        orm.Jurisdiction.get(22758).value = '{"dead_load_calculations": "", "required": "Yes", "equality": "greater than", "url_or_email_for_submissions": ""}'
-        orm.Jurisdiction.get(22772).value = '{"available": "No", "value": "Solar permitting checklist", "URL": "http://www.cityoflamesa.com"}'
-        orm.Jurisdiction.get(22776).value = '{"value": "Not Available", "note": "Average system size"}'
-        orm.Jurisdiction.get(22789).value = '{"dead_load_calculations": "", "required": "Yes", "equality": "greater than", "url_or_email_for_submissions": ""}'
-        orm.Jurisdiction.get(22803).value = '{"available": "Yes", "value": "Solar permitting checklist","URL": "http://www.lapuente.org"}'
-        orm.Jurisdiction.get(22807).value = '{"value": "Not Available", "note": "Average system size"}'
+        self.update(orm, 10, '{"note": "10-35 business days", "time_unit": "day(orm, s)", "time_qty": "35"}')
+        self.update(orm, 10588, '{"from_am_pm": "am", "from_min": "30", "to_am_pm": "pm", "note": "Monday - Friday", "from_hour": "8", "to_hour": "4", "to_min": "30"}')
+        self.update(orm, 13148, '{"from_am_pm": "am", "from_min": "30", "to_am_pm": "pm", "note": "Monday - Friday", "from_hour": "8", "to_hour": "4", "to_min": "30"}')
+        self.update(orm, 13273, '{"from_am_pm": "am", "from_min": "00", "to_am_pm": "pm", "note": "Monday, Wednesday",  "from_hour": "12", "to_hour": "1", "to_min": "00"}')
+        self.update(orm, 14425, '{"note": "if under 10 kW- same day; if over 10 kW under 2 weeks", "time_unit": "day(orm, s)", "time_qty": "10"}')
+        self.update(orm, 21641, '{"value": "http://amherstma.gov"}')
+        self.update(orm, 21643, '{"dead_load_calculations": "yes", "required": "yes", "equality": "greater than", "url_or_email_for_submissions": "http://www.amherstma.gov/DocumentCenter/Home/View/3130", "free_form": "zoning permit required for ground mount and special use systems", "note": "Building and Electrical Application required"}')
+        self.update(orm, 21672, '{"dead_load_calculations": "yes", "required": "yes", "equality": "greater than", "url_or_email_for_submissions": "", "free_form": "snow and wind load calculations also required", "note": "Building and Electrical Permit required"}')
+        self.update(orm, 21693, '{"from_am_pm": "am", "to_am_pm": "pm"}')
+        self.update(orm, 21700, '{"dead_load_calculations": "yes", "required": "yes", "equality": "greater than", "url_or_email_for_submissions": "", "free_form": "Usually come with manufacturers specs", "note": "Building and Electrical Permit required"}')
+        self.update(orm, 21728, '{"dead_load_calculations": "", "required": "", "equality": "greater than", "url_or_email_for_submissions": "", "free_form": "2 sets of plans to go with application", "note": ""}')
+        self.update(orm, 21758, '{"dead_load_calculations": "yes", "required": "yes", "equality": "greater than", "url_or_email_for_submissions": "http://www.amherstma.gov/DocumentCenter/Home/View/3130", "free_form": "zoning permit required for ground mount and special use systems", "note": "Building and Electrical Application required"}')
+        self.update(orm, 21786, '{"value": "http://www.bouldercolorado.gov/index.php?option=com_content&task=view&id=10&itemid=22"}')
+        self.update(orm, 21815, '{"value": "http://www.buckeyeaz.gov"}')
+        self.update(orm, 21844, '{"value": "http://www.cityofcalabasas.com"}')
+        self.update(orm, 21870, '{"value": "http://www.carefree.org"}')
+        self.update(orm, 21898, '{"value": "http://www.carlsbadca.gov/services/departments/building/pages/default.aspx"}')
+        self.update(orm, 21917, '{"value": "Yes", "URL": "http://www.carlsbadca.gov/services/departments/building/DocumentsB1.65%20WEB-ResidentialPermit%20app.pdf"}')
+        self.update(orm, 21924, '{"value": "http://www.cavecreek.org"}')
+        self.update(orm, 21945, '{"value": "Yes", "URL": "http://www.cavecreek.org/DocumentCenter/view/2149"}')
+        self.update(orm, 21953, '{"value": "http://www.cayuga-heights.ny.us/zoning.html"}')
+        self.update(orm, 21974, '{"value": "No", "URL": ""}')
+        self.update(orm, 21982, '{"value": "http://www.cerritos.us"}')
+        self.update(orm, 22011, '{"value": "http://www.chulavistaca.gov/City_services/Development_services/Planning_Building/default.asp"}')
+        self.update(orm, 22030, '{"value": "yes", "URL": "http://www.chulavistaca.gov/City_services/Development_services/planning_building/PDF/form_4562.pdf"}')
+        self.update(orm, 22038, '{"value": "http://www.mansfieldtwp-nj.com/index.php"}')
+        self.update(orm, 22058, '{"value": "no"}')
+        self.update(orm, 22065, '{"value": "http://www.mansfieldtwp-nj.com/index.php"}')
+        self.update(orm, 22085, '{"value": "no"}')
+        self.update(orm, 22092, '{"value": "http://www.ci.commerce.ca.us"}')
+        self.update(orm, 22112, '{"value": "no"}')
+        self.update(orm, 22120, '{"value": "http://www.coronado.ca.us"}')
+        self.update(orm, 22141, '{"value": "no"}')
+        self.update(orm, 22149, '{"value": "http://www.coronado.ca.us"}')
+        self.update(orm, 22169, '{"value": "no"}')
+        self.update(orm, 22186, '{"value": "Every other Friday"}')
+        self.update(orm, 22204, '{"value": "http://www.accessduarte.com"}')
+        self.update(orm, 22226, '{"value": "no"}')
+        self.update(orm, 22234, '{"value": "http://www.eastla.lacounty.info"}')
+        self.update(orm, 22256, '{"value": "no"}')
+        self.update(orm, 22264, '{"value": "http://www.ci.el-cajon.ca.us/dept/comm/build_intro.html"}')
+        self.update(orm, 22290, '{"value": "http://www.cityofelmirage.org"}')
+        self.update(orm, 22311, '{"value": "no"}')
+        self.update(orm, 22319, '{"value": "http://www.bouldercounty.org/property/build/pages/buildingpermitreqs.aspx"}')
+        self.update(orm, 22338, '{"value": "no"}')
+        self.update(orm, 22366, '{"value": "no"}')
+        self.update(orm, 22395, '{"value": "no"}')
+        self.update(orm, 22420, '{"value": "no"}')
+        self.update(orm, 22575, '{"from_am_pm": "pm", "free-form": "", "from_min": "00", "to_am_pm": "pm", "from_hour": "6", "to_hour": "8", "to_min": "00"}')
+        self.update(orm, 22591, '{"value": "25%", "note": "Not available"}')
+        self.update(orm, 22622, '{"value": "25%", "note": "Not available"}')
+        self.update(orm, 22635, '{"dead_load_calculations": "", "required": "No", "equality": "greater than", "url_or_email_for_submissions": "", "note": "Calculations not required but usually provided"}')
+        self.update(orm, 22652, '{"value": "25%-30%", "note": ""}')
+        self.update(orm, 22665, '{"value": "25%-30%", "note": ""}')
+        self.update(orm, 22683, '{"dead_load_calculations": "", "required": "No", "equality": "greater than", "url_or_email_for_submissions": "", "free_form": "", "note": "Not Available"}')
+        self.update(orm, 22683, '{"value": "Not Availaable", "note": ""}')
+        self.update(orm, 22696, '{"dead_load_calculations": "", "required": "Yes", "equality": "greater than", "url_or_email_for_submissions": "", "note": "Electrical calcs"}')
+        self.update(orm, 22710, '{"value": "no"}')
+        self.update(orm, 22714, '{"value": "Not Available", "note": "Average system size"}')
+        self.update(orm, 22727, '{"dead_load_calculations": "", "required": "No", "equality": "greater than", "url_or_email_for_submissions": "", "note": ""}')
+        self.update(orm, 22741, '{"available": "No", "value": "Solar permitting checklist", "URL": "http://www.cityoflamesa.com"}')
+        self.update(orm, 22745, '{"value": "Not Available", "note": "Average system size"}')
+        self.update(orm, 22758, '{"dead_load_calculations": "", "required": "Yes", "equality": "greater than", "url_or_email_for_submissions": ""}')
+        self.update(orm, 22772, '{"available": "No", "value": "Solar permitting checklist", "URL": "http://www.cityoflamesa.com"}')
+        self.update(orm, 22776, '{"value": "Not Available", "note": "Average system size"}')
+        self.update(orm, 22789, '{"dead_load_calculations": "", "required": "Yes", "equality": "greater than", "url_or_email_for_submissions": ""}')
+        self.update(orm, 22803, '{"available": "Yes", "value": "Solar permitting checklist","URL": "http://www.lapuente.org"}')
+        self.update(orm, 22807, '{"value": "Not Available", "note": "Average system size"}')
 
     def backwards(self, orm):
         # not going to bother reversing this one
+        True
 
     models = {
         u'auth.group': {
