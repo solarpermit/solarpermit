@@ -128,6 +128,7 @@ TEMPLATE_DIRS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django_statsd.middleware.StatsdMiddleware',               # must be first
     'django.middleware.common.CommonMiddleware',
     'tracking.middleware.VisitorTrackingMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -138,7 +139,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     #'debug_toolbar.middleware.DebugToolbarMiddleware',
     'user_page_view.UserPageViewMiddleWare',     
-    #'set_user_org_in_session.SetUserOrgInSessionMiddleWare',          
+    #'set_user_org_in_session.SetUserOrgInSessionMiddleWare',
+    'django_statsd.middleware.StatsdMiddlewareTimer',          # must be last
 )
 
 
@@ -192,6 +194,7 @@ INSTALLED_APPS = (
     'tracking',
     'django_jinja',
     'autocomplete_light',
+    'django_statsd',
 )
 
 #setup memcached for production use!
@@ -313,6 +316,9 @@ JINJA2_GLOBALS = {
 # django-autocomplete; has nothing to do with our current search autocomplete
 AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/'
 AUTOCOMPLETE_JQUERY_ALREADY_INCLUDED = True
+
+#
+STATSD_TRACK_MIDDLEWARE = True
 
 from settings_local import *
 

@@ -29,7 +29,7 @@ from website.utils.timeShowUtil import TimeShow
 from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
 
 from website.utils.miscUtil import UrlUtil
-
+from django.utils.safestring import mark_safe
 
 RECENT_UPDATES_PAGE_SIZE = 25
 

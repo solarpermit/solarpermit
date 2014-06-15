@@ -30,6 +30,7 @@ from django.db import connections, transaction
 from BeautifulSoup import BeautifulSoup
 from website.utils.fileUploader import qqFileUploader
 from django.utils.safestring import mark_safe
+from website.utils import temporal_stats
 
 JURISDICTION_PAGE_SIZE = 30 #page size for endless scroll
     
@@ -817,7 +818,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                     view_question_obj.add_question_to_view('a', question, jurisdiction)
                             
             dajax = get_question_answers_dajax(request, jurisdiction, question, data)
-                    
+            temporal_stats.suggestions().increment(subname=str(question.id))
             return HttpResponse(dajax.json())      
         
         if (ajax == 'suggestion_edit_submit'):     
@@ -1036,6 +1037,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                 view_question_obj = ViewQuestions()
                 view_question_obj.remmove_question_from_view('a', question, jurisdiction)                    
                 
+            temporal_stats.suggestions().decrement(subname=str(question.id))
             return HttpResponse(dajax.json())           
         
         if (ajax == 'approve_suggestion'):
