@@ -1,11 +1,12 @@
 #!/usr/bin/env python
-
+import copy
 import socket
 import time
 from datetime import datetime
 from django.utils.timezone import utc
 from django.core.management.base import BaseCommand, CommandError
 from website.models import Question
+from website.utils import reporting
 from pprint import pprint
 
 def since_epoch(timestamp):
@@ -13,59 +14,49 @@ def since_epoch(timestamp):
     return int((timestamp - epoch).total_seconds())
 
 CARBON_SERVER = ('localhost', 2003)
-CUTOFF_TIME = since_epoch(datetime(2013, 06, 13, 0, 0, 0, 0, utc))
-NOW = since_epoch(datetime.now(utc))
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect(CARBON_SERVER)
-        questions = Question.objects.all()
-        #questions = Question.objects.filter(id=3)
+        #questions = Question.objects.all()
+        questions = Question.objects.filter(pk=1)
         for q in questions:
-            timeline = []
             answers = q.answerreference_set.all()
             if not answers:
                 print "not backfilling question %d, it has no suggestions/answers" % q.id
             else:
-                print "backfilling question %d with %d suggestions/answers" % (q.id, answers.count())
-                for ans in answers:
-                    create = since_epoch(ans.create_datetime)
-                    modify = since_epoch(ans.modify_datetime)
-                    timeline.append((create, {'suggested': 1}))
-                    if ans.approval_status == 'C':
-                        timeline.append((modify, {'suggested': -1}))
-                    elif ans.approval_status == 'A':
-                        timeline.append((modify, {'answered': 1}))
-                    elif ans.approval_status in ('R', 'F'):
-                        timeline.append((modify, {'suggested': -1}))
-                timeline.sort(None, lambda t: t[0])
-                metrics = {'suggested': 0, 'answered': 0}
-                start = int(timeline[0][0] - (timeline[0][0] % 10)) - 100 # start a few steps before the first one
-                end = start + 10
-                while start < NOW:
-                    last_count = metrics['suggested']
-                    while timeline and (timeline[0][0] < end):
-                        m = timeline.pop(0)[1]
-                        if 'suggested' in m:
-                            metrics['suggested'] += m['suggested']
-                        if 'answered' in m:
-                            metrics['answered'] += m['answered']
-                    if metrics['suggested'] > last_count:
-                        print "  found %d answers between %d and %d" % (metrics['suggested'] - last_count, start, end)
-                    send(sock,
-                         "solarpermit.dev.gauges.question.suggested.%d" % q.id,
-                         metrics['suggested'],
-                         end)
-                    send(sock,
-                         "solarpermit.dev.gauges.question.answered.%d" % q.id,
-                         metrics['answered'],
-                         end)
-                    start = end
-                    end += 10
+                timestamps = set([ans.create_datetime for ans in answers]) | \
+                             set([ans.modify_datetime for ans in answers])
+                print "backfilling question %d with %d answers at %d distinct times" % (q.id, answers.count(), len(timestamps))
+                last = None
+                for stamp in sorted(timestamps):
+                    seconds = since_epoch(stamp)
+                    start = int(seconds - (seconds % 10))
+                    end = start + 10
+                    base = "solarpermit.dev.counters.question"
+                    reports = reporting.run_reports(q, before=stamp)
+                    changes = differences(last, reports) if last else reports
+                    for report in changes:
+                        if 'name' in report:
+                            for row in report['table']:
+                                k = row['key'].lower()
+                                v = row['value']
+                                if v:
+                                    send(sock, ".".join([base, report['name'].lower(), str(q.id), k, "count"]), v, end)
+                                    send(sock, ".".join([base, report['name'].lower(), str(q.id), k, "rate"]), v / 10, end)
+                    last = reports
             # yes, sleep. if we go too fast, carbon doesn't create all of the databases
-            time.sleep(1)
+            time.sleep(30)
         sock.close()
+
+def differences(last, current):
+    output = copy.deepcopy(current)
+    for (i, report) in enumerate(current):
+        if 'name' in report:
+            for (r, row) in enumerate(report['table']):
+                output[i]['table'][r]['value'] = row['value'] - last[i]['table'][r]['value']
+    return output
 
 def send(socket, name, value, timestamp):
     socket.sendall("%s %s %d\n" % (name, value, timestamp))
