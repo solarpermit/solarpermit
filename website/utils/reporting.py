@@ -16,7 +16,7 @@ def run_report(question, report, **kwargs):
     cursor = connection.cursor()
     cursor.execute(query)
     columns = [col[0] for col in cursor.description]
-    output['table'] = [{'key': k, 'value': v } for (k,v) in zip(columns, cursor.fetchone())]
+    output['table'] = [{'key': k, 'value': v} for (k,v) in zip(columns, cursor.fetchone())]
     return output
 
 def get_reports(question):
@@ -57,7 +57,8 @@ def build_query(question, field_map, geo_filter=None, before=None):
                            FROM website_jurisdiction
                            WHERE website_jurisdiction.id NOT IN (1, 101105) AND
                                  website_jurisdiction.jurisdiction_type != 'u' ''' +
-            ("AND\n                                %(geo_filter)s" if geo_filter else "") +
+            ("AND\n                                 %(geo_filter)s" if geo_filter else "") +
+            ("AND\n                                 create_datetime <= '%(before)s'" if before else "") +
             ''') AS temp0) as temp1
             ''') % { "question_id": question.id,
                      "fields": sep.join(fields),
