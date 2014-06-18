@@ -16,23 +16,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForText</td>
-	<td>//div[@id='main-wrapper']/div[4]/ul/li[9]/h2</td>
-	<td>Inspection Requirements</td>
+	<td>select</td>
+	<td>css=select</td>
+	<td>label=Average ground-mounted permit turnaround time</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=Average ground-mounted permit turnaround time</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForText</td>
-	<td>css=h3</td>
-	<td>Current approved values . Filter this report...</td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>css=div.contentOnlyPage &gt; h1</td>
+	<td>waitForElementPresent</td>
+	<td>css=svg</td>
 	<td></td>
 </tr>
 <tr>
@@ -118,36 +108,41 @@
 <tr>
 	<td>verifyText</td>
 	<td>//div[@id='report1']/table/tbody/tr[4]/th</td>
-	<td>3-7 days</td>
+	<td>3-5 days</td>
 </tr>
 <tr>
 	<td>verifyText</td>
 	<td>//div[@id='report1']/table/tbody/tr[5]/th</td>
-	<td>8-14 days</td>
+	<td>6-10 days</td>
 </tr>
 <tr>
 	<td>verifyText</td>
 	<td>//div[@id='report1']/table/tbody/tr[6]/th</td>
-	<td>15-21 days</td>
+	<td>11-15 days</td>
 </tr>
 <tr>
 	<td>verifyText</td>
 	<td>//div[@id='report1']/table/tbody/tr[7]/th</td>
-	<td>22+ days</td>
+	<td>16-20 days</td>
 </tr>
 <tr>
 	<td>verifyText</td>
 	<td>//div[@id='report1']/table/tbody/tr[8]/th</td>
-	<td>Freeform</td>
+	<td>21+ days</td>
 </tr>
 <tr>
 	<td>verifyText</td>
 	<td>//div[@id='report1']/table/tbody/tr[9]/th</td>
-	<td>Other</td>
+	<td>Freeform</td>
 </tr>
 <tr>
 	<td>verifyText</td>
 	<td>//div[@id='report1']/table/tbody/tr[10]/th</td>
+	<td>Other</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[11]/th</td>
 	<td>Total</td>
 </tr>
 <tr>
@@ -288,41 +283,46 @@
 <tr>
 	<td>storeText</td>
 	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(4) &gt; td:nth-child(2)</td>
-	<td>7days</td>
+	<td>5days</td>
 </tr>
 <tr>
 	<td>storeText</td>
 	<td>css=tr.even:nth-child(5) &gt; td:nth-child(2)</td>
-	<td>14days</td>
+	<td>10days</td>
 </tr>
 <tr>
 	<td>storeText</td>
 	<td>css=tr.odd:nth-child(6) &gt; td:nth-child(2)</td>
-	<td>21days</td>
+	<td>15days</td>
 </tr>
 <tr>
 	<td>storeText</td>
 	<td>css=tr.even:nth-child(7) &gt; td:nth-child(2)</td>
-	<td>22days</td>
+	<td>20days</td>
 </tr>
 <tr>
 	<td>storeText</td>
 	<td>css=tr.odd:nth-child(8) &gt; td:nth-child(2)</td>
-	<td>freeForm</td>
+	<td>21days</td>
 </tr>
 <tr>
 	<td>storeText</td>
 	<td>css=tr.even:nth-child(9) &gt; td:nth-child(2)</td>
-	<td>other</td>
+	<td>freeForm</td>
 </tr>
 <tr>
 	<td>storeText</td>
 	<td>css=tr.odd:nth-child(10) &gt; td:nth-child(2)</td>
+	<td>other</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.even:nth-child(11) &gt; td:nth-child(2)</td>
 	<td>total2</td>
 </tr>
 <tr>
 	<td>verifyEval</td>
-	<td>parseInt(storedVars['sameDay']) + parseInt(storedVars['2days']) + parseInt(storedVars['7days']) + parseInt(storedVars['14days']) + parseInt(storedVars['21days']) + parseInt(storedVars['22days']) + parseInt(storedVars['freeForm']) + parseInt(storedVars['other'])</td>
+	<td>parseInt(storedVars['sameDay']) + parseInt(storedVars['2days']) + parseInt(storedVars['5days']) + parseInt(storedVars['10days']) + parseInt(storedVars['15days']) + parseInt(storedVars['20days']) + parseInt(storedVars['21days']) + parseInt(storedVars['freeForm']) + parseInt(storedVars['other'])</td>
 	<td>${total2}</td>
 </tr>
 <tr>

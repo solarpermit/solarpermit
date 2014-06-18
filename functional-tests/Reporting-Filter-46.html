@@ -3,7 +3,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://anglachel.db48x.net:8000/" />
 <title>Reporting-Filter-46</title>
 </head>
 <body>
@@ -17,12 +16,17 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=Show Electrical Conduit Run on site plan</td>
-	<td></td>
+	<td>waitForText</td>
+	<td>link=Filter this report...</td>
+	<td>Filter this report...</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
+	<td>select</td>
+	<td>css=select</td>
+	<td>label=Show Electrical Conduit Run on site plan</td>
+</tr>
+<tr>
+	<td>click</td>
 	<td>link=Filter this report...</td>
 	<td></td>
 </tr>
@@ -52,14 +56,14 @@
 	<td>label=California</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>css=input[type=&quot;submit&quot;]</td>
+	<td>click</td>
+	<td>id=add-filter</td>
 	<td></td>
 </tr>
 <tr>
-	<td>waitForText</td>
-	<td>css=div.contentOnlyPage &gt; h1</td>
-	<td>Show Electrical Conduit Run on site plan - Field Answer Reporting</td>
+	<td>verifyText</td>
+	<td>css=th.header_row</td>
+	<td>Value</td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
@@ -186,7 +190,6 @@
 	<td>parseInt(storedVars['answered']) === parseInt(storedVars['total2'])</td>
 	<td>true</td>
 </tr>
-
 </tbody></table>
 </body>
 </html>
