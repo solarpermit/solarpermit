@@ -17,22 +17,22 @@
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>//div[@id='main-wrapper']/div[4]/ul/li[9]/h2</td>
-	<td>Inspection Requirements</td>
+	<td>link=Filter this report...</td>
+	<td>Filter this report...</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Average system size</td>
-	<td></td>
+	<td>select</td>
+	<td>css=select</td>
+	<td>label=Average system size</td>
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>css=h3</td>
-	<td>Current approved values . Filter this report...</td>
+	<td>css=th.header_row</td>
+	<td>Value</td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>css=div.contentOnlyPage &gt; h1</td>
+	<td>css=svg</td>
 	<td></td>
 </tr>
 <tr>
@@ -57,11 +57,6 @@
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/div[4]/table/tbody/tr[3]/th</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
 	<td>css=tr.even &gt; td</td>
 	<td></td>
 </tr>
@@ -82,7 +77,7 @@
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>css=tr.even:nth-child(3) &gt; td:nth-child(2)</td>
+	<td>//div[@id='report0']/table/tbody/tr[3]/th/span[2]</td>
 	<td>Unanswered</td>
 </tr>
 <tr>
