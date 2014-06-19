@@ -17,23 +17,18 @@
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>//div[@id='main-wrapper']/div[4]/ul/li[9]/h2</td>
-	<td>Inspection Requirements</td>
+	<td>link=Filter this report...</td>
+	<td>Filter this report...</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=Department staff training in PV solar</td>
-	<td></td>
+	<td>select</td>
+	<td>css=select</td>
+	<td>label=Department staff training in PV solar</td>
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>css=h3</td>
-	<td>Current approved values . Filter this report...</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>css=div.contentOnlyPage &gt; h1</td>
-	<td>Department staff training in PV solar - Field Answer Reporting</td>
+	<td>css=th.header_row</td>
+	<td>Value</td>
 </tr>
 <tr>
 	<td>verifyText</td>
