@@ -88,21 +88,24 @@ function add_ui(initial_reports) {
                              };
                     })();
     var ui = $("<div>", { id: "report"+ report.idx, 'class': "report" }), table;
-    ui.append($("<div>", { id: "graph"+ report.idx, 'class': "graph" }),
-              table = $("<table>", { 'class': "data_table" }));
-    table.append($("<tr class='even'><th class='header_row'>Value</th><th class='header_row_right'>Jurisdictions</th></tr>"));
-    report.table.forEach(function (row) {
-                           var tr = $("<tr>", { 'class': even_odd() });
-                           tr.append($("<th>").append($("<span>", { 'class': "legend-dot" }),
-                                                      $("<span>", { text: row.key })),
-                                     $("<td>").append($("<span>", { text: row.value })));
-                           table.append(tr);
-                         });
+    if ('table' in report) {
+      ui.append($("<div>", { id: "graph"+ report.idx, 'class': "graph" }),
+                table = $("<table>", { 'class': "data_table" }));
+      table.append($("<tr class='even'><th class='header_row'>Value</th><th class='header_row_right'>Jurisdictions</th></tr>"));
+      report.table.forEach(function (row) {
+                             var tr = $("<tr>", { 'class': even_odd() });
+                             tr.append($("<th>").append($("<span>", { 'class': "legend-dot" }),
+                                                        $("<span>", { text: row.key })),
+                                       $("<td>").append($("<span>", { text: row.value })));
+                             table.append(tr);
+                           });
+    }
     return ui;
   }
   function draw_graph(report, container) {
-    var values = report.table.map(select("value")).filter(defined),
-        sum = values.reduce(function (a, b) { return a+b; }),
+    var values = 'table' in report ? report.table.map(select("value")).filter(defined)
+                                   : [],
+        sum = values.reduce(function (a, b) { return a+b; }, 0),
         idx = report.idx;
     if (sum <= 0)
       return;
@@ -114,7 +117,7 @@ function add_ui(initial_reports) {
                if (v.node)
                  paths[k] = v.node;
              });
-    } else {
+    } else if (report.type == "pie") {
       graph = r.piechart(160, 160, 150, values);
       var is_funky = graph.series.length == 1;
       if (is_funky)
@@ -125,6 +128,18 @@ function add_ui(initial_reports) {
                  if (v.value)
                    paths[v.value.order] = v.node;
                });
+    } else {
+      $.ajax({ url: "http://permit01.dev.cpf.com:9001/render/",
+               dat: { from: "00:00_20120901",
+                      lineMode: "connected",
+                      target: "integral(solarpermit.dev.counters.question.coverage.1.answered.count)",
+                      format: "json" },
+               dataType: "json",
+               success: function(data) {
+                          console.log(data);
+                          graph = r.linechart(0, 0, 160, 160, x, ys);
+                        }
+             });
     }
     var n = 0;
     container.find("#report"+ idx +" .legend-dot").each(color);

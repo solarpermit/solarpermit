@@ -41,12 +41,11 @@ def report_on(request, question_id=None, filter_id=None):
     if question_id:
       question_id = int(question_id)
       question = Question.objects.get(id=question_id)
-      if not (question.id in reports_by_qid or question.display_template in reports_by_type):
+      if not (question.id in reporting.reports_by_qid or question.display_template in reporting.reports_by_type):
           raise Http404
       data['question_id'] = question_id
       data['name'] = question.question
       data['description'] = question.description
-      reports = get_reports(question)
 
     geo_filter = None
     if filter_id:
@@ -62,17 +61,10 @@ def report_on(request, question_id=None, filter_id=None):
             geo_filter = where_clause_for_area(**data['geo_filter'])
             data['geo_filter_matches'] = matches_for_area(**data['geo_filter']).count()
 
-    idx = 0
-    if reports:
-      for report in reports:
-        #query = build_query(question, report['spec'], geo_filter)
-        #cursor = connection.cursor()
-        #cursor.execute(query)
-        #table = [{'key': k, 'value': v } for (k,v) in zip([col[0] for col in cursor.description], cursor.fetchone())]
-        output = run_report(question, report, geo_filter=geo_filter)
-        output['idx'] = idx
-        data['reports'].append(output)
-        idx += 1
+    if question:
+        data['reports'] = [dict(r, **{'idx': idx})
+                           for (idx, r) in enumerate(reporting.add_temporal_reports(reporting.run_reports(question,
+                                                                                                          geo_filter=geo_filter)))]
 
     if 'HTTP_ACCEPT' in request.META and 'json' in request.META['HTTP_ACCEPT']: #hack
         return HttpResponse(json.dumps(data))
@@ -90,8 +82,8 @@ def report_on(request, question_id=None, filter_id=None):
         # append this report's data to the list - with a link if it exists
         reports_index[-1]['reports_in_category'].append(question)
     data['reports_index'] = reports_index
-    data['report_types'] = reports_by_type.keys()
-    data['report_qids'] = reports_by_qid.keys()
+    data['report_types'] = reporting.reports_by_type.keys()
+    data['report_qids'] = reporting.reports_by_qid.keys()
     data['form'] = GeographicAreaForm()
     data['request'] = request
     return render_to_response('reporting/report_on.jinja', data)

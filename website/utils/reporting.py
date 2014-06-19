@@ -11,6 +11,7 @@ def run_reports(question, **kwargs):
 
 def run_report(question, report, **kwargs):
     output = report.copy()
+    output['question_id'] = question.id
     query = build_query(question, report['spec'], **kwargs)
     #print query
     cursor = connection.cursor()
@@ -22,6 +23,17 @@ def run_report(question, report, **kwargs):
 def get_reports(question):
     return (question.id in reports_by_qid and reports_by_qid[question.id]) or \
            (question.display_template in reports_by_type and reports_by_type[question.display_template])
+
+def add_temporal_reports(reports):
+    temporal = [make_temporal(r) for r in reports]
+    return reports + temporal
+
+def make_temporal(report):
+    return { 'type': "temporal",
+             'name': report['name'],
+             'question_id': report['question_id'],
+             'statsd_metrics': [row['key'].lower() for row in report['table']]
+           }
 
 def build_query(question, field_map, geo_filter=None, before=None):
     # Yes we have two mechanisms for building queries here. We've
