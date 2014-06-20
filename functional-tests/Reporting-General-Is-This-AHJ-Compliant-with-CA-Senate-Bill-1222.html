@@ -222,7 +222,7 @@
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(3) &gt; td:nth-child(2)</td>
+	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(3) &gt; td:nth-child(2) &gt; span:nth-child(1)</td>
 	<td>yes_with_examples</td>
 </tr>
 <tr>
@@ -237,12 +237,12 @@
 </tr>
 <tr>
 	<td>storeText</td>
-	<td>css=tr.odd:nth-child(6) &gt; td:nth-child(2)</td>
+	<td>css=tr.odd:nth-child(6) &gt; td:nth-child(2) &gt; span:nth-child(1)</td>
 	<td>total2</td>
 </tr>
 <tr>
 	<td>verifyEval</td>
-	<td>parseInt(storedVars['yes']) + parseInt(storedVars['no']) + parseInt(storedVars['yes_with_exceptions']) + parseInt(storedVars['other'])</td>
+	<td>parseInt(storedVars['yes']) + parseInt(storedVars['no']) + parseInt(storedVars['yes_with_examples']) + parseInt(storedVars['other'])</td>
 	<td>${total2}</td>
 </tr>
 <tr>
