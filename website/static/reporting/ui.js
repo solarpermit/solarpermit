@@ -88,9 +88,9 @@ function add_ui(initial_reports) {
                              };
                     })();
     var ui = $("<div>", { id: "report"+ report.idx, 'class': "report" }), table;
+    ui.append($("<div>", { id: "graph"+ report.idx, 'class': "graph" }));
     if ('table' in report) {
-      ui.append($("<div>", { id: "graph"+ report.idx, 'class': "graph" }),
-                table = $("<table>", { 'class': "data_table" }));
+      ui.append(table = $("<table>", { 'class': "data_table" }));
       table.append($("<tr class='even'><th class='header_row'>Value</th><th class='header_row_right'>Jurisdictions</th></tr>"));
       report.table.forEach(function (row) {
                              var tr = $("<tr>", { 'class': even_odd() });
@@ -107,10 +107,10 @@ function add_ui(initial_reports) {
                                    : [],
         sum = values.reduce(function (a, b) { return a+b; }, 0),
         idx = report.idx;
-    if (sum <= 0)
-      return;
     var r = Raphael(container.find("#graph"+ idx).get(0)), graph, paths = [];
     if (report.type == "histogram") {
+      if (sum <= 0)
+        return;
       graph = r.barchart(0, 0, 320, 320, values);
       $.each(graph.bars,
              function(k, v) {
@@ -118,6 +118,8 @@ function add_ui(initial_reports) {
                  paths[k] = v.node;
              });
     } else if (report.type == "pie") {
+      if (sum <= 0)
+        return;
       graph = r.piechart(160, 160, 150, values);
       var is_funky = graph.series.length == 1;
       if (is_funky)
@@ -129,15 +131,26 @@ function add_ui(initial_reports) {
                    paths[v.value.order] = v.node;
                });
     } else {
+      var metric = "integral(solarpermit.dev.counters.question."+ report.name +"."+ report.question_id +".answered.count)";
       $.ajax({ url: "http://permit01.dev.cpf.com:9001/render/",
-               dat: { from: "00:00_20120901",
-                      lineMode: "connected",
-                      target: "integral(solarpermit.dev.counters.question.coverage.1.answered.count)",
-                      format: "json" },
+               data: { from: "00:00_20120901",
+                       target: metric,
+                       format: "json" },
                dataType: "json",
                success: function(data) {
-                          console.log(data);
-                          graph = r.linechart(0, 0, 160, 160, x, ys);
+                          var x = [],
+                              ys = [];
+                          function processSeries(datapoints) {
+                            $.each(datapoints,
+                                   function (i, p) {
+                                     if (p[0]) {
+                                       x.push(p[0]);
+                                       ys.push(p[1]);
+                                     }
+                                   });
+                          }
+                          processSeries(data[0].datapoints);
+                          graph = r.linechart(0, 0, 320, 320, x, ys);
                         }
              });
     }

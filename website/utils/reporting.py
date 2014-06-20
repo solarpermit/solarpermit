@@ -13,7 +13,6 @@ def run_report(question, report, **kwargs):
     output = report.copy()
     output['question_id'] = question.id
     query = build_query(question, report['spec'], **kwargs)
-    #print query
     cursor = connection.cursor()
     cursor.execute(query)
     columns = [col[0] for col in cursor.description]
@@ -30,7 +29,7 @@ def add_temporal_reports(reports):
 
 def make_temporal(report):
     return { 'type': "temporal",
-             'name': report['name'],
+             'name': report['name'] if 'name' in report else None,
              'question_id': report['question_id'],
              'statsd_metrics': [row['key'].lower() for row in report['table']]
            }

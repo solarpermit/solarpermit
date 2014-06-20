@@ -19,8 +19,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect(CARBON_SERVER)
-        #questions = Question.objects.all()
-        questions = Question.objects.filter(pk=1)
+        questions = Question.objects.all()
+        #questions = Question.objects.filter(pk=1)
         for q in questions:
             answers = q.answerreference_set.all()
             if not answers:
