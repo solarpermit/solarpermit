@@ -162,6 +162,7 @@ function add_ui(initial_reports) {
                                                                                min: min,
                                                                                max: max,
                                                                                values: [ start, end ],
+                                                                               slide: draw,
                                                                                change: draw
                                                                              });
                           draw();
