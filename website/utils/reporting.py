@@ -31,7 +31,7 @@ def make_temporal(report):
     return { 'type': "temporal",
              'name': report['name'] if 'name' in report else None,
              'question_id': report['question_id'],
-             'statsd_metrics': [row['key'].lower() for row in report['table']]
+             'statsd_metrics': [row['key'] for row in report['table']]
            }
 
 def build_query(question, field_map, geo_filter=None, before=None):

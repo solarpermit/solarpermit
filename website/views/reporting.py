@@ -61,7 +61,7 @@ def report_on(request, question_id=None, filter_id=None):
             geo_filter = where_clause_for_area(**data['geo_filter'])
             data['geo_filter_matches'] = matches_for_area(**data['geo_filter']).count()
 
-    if question:
+    if question_id:
         data['reports'] = [dict(r, **{'idx': idx})
                            for (idx, r) in enumerate(reporting.add_temporal_reports(reporting.run_reports(question,
                                                                                                           geo_filter=geo_filter)))]
