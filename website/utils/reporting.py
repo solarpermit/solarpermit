@@ -5,6 +5,7 @@ import re
 from django.db.models import Q
 from django.db.models.sql import Query
 from django.db import DEFAULT_DB_ALIAS
+from website.models import Jurisdiction
 
 def run_reports(question, **kwargs):
     return [run_report(question, report, **kwargs) for report in get_reports(question)]
