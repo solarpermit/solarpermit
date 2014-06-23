@@ -47,7 +47,6 @@
 .whatsit td {
     text-align: right;
     color: #000;
-    border-left: 2px solid #999;
 }
 .whatsit .even {
     background-color: #ebf1fe;
