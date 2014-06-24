@@ -1148,7 +1148,7 @@ def get_dropdown_field_entity_html(form_id, label, name, dropdown, value, style,
     data_entity['form_fields'] = form_field
     body = requestProcessor.decode_jinga_template(request,'website/form_fields/base_edit.html', data_entity, '') 
         
-    return body       
+    return mark_safe(body)
      
      
 
@@ -1185,7 +1185,7 @@ def get_text_field_entity_html(form_id, label, name, value, style, class_name, a
     data_entity['form_fields'] = form_field
     body = requestProcessor.decode_jinga_template(request,'website/form_fields/base_edit.html', data_entity, '') 
     
-    return body  
+    return mark_safe(body)
    
 def get_password_field_entity_html(form_id, label, name, request, mode="add"):
     requestProcessor = HttpRequestProcessor(request)
@@ -1218,7 +1218,7 @@ def get_password_field_entity_html(form_id, label, name, request, mode="add"):
     data_entity['form_fields'] = form_field
     body = requestProcessor.decode_jinga_template(request,'website/form_fields/base_edit.html', data_entity, '') 
     
-    return body  
+    return mark_safe(body)
 
 def get_display_as_field_entity_html(request, user_id, message):
     requestProcessor = HttpRequestProcessor(request)
@@ -1256,7 +1256,7 @@ def get_display_as_field_entity_html(request, user_id, message):
     data_entity['form_fields'] = form_field
     body = requestProcessor.decode_jinga_template(request,'website/form_fields/base_edit.html', data_entity, '') 
     
-    return body 
+    return mark_safe(body)
 
 def user_favorite(request):
     requestProcessor = HttpRequestProcessor(request)
