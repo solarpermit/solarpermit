@@ -29,7 +29,7 @@ from website.utils.timeShowUtil import TimeShow
 from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
 
 from website.utils.miscUtil import UrlUtil
-
+from django.utils.safestring import mark_safe
 
 RECENT_UPDATES_PAGE_SIZE = 25
 
@@ -1145,7 +1145,7 @@ def get_dropdown_field_entity_html(form_id, label, name, dropdown, value, style,
     data_form['dropdown'] = dropdown
             
     form_field = requestProcessor.decode_jinga_template(request,'website/form_fields/dropdown_field.html', data_form, '') 
-    data_entity['form_fields'] = form_field
+    data_entity['form_fields'] = mark_safe(form_field)
     body = requestProcessor.decode_jinga_template(request,'website/form_fields/base_edit.html', data_entity, '') 
         
     return mark_safe(body)
@@ -1182,7 +1182,7 @@ def get_text_field_entity_html(form_id, label, name, value, style, class_name, a
     data_form['msg_error'] = ''
     
     form_field = requestProcessor.decode_jinga_template(request,'website/form_fields/text_field.html', data_form, '') 
-    data_entity['form_fields'] = form_field
+    data_entity['form_fields'] = mark_safe(form_field)
     body = requestProcessor.decode_jinga_template(request,'website/form_fields/base_edit.html', data_entity, '') 
     
     return mark_safe(body)
@@ -1215,7 +1215,7 @@ def get_password_field_entity_html(form_id, label, name, request, mode="add"):
     data_form['id'] = form_id+'_field_'+ data_form['name'] 
     
     form_field = requestProcessor.decode_jinga_template(request,'website/form_fields/password.html', data_form, '') 
-    data_entity['form_fields'] = form_field
+    data_entity['form_fields'] = mark_safe(form_field)
     body = requestProcessor.decode_jinga_template(request,'website/form_fields/base_edit.html', data_entity, '') 
     
     return mark_safe(body)
@@ -1253,7 +1253,7 @@ def get_display_as_field_entity_html(request, user_id, message):
     data_form['message'] = message
             
     form_field = requestProcessor.decode_jinga_template(request,'website/form_fields/user_profile_display_as.html', data_form, '') 
-    data_entity['form_fields'] = form_field
+    data_entity['form_fields'] = mark_safe(form_field)
     body = requestProcessor.decode_jinga_template(request,'website/form_fields/base_edit.html', data_entity, '') 
     
     return mark_safe(body)
@@ -1478,7 +1478,7 @@ def get_recent_updates(request, recent_updates):
         
         #validation_util_obj = FieldValidationCycleUtil()
         #answer = validation_util_obj.get_formatted_value(update.value, update.question)
-        update_map['answer'] = body1
+        update_map['answer'] = mark_safe(body1)
         update_map['question_type'] = update.question.form_type
         update_map['jurisdiction'] = update.jurisdiction
         if update.question.form_type  == 'CF':
