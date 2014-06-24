@@ -164,7 +164,7 @@ function add_ui(initial_reports) {
                             return "integral(solarpermit.dev.counters.question."+ report.name +"."+ report.question_id +"."+ metric.toLowerCase() +".count)";
                           });
       $.ajax({ url: "http://permit01.dev.cpf.com:9001/render/",
-               data: { from: "00:00_20120901",
+               data: { from: "00:00_20120101",
                        target: metrics,
                        format: "json" },
                dataType: "json",
