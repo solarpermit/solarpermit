@@ -104,15 +104,36 @@
             }
         }
 
+        function min(arr) {
+          return arr.reduce(function (p, v) {
+            return (p < v ? p : v);
+          });
+        }
+  
+        function max(arr) {
+          return arr.reduce(function (p, v) {
+            return (p > v ? p : v);
+          });
+        }
+
         var allx = Array.prototype.concat.apply([], valuesx),
-            ally = Array.prototype.concat.apply([], valuesy),
-            xdim = chartinst.snapEnds(Math.min.apply(Math, allx), Math.max.apply(Math, allx), valuesx[0].length - 1),
-            minx = xdim.from,
-            maxx = xdim.to,
-            ydim = chartinst.snapEnds(Math.min.apply(Math, ally), Math.max.apply(Math, ally), valuesy[0].length - 1),
-            miny = ydim.from,
-            maxy = ydim.to,
-            kx = (width - gutter * 2) / ((maxx - minx) || 1),
+            ally = Array.prototype.concat.apply([], valuesy);
+        var minx, maxx, miny, maxy;
+        if (opts.snapEnds) {
+            var xdim = chartinst.snapEnds(min(allx), max(allx), valuesx[0].length - 1),
+                ydim = chartinst.snapEnds(min(ally), max(ally), valuesy[0].length - 1);
+            minx = xdim.from;
+            maxx = xdim.to;
+            miny = ydim.from;
+            maxy = ydim.to;
+        } else {
+            minx = min(allx);
+            maxx = max(allx);
+            miny = min(ally);
+            maxy = max(ally);
+        }
+            
+        var kx = (width - gutter * 2) / ((maxx - minx) || 1),
             ky = (height - gutter * 2) / ((maxy - miny) || 1);
 
  /*\

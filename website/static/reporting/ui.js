@@ -91,23 +91,35 @@ function add_ui(initial_reports) {
     var ui = $("<div>", { id: "report"+ report.idx, 'class': "report" }), table, temporal_table;
     ui.append($("<div>", { id: "graph"+ report.idx, 'class': "graph" }));
     if (report.type == "temporal") {
-      if ('name' in report && report.name == "coverage")
-        report.table = [{ key: "Answered", value: "" }];
-      else
-        report.table = report.statsd_metrics.map(function (m) {
-                                                   return { key: m, value: "" };
-                                                 });
-    }
-    if ('table' in report) {
+      report.table = report.statsd_metrics.map(function (m) {
+                                                 return { key: m, value: "" };
+                                               });
       ui.append(table = $("<table>", { 'class': "data_table" }));
       table.append($("<tr class='even'><th class='header_row'>Value</th><th class='header_row_right'>Jurisdictions</th></tr>"));
-      report.table.forEach(function (row) {
-                             var tr = $("<tr>", { 'class': even_odd() });
-                             tr.append($("<th>").append($("<span>", { 'class': "legend-dot" }),
-                                                        $("<span>", { text: row.key })),
-                                       $("<td>").append($("<span>", { text: row.value })));
-                             table.append(tr);
-                           });
+      $.each(report.table,
+             function (i, row) {
+               var tr = $("<tr>", { 'class': even_odd() }),
+                   name = "series-"+ i +"-enabled";
+               tr.append($("<th>").append($("<label>", { for: name }).append($("<span>", { 'class': "legend-dot" }),
+                                                                             $("<span>", { text: row.key }))),
+                         $("<td>").append($("<input>", { type: "checkbox",
+                                                         checked: true,
+                                                         name: name,
+                                                         'class': name })));
+               table.append(tr);
+             });
+    } else {
+      if ('table' in report) {
+        ui.append(table = $("<table>", { 'class': "data_table" }));
+        table.append($("<tr class='even'><th class='header_row'>Value</th><th class='header_row_right'>Jurisdictions</th></tr>"));
+        report.table.forEach(function (row) {
+                               var tr = $("<tr>", { 'class': even_odd() });
+                               tr.append($("<th>").append($("<span>", { 'class': "legend-dot" }),
+                                                          $("<span>", { text: row.key })),
+                                         $("<td>").append($("<span>", { text: row.value })));
+                               table.append(tr);
+                             });
+      }
     }
     if (report.type == "temporal") {
       ui.append(temporal_table = $("<table>", { 'class': "data_table temporal_table" }),
@@ -130,7 +142,7 @@ function add_ui(initial_reports) {
       graph = r.barchart(0, 0, 320, 320, values);
       $.each(graph.bars,
              function(k, v) {
-               if (v.node)
+               if (v.node && report.table[k].key != "Total")
                  path_colors[k] = $(v.node).css("fill");
              });
     } else if (report.type == "pie") {
@@ -143,14 +155,17 @@ function add_ui(initial_reports) {
       else
         $.each(graph.series,
                function(k, v) {
-                 if (v.value)
+                 if (v.value && report.table[k].key != "Total")
                    path_colors[v.value.order] = $(v.node).css("fill");
                });
     } else if (report.type == "temporal" && report.name) {
-      var metric = "integral(solarpermit.dev.counters.question."+ report.name +"."+ report.question_id +".answered.count)";
+      var metrics = $.map(report.statsd_metrics,
+                          function (metric) {
+                            return "integral(solarpermit.dev.counters.question."+ report.name +"."+ report.question_id +"."+ metric.toLowerCase() +".count)";
+                          });
       $.ajax({ url: "http://permit01.dev.cpf.com:9001/render/",
                data: { from: "00:00_20120901",
-                       target: metric,
+                       target: metrics,
                        format: "json" },
                dataType: "json",
                success: function(data) {
@@ -162,9 +177,12 @@ function add_ui(initial_reports) {
                                                                                min: min,
                                                                                max: max,
                                                                                values: [ start, end ],
+                                                                               step: 86400,
                                                                                slide: draw,
                                                                                change: draw
                                                                              });
+                          var checkboxes = container.find("input[type=checkbox]");
+                          checkboxes.on("change", draw);
                           draw();
                           function draw(event, ui) {
                             var s = ui ? ui.values[0] : start,
@@ -172,30 +190,79 @@ function add_ui(initial_reports) {
                             var cells = container.find(".temporal_table span");
                             $(cells[0]).text(formatStamp(s));
                             $(cells[1]).text(formatStamp(e));
-                            var processed = processSeries(data[0].datapoints, s, e);
+                            var processed = processData(data, s, e, checkboxes);
                             r.clear();
-                            graph = r.linechart(0, 0, 320, 320, processed[0], processed[1]);
+                            graph = r.linechart(0, 0, 320, 320, processed[0], processed[1], { snapEnds: false });
                             $.each(graph.lines,
                                    function(i, l) {
-                                     path_colors[i] = $(l.node).css("stroke");
+                                     if (l.node)
+                                       path_colors[i] = $(l.node).css("stroke");
                                    });
-                            container.find("#report"+ idx +" .legend-dot").each(color);
+                            var color_idx = 0;
+                            container.find(".legend-dot")
+                                     .each(function (idx, elem) {
+                                             if (checkboxes[idx].checked)
+                                               color(color_idx++, elem);
+                                             else
+                                               $(elem).css("background-color", "transparent");
+                                           });
+                          }
+                          function processData(alldata, start, end, enabled) {
+                            var lines = $.map(alldata,
+                                              function (line) {
+                                                return [processSeries(line.datapoints, start, end)];
+                                              });
+                            var map = {};
+                            $.each(lines,
+                                   function (i, line) {
+                                     $.each(line,
+                                            function (j, point) {
+                                              if (!(point[1] in map)) {
+                                                map[point[1]] = [];
+                                              }
+                                              map[point[1]][i] = point[0];
+                                            });
+                                   });
+                            var x = [];
+                            var ys = [];
+                            $.each(map,
+                                   function (stamp, counts) {
+                                     x.push(parseInt(stamp, 10));
+                                   });
+                            x.sort();
+                            $.each(x,
+                                   function (i, stamp) {
+                                     var column = map[stamp];
+                                     $.each(column,
+                                            function (j, value) {
+                                              if (!ys[j]) {
+                                                ys[j] = [];
+                                              }
+                                              if (typeof value === "undefined")
+                                                if (i-1 in ys[j])
+                                                  value = ys[j][i-1];
+                                                else
+                                                  value = 0;
+                                              ys[j][i] = value;
+                                            });
+                                   });
+                            var enabled_ys = [];
+                            $.each(enabled,
+                                   function (i, checkbox) {
+                                     if (checkbox.checked)
+                                       enabled_ys.push(ys[i]);
+                                   });
+                            return [x, enabled_ys];
                           }
                           function processSeries(datapoints, start, end) {
-                            var gooddata = $.grep(datapoints,
-                                                  function (p) {
-                                                    return !!p[0];
-                                                  });
-                            var x = [],
-                                ys = [];
-                            $.each(filterdata(gooddata, start, end),
-                                   function (i, p) {
-                                     x.push(p[1]);
-                                     ys.push(p[0]);
-                                   });
-                            return [x, ys];
+                            return filterData($.grep(datapoints,
+                                                     function (p) {
+                                                       return !!p[0];
+                                                     }),
+                                              start,
+                                              end);
                           }
-                          function filterdata(datapoints, start, end) {
+                          function filterData(datapoints, start, end) {
                             var data = $.grep(datapoints,
                                               function (p) {
                                                 return start <= p[1] && p[1] <= end;
@@ -218,7 +285,13 @@ function add_ui(initial_reports) {
                           function formatStamp(stamp) {
                             if (typeof stamp === "string")
                               stamp = parseInt(stamp, 10);
-                            return new Date(stamp * 1000).toLocaleString();
+                            return new Date(stamp * 1000).toLocaleDateString(window.navigator.userLanguage ||
+                                                                             window.navigator.language,
+                                                                             { weekday: "long",
+                                                                               year: "numeric",
+                                                                               month: "long",
+                                                                               day: "numeric"
+                                                                             });
                           }
                           function tomorrow() {
                             d = new Date();
@@ -242,11 +315,10 @@ function add_ui(initial_reports) {
              });
     }
     var n = 0;
-    container.find("#report"+ idx +" .legend-dot").each(color);
+    container.find(".legend-dot").each(color);
     function color(idx, elem) {
       var head = $(elem).parent();
-      if (head.text() != "Total" &&
-          !(is_funky && head.next().text() == "0")) {
+      if (!(is_funky && head.next().text() == "0")) {
         $(elem).css("background-color",
                     path_colors[is_funky ? n++ : idx]);
       }
