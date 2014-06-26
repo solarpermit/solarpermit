@@ -56,9 +56,6 @@ class JurisdictionGetNames(JurisdictionAutocomplete):
         assert self.choices is not None, 'choices should be a queryset'
         assert self.search_fields, 'autocomplete.search_fields must be set'
         q_param = self.request.GET.getlist('q')
-        query = reduce(lambda q, word:
-                       q | self._choices_for_request_conditions(q, self.search_fields),
-                       q_param, Q())
         exclude = self.request.GET.getlist('exclude')
         
         choices = self.order_choices(self.choices.filter(pk__in=q_param).exclude(pk__in=exclude))[0:self.limit_choices]

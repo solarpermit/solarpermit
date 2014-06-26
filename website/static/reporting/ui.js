@@ -79,13 +79,6 @@
       } else {
 	var question = machine.selector_ui.find("select").find(":checked").attr("value");
 	filter = machine.selector_ui.closest('.whatsit').data('filter');
-/*	var states = $("#type-state").is(":checked") && $("#id_states").val();
-	var jurisdictions = $("#type-jurisdiction").is(":checked") && $("#id_jurisdictions").val();
-	if (states) {
-	  filter = { type: 'states', values: states };
-	} else if (jurisdictions) {
-	  filter = { type: 'jurisdictions', values: jurisdictions };
-	}*/
       }
       var states = filter && filter.type == 'states' && filter.values;
       var jurisdictions = filter && filter.type == 'jurisdictions' && filter.values;
@@ -314,6 +307,7 @@
 	$("#id_states").val('');
 	$("#type-jurisdiction").prop('checked', true);
 	if (!$("#id_jurisdictions").val() && filter.values) {
+	  fillBox.empty();
 	  $.ajax('/autocomplete/JurisdictionGetNames/?q=' + filter.values.join('&q='),
 		 { success:
 		   function(selectedItems)
