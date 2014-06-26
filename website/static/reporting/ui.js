@@ -87,8 +87,8 @@
 	  filter = { type: 'jurisdictions', values: jurisdictions };
 	}*/
       }
-      var states = filter.type == 'states' && filter.values;
-      var jurisdictions = filter.type == 'jurisdictions' && filter.values;
+      var states = filter && filter.type == 'states' && filter.values;
+      var jurisdictions = filter && filter.type == 'jurisdictions' && filter.values;
       
       if (!question)
 	return 'ui-ready';
@@ -314,14 +314,15 @@
 	$("#id_states").val('');
 	$("#type-jurisdiction").prop('checked', true);
 	if (!$("#id_jurisdictions").val() && filter.values) {
-	  $.ajax('/jurisdiction/?id=' + filter.values.join(','),
+	  $.ajax('/autocomplete/JurisdictionGetNames/?q=' + filter.values.join('&q='),
 		 { success:
 		   function(selectedItems)
 		   {
-		     $.each(selectedItems,
+		       var choices = JSON.parse(selectedItems);
+		       $.each(choices,
 			    function(index, jurisdiction) {
-			      var newOption = $("<option></option>", { 'data-value': jurisdiction.id }).text(jurisdiction.display);
-			      var selectedOption = $("<option></option>", { value: jurisdiction.id, selected: 'selected' })
+				var newOption = $("<option></option>", { 'data-value': jurisdiction.id }).text(jurisdiction.display);
+				var selectedOption = $("<option></option>", { value: jurisdiction.id, selected: 'selected' })
 			      
 			      fillBox.append(newOption);
 			      $("#id_jurisdictions").append(selectedOption);
