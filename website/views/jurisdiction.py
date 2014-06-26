@@ -409,28 +409,7 @@ def save_recent_search(user, jurisdiction):
         user_search.save()
     except:
         pass
-
-
-def get_jurisdiction_name(request):
-    requestProcessor = HttpRequestProcessor(request)
-    ids = requestProcessor.getParameter('id').split(',')
-    ids = [int(x) for x in ids if x.isdigit()]
     
-    if (not ids):
-        return HttpResponseBadRequest()
-    
-    if (len(ids) == 1):
-        jurisdictions = Jurisdiction.objects.get(id=ids[0]);
-        response = [{ 'id': jurisdictions.id, 'display': jurisdictions.get_jurisdiction_display() }]
-    elif (len(ids) > 1):
-        jurisdictions = Jurisdiction.objects.filter(id__in=ids);
-        response = [{ 'id': j.id, 'display': j.get_jurisdiction_display() } for j in jurisdictions]
-    else:
-        return HttpResponseNotFound()
-    
-    response = json.dumps(response)
-
-    return HttpResponse(response, content_type='application/json')
     
 def jurisdiction_search_improved(request):    
     requestProcessor = HttpRequestProcessor(request)
