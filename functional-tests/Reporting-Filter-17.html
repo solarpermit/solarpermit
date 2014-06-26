@@ -3,7 +3,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://anglachel.db48x.net:8000/" />
 <title>Reporting-Filter-17</title>
 </head>
 <body>
@@ -18,18 +17,23 @@
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>//div[@id='main-wrapper']/div[4]/ul/li[2]/h2</td>
-	<td>Building</td>
+	<td>link=Filter this report...</td>
+	<td>Filter this report...</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Page size requirements for submittals</td>
+	<td>verifyElementPresent</td>
+	<td>css=label</td>
 	<td></td>
 </tr>
 <tr>
+	<td>select</td>
+	<td>css=select</td>
+	<td>label=Page size requirements for submittals</td>
+</tr>
+<tr>
 	<td>waitForText</td>
-	<td>css=h3</td>
-	<td>Current approved values . Filter this report...</td>
+	<td>css=th.header_row</td>
+	<td>Value</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -38,37 +42,7 @@
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
-	<td>css=input[type=&quot;submit&quot;]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>css=th.division</td>
-	<td>Filter criteria:</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>css=label</td>
-	<td>States</td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>css=#main-wrapper &gt; form</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>id=type-jurisdiction</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>id=type-jurisdiction</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>css=button.select</td>
+	<td>id=fancybox_close</td>
 	<td></td>
 </tr>
 <tr>
@@ -77,38 +51,13 @@
 	<td></td>
 </tr>
 <tr>
-	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/form/table/tbody/tr[4]/th</td>
-	<td>Save filter (optional):</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/form/table/tbody/tr[5]/th/label</td>
-	<td>Filter name</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/form/table/tbody/tr[6]/th/label</td>
-	<td>Description</td>
-</tr>
-<tr>
 	<td>verifyElementPresent</td>
-	<td>id=id_filter_name</td>
+	<td>css=label</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>id=id_description</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>css=input[type=&quot;submit&quot;]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/form/table/tbody/tr[4]/th</td>
+	<td>//table[@id='filter_criteria_form']/tbody/tr[2]/th/label</td>
 	<td></td>
 </tr>
 <tr>
@@ -187,8 +136,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>css=input[type=&quot;submit&quot;]</td>
+	<td>click</td>
+	<td>id=add-filter</td>
 	<td></td>
 </tr>
 <tr>

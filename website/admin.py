@@ -73,7 +73,7 @@ class AnswerReferenceAdmin(admin.ModelAdmin):
     list_display = ['jurisdiction', 'question', 'approval_status', 'creator', 'organization', 'value']
     list_display_links = ['value']
     list_filter = ['question', 'approval_status', 'creator', 'organization']
-    search_fields = ['value', 'question', 'creator', 'organization']
+    search_fields = ['value', 'question__question', 'question__description', 'creator__username', 'creator__email', 'creator__first_name', 'creator__last_name', 'organization__name']
     ordering = ['jurisdiction', 'question']
     date_heirarchy = ['create_datetime']
 admin.site.register(models.AnswerReference, AnswerReferenceAdmin)
@@ -86,7 +86,7 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ['jurisdiction', 'user', 'comment_type', 'comment', 'rating', 'approval_status']
     list_display_links = ['comment']
     list_filter = ['user', 'comment_type', 'rating', 'rating_status', 'approval_status']
-    search_fields = ['jurisdiction', 'user', 'comment']
+    search_fields = ['jurisdiction__name', 'user__username', 'user__email', 'user__first_name', 'user__last_name', 'comment']
 admin.site.register(models.Comment, CommentAdmin)
 
 class ActionCategoryAdmin(admin.ModelAdmin):
@@ -99,7 +99,7 @@ class ActionAdmin(admin.ModelAdmin):
     list_display = ['organization', 'user', 'category', 'jurisdiction', 'question_category', 'data']
     list_display_links = ['data']
     list_filter = ['question_category', 'category', 'organization', 'user']
-    search_fields = ['organization', 'user', 'category', 'jurisdiction', 'question_category', 'data']
+    search_fields = ['organization__name', 'user__username', 'user__email', 'user__first_name', 'user__last_name', 'jurisdiction', 'question_category', 'data']
 admin.site.register(models.Action, ActionAdmin)
 
 class ReactionCategoryAdmin(admin.ModelAdmin):
@@ -112,7 +112,7 @@ class ReactionAdmin(admin.ModelAdmin):
     list_display = ['user', 'category', 'jurisdiction', 'question_category', 'data']
     list_display_links = ['data']
     list_filter = ['question_category', 'category', 'user']
-    search_fields = ['organization', 'user', 'category', 'jurisdiction', 'question_category', 'data']
+    search_fields = ['organization__name', 'user__username', 'user__email', 'user__first_name', 'user__last_name', 'category', 'jurisdiction__name', 'question_category', 'data']
 admin.site.register(models.Reaction, ReactionAdmin)
 
 class UserRatingAdmin(admin.ModelAdmin):
@@ -124,12 +124,12 @@ admin.site.register(models.UserRating, UserRatingAdmin)
 class OrganizationRatingAdmin(admin.ModelAdmin):
     list_display = ['organization', 'category', 'scale', 'level']
     list_filter = ['category', 'level', 'organization']
-    search_fields = ['user']
+    search_fields = ['user__username', 'user__email', 'user__first_name', 'user__last_name']
 admin.site.register(models.OrganizationRating, OrganizationRatingAdmin)
 
 class JurisdictionRatingAdmin(admin.ModelAdmin):
     list_display = ['jurisdiction', 'rating_type', 'rank', 'value']
-    search_fields = ['jurisdiction']
+    search_fields = ['jurisdiction__name']
 admin.site.register(models.JurisdictionRating, JurisdictionRatingAdmin)
 
 class ServerVariableAdmin(admin.ModelAdmin):
@@ -159,7 +159,7 @@ admin.site.register(models.Zipcode, ZipcodeAdmin)
 class UserDetailAdmin(admin.ModelAdmin):
     list_display = ['user', 'notification_preference', 'display_preference', 'title']
     list_filter = ['notification_preference', 'display_preference', 'title']
-    search_fields = ['user']
+    search_fields = ['user__username', 'user__email', 'user__first_name', 'user__last_name']
     ordering = ['user']
 admin.site.register(models.UserDetail, UserDetailAdmin)
 

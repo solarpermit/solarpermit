@@ -29,6 +29,7 @@ from django.db import connections, transaction
 
 from BeautifulSoup import BeautifulSoup
 from website.utils.fileUploader import qqFileUploader
+from django.utils.safestring import mark_safe
 
 JURISDICTION_PAGE_SIZE = 30 #page size for endless scroll
     
@@ -106,7 +107,7 @@ def jurisdiction_comment(request):
             data['answer'] = af
             #data['answer_text'] = aa.get_formatted_value(af.value, af.question)
             answer_text = requestProcessor.decode_jinga_template(request,'website/blocks/display_answer.html', data, '')
-            data['answer_text'] = answer_text            
+            data['answer_text'] = mark_safe(answer_text)
             data['jurisdiction'] = jurisdiction
             label = af.question.question
             if len(af.question.question) > 75:
@@ -125,7 +126,7 @@ def jurisdiction_comment(request):
                         old_data[key] = old_question_content.get(key)
                     #data['old_answer_text'] = aa.get_formatted_value(old_answer.value, old_answer.question)
                     old_answer_text = requestProcessor.decode_jinga_template(request,'website/blocks/display_answer.html', old_data, '')
-                    data['old_answer_text'] = old_answer_text
+                    data['old_answer_text'] = mark_safe(old_answer_text)
                 else:
                     data['old_answer'] = None
                     data['old_answer_text'] = ''
@@ -285,7 +286,7 @@ def jurisdiction_comment(request):
             body = requestProcessor.decode_jinga_template(request,'website/blocks/comments_list.html', data, '')
             dajax.assign('#old_list ul', 'innerHTML', body)
             scripts = requestProcessor.decode_jinga_template(request,'website/blocks/comments_list.js' , data, '')
-            dajax.script(script)
+            dajax.script(scripts)
             dajax.assign('#show_commnet_div', 'innerHTML', '<a id="id_a_hide" href="#"><img src="/media/images/arrow_down.png" style="vertical-align:middle;" alt="Hide old comments"> Hide old comments </a>')
             script = requestProcessor.decode_jinga_template(request,'website/jurisdictions/jurisdiction_comment.js' , data, '')
             dajax.script(script)
@@ -767,7 +768,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                     for key in fee_info.keys():
                         data[key] = fee_info.get(key) 
                                         
-                body = requestProcessor.decode_jinga_template(request,'website/form_fields/'+data['question_template'], data, '')    
+                body = requestProcessor.decode_jinga_template(request,'website/form_fields/'+data['question_template']+'.jinja', data, '')    
             else:
                 body = ''
     
@@ -1183,11 +1184,11 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             rec['content'] = json.loads(rec['value'])
             question['logged_in_user_suggested_a_value'] = rec['creator_id'] == user.id
             votes = data['answers_votes'].get(rec['id'], None)
-            question['user_can_suggest'] = question['has_multivalues'] or \
-                                           (rec['creator_id'] == user.id and \
-                                            (not votes or 
-                                             (votes['total_up_votes'] == 0 and \
-                                              votes['total_down_votes'] == 0)))
+            if rec['creator_id'] == user.id:
+                question['user_can_suggest'] = question['has_multivalues'] or \
+                                               (not votes or \
+                                                (votes['total_up_votes'] == 0 and \
+                                                 votes['total_down_votes'] == 0))
 
         if rec['question_id'] == 4:
             show_google_map = True
@@ -1677,8 +1678,9 @@ def get_question_answers_dajax(request, jurisdiction, question, data):
     data = get_question_data(request, jurisdiction, question, data)
     body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_cqa_qa.html', data, '')
     dajax.assign('#div_question_content_'+str(question.id),'innerHTML', body)
-    script = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_cqa_qa.js' , data, '')
-    dajax.script(script)   
+    import os
+    with open(os.path.join(django_settings.PROJECT_ROOT, 'website/static/jurisdictions/AHJ_cqa_qa.js')) as f:
+        dajax.script(f.read())
     
     if data['category'] == 'all_info':          
         question_categories = QuestionCategory.objects.filter(accepted=1)

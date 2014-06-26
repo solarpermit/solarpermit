@@ -3,7 +3,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://anglachel.db48x.net:8000/" />
 <title>Reporting-Inspection-Requirements-Access-To-Roof</title>
 </head>
 <body>
@@ -17,19 +16,19 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Access to roof for inspections</td>
-	<td></td>
+	<td>waitForText</td>
+	<td>link=Filter this report...</td>
+	<td>Filter this report...</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>css=select</td>
+	<td>label=Access to roof for inspections</td>
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>css=h3</td>
-	<td>Current approved values . Filter this report...</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>css=h3</td>
-	<td>Current approved values . Filter this report...</td>
+	<td>css=th.header_row</td>
+	<td>Value</td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>

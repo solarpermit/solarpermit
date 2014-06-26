@@ -17,32 +17,27 @@
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>//div[@id='main-wrapper']/div[4]/ul/li[9]/h2</td>
-	<td>Inspection Requirements</td>
+	<td>link=Filter this report...</td>
+	<td>Filter this report...</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=System size cap</td>
-	<td></td>
+	<td>select</td>
+	<td>css=select</td>
+	<td>label=System size cap</td>
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>css=h3</td>
-	<td>Current approved values . Filter this report...</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>css=div.contentOnlyPage &gt; h1</td>
-	<td>System size cap - Field Answer Reporting</td>
+	<td>css=th.header_row</td>
+	<td>Value</td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>css=div.contentOnlyPage &gt; h1</td>
+	<td>css=svg</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>css=h3</td>
+	<td>css=rect</td>
 	<td></td>
 </tr>
 <tr>
@@ -96,9 +91,199 @@
 	<td>Total</td>
 </tr>
 <tr>
+	<td>verifyElementPresent</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.odd &gt; th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[3]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[4]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[5]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[6]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[7]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[8]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row_right</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.odd &gt; td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[4]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[5]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[6]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[7]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report1']/table/tbody/tr[8]/td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row</td>
+	<td>Value</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.odd &gt; th</td>
+	<td>&lt;5 kW</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[3]/th</td>
+	<td>5-10 kW</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[4]/th</td>
+	<td>10-15 kW</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[5]/th</td>
+	<td>15-20 kW</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[6]/th</td>
+	<td>&gt;20 kW</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[7]/th</td>
+	<td>Other</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report1']/table/tbody/tr[8]/th</td>
+	<td>Total</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=#report1 &gt; table.data_table &gt; tbody &gt; tr.even &gt; th.header_row_right</td>
+	<td>Jurisdictions</td>
+</tr>
+<tr>
 	<td>verifyText</td>
 	<td>css=th.header_row_right</td>
 	<td>Jurisdictions</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(2) &gt; td:nth-child(2)</td>
+	<td>answered</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(3) &gt; td:nth-child(2) &gt; span:nth-child(1)</td>
+	<td>unanswered</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(4) &gt; td:nth-child(2) &gt; span:nth-child(1)</td>
+	<td>total</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>parseInt(storedVars['answered']) + parseInt(storedVars['unanswered'])</td>
+	<td>${total}</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(2) &gt; td:nth-child(2)</td>
+	<td>5kw</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(3) &gt; td:nth-child(2)</td>
+	<td>10kw</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report1 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(4) &gt; td:nth-child(2)</td>
+	<td>15kw</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.even:nth-child(5) &gt; td:nth-child(2)</td>
+	<td>20kw</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.odd:nth-child(6) &gt; td:nth-child(2)</td>
+	<td>&gt;20kw</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.even:nth-child(7) &gt; td:nth-child(2)</td>
+	<td>other</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.odd:nth-child(8) &gt; td:nth-child(2)</td>
+	<td>total2</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>parseInt(storedVars['5kw']) + parseInt(storedVars['10kw']) + parseInt(storedVars['15kw']) + parseInt(storedVars['20kw']) + parseInt(storedVars['&gt;20kw']) + parseInt(storedVars['other'])</td>
+	<td>${total2}</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>parseInt(storedVars['answered']) === parseInt(storedVars['total2'])</td>
+	<td>true</td>
 </tr>
 </tbody></table>
 </body>

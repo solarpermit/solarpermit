@@ -16,7 +16,7 @@ from website.utils.mathUtil import MathUtil
 from website.utils.messageUtil import MessageUtil
 
 from website.models import Jurisdiction, UserDetail, OrganizationMember
-from website.models import UserDetail, OrganizationMember, news
+from website.models import UserDetail, OrganizationMember, PressRelease, Article, Event
 from website.utils.messageUtil import MessageUtil,add_system_message,get_system_message
 
 def states(request):
@@ -174,28 +174,18 @@ def email_feedback(data):
     msg.content_subtype = "html"   
     #msg.send()
 
-def news_static(request):
+def news(request):
     data = {}
     data['current_nav'] = 'news'
+    data['pressreleases'] = PressRelease.objects.all().order_by('published')
+    data['articles'] = Article.objects.all().order_by('published')
+    data['events'] = Event.objects.all().filter(expiration__gte=datetime.now()).order_by('published')
 
     message_data = get_system_message(request) #get the message List
     data =  dict(data.items() + message_data.items())   #merge message list to data
 
     requestProcessor = HttpRequestProcessor(request)
     return requestProcessor.render_to_response(request,'website/info/news.html', data, '')
-
-def news_dynamic(request):
-    data = {}
-    data['current_nav'] = 'news'
-    data['pressreleases'] = news.PressRelease.objects.all().order_by('published')
-    data['articles'] = news.Article.objects.all().order_by('published')
-    data['events'] = news.Event.objects.all().filter(expiration__gte=datetime.now()).order_by('published')
-
-    message_data = get_system_message(request) #get the message List
-    data =  dict(data.items() + message_data.items())   #merge message list to data
-
-    requestProcessor = HttpRequestProcessor(request)
-    return requestProcessor.render_to_response(request,'website/info/news_dynamic.html', data, '')
 
 def about(request):
     data = {}
