@@ -3,7 +3,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://anglachel:8000/" />
 <title>About-video</title>
 </head>
 <body>
@@ -61,7 +60,6 @@
 	<td>window.document.getElementById('introVideo').contentWindow.document.querySelector(&quot;.flideo &gt; video:nth-child(1)&quot;).played.end(0) &gt; 0</td>
 	<td>true</td>
 </tr>
-
 </tbody></table>
 </body>
 </html>
