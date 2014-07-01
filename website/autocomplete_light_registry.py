@@ -9,6 +9,7 @@ import json
 CHILDREN_SUBQUERY = '''SELECT GROUP_CONCAT(id SEPARATOR ',')
                        FROM website_jurisdiction AS j
                        WHERE j.parent_id = website_jurisdiction.id
+                       AND j.jurisdiction_type != 'U'
                        GROUP BY parent_id'''
 
 class JurisdictionAutocomplete(autocomplete_light.AutocompleteModelBase):
