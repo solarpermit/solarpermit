@@ -1754,6 +1754,7 @@ input_error{
 .field_mo_l1{	
 	background-image: url("../images/edit_off.png");
 	background-repeat:no-repeat;
+	margin-left: 0px;
 }
 .field_mo_l1:hover{	
 	background-image: url("../images/edit_on.png");
@@ -1762,7 +1763,6 @@ input_error{
 .field_mo_l2{	
 	background-image: url("../images/edit_on.png");
 	background-repeat:no-repeat;
-	margin-left: -25px;
 }
 
 .field_mo_l3{	
