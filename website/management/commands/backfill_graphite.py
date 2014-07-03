@@ -6,7 +6,6 @@ from datetime import datetime
 from django.utils.timezone import utc
 from django.core.management.base import BaseCommand, CommandError
 import website
-#from website.models import Question
 from website.utils import reporting
 from website.utils.temporal_stats import normalize
 from pprint import pprint
