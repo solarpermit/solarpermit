@@ -1,11 +1,47 @@
+import copy
+from datetime import datetime, timedelta
 from django.db import connection
 from collections import OrderedDict
 import json
 import re
+from django.conf import settings as settings
 from django.db.models import Q
 from django.db.models.sql import Query
 from django.db import DEFAULT_DB_ALIAS
 from website.models import Jurisdiction
+from website.utils import temporal_stats
+
+def update_reports(question, jurisdictions=None, before=None, previous=None):
+    if jurisdictions:
+        if not isinstance(jurisdictions, list):
+            jurisdictions = [jurisdictions]
+        jurisdictions = [j.id for j in jurisdictions if j.id not in settings.SAMPLE_JURISDICTIONS]
+        if not jurisdictions:
+            return None
+    if not before:
+        before = datetime.utcnow()
+    if not previous:
+        previous_bucket = before - timedelta(seconds=10) # alignment?
+        previous = run_reports(question, jurisdictions=jurisdictions, before=previous_bucket)
+    current = run_reports(question, jurisdictions=jurisdictions, before=before)
+    changes = differences(previous, current) if previous else current
+    for report in changes:
+        if 'name' in report:
+            stats = temporal_stats.get_report(report['name'])
+            for row in report['table']:
+                k = row['key'].lower()
+                v = row['value']
+                if v:
+                    stats[k](question.id).increment(delta=v)
+    return current
+
+def differences(last, current):
+    output = copy.deepcopy(current)
+    for (i, report) in enumerate(current):
+        if 'name' in report:
+            for (r, row) in enumerate(report['table']):
+                output[i]['table'][r]['value'] = row['value'] - last[i]['table'][r]['value']
+    return output
 
 def run_reports(question, **kwargs):
     return [run_report(question, report, **kwargs) for report in get_reports(question)]
@@ -29,13 +65,19 @@ def add_temporal_reports(reports):
     return reports + temporal
 
 def make_temporal(report):
+    if not 'name' in report:
+        return None
+    spec = temporal_stats.get_report(report['name'])
+    if not spec:
+        return None
     return { 'type': "temporal",
-             'name': report['name'] if 'name' in report else None,
+             'name': report['name'],
              'question_id': report['question_id'],
-             'statsd_metrics': [row['key'] for row in report['table']]
+             'table': report['table'],
+             'statsd_metrics': [m for (m, f) in spec.iteritems()]
            }
 
-def build_query(question, field_map, geo_filter=None, before=None):
+def build_query(question, field_map, geo_filter=None, before=None, jurisdictions=None):
     # Yes we have two mechanisms for building queries here. We've
     # hacked out a slice of the django sql "compiler" for one of them,
     # since they specialize in where clauses, while writing a simpler
@@ -56,6 +98,11 @@ def build_query(question, field_map, geo_filter=None, before=None):
         where, where_params = fake_query.where.as_sql(compiler.connection.ops.quote_name, #might break postgres
                                                       compiler.connection)
         compiled_filter = where % tuple(["'%s'" % p for p in where_params])
+    if jurisdictions:
+        if not isinstance(jurisdictions, list):
+            jurisdictions = [jurisdictions]
+        jurisdictions = ", ".join([str(j.id) if isinstance(j, Jurisdiction) else str(j)
+                                   for j in jurisdictions])
     return ('''
                SELECT %(fields)s
                FROM (SELECT id AS answer_id,
@@ -70,12 +117,14 @@ def build_query(question, field_map, geo_filter=None, before=None):
                            WHERE website_jurisdiction.id NOT IN (1, 101105) AND
                                  website_jurisdiction.jurisdiction_type != 'u' ''' +
             ("AND\n                                 %(geo_filter)s" if geo_filter else "") +
-            ("AND\n                                 create_datetime <= '%(before)s'" if before else "") +
+            ("AND\n                                 create_datetime <= '%(before)s '" if before else "") +
+            ("AND\n                                 website_jurisdiction.id IN (%(jurisdictions)s)" if jurisdictions else "") +
             ''') AS temp0) as temp1
             ''') % { "question_id": question.id,
                      "fields": sep.join(fields),
                      "geo_filter": compiled_filter,
-                     "before": before.strftime("%Y-%m-%d %H:%M:%S") if before else None }
+                     "before": before.strftime("%Y-%m-%d %H:%M:%S") if before else None,
+                     "jurisdictions": jurisdictions }
 
 def json_match(field_name, value, op="="):
     # BUG: this should be utf8mb4_unicode_ci; our connection to the database must be using the wrong encoding
@@ -145,6 +194,7 @@ def hist(spec):
     return chart("histogram", spec)
 def named(name, spec):
     spec['name'] = name
+    temporal_stats.define_report(name, spec['spec'])
     return spec
 
 def add_freeform(spec):
@@ -185,13 +235,13 @@ def coverage_report():
 def yes_no_field(field_name):
     spec = OrderedDict([("Yes", json_match(field_name, "yes")),
                         ("No", json_match(field_name, "no"))])
-    return pie(add_sum_total(summarize(add_other(spec))))
+    return named("yes_no", pie(add_sum_total(summarize(add_other(spec)))))
 
 def yes_no_exception_field(field_name):
     spec = OrderedDict([("Yes", json_match(field_name, "yes")),
                         ("Yes, with exceptions", json_match(field_name, "yes, with exceptions")),
                         ("No", json_match(field_name, "no"))])
-    return pie(add_sum_total(summarize(add_other(spec))))
+    return named("yes_no_except", pie(add_sum_total(summarize(add_other(spec)))))
 
 # macros, man, macros.
 def turn_around_report():
@@ -212,7 +262,7 @@ def turn_around_report():
                                                 and_match(is_weeks, eq(qty, 4)))),
                         ("21+ days", or_match(and_match(is_days, gte(qty, 21)),
                                               and_match(is_weeks, gte(qty, 5))))])
-    return hist(add_sum_total(summarize(add_other(add_freeform(bins)))))
+    return named("turn_around_time", hist(add_sum_total(summarize(add_other(add_freeform(bins))))))
 
 def plan_check_service_type_report():
     spec = OrderedDict([("Over the Counter",
@@ -224,24 +274,24 @@ def plan_check_service_type_report():
                         ("Outsourced",
                          json_match("plan_check_service_type",
                                     "outsourced"))])
-    return pie(add_sum_total(summarize(add_other(spec))))
+    return named("plan_check", pie(add_sum_total(summarize(add_other(spec)))))
 
 def module_drawings_report():
     spec = OrderedDict([("Yes", json_match("value", "must draw individual modules")),
                         ("No", json_match("value", "n in series in a rectangle allowed"))])
-    return pie(add_sum_total(summarize(add_other(spec))))
+    return named("module_drawings", pie(add_sum_total(summarize(add_other(spec)))))
 
 def inspection_approval_report():
     spec = OrderedDict([("In person", json_match("apply", "in person")),
                         ("Remotely", json_match("apply", "remotely"))])
-    return pie(add_sum_total(summarize(add_other(spec))))
+    return named("inspection_approval", pie(add_sum_total(summarize(add_other(spec)))))
 
 def time_window_report():
     spec = OrderedDict([("Exact time given", json_match("time_window", "0")),
                         ("2 hours (or less)", json_match("time_window", "2")),
                         ("Half Day (2 to 4 hours)", json_match("time_window", "4")),
                         ("Full Day (greater than 4 hours)", json_match("time_window", "8"))])
-    return hist(add_sum_total(summarize(add_other(add_freeform(spec)))))
+    return named("time_window", hist(add_sum_total(summarize(add_other(add_freeform(spec))))))
 
 def size_cap_report():
     spec = OrderedDict([("<5 kW", lt(json_extract("value"), 5)),
@@ -249,13 +299,13 @@ def size_cap_report():
                         ("10-15 kW", between(json_extract("value"), 10, 15)),
                         ("15-20 kW", between(json_extract("value"), 15, 20)),
                         (">20 kW", gte(json_extract("value"), 20))])
-    return hist(add_sum_total(summarize(add_other(spec))))
+    return named("size_cap", hist(add_sum_total(summarize(add_other(spec)))))
 
 def sb1222_report():
     spec = OrderedDict([("Yes", json_match("compliant", "yes")),
                         ("Yes, with evidence", json_match("compliant", "yes, with exceptions")),
                         ("No", json_match("compliant", "no"))])
-    return pie(add_sum_total(summarize(add_other(spec))))
+    return named("sb1222", pie(add_sum_total(summarize(add_other(spec)))))
 
 reports_by_type = {
     "available_url_display": [coverage_report(), yes_no_field("available")],

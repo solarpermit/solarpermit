@@ -91,9 +91,6 @@ function add_ui(initial_reports) {
     var ui = $("<div>", { id: "report"+ report.idx, 'class': "report" }), table, temporal_table;
     ui.append($("<div>", { id: "graph"+ report.idx, 'class': "graph" }));
     if (report.type == "temporal") {
-      report.table = report.statsd_metrics.map(function (m) {
-                                                 return { key: m, value: "" };
-                                               });
       ui.append(table = $("<table>", { 'class': "data_table" }));
       table.append($("<tr class='even'><th class='header_row'>Value</th><th class='header_row_right'>Jurisdictions</th></tr>"));
       $.each(report.table,
@@ -161,10 +158,10 @@ function add_ui(initial_reports) {
     } else if (report.type == "temporal" && report.name) {
       var metrics = $.map(report.statsd_metrics,
                           function (metric) {
-                            return "integral(solarpermit.dev.counters.question."+ report.name +"."+ report.question_id +"."+ metric.toLowerCase() +".count)";
+                            return "integral(solarpermit.counters.question."+ report.name +"."+ report.question_id +"."+ metric.toLowerCase() +".count)";
                           });
-      $.ajax({ url: "http://permit01.dev.cpf.com:9001/render/",
-               data: { from: "00:00_20120101",
+      $.ajax({ url: "http://permit01.dev.cpf.com:8080/render/",
+               data: { from: "00:00_20120901",
                        target: metrics,
                        format: "json" },
                dataType: "json",
@@ -192,6 +189,8 @@ function add_ui(initial_reports) {
                             $(cells[1]).text(formatStamp(e));
                             var processed = processData(data, s, e, checkboxes);
                             r.clear();
+                            if (!(processed[0].length && processed[1].length))
+                              return;
                             graph = r.linechart(0, 0, 320, 320, processed[0], processed[1], { snapEnds: false });
                             $.each(graph.lines,
                                    function(i, l) {
@@ -249,7 +248,7 @@ function add_ui(initial_reports) {
                             var enabled_ys = [];
                             $.each(enabled,
                                    function (i, checkbox) {
-                                     if (checkbox.checked)
+                                     if (checkbox.checked && ys[i])
                                        enabled_ys.push(ys[i]);
                                    });
                             return [x, enabled_ys];

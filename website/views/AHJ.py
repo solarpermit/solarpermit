@@ -30,7 +30,7 @@ from django.db import connections, transaction
 from BeautifulSoup import BeautifulSoup
 from website.utils.fileUploader import qqFileUploader
 from django.utils.safestring import mark_safe
-from website.utils import temporal_stats
+from website.utils import reporting
 
 JURISDICTION_PAGE_SIZE = 30 #page size for endless scroll
     
@@ -817,8 +817,8 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                     view_question_obj = ViewQuestions()
                     view_question_obj.add_question_to_view('a', question, jurisdiction)
                             
+            reporting.update_reports(question, jurisdictions=jurisdiction)
             dajax = get_question_answers_dajax(request, jurisdiction, question, data)
-            temporal_stats.suggestions().increment(subname=str(question.id))
             return HttpResponse(dajax.json())      
         
         if (ajax == 'suggestion_edit_submit'):     
@@ -856,8 +856,8 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                     view_question_obj = ViewQuestions()
                     view_question_obj.add_question_to_view('a', question, jurisdiction)
                                         
+            reporting.update_reports(question, jurisdictions=jurisdiction)
             dajax = get_question_answers_dajax(request, jurisdiction, question, data)
-                    
             return HttpResponse(dajax.json())      
             
         if (ajax == 'add_to_views'):
@@ -1037,7 +1037,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                 view_question_obj = ViewQuestions()
                 view_question_obj.remmove_question_from_view('a', question, jurisdiction)                    
                 
-            temporal_stats.suggestions().decrement(subname=str(question.id))
+            reporting.update_reports(question, jurisdictions=jurisdiction)
             return HttpResponse(dajax.json())           
         
         if (ajax == 'approve_suggestion'):
@@ -1057,9 +1057,8 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             
             data['top_contributors'] = get_ahj_top_contributors(jurisdiction, category)  
             body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_top_contributors.html', data, '')   
+            reporting.update_reports(question, jurisdictions=jurisdiction)
             dajax.assign('#top-contributor','innerHTML', body)                
-        
-                               
             return HttpResponse(dajax.json())         
         
         if (ajax == 'vote'):
@@ -1119,6 +1118,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                 question_terminology = question.get_terminology()
                 dajax.script("confirm_rejected("+str(entity_id)+",'"+question_terminology+"');")
             #dajax.script("controller.showMessage('Your feedback has been sent and will be carefully reviewed.', 'success');")
+            reporting.update_reports(question, jurisdictions=jurisdiction)
             return HttpResponse(dajax.json())
     
     ######################################### END OF AJAX #######################################################    
