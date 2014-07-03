@@ -27,7 +27,7 @@ def update_reports(question, jurisdictions=None, before=None, previous=None):
     changes = differences(previous, current) if previous else current
     for report in changes:
         if 'name' in report:
-            stats = temporal_stats.get_report(report['name'])
+            stats = dict(temporal_stats.get_report(report['name']))
             for row in report['table']:
                 k = row['key'].lower()
                 v = row['value']
@@ -74,7 +74,7 @@ def make_temporal(report):
              'name': report['name'],
              'question_id': report['question_id'],
              'table': report['table'],
-             'statsd_metrics': [m for (m, f) in spec.iteritems()]
+             'statsd_metrics': [m for (m, f) in spec]
            }
 
 def build_query(question, field_map, geo_filter=None, before=None, jurisdictions=None):
