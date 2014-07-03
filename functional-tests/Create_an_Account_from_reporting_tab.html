@@ -3,43 +3,45 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Dallas_TX_General</title>
+<link rel="selenium.base" href="http://solarpermit.org/" />
+<title>Create_an_Account_from_reporting_tab</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Dallas_TX_General</td></tr>
+<tr><td rowspan="1" colspan="3">Create_an_Account_from_reporting_tab</td></tr>
 </thead><tbody>
 <tr>
 	<td>open</td>
-	<td>/jurisdiction/dallas-tx/</td>
+	<td>/</td>
 	<td></td>
 </tr>
 <tr>
-	<td>waitForTitle</td>
-	<td>Dallas, Rockwall County, TX - National Solar Permitting Database</td>
+	<td>clickAndWait</td>
+	<td>link=Reporting</td>
 	<td></td>
 </tr>
 <tr>
 	<td>click</td>
-	<td>id=electrical</td>
+	<td>id=create_account_button</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>css=div.ahj_category_header</td>
-	<td>Electrical</td>
+	<td>css=div.modal_dialog &gt; div.modal_dialog_top_block &gt; div.modal_dialog_title</td>
+	<td>Create a New Account</td>
 </tr>
 <tr>
-	<td>waitForText</td>
-	<td>css=p</td>
-	<td>exact:See missing or incorrect information? Mouse over a field and click the blue pencil to add or edit the information.</td>
+	<td>verifyElementPresent</td>
+	<td>id=form_create_account_field_email</td>
+	<td></td>
 </tr>
 <tr>
-	<td>verifyText</td>
-	<td>css=h1.page_title</td>
-	<td>Dallas, TX</td>
+	<td>verifyElementPresent</td>
+	<td>id=form_create_account_field_username</td>
+	<td></td>
 </tr>
+
 </tbody></table>
 </body>
 </html>

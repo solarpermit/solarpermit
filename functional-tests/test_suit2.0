@@ -3,33 +3,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Site-Map-Misc</title>
+<link rel="selenium.base" href="http://solarpermit.org/" />
+<title>test_suit2</title>
 </head>
 <body>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3">Site-Map-Misc</td></tr>
+<tr><td rowspan="1" colspan="3">test_suit2</td></tr>
 </thead><tbody>
-<tr>
-	<td>open</td>
-	<td>/sitemap/</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForText</td>
-	<td>link=Jurisdictions by State</td>
-	<td>Jurisdictions by State</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>css=div.contentOnlyPage &gt; h1</td>
-	<td>Site Map</td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>class=contentOnlyPage</td>
-	<td></td>
-</tr>
+
 </tbody></table>
 </body>
 </html>

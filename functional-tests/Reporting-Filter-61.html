@@ -3,7 +3,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://anglachel.db48x.net:8000/" />
 <title>Reporting-Filter-61</title>
 </head>
 <body>
@@ -18,18 +17,13 @@
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>//div[@id='main-wrapper']/div[4]/ul/li[2]/h2</td>
-	<td>Building</td>
+	<td>link=Filter this report...</td>
+	<td>Filter this report...</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Enforced building code version</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForText</td>
-	<td>css=h3</td>
-	<td>Current approved values . Filter this report...</td>
+	<td>select</td>
+	<td>css=select</td>
+	<td>label=Enforced building code version</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -37,14 +31,9 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>css=input[type=&quot;submit&quot;]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>css=th.division</td>
-	<td>Filter criteria:</td>
+	<td>waitForText</td>
+	<td>css=div.modal_dialog &gt; div.modal_dialog_top_block &gt; div.modal_dialog_title</td>
+	<td>Filter criteria</td>
 </tr>
 <tr>
 	<td>verifyText</td>
@@ -52,8 +41,13 @@
 	<td>States</td>
 </tr>
 <tr>
+	<td>verifyText</td>
+	<td>//table[@id='filter_criteria_form']/tbody/tr[2]/th/label</td>
+	<td>Jurisdictions</td>
+</tr>
+<tr>
 	<td>verifyElementPresent</td>
-	<td>css=#main-wrapper &gt; form</td>
+	<td>css=option[value=&quot;AZ&quot;]</td>
 	<td></td>
 </tr>
 <tr>
@@ -74,41 +68,6 @@
 <tr>
 	<td>verifyElementPresent</td>
 	<td>css=button.deselect</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/form/table/tbody/tr[4]/th</td>
-	<td>Save filter (optional):</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/form/table/tbody/tr[5]/th/label</td>
-	<td>Filter name</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/form/table/tbody/tr[6]/th/label</td>
-	<td>Description</td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>id=id_filter_name</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>id=id_description</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>css=input[type=&quot;submit&quot;]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/form/table/tbody/tr[4]/th</td>
 	<td></td>
 </tr>
 <tr>
@@ -198,7 +157,7 @@
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=input[type=&quot;submit&quot;]</td>
+	<td>id=add-filter</td>
 	<td></td>
 </tr>
 <tr>
@@ -208,8 +167,28 @@
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>//div[@id='report0']/table/tbody/tr[4]/td</td>
-	<td>4</td>
+	<td>css=th.header_row</td>
+	<td>Value</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=tr.odd &gt; th</td>
+	<td>Answered</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report0']/table/tbody/tr[3]/th</td>
+	<td>Unanswered</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
+	<td>Total</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=th.header_row_right</td>
+	<td>Jurisdictions</td>
 </tr>
 <tr>
 	<td>waitForElementPresent</td>
@@ -235,6 +214,26 @@
 	<td>verifyElementPresent</td>
 	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
 	<td></td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.odd:nth-child(2) &gt; td:nth-child(2)</td>
+	<td>answered</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.even:nth-child(3) &gt; td:nth-child(2)</td>
+	<td>unanswered</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=tr.odd:nth-child(4) &gt; td:nth-child(2)</td>
+	<td>total</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>parseInt(storedVars['answered']) + parseInt(storedVars['unanswered'])</td>
+	<td>${total}</td>
 </tr>
 </tbody></table>
 </body>

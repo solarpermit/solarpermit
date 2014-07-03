@@ -306,12 +306,6 @@ TRACK_IGNORE_URLS = ['tracking', 'admin']
 DEFAULT_JINJA2_TEMPLATE_INTERCEPT_RE = r'.*(?:jinja|js)$'
 JINJA2_EXTENSIONS = ['jinja2.ext.WithExtension',
                      'compressor.contrib.jinja2ext.CompressorExtension']
-JINJA2_GLOBALS = {
-    # note, this does not work for string values
-    'INTERNAL_IPS': INTERNAL_IPS,
-    'ENABLE_GOOGLE_ANALYTICS': ENABLE_GOOGLE_ANALYTICS,
-    'FORUM_INTEGRATION': FORUM_INTEGRATION,
-}
 
 # django-autocomplete; has nothing to do with our current search autocomplete
 AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/'
@@ -325,3 +319,11 @@ from settings_local import *
 if DEBUG:
     INSTALLED_APPS += ('django_extensions',
                        'debug_toolbar')
+
+# this has to be after we import settings_local, obviously
+JINJA2_GLOBALS = {
+    # note, this does not work for string values (although that's fixed in a newer version of django-jinja)
+    'INTERNAL_IPS': INTERNAL_IPS,
+    'ENABLE_GOOGLE_ANALYTICS': ENABLE_GOOGLE_ANALYTICS,
+    'FORUM_INTEGRATION': FORUM_INTEGRATION,
+}

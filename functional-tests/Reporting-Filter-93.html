@@ -3,7 +3,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head profile="http://selenium-ide.openqa.org/profiles/test-case">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="selenium.base" href="http://anglachel.db48x.net:8000/" />
 <title>Reporting-Filter-93</title>
 </head>
 <body>
@@ -18,18 +17,13 @@
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>//div[@id='main-wrapper']/div[4]/ul/li[2]/h2</td>
-	<td>Building</td>
+	<td>link=Filter this report...</td>
+	<td>Filter this report...</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Permitting department name</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForText</td>
-	<td>css=h3</td>
-	<td>Current approved values . Filter this report...</td>
+	<td>select</td>
+	<td>css=select</td>
+	<td>label=Permitting department name</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -37,23 +31,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>waitForElementPresent</td>
-	<td>css=input[type=&quot;submit&quot;]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>css=th.division</td>
-	<td>Filter criteria:</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>css=label</td>
-	<td>States</td>
-</tr>
-<tr>
 	<td>verifyElementPresent</td>
-	<td>css=#main-wrapper &gt; form</td>
+	<td>//table[@id='filter_criteria_form']/tbody/tr[2]/th</td>
 	<td></td>
 </tr>
 <tr>
@@ -74,41 +53,6 @@
 <tr>
 	<td>verifyElementPresent</td>
 	<td>css=button.deselect</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/form/table/tbody/tr[4]/th</td>
-	<td>Save filter (optional):</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/form/table/tbody/tr[5]/th/label</td>
-	<td>Filter name</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>//div[@id='main-wrapper']/form/table/tbody/tr[6]/th/label</td>
-	<td>Description</td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>id=id_filter_name</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>id=id_description</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>css=input[type=&quot;submit&quot;]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>//div[@id='main-wrapper']/form/table/tbody/tr[4]/th</td>
 	<td></td>
 </tr>
 <tr>
@@ -137,14 +81,39 @@
 	<td>label=Arkansas</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>css=input[type=&quot;submit&quot;]</td>
+	<td>click</td>
+	<td>id=add-filter</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>css=h3</td>
-	<td>Current approved values filtered to 1337 jurisdictions. Edit current filter...</td>
+	<td>css=th.header_row</td>
+	<td>Value</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=th.header_row</td>
+	<td>Value</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report0']/table/tbody/tr[2]/th/span[2]</td>
+	<td>Answered</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report0']/table/tbody/tr[3]/th/span[2]</td>
+	<td>Unanswered</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
+	<td>Total</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>css=th.header_row_right</td>
+	<td>Jurisdictions</td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
@@ -196,7 +165,6 @@
 	<td>parseInt(storedVars['answered']) + parseInt(storedVars['unanswered'])</td>
 	<td>${total}</td>
 </tr>
-
 </tbody></table>
 </body>
 </html>
