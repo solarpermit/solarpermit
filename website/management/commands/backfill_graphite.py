@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import copy
 import socket
 import time
 from datetime import datetime
@@ -24,7 +23,7 @@ class Command(BaseCommand):
         sock.connect(CARBON_SERVER)
         questions = website.models.Question.objects.all()
         #questions = website.models.Question.objects.filter(pk=9)
-        print "backfilling %d questions" % len(questions)
+        print "%s: backfilling %d questions" % (datetime.now(), len(questions))
         jurisdiction_timestamps = set([j.create_datetime or j.modify_datetime
                                        for j in website.models.Jurisdiction.objects.all()
                                        if j.create_datetime is not None or
@@ -32,7 +31,7 @@ class Command(BaseCommand):
         for q in questions:
             answers = q.answerreference_set.all()
             if not answers:
-                print "not backfilling question %d, it has no answers" % q.id
+                print "%s: not backfilling question %d, it has no answers" % (datetime.now(), q.id)
             else:
                 # you might think we could just use
                 # reporting.update_reports, but that will report via
@@ -50,28 +49,26 @@ class Command(BaseCommand):
                             seconds = since_epoch(stamp)
                             start = int(seconds - (seconds % 10))
                             end = start + 10
-                            current = reporting.run_report(q, report, before=stamp)
-                            changes = differences(last, current) if last else reports
-                            for row in current['table']:
+                            current = reporting.run_report(q, report, before=stamp)['table']
+                            changes = differences(last, current) if last else current
+                            for row in changes:
                                 k = row['key'].lower()
                                 v = row['value']
                                 if v is not None:
                                     send(sock, [base, report['name'], q.id, k, "count"], v, end)
-                                    send(sock, [base, report['name'], q.id, k, "rate"], v / 10, end)
+                                    send(sock, [base, report['name'], q.id, k, "rate"], v / 10.0, end)
                             last = current
             # yes, sleep. if we go too fast, carbon doesn't create all of the databases
             time.sleep(30)
         sock.close()
 
 def differences(last, current):
-    output = copy.deepcopy(current)
-    if 'name' in current:
-        for (r, row) in enumerate(current['table']):
-            output['table'][r]['value'] = row['value'] - last['table'][r]['value']
-    return output
+    return [{ 'key': row['key'],
+              'value': row['value'] - last[r]['value'] }
+            for (r, row) in enumerate(current)]
 
 def send(socket, name, value, timestamp):
     name = ".".join([normalize(str(n)).lower() for n in name])
     msg = "%s %s %d\n" % (name, value, timestamp)
-    #print (msg),  # avoids a newline at the end, since we already have one
+    #print "%s: %s" % (datetime.now(), msg),
     socket.sendall(msg)
