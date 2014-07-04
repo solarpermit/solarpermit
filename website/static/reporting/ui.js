@@ -212,7 +212,7 @@
                  dataType: "json",
                  success: function(data) {
                             var max = tomorrow() / 1000,
-                                min = Date.UTC(2013,6,13) / 1000;
+                                min = Date.UTC(2013,6,1) / 1000; // June 2013
                             var end = max,
                                 start = min; //Math.max(monthago() / 1000, min);
                             var slider = container.find(".date-slider").slider({ range: true,
