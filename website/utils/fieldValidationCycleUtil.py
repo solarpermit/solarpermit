@@ -1333,6 +1333,7 @@ class FieldValidationCycleUtil():
                             #action
                             data = 'rejected - another answer was approved by the cron job'
                             action_obj.save_action(validate_action_category_name, data, answer_to_be_rejected, entity_name, user_id, answer.jurisdiction)                      
+                    reporting.update_reports(question)
                 
     def process_fee_structure(self, answer):
         
