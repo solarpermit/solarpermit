@@ -1876,16 +1876,21 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
                             auth_user.is_superuser,
                             website_userdetail.display_preference,
                             0 as count_of_answers
-                     FROM website_answerreference,
-                          website_question,
-                          website_questioncategory,
-                          auth_user,
-                          website_userdetail
-                     WHERE website_answerreference.jurisdiction_id = %s AND
-                           website_question.id = website_answerreference.question_id AND
-                           website_questioncategory.id = website_question.category_id AND
-                           auth_user.id = website_answerreference.creator_id AND
-                           website_userdetail.user_id = website_answerreference.creator_id AND'''
+                     FROM website_answerreference
+                          LEFT OUTER JOIN website_question
+                              ON website_question.id = website_answerreference.question_id
+                          LEFT OUTER JOIN website_questioncategory
+                              ON website_questioncategory.id = website_question.category_id
+                          LEFT OUTER JOIN auth_user
+                              ON auth_user.id = website_answerreference.creator_id
+                          LEFT OUTER JOIN website_userdetail
+                              ON website_userdetail.user_id = website_answerreference.creator_id
+                          LEFT OUTER JOIN website_template
+                              ON website_question.qtemplate_id = website_template.id
+                     WHERE website_answerreference.jurisdiction_id = %(jurisdiction_id)s AND
+                           (website_question.form_type != 'CF' OR
+                            (website_question.form_type = 'CF' AND
+                             website_template.jurisdiction_id = %(jurisdiction_id)s)) AND'''
     if placeholder:
         query_str += '''   website_question.id IN ('''+ placeholder +''') AND'''
     query_str += '''       website_question.accepted = '1' AND
@@ -1968,7 +1973,7 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
                                      FROM website_answerreference as temp_answers LEFT OUTER JOIN
                                           website_question
                                      ON website_question.id = temp_answers.question_id
-                                     WHERE temp_answers.jurisdiction_id = %s AND
+                                     WHERE temp_answers.jurisdiction_id = %(jurisdiction_id)s AND
                                            temp_answers.question_id = the_question_id AND
                                            ((temp_answers.approval_status = 'A' AND
                                              website_question.has_multivalues = '0' AND
@@ -1997,11 +2002,16 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
                                                      temp_table.approval_status = 'A') IS NULL))) AS count_of_answers'''
     else:
         query_str += '''            0 as count_of_answers'''
-    query_str += '''         FROM website_question LEFT OUTER JOIN
-                                  website_questioncategory
-                             ON website_questioncategory.id = website_question.category_id
+    query_str += '''         FROM website_question
+                                  LEFT OUTER JOIN website_questioncategory 
+                                      ON website_questioncategory.id = website_question.category_id
+                                  LEFT OUTER JOIN website_template
+                                      ON website_template.id = website_question.qtemplate_id
                              WHERE website_questioncategory.accepted = '1' AND
-                                   website_question.accepted = '1' AND'''
+                                   website_question.accepted = '1' AND
+                                   (website_question.form_type != 'CF' OR
+                                    (website_question.form_type = 'CF' AND
+                                     website_template.jurisdiction_id = %(jurisdiction_id)s)) AND'''
     if placeholder:
         query_str += '''           website_question.id IN ('''+ placeholder +''')'''
     else:
@@ -2017,17 +2027,13 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
                              approval_status ASC,
                              create_datetime DESC,
                              id DESC;'''
-    query_params = [jurisdiction.id]
+    query_params = []
     if question_ids:
         for question_id in question_ids:
             query_params.append(question_id)
-        if empty_data_fields_hidden:
-            query_params.append(jurisdiction.id)
         for question_id in question_ids:
             query_params.append(question_id)
-    else:
-        if empty_data_fields_hidden:
-            query_params.append(jurisdiction.id)
+    query_str = query_str % { 'jurisdiction_id': jurisdiction.id }
 
     cursor = connections['default'].cursor()
     cursor.execute(unicode(query_str), query_params)
