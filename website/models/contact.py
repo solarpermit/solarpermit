@@ -2,8 +2,8 @@ import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.contrib.localflavor.us.us_states import STATE_CHOICES
-from django.contrib.localflavor.us.models import PhoneNumberField
+from localflavor.us.us_states import STATE_CHOICES
+from localflavor.us.models import PhoneNumberField
 
 class Address(models.Model):
     address1 = models.CharField(max_length=255, blank=True, null=True)

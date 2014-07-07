@@ -21,7 +21,7 @@ import re
 from django.db.models import Q
 from django.db.models.sql import Query
 from django.db import DEFAULT_DB_ALIAS
-from django.contrib.localflavor.us.us_states import US_STATES
+from localflavor.us.us_states import US_STATES
 import urllib
 from django.shortcuts import render_to_response
 import autocomplete_light

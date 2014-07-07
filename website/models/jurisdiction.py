@@ -1,10 +1,9 @@
 import datetime
 from django.db import models
 from django.contrib.auth.models import User
-from django.contrib.localflavor.us.us_states import STATE_CHOICES
 from django.conf import settings
 from website.models import Organization, UserFavorite
-from django.contrib.localflavor.us.us_states import US_STATES
+from localflavor.us.us_states import US_STATES
 import urllib
 from htmlentitiesdecode import decode as entity_decode
 import re
@@ -32,7 +31,7 @@ class Jurisdiction(models.Model):
     organization = models.ForeignKey(Organization, blank=True, null=True, related_name= '_org_jurisdiction') #link to org info & structure
     city = models.CharField(max_length=64, blank=True, null=True, db_index=True) #if for a city
     county = models.CharField(max_length=64, blank=True, null=True, db_index=True) #if within a county
-    state = models.CharField(choices=STATE_CHOICES, max_length=8, blank=True, null=True, db_index=True)
+    state = models.CharField(choices=US_STATES, max_length=8, blank=True, null=True, db_index=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=7, blank=True, null=True)
     longitude = models.DecimalField(max_digits=10, decimal_places=7, blank=True, null=True)
     create_datetime = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -373,7 +372,7 @@ class Jurisdiction(models.Model):
 """
 class Zipcode(models.Model):
     zip_code = models.CharField(max_length=10, blank=False, null=False, db_index=True)
-    state = models.CharField(choices=STATE_CHOICES, max_length=2, blank=True, null=True, db_index=True)    
+    state = models.CharField(choices=US_STATES, max_length=2, blank=True, null=True, db_index=True)    
     city = models.CharField(max_length=64, blank=True, null=True, db_index=True) #if for a city
     latitude = models.DecimalField(max_digits=10, decimal_places=7, blank=True, null=True, db_index=True)
     longitude = models.DecimalField(max_digits=10, decimal_places=7, blank=True, null=True, db_index=True)

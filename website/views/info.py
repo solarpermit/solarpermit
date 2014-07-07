@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template.loader import get_template
 from django.template import Context, RequestContext
 from django.views.decorators import csrf
-from django.contrib.localflavor.us.us_states import US_STATES
+from localflavor.us.us_states import US_STATES
 from dajax.core import Dajax
 from django.conf import settings 
 from django.core.mail.message import EmailMessage
