@@ -3,7 +3,7 @@
     {% set current_answer_id = answer['id'] %}
     {% set votes = answers_votes[current_answer_id] %}
     <span class="vote_panel">
-      {% if answer['creator_id'] == login_user_id %}
+      {% if answer['creator_id'] == user.id %}
         {% set class_canvoteup = '' %}
         {% set class_canvotedown = '' %}
         {% set class_up_disabled = 'disabled' %}
