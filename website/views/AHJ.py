@@ -1892,7 +1892,7 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
                             (website_question.form_type = 'CF' AND
                              website_template.jurisdiction_id = %(jurisdiction_id)s)) AND'''
     if placeholder:
-        query_str += '''   website_question.id IN ('''+ placeholder +''') AND'''
+        query_str += '''   website_question.id IN (%(placeholder)s) AND'''
     query_str += '''       website_question.accepted = '1' AND
                            ((website_answerreference.approval_status = 'A' AND
                              website_question.has_multivalues = '0' AND
@@ -2013,7 +2013,7 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
                                     (website_question.form_type = 'CF' AND
                                      website_template.jurisdiction_id = %(jurisdiction_id)s)) AND'''
     if placeholder:
-        query_str += '''           website_question.id IN ('''+ placeholder +''')'''
+        query_str += '''           website_question.id IN (%(placeholder)s)'''
     else:
         query_str += '''           1'''
     if empty_data_fields_hidden:
@@ -2027,13 +2027,14 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
                              approval_status ASC,
                              create_datetime DESC,
                              id DESC;'''
+    query_str = query_str % { 'jurisdiction_id': jurisdiction.id,
+                              'placeholder': placeholder }
     query_params = []
     if question_ids:
         for question_id in question_ids:
             query_params.append(question_id)
         for question_id in question_ids:
             query_params.append(question_id)
-    query_str = query_str % { 'jurisdiction_id': jurisdiction.id }
 
     cursor = connections['default'].cursor()
     cursor.execute(unicode(query_str), query_params)
