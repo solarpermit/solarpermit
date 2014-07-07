@@ -14,7 +14,7 @@ def since_epoch(timestamp):
     return int((timestamp - epoch).total_seconds())
 
 CARBON_SERVER = ('localhost', 2003)
-base = "solarpermit.counters.question"
+base = ["solarpermit", "counters", "question"]
 backfilling_msg = "%s: backfilling report %s for question %d with %d answers at %d distinct times"
 
 class Command(BaseCommand):
@@ -55,8 +55,8 @@ class Command(BaseCommand):
                                 k = row['key'].lower()
                                 v = row['value']
                                 if v is not None:
-                                    send(sock, [base, report['name'], q.id, k, "count"], v, end)
-                                    send(sock, [base, report['name'], q.id, k, "rate"], v / 10.0, end)
+                                    send(sock, base + [report['name'], q.id, k, "count"], v, end)
+                                    send(sock, base + [report['name'], q.id, k, "rate"], v / 10.0, end)
                             last = current
             # yes, sleep. if we go too fast, carbon doesn't create all of the databases
             time.sleep(30)

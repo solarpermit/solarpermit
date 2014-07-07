@@ -33,4 +33,4 @@ def get_report(name):
 # could do something more generic like url encoding, but this is good enough
 import re
 def normalize(name):
-    return re.sub(r"[^a-z0-9_]", "_", name).lower()
+    return re.sub(r"[^a-z0-9_]", "_", name.lower())
