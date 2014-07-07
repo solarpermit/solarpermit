@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 import json
 import datetime
 from tracking.models import Pageview, Visitor
-from website.models import Jurisdiction
+from website.models import Jurisdiction, JurisdictionRating
 
 class Command(BaseCommand):
     args = 'No argument needed'
@@ -57,16 +57,16 @@ class Command(BaseCommand):
         jurisdiction_unique_users_counts = jurisdiction_unique_users_counts[0:10] #only top 10
         
         #save data in JurisdictionRating
-        #jurisdiction_ratings = JurisdictionRating.objects.filter(rating_type='V')
-        #for jurisdiction_rating in jurisdiction_ratings:
-        #    jurisdiction_rating.delete()
+        jurisdiction_ratings = JurisdictionRating.objects.filter(rating_type='V')
+        for jurisdiction_rating in jurisdiction_ratings:
+            jurisdiction_rating.delete()
         rank = 1
         for jid, count in jurisdiction_unique_users_counts:
-        #    jurisdiction_rating = JurisdictionRating(rating_type='V', rank=rank, value=count)
+            jurisdiction_rating = JurisdictionRating(rating_type='V', rank=rank, value=count)
             jurisdiction = Jurisdiction.objects.get(id=jid)
-        #    jurisdiction_rating.jurisdiction = jurisdiction
-        #    jurisdiction_rating.create_datetime = today
-        #    jurisdiction_rating.save()
+            jurisdiction_rating.jurisdiction = jurisdiction
+            jurisdiction_rating.create_datetime = today
+            jurisdiction_rating.save()
             print str(rank) + ': ' +jurisdiction.show_jurisdiction() + ', unique views: ' + str(count)
             rank += 1
         
