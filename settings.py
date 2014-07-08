@@ -180,7 +180,6 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'south',
-    'keyedcache',
     'robots',
     'django_countries',
     'djcelery',
@@ -200,10 +199,6 @@ INSTALLED_APPS = (
 #setup memcached for production use!
 #see http://docs.djangoproject.com/en/1.1/topics/cache/ for details
 CACHE_BACKEND = 'locmem://'
-#needed for django-keyedcache
-CACHE_TIMEOUT = 1
-CACHE_PREFIX = 'solarpermit' #make this unique
-CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 #If you use memcache you may want to uncomment the following line to enable memcached based sessions
 #SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
