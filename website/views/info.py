@@ -164,7 +164,7 @@ def get_info(request):
     
 def email_feedback(data): 
     subject = 'SolarPermit feedback from '+ data['user'].username
-    tp = get_template('website/emails/feedback.html')
+    tp = get_template('website/emails/feedback.jinja')
     c = Context(data)
     body = tp.render(c)
     from_mail = data['user_email']
