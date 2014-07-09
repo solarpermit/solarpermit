@@ -89,6 +89,9 @@
 
 {% block endjs %}
 <script type='text/javascript'>
+  {% include '/website/form_fields/org.js' %}   
+</script>
+<script type='text/javascript'>
             
 $(document).ready(function() {
     $('#form_field_data_username').click(function(){
