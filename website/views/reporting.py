@@ -23,7 +23,7 @@ from django.db.models.sql import Query
 from django.db import DEFAULT_DB_ALIAS
 from localflavor.us.us_states import US_STATES
 import urllib
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 import autocomplete_light
 autocomplete_light.autodiscover()
 from website.utils import reporting
@@ -86,7 +86,7 @@ def report_on(request, question_id=None, filter_id=None):
     data['report_qids'] = reporting.reports_by_qid.keys()
     data['form'] = GeographicAreaForm()
     data['request'] = request
-    return render_to_response('reporting/report_on.jinja', data)
+    return render(request, 'reporting/report_on.jinja', data)
 
 class GeographicAreaForm(forms.ModelForm):
     filter_name = forms.CharField()
