@@ -52,19 +52,21 @@
       {% endfor %}
 
       {# display the custom field here, at end of each category section #}
-      <div style="float:left;width:100%">
-        <div id="div_custom_question_content_{{category_id}}" style="margin-left:25px;"></div>
-        <div class="label">Don't see the info you're looking for here?</div>
-        <div>Check out the other sections to the left or create a custom field to share more info with the community.</div>
-        <input type="button"
-               id="create_custom_field_btn_{{category_id}}"
-               name="create_custom_field_btn"
-               value="Create a custom field..."
-               class="smallbutton create_custom_field_btn"
-               data-jurisdiction_id="{{jurisdiction.id}}"
-               data-category_id="{{category_id}}"
-               data-current_category="{{category}}"/>
-      </div>
+      {% if user.is_authenticated() %}
+        <div style="float:left;width:100%">
+          <div id="div_custom_question_content_{{category_id}}" style="margin-left:25px;"></div>
+          <div class="label">Don't see the info you're looking for here?</div>
+          <div>Check out the other sections to the left or create a custom field to share more info with the community.</div>
+          <input type="button"
+                 id="create_custom_field_btn_{{category_id}}"
+                 name="create_custom_field_btn"
+                 value="Create a custom field..."
+                 class="smallbutton create_custom_field_btn"
+                 data-jurisdiction_id="{{jurisdiction.id}}"
+                 data-category_id="{{category_id}}"
+                 data-current_category="{{category}}"/>
+        </div>
+      {% endif %}
     </div>
   {% endfor %}
 {% endblock %}

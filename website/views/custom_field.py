@@ -62,7 +62,9 @@ def custom_field(request):
 
             return HttpResponse(dajax.json())  
         
-        if (ajax == 'create_custom_field_submit'):  
+        if (ajax == 'create_custom_field_submit'):
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             data = {}       
             data['form_id'] = 'create_custom_field'     
             data['field_title'] = requestProcessor.getParameter('field_title') 
