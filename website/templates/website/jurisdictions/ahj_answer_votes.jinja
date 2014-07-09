@@ -1,28 +1,63 @@
 {% if user.is_authenticated(): %}
-                            <span class="vote_panel">   
-                                {% if creator_id != login_user_id %}
-                                    {% set class_cannot_vote = '' %}   
-                                    {% set class_canvoteup = 'canvoteup' %} 
-                                    {% set class_canvotedown = 'canvotedown' %}                                            
-                                    {% set class_disabled = '' %}
-                                    
-                                {% else %}
-                                    {% set class_cannot_vote = 'cannot_vote' %}    
-                                    {% set class_canvoteup = '' %}                                      
-                                    {% set class_canvotedown = '' %}                                         
-                                    {% set class_disabled = 'disabled' %}                                
-                                {% endif %}
-                                <span class="{{class_cannot_vote}}" id="up_vote_{{current_current_answer_id}}"> 
-                                    <span id="up_vote_num_{{current_answer_id}}">0</span>
-                                    <input type="button" id="voteup_{{current_answer_id}}" name="voteup_{{current_answer_id}}" value="Approve" class="voteup {{class_canvoteup}} {{class_disabled}}" data-answerid="{{current_answer_id}}" data-terminology="{{terminology}}" data-canvotedown="" >  
-                                </span> 
+  {% with %}
+    {% set current_answer_id = answer['id'] %}
+    {% set votes = answers_votes[current_answer_id] %}
+    <span class="vote_panel">
+      {% if answer['creator_id'] == user.id %}
+        {% set class_canvoteup = '' %}
+        {% set class_canvotedown = '' %}
+        {% set class_up_disabled = 'disabled' %}
+        {% set class_down_disabled = 'disabled' %}
+      {% else %}
+        {% if votes %}
+          {% if votes['can_vote_up'] %}
+            {% set class_canvoteup = 'canvoteup' %}
+            {% set class_up_disabled = '' %}
+          {% else %}
+            {% set class_canvoteup = '' %}
+            {% set class_up_disabled = 'disabled' %}
+          {% endif %}
+          {% if votes['can_vote_down'] %}
+            {% set class_canvotedown = 'canvotedown' %}
+            {% set class_down_disabled = '' %}
+          {% else %}
+            {% set class_canvotedown = '' %}
+            {% set class_down_disabled = 'disabled' %}
+          {% endif %}
+        {% else %}
+          {% set class_canvoteup = 'canvoteup'  %}
+          {% set class_canvotedown = 'canvotedown' %}
+          {% set class_up_disabled = '' %}
+          {% set class_down_disabled = '' %}
+        {% endif %}
+      {% endif %}
+      <span id="up_vote_{{current_answer_id}}">
+        <span id="up_vote_num_{{current_answer_id}}">{{votes['total_up_votes'] if votes else '0'}}</span>
+        <input type="button" id="voteup_{{current_answer_id}}"
+               name="voteup_{{current_answer_id}}" value="Approve"
+               class="voteup {{class_canvoteup}} {{class_up_disabled}}"
+               data-answerid="{{current_answer_id}}"
+               data-terminology="{{terminology}}" data-canvotedown=""/>
+      </span>
 
-                                <input type="button" id="votedown_{{current_answer_id}}" name="votedown_{{current_answer_id}}" value=" " class="votedown {{class_canvotedown}} {{class_disabled}}" data-answerid="{{current_answer_id}}" data-terminology="{{terminology}}" data-canvoteup="" title="Reject" >
-                                <span class="{{class_cannot_vote}}" id="down_vote_{{current_answer_id}}" id="down_vote_last_{{current_answer_id}}"  data-last="" data-date="" title="{{terminology}}" >                         
-                                    <span id="down_vote_num_{{current_answer_id}}">0</span>
-                                </span>                                
-                             
-                            <div id="vote_confirmation_{{current_answer_id}}" class="vote_confirmation_msg" >
-                                <img width="15" height="15" src="/media/images/checkmark2.png" style="padding-right:5px" alt="success" >Your vote has been recorded
-                            </div>
+      <span id="down_vote_{{current_answer_id}}"
+            id="down_vote_last_{{current_answer_id}}"
+            data-last="" data-date=""
+            title="{{terminology}}">
+        <input type="button" id="votedown_{{current_answer_id}}"
+               name="votedown_{{current_answer_id}}" value=" "
+               class="votedown {{class_canvotedown}} {{class_down_disabled}}"
+               data-answerid="{{current_answer_id}}"
+               data-terminology="{{terminology}}" data-canvoteup=""
+               title="Reject"/>
+        <span id="down_vote_num_{{current_answer_id}}">{{votes['total_down_votes'] if votes else '0'}}</span>
+      </span>
+
+      <div id="vote_confirmation_{{current_answer_id}}" class="vote_confirmation_msg" >
+        <img width="15" height="15" src="/media/images/checkmark2.png"
+        style="padding-right:5px" alt="success"/>
+        Your vote has been recorded
+      </div>
+    </span>
+  {% endwith %}
 {% endif %}

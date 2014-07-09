@@ -1,7 +1,7 @@
 import re, math
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
-from django.contrib.localflavor.us.us_states import US_STATES
+from localflavor.us.us_states import US_STATES
 from django.contrib import messages
 from django.template.loader import get_template as django_get_template
 from django.template import Context, RequestContext

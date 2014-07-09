@@ -2,8 +2,8 @@ import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.contrib.localflavor.us.us_states import STATE_CHOICES
-from django.contrib.localflavor.us.models import PhoneNumberField
+from localflavor.us.us_states import STATE_CHOICES
+from localflavor.us.models import PhoneNumberField
 
 class Address(models.Model):
     address1 = models.CharField(max_length=255, blank=True, null=True)
@@ -16,6 +16,7 @@ class Address(models.Model):
     create_datetime = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     modify_datetime = models.DateTimeField(auto_now=True, blank=True, null=True)    
     def __unicode__(self):
-        return self.address1+', '+self.address2+', '+self.city+', '+self.state+' '+self.zip_code
+        return ", ".join(filter(lambda s: s is not None,
+                                [self.address1, self.address2, self.city, self.state, self.zip_code]))
     class Meta:
         app_label = 'website'

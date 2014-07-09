@@ -11,8 +11,8 @@ TEMPLATE_DEBUG = DEBUG
 INTERNAL_IPS = ('127.0.0.1',)
 #SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
-SOLARPERMIT_VERSION = '1.3.37'
-SAMPLE_JURISDICTIONS=['1', '101105']
+SOLARPERMIT_VERSION = '1.3.50'
+SAMPLE_JURISDICTIONS=[1, 101105]
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -128,6 +128,7 @@ TEMPLATE_DIRS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django_statsd.middleware.StatsdMiddleware',               # must be first
     'django.middleware.common.CommonMiddleware',
     'tracking.middleware.VisitorTrackingMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -138,7 +139,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     #'debug_toolbar.middleware.DebugToolbarMiddleware',
     'user_page_view.UserPageViewMiddleWare',     
-    #'set_user_org_in_session.SetUserOrgInSessionMiddleWare',          
+    #'set_user_org_in_session.SetUserOrgInSessionMiddleWare',
+    'django_statsd.middleware.StatsdMiddlewareTimer',          # must be last
 )
 
 
@@ -178,7 +180,6 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
     'south',
-    'keyedcache',
     'robots',
     'django_countries',
     'djcelery',
@@ -192,15 +193,12 @@ INSTALLED_APPS = (
     'tracking',
     'django_jinja',
     'autocomplete_light',
+    'django_statsd',
 )
 
 #setup memcached for production use!
 #see http://docs.djangoproject.com/en/1.1/topics/cache/ for details
 CACHE_BACKEND = 'locmem://'
-#needed for django-keyedcache
-CACHE_TIMEOUT = 1
-CACHE_PREFIX = 'solarpermit' #make this unique
-CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 #If you use memcache you may want to uncomment the following line to enable memcached based sessions
 #SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
@@ -229,13 +227,35 @@ CSRF_COOKIE_NAME = 'localhost_csrf'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue'
+        },
+    },
     'handlers': {
+        'console': {
+            'filters': ['require_debug_true'],
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
         'mail_admins': {
             'level': 'ERROR',
+            'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
-        }
+        },
     },
     'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False, # this tells logger to send logging message
+                                # to its parent (will send if set to True)
+        },
+        #'django.db': {
+        #},
         'django.request': {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
@@ -303,19 +323,29 @@ TRACK_IGNORE_URLS = ['tracking', 'admin']
 DEFAULT_JINJA2_TEMPLATE_INTERCEPT_RE = r'.*(?:jinja|js)$'
 JINJA2_EXTENSIONS = ['jinja2.ext.WithExtension',
                      'compressor.contrib.jinja2ext.CompressorExtension']
-JINJA2_GLOBALS = {
-    # note, this does not work for string values
-    'INTERNAL_IPS': INTERNAL_IPS,
-    'ENABLE_GOOGLE_ANALYTICS': ENABLE_GOOGLE_ANALYTICS,
-    'FORUM_INTEGRATION': FORUM_INTEGRATION,
-}
 
 # django-autocomplete; has nothing to do with our current search autocomplete
 AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/'
 AUTOCOMPLETE_JQUERY_ALREADY_INCLUDED = True
+
+#
+STATSD_TRACK_MIDDLEWARE = True
 
 from settings_local import *
 
 if DEBUG:
     INSTALLED_APPS += ('django_extensions',
                        'debug_toolbar')
+
+# this has to be after we import settings_local, obviously
+JINJA2_GLOBALS = {
+    # note, this does not work for string values (although that's fixed in a newer version of django-jinja)
+    'INTERNAL_IPS': INTERNAL_IPS,
+    'ENABLE_GOOGLE_ANALYTICS': ENABLE_GOOGLE_ANALYTICS,
+    'FORUM_INTEGRATION': FORUM_INTEGRATION,
+}
+
+try:
+    FEEDBACK_EMAIL
+except:
+    FEEDBACK_EMAIL = "feedback@cleanpowerfinance.com"

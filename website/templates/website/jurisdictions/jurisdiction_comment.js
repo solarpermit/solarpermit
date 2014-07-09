@@ -43,7 +43,7 @@ function hide_comment_a(){
 }
 
 $('#add_new_comment_bt').click(function (){
-	controller.postRequest('/jurisdiction_comment/',{ajax: 'create_jurisdiction_comment', jurisdiction_id: {{jurisdiction.id}}, answer_id: {{answer.id}} });
+	controller.postRequest('/jurisdiction_comment/',{ajax: 'create_jurisdiction_comment', jurisdiction_id: {{jurisdiction.id}}, answer_id: {{answer_id}} });
 	return false;
 });
 

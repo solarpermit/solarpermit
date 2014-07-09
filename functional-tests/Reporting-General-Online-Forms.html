@@ -17,27 +17,62 @@
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>//div[@id='main-wrapper']/div[4]/ul/li[9]/h2</td>
-	<td>Inspection Requirements</td>
+	<td>link=Filter this report...</td>
+	<td>Filter this report...</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=Forms</td>
-	<td></td>
+	<td>select</td>
+	<td>css=select</td>
+	<td>label=Forms</td>
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>css=h3</td>
-	<td>Current approved values . Filter this report...</td>
+	<td>css=span.description</td>
+	<td>Add permitting forms and applications here. You can either provide a link to a form, or upload a form.</td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>css=div.contentOnlyPage &gt; h1</td>
+	<td>css=svg</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
 	<td>css=th.header_row</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report0']/table/tbody/tr[2]/th/span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report0']/table/tbody/tr[3]/th/span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=th.header_row_right</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=tr.even &gt; td</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/td</td>
 	<td></td>
 </tr>
 <tr>
@@ -46,29 +81,24 @@
 	<td>Value</td>
 </tr>
 <tr>
-	<td>verifyElementPresent</td>
-	<td>css=tr.odd &gt; th</td>
-	<td></td>
-</tr>
-<tr>
 	<td>verifyText</td>
-	<td>css=tr.odd &gt; th</td>
+	<td>//div[@id='report0']/table/tbody/tr[2]/th/span[2]</td>
 	<td>Answered</td>
 </tr>
 <tr>
 	<td>verifyText</td>
-	<td>//div[@id='report0']/table/tbody/tr[3]/th</td>
+	<td>//div[@id='report0']/table/tbody/tr[3]/th/span[2]</td>
 	<td>Unanswered</td>
+</tr>
+<tr>
+	<td>verifyText</td>
+	<td>//div[@id='report0']/table/tbody/tr[4]/th</td>
+	<td>Total</td>
 </tr>
 <tr>
 	<td>verifyText</td>
 	<td>css=th.header_row_right</td>
 	<td>Jurisdictions</td>
-</tr>
-<tr>
-	<td>verifyElementPresent</td>
-	<td>css=th.header_row_right</td>
-	<td></td>
 </tr>
 <tr>
 	<td>storeText</td>

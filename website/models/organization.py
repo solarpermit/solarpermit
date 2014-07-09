@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.conf import settings as django_settings 
 from website.models import Address
-from django.contrib.localflavor.us.models import PhoneNumberField
+from localflavor.us.models import PhoneNumberField
 from urlparse import urlparse
 from sorl.thumbnail import get_thumbnail
 

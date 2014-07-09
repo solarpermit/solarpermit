@@ -1,5 +1,5 @@
 from django.http import HttpResponseRedirect
-from django.conf.urls.defaults import patterns, include, handler404, handler500, url
+from django.conf.urls import patterns, include, handler404, handler500, url
 from django.conf import settings
 from website.views import home, account, info, jurisdiction, organization, custom_field, maintenance, siteadmin, reporting
 from website.views.news import *
@@ -69,8 +69,7 @@ else:
         (r'^logout', account.log_out),      
         (r'^reset_password/(?P<reset_password_key>.*)/$', home.reset_password),       
         (r'^info/', info.get_info),  
-        (r'^news/', info.news_static),
-        (r'^news2/', info.news_dynamic),
+        (r'^news/', info.news),
         (r'^about/', info.about),
         (r'^getting-started/', info.getting_started_page),  
         (r'^contributions/', info.contributions),

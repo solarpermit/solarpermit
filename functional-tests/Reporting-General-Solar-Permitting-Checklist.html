@@ -17,27 +17,27 @@
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>//div[@id='main-wrapper']/div[4]/ul/li[9]/h2</td>
-	<td>Inspection Requirements</td>
+	<td>link=Filter this report...</td>
+	<td>Filter this report...</td>
 </tr>
 <tr>
-	<td>clickAndWait</td>
-	<td>link=Solar permitting checklist</td>
-	<td></td>
+	<td>select</td>
+	<td>css=select</td>
+	<td>label=Solar permitting checklist</td>
 </tr>
 <tr>
 	<td>waitForText</td>
-	<td>css=h3</td>
-	<td>Current approved values . Filter this report...</td>
-</tr>
-<tr>
-	<td>verifyText</td>
-	<td>css=div.contentOnlyPage &gt; h1</td>
-	<td>Solar permitting checklist - Field Answer Reporting</td>
+	<td>css=th.header_row</td>
+	<td>Value</td>
 </tr>
 <tr>
 	<td>verifyElementPresent</td>
-	<td>css=h3</td>
+	<td>css=svg</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>css=#graph1 &gt; svg</td>
 	<td></td>
 </tr>
 <tr>
@@ -109,6 +109,26 @@
 	<td>verifyText</td>
 	<td>css=th.header_row_right</td>
 	<td>Jurisdictions</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(2) &gt; td:nth-child(2)</td>
+	<td>answered</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(3) &gt; td:nth-child(2) &gt; span:nth-child(1)</td>
+	<td>unanswered</td>
+</tr>
+<tr>
+	<td>storeText</td>
+	<td>css=#report0 &gt; table:nth-child(2) &gt; tbody:nth-child(1) &gt; tr:nth-child(4) &gt; td:nth-child(2) &gt; span:nth-child(1)</td>
+	<td>total</td>
+</tr>
+<tr>
+	<td>verifyEval</td>
+	<td>parseInt(storedVars['answered']) + parseInt(storedVars['unanswered'])</td>
+	<td>${total}</td>
 </tr>
 </tbody></table>
 </body>
