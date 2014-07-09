@@ -253,6 +253,7 @@ def jurisdiction_comment(request):
             except:
                 jurisdiction = None
             data['jurisdiction'] = jurisdiction
+            data['answer_id'] = entity_id
             comments = Comment.objects.filter(jurisdiction = jurisdiction, entity_name = entity_name, entity_id = entity_id, parent_comment__isnull = True).order_by('-create_datetime')
             
             userviews = UserCommentView.objects.filter(jurisdiction = jurisdiction, entity_name = entity_name, entity_id = entity_id, user = user)
