@@ -8,7 +8,6 @@
 <body>
 <table id="suiteTable" cellpadding="1" cellspacing="1" border="1" class="selenium"><tbody>
 <tr><td><b>Test Suite</b></td></tr>
-<tr><td><a href="test_suit2.0">test_suit2</a></td></tr>
 <tr><td><a href="Custom_field_while_not_logged_in.html">Custom_field_while_not_logged_in</a></td></tr>
 <tr><td><a href="1Create_an_Account_from_database.html">1Create_an_Account_from_database</a></td></tr>
 <tr><td><a href="1Info_Accuracy_Disclaimer.html">1Info_Accuracy_Disclaimer</a></td></tr>
