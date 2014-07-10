@@ -9,6 +9,7 @@
 <table id="suiteTable" cellpadding="1" cellspacing="1" border="1" class="selenium"><tbody>
 <tr><td><b>Test Suite</b></td></tr>
 <tr><td><a href="test_suit2.0">test_suit2</a></td></tr>
+<tr><td><a href="Custom_field_while_not_logged_in.html">Custom_field_while_not_logged_in</a></td></tr>
 <tr><td><a href="1Create_an_Account_from_database.html">1Create_an_Account_from_database</a></td></tr>
 <tr><td><a href="1Info_Accuracy_Disclaimer.html">1Info_Accuracy_Disclaimer</a></td></tr>
 <tr><td><a href="1Login_Test_Incorrect_Username_Incorrect_Password.html">1Login_Test_Incorrect_Username_Incorrect_Password</a></td></tr>
@@ -246,6 +247,7 @@
 <tr><td><a href="Header-Scrolling-on-Jurisdictions-Page.html">Header-Scrolling-on-Jurisdictions-Page</a></td></tr>
 <tr><td><a href="Helio_Power.html">Helio_Power</a></td></tr>
 <tr><td><a href="join-organization-overview-button">join-organization-overview-button</a></td></tr>
+<tr><td><a href="Add_a_Company_from_profile.html">Add_a_Company_from_profile</a></td></tr>
 <tr><td><a href="New_Coverage_12-23-2012.html">New_Coverage_12-23-2012</a></td></tr>
 <tr><td><a href="News_Coverage_2-6-2013.html">News_Coverage_2-6-2013</a></td></tr>
 <tr><td><a href="News_Coverage_3-8-2013.html">News_Coverage_3-8-2013</a></td></tr>
