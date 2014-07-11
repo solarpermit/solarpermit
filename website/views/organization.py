@@ -20,7 +20,6 @@ from jinja2 import FileSystemLoader, Environment
 
 from website.utils.mathUtil import MathUtil
 from website.models import Organization, RoleType, OrganizationMember, UserDetail
-#from sorl.thumbnail.main import get_thumbnail
 from sorl.thumbnail import get_thumbnail
 from website.utils.fileUploader import qqFileUploader
 
@@ -231,27 +230,13 @@ def organization(request):
                     
                 store_file_name = requestProcessor.getParameter('file_store_name')
                 if store_file_name != '' and store_file_name != None:
-                    store_file = '/upfiles/org_logos/'+store_file_name
                     org.logo = store_file
                     org.save()
-                    full_path = django_settings.MEDIA_ROOT+'/upfiles/org_logos/'+store_file_name
                     try:
-                        full_image = get_thumbnail(full_path,'140x140', quality=99)
+                        full_image = get_thumbnail(org_logo_path(store_file_name), '140x140', quality=99)
                         original_image = full_image.url
-       
-                        #img_or = pil.open(django_settings.MEDIA_ROOT+'/'+original_image, 'r')
-                  
-                        #img = img_or
-        
-                        #img.save(django_settings.MEDIA_ROOT+'/upfiles/org_logos_scaled/'+store_file_name)
-           
                     except:
                         pass
-
-
-                    
-                    
-
                 user = request.user
                 data['user'] = user
                 org_member_obj = OrganizationMember()
@@ -310,9 +295,8 @@ def organization(request):
                 orgmember = None
                 
             if org.logo != None and org.logo !='':
-                full_path = django_settings.MEDIA_ROOT+ str(org.logo)
                 try:
-                    data['thum'] = get_thumbnail(full_path,'140x140', quality=99)
+                    data['thum'] = get_thumbnail(org.logo, '140x140', quality=99)
                 except: #in case file missing, don't crash
                     data['thum'] = ''
             else:
@@ -371,16 +355,11 @@ def organization(request):
                 
             store_file_name = requestProcessor.getParameter('file_store_name')
             if store_file_name != '' and store_file_name != None:
-                store_file = '/upfiles/org_logos/'+store_file_name
                 org.logo = store_file
                 org.save()
-                full_path = django_settings.MEDIA_ROOT+'/upfiles/org_logos/'+store_file_name
                 try:
-                    full_image = get_thumbnail(full_path,'140x140', quality=99)
+                    full_image = get_thumbnail(org_logo_path(store_file_name), '140x140', quality=99)
                     original_image = full_image.url
-                    #img_or = pil.open(django_settings.MEDIA_ROOT+'/'+original_image, 'r')
-
-                    #img.save(django_settings.MEDIA_ROOT+'/upfiles/org_logos_scaled/'+store_file_name)
                 except:
                     pass                   
                         
@@ -388,9 +367,8 @@ def organization(request):
             org.save()
             
             if org.logo != None and org.logo !='':
-                full_path = django_settings.MEDIA_ROOT+ str(org.logo)
                 try:
-                    data['thum'] = get_thumbnail(full_path,'140x140', quality=99)
+                    data['thum'] = get_thumbnail(org.logo, '140x140', quality=99)
                 except:
                     data['thum'] = ''
             else:
@@ -1320,15 +1298,14 @@ def org_uploadfile(request):
     sizeLimit = django_settings.MAX_UPLOAD_FILE_SIZE
     uploader = qqFileUploader(allowedExtension, sizeLimit)
 
-    result = uploader.handleUpload(request, django_settings.MEDIA_ROOT + "/upfiles/org_logos/")
+    result = uploader.handleUpload(request, django_settings.MEDIA_ROOT + "/org_logos/")
 
     return_array = result["json"]
     from django.utils import simplejson as json
 
     if result['success'] == True:
         return_array = json.loads(result["json"])
-        full_path = django_settings.MEDIA_ROOT+'/upfiles/org_logos/'+return_array['store_name']
-        aa = get_thumbnail(full_path,'140x140', quality=99)
+        aa = get_thumbnail(org_logo_path(return_array['store_name']), '140x140', quality=99)
         return_array['thum_path'] = aa.url
         return_array = json.dumps(return_array)
     return HttpResponse(return_array)
@@ -1357,15 +1334,6 @@ def get_data_for_org_details(org, request):
     data['orgmember'] = orgmember
     data['orgname'] = org.name              
     data['organization'] = org
-
-    '''
-    if org.logo != None and org.logo !='':
-        print 'org.logo.path :: ' + str(org.logo.path)
-        data['thum'] = get_thumbnail(org.logo.path,'140x140', quality=99)
-    else:
-        data['thum'] = ''    
-    '''
-    
     data['access'] = get_org_access(user, org)
     data['date_type'] = 'join'
     members = get_members(org, 1)
@@ -1402,3 +1370,5 @@ def get_invitation_key(email):
     
     return md5_key
     
+def org_logo_path(name):
+    return 'org_logos/'+ name

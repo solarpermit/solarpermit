@@ -1,6 +1,6 @@
 *pyc
 settings_local.py
-static/skins/solarpermit/media/CACHE/
+/media/cache/
 \#*\#
 *~
 /static/
