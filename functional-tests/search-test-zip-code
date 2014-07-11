@@ -51,11 +51,6 @@
 	<td>auto_complete_five</td>
 </tr>
 <tr>
-	<td>storeText</td>
-	<td>//form[@id='search_form']/div/div/ul[2]/li[6]</td>
-	<td>auto_complete_six</td>
-</tr>
-<tr>
 	<td>click</td>
 	<td>css=a.search-a</td>
 	<td></td>
@@ -91,11 +86,6 @@
 	<td>search_result_five</td>
 </tr>
 <tr>
-	<td>storeText</td>
-	<td>css=tr.row_even:nth-child(6) &gt; td:nth-child(2) &gt; a:nth-child(1)</td>
-	<td>search_result_six</td>
-</tr>
-<tr>
 	<td>verifyEval</td>
 	<td>storedVars['auto_complete_one']==storedVars['search_result_one']</td>
 	<td>true</td>
@@ -118,11 +108,6 @@
 <tr>
 	<td>verifyEval</td>
 	<td>storedVars['auto_complete_five']==storedVars['search_result_five']</td>
-	<td>true</td>
-</tr>
-<tr>
-	<td>verifyEval</td>
-	<td>storedVars['auto_complete_six']==storedVars['search_result_six']</td>
 	<td>true</td>
 </tr>
 </tbody></table>
