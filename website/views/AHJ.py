@@ -106,6 +106,7 @@ def jurisdiction_comment(request):
                 data[key] = question_content.get(key) 
             
             data['answer'] = af
+            data['answer_id'] = af.id
             #data['answer_text'] = aa.get_formatted_value(af.value, af.question)
             answer_text = requestProcessor.decode_jinga_template(request,'website/blocks/display_answer.html', data, '')
             data['answer_text'] = mark_safe(answer_text)
