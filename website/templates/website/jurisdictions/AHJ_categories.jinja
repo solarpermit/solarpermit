@@ -4,7 +4,7 @@
     <a href="/jurisdiction/{{jurisdiction.name_for_url}}/favorite_fields/">
       Favorite Fields
       <img style="vertical-align:bottom"
-           src="/media/images/favorite_icon.png"
+           src="{{static('images/favorite_icon.png')}}"
            alt="favorite fields">
       <span id="favfieldscount">{{user_number_of_favorite_fields}}</span>
     </a>
@@ -14,7 +14,7 @@
   <a href="/jurisdiction/{{jurisdiction.name_for_url}}/quirks/">
     Quirks
     <img style="vertical-align:bottom"
-         src="/media/images/exception_icon.png"
+         src="{{static('images/exception_icon.png')}}"
          alt="quirks">
     <span id="quirkcount">{{quirk_number_of_questions}}</span>
   </a>

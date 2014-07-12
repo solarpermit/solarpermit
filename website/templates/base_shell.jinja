@@ -10,24 +10,24 @@
 	{% block forestyle %}{% endblock %}
         {% compress css %}
 	{% include "website/fancybox_stylesheets.jinja" %}
-	<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css"/>
-	<link rel="stylesheet" type="text/css" href="/media/style/jquery-ui-1.10.4.custom.css"/>
-	<link href="/media/style/fileuploader.css" rel="stylesheet" type="text/css"/>
-	<link rel="stylesheet" type="text/css" href="/media/style/main.css"/>
+	<link rel="stylesheet" type="text/css" href="{{static('js/flexcomplete/jquery.flexcomplete.css')}}"/>
+	<link rel="stylesheet" type="text/css" href="{{static('style/jquery-ui-1.10.4.custom.css')}}"/>
+	<link href="{{static('style/fileuploader.css')}}" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="{{static('style/main.css')}}"/>
 	{% endcompress %}
 
 	{% block jsdata %}{% endblock %}
 	{% block forejs %}{% endblock %}
         {% compress js %}	
-	<script type="text/javascript" src="/media/js/jquery-1.11.0.js"></script>	
-	<script type="text/javascript" src="/media/js/jquery.validate.js"></script>
-	<script type="text/javascript" src="/media/js/additional-methods.js"></script>
-	<script type="text/javascript" src="/media/js/jquery.simplemodal.js"></script>
-	<script type="text/javascript" src="/media/js/jquery.jscroll.custom.js"></script>	
-	<script type="text/javascript" src="/media/js/controller.js"></script>
-	<script type="text/javascript" src="/media/js/jquery.dajax.core.js"></script>
-	<script type="text/javascript" src="/media/js/jquery-ui-1.10.4.custom.js"></script>
-	<script type='text/javascript' src="/media/js/fileuploader.js"></script>	
+	<script type="text/javascript" src="{{static('js/jquery-1.11.0.js')}}"></script>	
+	<script type="text/javascript" src="{{static('js/jquery.validate.js')}}"></script>
+	<script type="text/javascript" src="{{static('js/additional-methods.js')}}"></script>
+	<script type="text/javascript" src="{{static('js/jquery.simplemodal.js')}}"></script>
+	<script type="text/javascript" src="{{static('js/jquery.jscroll.custom.js')}}"></script>	
+	<script type="text/javascript" src="{{static('js/controller.js')}}"></script>
+	<script type="text/javascript" src="{{static('js/jquery.dajax.core.js')}}"></script>
+	<script type="text/javascript" src="{{static('js/jquery-ui-1.10.4.custom.js')}}"></script>
+	<script type='text/javascript' src="{{static('js/fileuploader.js')}}"></script>	
 	
 	<script type='text/javascript'>
 	var js_csrf = '{{csrf_token}}';	

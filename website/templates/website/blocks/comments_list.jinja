@@ -4,7 +4,7 @@
 <h4> 
 {% else %}
 <li class="li-unread" data-comment-id="{{c.id}}">
-<h4> <img width="12" height="12" src="/media/images/unread-comment.png" alt="unread comments" >
+<h4> <img width="12" height="12" src="{{static('images/unread-comment.png')}}" alt="unread comments" >
 {% endif %}
 	  Posted by {{c.user.get_profile().get_display_name()}} {{c.get_comment_time()}}</h4>
 	<div id="comment_{{c.id}}">
@@ -25,7 +25,7 @@
 			<li class="reply cl2" data-comment-id="{{c1.id}}"><h4>
 			{% else %}
 			<li class="reply cl2 li-unread" data-comment-id="{{c1.id}}">
-			<h4> <img width="12" height="12" src="/media/images/unread-comment.png" alt="unread comments"  >
+			<h4> <img width="12" height="12" src="{{static('images/unread-comment.png')}}" alt="unread comments"  >
 			{% endif %}
 			
 				Reply by {{c1.user.get_profile().get_display_name()}} {{c1.get_comment_time()}}</h4>
@@ -47,7 +47,7 @@
 					<li class="reply cl3 " data-comment-id="{{c2.id}}"><h4>
 					{% else %}
 					<li class="reply cl3 li-unread" data-comment-id="{{c2.id}}">
-					<h4> <img width="12" height="12" src="/media/images/unread-comment.png" alt="unread comments" >
+					<h4> <img width="12" height="12" src="{{static('images/unread-comment.png')}}" alt="unread comments" >
 					{% endif %}
 						Reply by {{c2.user.get_profile().get_display_name()}} {{c2.get_comment_time()}}</h4>
 						<div id="comment_{{c2.id}}">
@@ -69,7 +69,7 @@
 								<h4>
 								{% else %}
 								<li class="reply cl2 li-unread" data-comment-id="{{c3.id}}">
-								<h4> <img width="12" height="12" src="/media/images/unread-comment.png" alt="unread comments" >
+								<h4> <img width="12" height="12" src="{{static('images/unread-comment.png')}}" alt="unread comments" >
 								{% endif %}
 									Reply by {{c3.user.get_profile().get_display_name()}} {{c3.get_comment_time()}}</h4>
 									<div id="comment_{{c3.id}}">

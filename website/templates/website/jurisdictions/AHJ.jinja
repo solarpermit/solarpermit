@@ -67,7 +67,7 @@ $(document).ready(function() {
 
 {% block forestyle %}
 {% compress css %}
-	<link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css" />
+	<link rel="stylesheet" type="text/css" href="{{static('style/anythingslider.css')}}" />
 {% endcompress %}
 {% endblock %}
 
@@ -87,10 +87,10 @@ $(document).ready(function() {
     {% endif %}
     {% if request.user.is_authenticated() %}
         {% if jurisdiction.user_favorite_jurisdiction(user) %}
-                            - <span id="favorite-a-image"><img width="12" height="12" src="/media/images/add-to-favorites.png" alt="Add to Favorites"></span>
+                            - <span id="favorite-a-image"><img width="12" height="12" src="{{static('images/add-to-favorites.png')}}" alt="Add to Favorites"></span>
                             <a id="favorite-a" href="#" title="Remove {{jurisdiction.show_jurisdiction('long')}} from your favorite jurisdictions">Remove from favorites</a>
         {% else %}
-                            - <span id="favorite-a-image"><img width="12" height="12" src="/media/images/add-to-favorites-hollow.png" alt="Add to Favorites"></span>
+                            - <span id="favorite-a-image"><img width="12" height="12" src="{{static('images/add-to-favorites-hollow.png')}}" alt="Add to Favorites"></span>
                             <a id="favorite-a" href="#" title="Add {{jurisdiction.show_jurisdiction('long')}} to your favorite jurisdictions">Add to favorites</a>
         {% endif %}
     {% endif %}    

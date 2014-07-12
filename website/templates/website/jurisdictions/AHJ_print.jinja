@@ -6,8 +6,8 @@
 {% block page_title %}{{jurisdiction.get_jurisdiction_display('page_title')}} {% endblock %}
 {% block forestyle %}
 {% compress css %}
-<link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css" />
-<link rel="stylesheet" type="text/css" href="/media/style/ahjprint.css" />
+<link rel="stylesheet" type="text/css" href="{{static('style/anythingslider.css')}}" />
+<link rel="stylesheet" type="text/css" href="{{static('style/ahjprint.css')}}" />
 {% endcompress %}
 {% endblock %}
 {% block top_main_content %}

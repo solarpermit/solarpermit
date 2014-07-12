@@ -4,8 +4,8 @@
 {% block title %}Home{% endblock %}
 {% block forestyle %}
         {% compress css %}
-{#	<!--link rel="stylesheet" type="text/css" href="/media/style/page.css" /-->
-	<link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css" />
+{#	<!--link rel="stylesheet" type="text/css" href="{{static('style/page.css')}}" /-->
+	<link rel="stylesheet" type="text/css" href="{{static('style/anythingslider.css')}}" />
 	<style>
 		{% if login != 'True' %}
 		#carousel { width: 700px; height: 380px; }
@@ -53,21 +53,21 @@
 			width: 68px;
 			height: 68px;
 			cursor: pointer;
-			background-image: url('/media/images/slidePrevious.png');
+			background-image: url('{{static('images/slidePrevious.png')}}');
 			background-position: top right;
 		}
 		.slideRight {
 			width: 68px;
 			height: 68px; 
 			cursor: pointer;
-			background-image: url('/media/images/slideNext.png');
+			background-image: url('{{static('images/slideNext.png')}}');
 			background-position: top left;
 		}
 		.autoPlay {
 			width: 68px;
 			height: 68px;
 			cursor: pointer;
-			background-image: url('/media/images/autoPlayBG.png');
+			background-image: url('{{static('images/autoPlayBG.png')}}');
 			background-repeat: no-repeat;
 			background-position: top left;
 		}
@@ -79,10 +79,10 @@
     		user-select: none;
 		}
 		#slide_0 {
-			background-image: url('/media/images/slide_0_bg.jpg');
+			background-image: url('{{static('images/slide_0_bg.jpg')}}');
 		}
 		#slideGo_0 {
-			background-image: url('/media/images/slide_0_thumb.jpg');
+			background-image: url('{{static('images/slide_0_thumb.jpg')}}');
 		}
 		#slide_0 h2 {
 			color: #fff;
@@ -108,7 +108,7 @@
 			background-color: #fff;
 		}
 		#slideGo_1 {
-			background-image: url('/media/images/slide_1_thumb.png');
+			background-image: url('{{static('images/slide_1_thumb.png')}}');
 		}
 		#slide_1 h2 {
 			color: #88a4bc;
@@ -135,10 +135,10 @@
 		
 		
 		#slide_2 {
-			background-image: url('/media/images/slide_2_bg.png');
+			background-image: url('{{static('images/slide_2_bg.png')}}');
 		}
 		#slideGo_2 {
-			background-image: url('/media/images/slide_2_thumb.png');
+			background-image: url('{{static('images/slide_2_thumb.png')}}');
 		}
 		#slide_2 h2 {
 			color: #017bac;
@@ -157,10 +157,10 @@
 		}
 		
 		#slide_3 {
-			background-image: url('/media/images/slide_3_bg.jpg');
+			background-image: url('{{static('images/slide_3_bg.jpg')}}');
 		}
 		#slideGo_3 {
-			background-image: url('/media/images/slide_3_thumb.jpg');
+			background-image: url('{{static('images/slide_3_thumb.jpg')}}');
 		}
 		#slide_3 h2 {
 			color: #fff;
@@ -351,9 +351,9 @@
 
 {% block forejs %}
   {% compress js %}
-	<script src="/media/js/raphael.js"></script>
-	<script src="/media/js/color.jquery.js"></script>
-	<script src="/media/js/jquery.usmap.js"></script>
+	<script src="{{static('js/raphael.js')}}"></script>
+	<script src="{{static('js/color.jquery.js')}}"></script>
+	<script src="{{static('js/jquery.usmap.js')}}"></script>
 	<script type="text/javascript">
 			function submit_form(form_id) {   
 				document.getElementById(form_id).submit();
@@ -366,8 +366,8 @@
 {#			$(function(){
 				$('#carousel').anythingSlider({	hashTags: false, 
 					autoPlay: true, 
-					startText:'<img width="24" height="24" src="/media/images/button_grey_play.png" alt="play" >',
-					stopText: '<img width="24" height="24" src="/media/images/button_grey_pause.png" alt="pause" >',
+					startText:'<img width="24" height="24" src="{{static('images/button_grey_play.png')}}" alt="play" >',
+					stopText: '<img width="24" height="24" src="{{static('images/button_grey_pause.png')}}" alt="pause" >',
 					delay: 8000
 				});
 				$('#home_contributors').anythingSlider({ hashTags: false,									
@@ -382,7 +382,7 @@
 #}
 	</script>
 {#	
-	<script type='text/javascript' src="/media/js/jquery.anythingslider.js"></script>
+	<script type='text/javascript' src="{{static('js/jquery.anythingslider.js')}}"></script>
 #}
 	<script type="text/javascript">
 	
@@ -579,7 +579,7 @@
 					<div id="carouselcontainer" >
 						<ul id="carousel" >
 							<li style="border:1px red solid">
-								<img src="/media/images/Slide1_Image.jpg" alt="slides">
+								<img src="{{static('images/Slide1_Image.jpg')}}" alt="slides">
 								<div id="about_slide">
 									<span class="about_header">Welcome to SolarPermit.org</span>
 									<br /><br />
@@ -608,7 +608,7 @@
 											<br />See the facts and insights that could help your business.</span>
 										</p>
 										<p>
-											<br><a href="/media/upfiles/CPF-DOE_Permitting_Study_Dec2012_Final.pdf" class="mainbutton">Read More</a></span>
+											<br><a href="{{static('upfiles/CPF-DOE_Permitting_Study_Dec2012_Final.pdf')}}" class="mainbutton">Read More</a></span>
 										</p>
 									</div>
 								</div>
@@ -685,7 +685,7 @@
 											<div id="slide_2" class="slide">
 												<h2>Solar Permitting Study</h2>
 												<p>Get the Facts on solar permitting from our nationwide study of 273 installers.</p>
-												<a target="_blank" href="/media/upfiles/CPF-DOE_Permitting_Study_Dec2012_Final.pdf" class="mainbutton">Read More</a>
+												<a target="_blank" href="{{static('upfiles/CPF-DOE_Permitting_Study_Dec2012_Final.pdf')}}" class="mainbutton">Read More</a>
 											</div>
 											<div id="slide_3" class="slide" style="background-color:#0ff;">
 												<h2>Contributors</h2>
@@ -737,7 +737,7 @@
 									<div class="cssTable" >
 										<div class="cssRow" >	
 											<div class="cssCell numCol" style="padding:15px 0 0px 0px;">
-												<img src="/media/images/1.png" alt="1" width="36" height="56"/>
+												<img src="{{static('images/1.png')}}" alt="1" width="36" height="56"/>
 											</div>
 											<div class="cssCell padRight " style="padding:15px 0 0px 5px;width:200px;">
 												Get Permitting Data
@@ -750,7 +750,7 @@
 									<div class="cssTable" >
 										<div class="cssRow" >	
 											<div class="cssCell numCol" style="padding:15px 0 0px 25px;">
-												<img src="/media/images/2.png" alt="2" width="42" height="57"/>
+												<img src="{{static('images/2.png')}}" alt="2" width="42" height="57"/>
 											</div>
 											<div class="cssCell padRight" style="padding:15px 0 0px 15px;">
 												Participate in the Community

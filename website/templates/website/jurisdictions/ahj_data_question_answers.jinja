@@ -10,7 +10,7 @@
                     <div class="cssRow" >
                         <div style="" class="cssCell qasv_content need_tooltip" id="child_of_div_{{this_question.id}}" data-id="{{this_question.id}}" data-paids="{{pending_editable_answer_ids}}" data-jurid="{{jurisdiction.id}}">            
                             <div class="label"  title="{{terminology}}" data-icon="{{icon}}" data-icon="{{label_tooltip}}" {% if login_user_suggested_a_value == False %}onClick="controller.suggestionField.clickAddLabel({{jurisdiction.id}}, {{this_question.id}});" {% endif %}>
-                                <span style="float:left;visibility:visible;display:none;padding-right:5px" id="edit_question_{{this_question.id}}"   ><img width="10" src="/media/images/edit.png" alt="edit" ></span>
+                                <span style="float:left;visibility:visible;display:none;padding-right:5px" id="edit_question_{{this_question.id}}"   ><img width="10" src="{{static('images/edit.png')}}" alt="edit" ></span>
                                 <span style="float:left;" >{{this_question.get_field_label(jurisdiction) | capitalize }}</span>
                             </div>                  
                         </div> 

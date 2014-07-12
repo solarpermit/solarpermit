@@ -611,7 +611,7 @@ input_error{
     */
 }
 .search-a {
-	background: url("/media/images/search1.png") center center no-repeat;
+	background: url('/static/images/search1.png') center center no-repeat;
 	/*margin-left:-35px;*/
 	padding:1px 12px;
 	z-index:10000;
@@ -621,8 +621,8 @@ input_error{
 
 .search-a-button {
 	background: #2bb473;
-	background: url("/media/images/search1.png") center center no-repeat, -webkit-gradient(linear, left top, left bottom, from(#2bb473), to(#259861)); 
-	background: url("/media/images/search1.png") center center no-repeat, -moz-linear-gradient(top,  #2bb473,  #259861);  
+	background: url('/static/images/search1.png') center center no-repeat, -webkit-gradient(linear, left top, left bottom, from(#2bb473), to(#259861)); 
+	background: url('/static/images/search1.png') center center no-repeat, -moz-linear-gradient(top,  #2bb473,  #259861);  
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2bb473', endColorstr='#259861');   
 	border-radius: 0 2px 2px 0;    
 	margin-left: -36px;    
@@ -632,8 +632,8 @@ input_error{
 }
 .search-a-button:hover {
 	background: #7fb109;
-	background: url("/media/images/search1.png") center center no-repeat, -webkit-gradient(linear, left top, left bottom, from(#7fb109), to(#2bb473)); 
-	background: url("/media/images/search1.png") center center no-repeat, -moz-linear-gradient(top,  #7fb109,  #2bb473);  
+	background: url('/static/images/search1.png') center center no-repeat, -webkit-gradient(linear, left top, left bottom, from(#7fb109), to(#2bb473)); 
+	background: url('/static/images/search1.png') center center no-repeat, -moz-linear-gradient(top,  #7fb109,  #2bb473);  
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7fb109', endColorstr='#2bb473');  
 }
 .searchfieldcontainer a{ text-decoration: none;}
@@ -2001,7 +2001,7 @@ input_error{
 	border:1px #FFFFFF solid;
 	margin: 2px 4px;
 	cursor: pointer;
-	background: url('/media//images/thumb_up_off.png') no-repeat 8px 3px;
+	background: url('/static/images/thumb_up_off.png') no-repeat 8px 3px;
 }
 
 .voteup:hover {
@@ -2010,8 +2010,8 @@ input_error{
 	border-radius:4px;
 	border:1px #b5b5b5 solid;
 	background: #e3e3e3;
-	background: url("/media/images/thumb_up_on.png") no-repeat 8px 3px, -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e3e3e3)); 
-	background: url("/media/images/thumb_up_on.png") no-repeat 8px 3px, -moz-linear-gradient(top,  #ffffff,  #e3e3e3);  
+	background: url('/static/images/thumb_up_on.png') no-repeat 8px 3px, -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e3e3e3)); 
+	background: url('/static/images/thumb_up_on.png') no-repeat 8px 3px, -moz-linear-gradient(top,  #ffffff,  #e3e3e3);  
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e3e3e3');  
 	text-decoration:none;
 }
@@ -2031,7 +2031,7 @@ input_error{
 	border:1px #FFFFFF solid;
 	margin: 2px 4px;
 	cursor: default;
-	background: url('/media//images/thumb_up_disabled.png') no-repeat 8px 3px;
+	background: url('/static/images/thumb_up_disabled.png') no-repeat 8px 3px;
 }
 
 
@@ -2050,7 +2050,7 @@ input_error{
 	border:1px #FFFFFF solid;
 	margin: 2px 4px;
 	cursor: pointer;
-	background: url('/media//images/thumb_down_off.png') no-repeat 8px 3px; 
+	background: url('/static/images/thumb_down_off.png') no-repeat 8px 3px; 
 }
 
 .votedown:hover {
@@ -2059,8 +2059,8 @@ input_error{
 	border-radius:4px;
 	border:1px #b5b5b5 solid;
 	background: #e3e3e3;
-	background: url("/media/images/thumb_down_on.png") no-repeat 8px 3px, -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e3e3e3)); 
-	background: url("/media/images/thumb_down_on.png") no-repeat 8px 3px, -moz-linear-gradient(top,  #ffffff,  #e3e3e3);  
+	background: url('/static/images/thumb_down_on.png') no-repeat 8px 3px, -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e3e3e3)); 
+	background: url('/static/images/thumb_down_on.png') no-repeat 8px 3px, -moz-linear-gradient(top,  #ffffff,  #e3e3e3);  
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e3e3e3');  
 	text-decoration:none;
 }
@@ -2076,7 +2076,7 @@ input_error{
 	border:1px #FFFFFF solid;
 	margin: 2px 4px;
 	cursor: default;
-	background: url('/media//images/thumb_down_disabled.png') no-repeat 8px 3px;		
+	background: url('/static/images/thumb_down_disabled.png') no-repeat 8px 3px;		
 }
 
 ul.paperlist li{
@@ -2125,7 +2125,7 @@ ul.paperlist li span.author{
 	text-decoration: none;
 	margin: 0px 4px 5px 10px;
 	border: 1px solid #ffffff;
-	background: url("/media/images/Print_Off.png")  no-repeat 6px 4px;
+	background: url('/static/images/Print_Off.png')  no-repeat 6px 4px;
 }
 .ahj-tab #print a:hover{
 	background:#CCCCCC;
@@ -2133,8 +2133,8 @@ ul.paperlist li span.author{
 	color:#555555;
 	border-radius:3px;
 	background: #e3e3e3;
-	background: url("/media/images/Print_Off.png") no-repeat 6px 4px, -webkit-gradient(linear, left top, left bottom, from(#e3e3e3), to(#ffffff)); 
-	background: url("/media/images/Print_Off.png") no-repeat 6px 4px, -moz-linear-gradient(top,  #e3e3e3,  #ffffff);  
+	background: url('/static/images/Print_Off.png') no-repeat 6px 4px, -webkit-gradient(linear, left top, left bottom, from(#e3e3e3), to(#ffffff)); 
+	background: url('/static/images/Print_Off.png') no-repeat 6px 4px, -moz-linear-gradient(top,  #e3e3e3,  #ffffff);  
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e3e3e3', endColorstr='#ffffff');  
 }
 .ahj-tab #ahj_tab_content{clear:both;}
@@ -2528,7 +2528,7 @@ ul.paperlist li span.author{
 .sub-title a {
 	background-repeat: no-repeat; 
 	background-position: 25px center; 
-	background-image: url("/media/images/arror-r.png");
+	background-image: url('/static/images/arror-r.png');
 }
 .breadcrum {
 	color: #999;
@@ -2679,7 +2679,7 @@ img {border:0;}
 }
 
 .home-contributors {
-	background-image: url('/media/images/contributor-slide-bg.jpg') !important;
+	background-image: url('/static/images/contributor-slide-bg.jpg') !important;
 	background-position: center top !important;
 	background-repeat: no-repeat !important;
 }
@@ -2712,7 +2712,7 @@ img {border:0;}
 }
 
 #news_slide {
-	background-image: url('/media/images/study-slide-bg.jpg') !important;
+	background-image: url('/static/images/study-slide-bg.jpg') !important;
 	background-position: center top !important;
 	background-repeat: no-repeat !important;
 }

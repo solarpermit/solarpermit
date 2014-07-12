@@ -13,14 +13,14 @@
 	</ul>
 	</div>
 	{% if old_answer != None%}
-	<div style="background-color:#BFEFFF;border:1px #1E90FF solid;padding:5px 5px 5px 25px;font-size:10px;background-image: url('/media//images/abouticon.png'); background-repeat: no-repeat;" class="">
+	<div style="background-color:#BFEFFF;border:1px #1E90FF solid;padding:5px 5px 5px 25px;font-size:10px;background-image: url('{{static('/images/abouticon.png')}}'; background-repeat: no-repeat;" class="">
           {{label}} changed from 
           {{old_answer_text}} 
           to <br/> 
           {{answer_text}}
 	</div>
 	<div id="show_commnet_div" style="margin-top:10px;">
-	<a id="show_old_comments_link" data-oldid="{{old_answer.id}}" data-jid="{{jurisdiction.id}}" href="#"><img src="/media/images/arrow_right.png" id="profile_action_indicator" style="vertical-align:middle;" alt="show old comments" > Show old comments</a>
+	<a id="show_old_comments_link" data-oldid="{{old_answer.id}}" data-jid="{{jurisdiction.id}}" href="#"><img src="{{static('images/arrow_right.png')}}" id="profile_action_indicator" style="vertical-align:middle;" alt="show old comments" > Show old comments</a>
     </div>
     <div id="old_list" class="comment-list">
     <ul class="ul-level-1">

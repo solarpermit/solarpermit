@@ -1,6 +1,6 @@
 {% if user.is_authenticated() %}
        <div class="q_action_link" id="q_action_link_{{current_question_id}}" data-id="{{current_question_id}}" >
-            <img class="q_more_actions" id="more_{{current_question_id}}"   src="/media/images/more_off.png" alt="more_inactive" data-id="{{current_question_id}}" style="margin:opx;padding:0px">
+            <img class="q_more_actions" id="more_{{current_question_id}}"   src="{{static('images/more_off.png')}}" alt="more_inactive" data-id="{{current_question_id}}" style="margin:opx;padding:0px">
 
        <ul id="ahj_actions_{{current_question_id}}" class="ahj_action_flyout" data-id="{{current_question_id}}" >
                 <li id="favorite_field_{{current_question_id}}" style="list-style-type: none;text-align: left; margin:  0 0 0 0px;padding: 0px 5px 0px 5px">

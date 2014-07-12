@@ -375,7 +375,7 @@ var controller = new function () {
 				$confirm_header = $('.confirm_header', dialog.data[0]);
 				$confirm_header.html(settings.title);
 				if (settings.icon != '') {
-					$icon = '<img src="/media/images/'+settings.icon+'" height="30" alt="image" >&nbsp;&nbsp;&nbsp;';
+					$icon = '<img src="/static/images/'+settings.icon+'" height="30" alt="image" >&nbsp;&nbsp;&nbsp;';
 					$confirm_header.prepend($icon);
 				}
 				$('.confirm_message', dialog.data[0]).html(settings.message);
@@ -543,7 +543,7 @@ var controller = new function () {
 		}
 		if (message != '') {
 			if (document.getElementById('system_message_type_img')){
-				document.getElementById('system_message_type_img').src = '/media/images/system_message_type_'+message_type+'.png';
+				document.getElementById('system_message_type_img').src = '/static/images/system_message_type_'+message_type+'.png';
 			}
 			$('#message_text').html(message);
 			var docWidth = $(document).width();

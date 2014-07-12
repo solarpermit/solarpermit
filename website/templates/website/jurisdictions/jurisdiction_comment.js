@@ -31,13 +31,13 @@ $('.modal_dialog_close').click(function (event) {
 });
 
 function show_comment_a(){
-	$('#show_commnet_div').empty().append('<a id="id_a_show" href="#"><img src="/media/images/arrow_right.png" style="vertical-align:middle;" alt="show old comments"  > Show old comments </a>');
+	$('#show_commnet_div').empty().append('<a id="id_a_show" href="#"><img src="/static/images/arrow_right.png" style="vertical-align:middle;" alt="show old comments"  > Show old comments </a>');
 	$('#old_list').hide();
 	$('#id_a_show').bind('click', function(){hide_comment_a();});
 }
 
 function hide_comment_a(){
-	$('#show_commnet_div').empty().append('<a id="id_a_hide" href="#"><img src="/media/images/arrow_down.png" style="vertical-align:middle;" alt="hide old comments"  > Hide old comments </a>');
+	$('#show_commnet_div').empty().append('<a id="id_a_hide" href="#"><img src="/static/images/arrow_down.png" style="vertical-align:middle;" alt="hide old comments"  > Hide old comments </a>');
 	$('#old_list').show();
 	$('#id_a_hide').bind('click', function(){show_comment_a();});;
 }

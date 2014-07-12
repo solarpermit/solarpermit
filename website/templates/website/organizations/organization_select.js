@@ -8,11 +8,11 @@ $('#search_org').bind('keyup', function (event) {
     		search_postion = $('#search_org').position();
     		var top = search_postion.top + 2;
     		$('#cleara-dev').css('top', top + 'px');
-    		$('#search_org').css('background-image', 'url("/media/images/x.png")');
+    		$('#search_org').css('background-image', "url('{{static('images/x.png')}}')");
     		$('#cleara-dev').show();
     	}	else{
     		$('#cleara-dev').hide();
-    		$('#search_org').css('background-image', 'url("/media/images/search.png")');
+    		$('#search_org').css('background-image', "url('{{static('images/search.png')}}')");
     	}
     	controller.postRequest('/organization/', {ajax: 'search_org', text: searchText});
     }
@@ -20,7 +20,7 @@ $('#search_org').bind('keyup', function (event) {
 
 $('#cleara').bind('click', function(){
 	$('#cleara-dev').hide();
-	$('#search_org').css('background-image', 'url("/media/images/search.png")');
+	$('#search_org').css('background-image', "url('{{static('images/search.png')}}')");
 	$('#search_org').val('');
 	controller.postRequest('/organization/', {ajax: 'search_org', text: ''});
 });

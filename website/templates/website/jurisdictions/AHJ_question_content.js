@@ -171,10 +171,10 @@ $('#q_action_link_{{question_id}}').mouseover(function(event)
     var $target = $(event.target);
     var questionId = $target.data('id'); 
     $('#ahj_actions_{{question_id}}').show();
-    $('#more_{{question_id}}').attr('src', '/media/images/more_on.png');
+    $('#more_{{question_id}}').attr('src', '/static/images/more_on.png');
 }).mouseout(function(event)
 {   
     $('#ahj_actions_{{question_id}}').hide();
-    $('#more_{{question_id}}').attr('src','/media/images/more_off.png');
+    $('#more_{{question_id}}').attr('src','/static/images/more_off.png');
 });
 */

@@ -110,7 +110,7 @@ $(document).ready(function() {
 
 });
 </script>
-<script src="/media/jurisdictions/AHJ_cqa_qa.js"></script>
+<script src="{{static('jurisdictions/AHJ_cqa_qa.js')}}"></script>
 {% endcompress %}
 {% endblock %}
 <!-- template jurisdiction_state_browse.html -->
@@ -135,7 +135,7 @@ $(document).ready(function() {
 
 {% block forestyle %}
 {% compress css %}
-    <link rel="stylesheet" type="text/css" href="/media/style/anythingslider.css" />
+    <link rel="stylesheet" type="text/css" href="{{static('style/anythingslider.css')}}" />
 {% endcompress %}
 {% endblock %}
 
@@ -155,10 +155,10 @@ $(document).ready(function() {
     {% endif %}
     {% if request.user.is_authenticated() %}
         {% if jurisdiction.user_favorite_jurisdiction(user) %}
-                            - <span id="favorite-a-image"><img width="12" height="12" src="/media/images/add-to-favorites.png" alt="Add to Favorites"></span>
+                            - <span id="favorite-a-image"><img width="12" height="12" src="{{static('images/add-to-favorites.png')}}" alt="Add to Favorites"></span>
                             <a id="favorite-a" href="#" title="Remove {{jurisdiction.show_jurisdiction('long')}} from your favorite jurisdictions">Remove from favorites</a>
         {% else %}
-                            - <span id="favorite-a-image"><img width="12" height="12" src="/media/images/add-to-favorites-hollow.png" alt="Add to Favorites"></span>
+                            - <span id="favorite-a-image"><img width="12" height="12" src="{{static('images/add-to-favorites-hollow.png')}}" alt="Add to Favorites"></span>
                             <a id="favorite-a" href="#" title="Add {{jurisdiction.show_jurisdiction('long')}} to your favorite jurisdictions">Add to favorites</a>
         {% endif %}
     {% endif %}    
@@ -327,9 +327,9 @@ $(document).ready(function() {
         {
             answer_attachment = answers_attachments[answer_id];
             html_str = "<div style='padding-top:5px;'><div>";
-            html_str += "<a href='/media"+answer_attachment['file_upload']+"' target=_blank><img width='48' alt='pdf_files' src='/media/images/pdf.png'></a>";
+            html_str += "<a href='/static"+answer_attachment['file_upload']+"' target=_blank><img width='48' alt='pdf_files' src="{{static('images/pdf.png')}}"></a>";
             html_str += "</div><div style='text-align: left;'>";
-            html_str += "<a href='/media"+answer_attachment['file_upload']+"' target=_blank>"+answer_attachment['file_name']+"</a>";
+            html_str += "<a href='/static"+answer_attachment['file_upload']+"' target=_blank>"+answer_attachment['file_name']+"</a>";
             html_str += "</div>";
         
             $('#attachment_'+answer_id).html(html_str);

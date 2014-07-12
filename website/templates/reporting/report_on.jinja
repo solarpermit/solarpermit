@@ -3,9 +3,9 @@
 
 {% block forestyle %}
   {% compress css %}
-    <link rel="stylesheet" type="text/css" href="/media/autocomplete_light/style.css"/>
-    <link rel="stylesheet" type="text/css" href="/media/autocomplete_light/side-by-side.css"/>
-    <link rel="stylesheet" type="text/css" href="/media/reporting/ui.css"/>
+    <link rel="stylesheet" type="text/css" href="{{static('autocomplete_light/style.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{static('autocomplete_light/side-by-side.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{static('reporting/ui.css')}}"/>
   {% endcompress %}
 {% endblock %}
 
@@ -42,17 +42,17 @@
     var reports = {{reports_json|safe}};
   </script>
   {% compress js %}
-    <script src="/media/autocomplete_light/autocomplete.js"></script>
-    <script src="/media/autocomplete_light/widget.js"></script>
-    <script src="/media/autocomplete_light/side-by-side.js"></script>
-    <script src="/media/js/raphael.js"></script>
-    <script src="/media/js/g.raphael.js"></script>
-    <script src="/media/js/g.pie.js"></script>
-    <script src="/media/js/g.bar.js"></script>
-    <script src="/media/js/g.line.js"></script>
-    <script src="/media/state-machine.js"></script>
-    <script src="/media/reporting/process-data.js"></script>
-    <script src="/media/stateHistory.js"></script>
-    <script src="/media/reporting/ui.js"></script>
+    <script src="{{static('autocomplete_light/autocomplete.js')}}"></script>
+    <script src="{{static('autocomplete_light/widget.js')}}"></script>
+    <script src="{{static('autocomplete_light/side-by-side.js')}}"></script>
+    <script src="{{static('js/raphael.js')}}"></script>
+    <script src="{{static('js/g.raphael.js')}}"></script>
+    <script src="{{static('js/g.pie.js')}}"></script>
+    <script src="{{static('js/g.bar.js')}}"></script>
+    <script src="{{static('js/g.line.js')}}"></script>
+    <script src="{{static('state-machine.js')}}"></script>
+    <script src="{{static('reporting/process-data.js')}}"></script>
+    <script src="{{static('stateHistory.js')}}"></script>
+    <script src="{{static('reporting/ui.js')}}"></script>
   {% endcompress %}
 {% endblock %}
