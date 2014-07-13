@@ -327,7 +327,7 @@ $(document).ready(function() {
         {
             answer_attachment = answers_attachments[answer_id];
             html_str = "<div style='padding-top:5px;'><div>";
-            html_str += "<a href='/static"+answer_attachment['file_upload']+"' target=_blank><img width='48' alt='pdf_files' src="{{static('images/pdf.png')}}"></a>";
+            html_str += "<a href='/static"+answer_attachment['file_upload']+"' target=_blank><img width='48' alt='pdf_files' src='{{static("images/pdf.png")}}'></a>";
             html_str += "</div><div style='text-align: left;'>";
             html_str += "<a href='/static"+answer_attachment['file_upload']+"' target=_blank>"+answer_attachment['file_name']+"</a>";
             html_str += "</div>";

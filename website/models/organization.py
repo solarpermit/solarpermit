@@ -145,8 +145,11 @@ class Organization(models.Model):
     def get_logo_thumbnail(self,size):
         if self.logo == None or self.logo == '':
             return ''
-        full_image = get_thumbnail(self.logo, size, quality=99)
-        return full_image.url
+        try:
+          full_image = get_thumbnail(self.logo, size, quality=99)
+          return full_image.url
+        except:
+          return "" # kludge
     
 class OrganizationAddress(models.Model):
     organization = models.ForeignKey(Organization, blank=True, null=True)

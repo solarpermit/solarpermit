@@ -1,3 +1,4 @@
+import os
 import re
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.contrib.auth.decorators import login_required
@@ -811,7 +812,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                     aac = AnswerAttachment()
                     aac.answer_reference = acrf
                     aac.file_name = file_name_list[i]
-                    store_file = '/upfiles/answer_ref_attaches/'+file_store_name_list[i]
+                    store_file = os.path.join('answer_ref_attaches', file_store_name_list[i])
                     aac.file_upload = store_file
                     aac.creator = user
                     aac.save()
@@ -850,7 +851,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                     aac = AnswerAttachment()
                     aac.answer_reference = acrf
                     aac.file_name = file_name_list[i]
-                    store_file = '/upfiles/answer_ref_attaches/'+file_store_name_list[i]
+                    store_file = os.path.join('answer_ref_attaches', file_store_name_list[i])
                     aac.file_upload = store_file
                     aac.creator = user
                     aac.save()
@@ -1663,16 +1664,13 @@ def answer_uploadfile(request):
     allowedExtension = ('.pdf')
     sizeLimit = django_settings.MAX_UPLOAD_FILE_SIZE
     uploader = qqFileUploader(allowedExtension, sizeLimit)
-    result = uploader.handleUpload(request, django_settings.MEDIA_ROOT + "/upfiles/answer_ref_attaches/")
+    result = uploader.handleUpload(request, os.path.join(django_settings.MEDIA_ROOT, "answer_ref_attaches"))
 
     return_array = result["json"]
     from django.utils import simplejson as json
 
     if result['success'] == True:
         return_array = json.loads(result["json"])
-        #full_path = django_settings.MEDIA_ROOT+'/upfiles/answer_ref_attaches/'+return_array['store_name']
-        #aa = get_thumbnail(full_path,'140x140', quality=99)
-        #return_array['thum_path'] = aa.url
         return_array = json.dumps(return_array)
     return HttpResponse(return_array)   
 

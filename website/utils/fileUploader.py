@@ -35,7 +35,8 @@ class qqFileUploader(object):
             #check file size
             if fileSize > self.sizeLimit:
                 return {"success": False, "filename": fileName, "json": '{"error": "File is too large."}'}
-            file = open(uploadDirectory + file_store_name,"wb")
+            os.makedirs(uploadDirectory)
+            file = open(os.path.join(uploadDirectory, file_store_name), "wb")
  
             #file_store_name = uploadDirectory+ "_" + file_store_name
             if isHtx:

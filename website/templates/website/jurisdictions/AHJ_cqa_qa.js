@@ -339,7 +339,7 @@ $('.q_action_link').each(function() {
         if ( (startX > l && startX < l+ 150) && ( t+$target.height()-5 < startY && startY < t+100 +$target.height()) ) {} else{
                 //alert(123);
                 $('#ahj_actions_'+questionId).hide();
-                $('#more_'+questionId).attr('src', "{{static('images/more_off.png')");
+                $('#more_'+questionId).attr('src', "{{static('images/more_off.png')}}");
         }
     });
  });

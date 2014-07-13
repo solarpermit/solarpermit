@@ -230,13 +230,8 @@ def organization(request):
                     
                 store_file_name = requestProcessor.getParameter('file_store_name')
                 if store_file_name != '' and store_file_name != None:
-                    org.logo = store_file
+                    org.logo = org_logo_path(store_file_name)
                     org.save()
-                    try:
-                        full_image = get_thumbnail(org_logo_path(store_file_name), '140x140', quality=99)
-                        original_image = full_image.url
-                    except:
-                        pass
                 user = request.user
                 data['user'] = user
                 org_member_obj = OrganizationMember()
