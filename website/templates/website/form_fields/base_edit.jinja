@@ -10,7 +10,7 @@
 	        {% if message_count > 0%}style="display:none"{% endif %}  
 	        >
 	    {% if request.user.is_authenticated() == True %}         
-	        <span style="float:left;visibility:visible;display:none;" id="{{name}}_edit_btn" ><img width="12"src="/media/images/edit.png" alt="edit" >&nbsp;</span>         
+	        <span style="float:left;visibility:visible;display:none;" id="{{name}}_edit_btn" ><img width="12"src="{{static('images/edit.png')}}" alt="edit" >&nbsp;</span>         
 	    {% endif %}          
 	        {{label}}:
 	    </div> 

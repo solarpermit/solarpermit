@@ -15,7 +15,7 @@
         		<div id="form_field_data_org_{{orgmember.id}}" class="show_data" style="width:500px;padding:20px 5px 5px 0;"  onmouseover="controller.initOrgFieldEvent(this);"  >
         			<a href="#" class="org_edit_link" data-orgid='{{orgmember.organization.id}}' >{{orgmember.organization.name}}</a>
         			<span style="float:right;visibility:hidden;cursor:pointer;" class='org_remove' id="edit_option_org_{{orgmember.id}}" data-memberid="{{orgmember.id}}" data-orgid="{{orgmember.organization.id}}" data-orgname="{{orgmember.organization.name}}" >
-                		<img src="/media/images/cancel_off.png" alt="cancel off">
+                		<img src="{{static('images/cancel_off.png')}}" alt="cancel off">
             		 </span>
             		 <div class="clearboth"></div>
                	</div>
@@ -28,7 +28,7 @@
  				<div id="form_field_data_org_{{orgmember.id}}" class="show_data" style="width:500px;padding:20px 5 5 5;"  onmouseout="return show_data('form_field_data_org_{{orgmember.id}}', 'edit_option_org_{{orgmember.id}}')" onmouseover="return show_edit_option('form_field_data_org_{{orgmember.id}}', 'edit_option_org_{{orgmember.id}}')"  >
 					<div class="org_request_join">Request to join <a href="#" style="text-decoration:none" class="org_details" data-orgid='{{orgmember.organization.id}}' >{{orgmember.organization.name}}</a> pending
 					<span style="float:right;visibility:hidden;cursor:pointer;" id="edit_option_org_{{orgmember.id}}" class="cancel_request"  data-orgid="{{orgmember.organization.id}}" data-orgname="{{orgmember.organization.name}}" >
-						<img src="/media/images/cancel_off.png" alt="cancel off" >
+						<img src="{{static('images/cancel_off.png')}}" alt="cancel off" >
 					 </span>
 					</div>
 			   	</div> 

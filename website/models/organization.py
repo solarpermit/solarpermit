@@ -7,6 +7,7 @@ from website.models import Address
 from localflavor.us.models import PhoneNumberField
 from urlparse import urlparse
 from sorl.thumbnail import get_thumbnail
+import os
 
 class OrganizationCategory(models.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
@@ -144,9 +145,11 @@ class Organization(models.Model):
     def get_logo_thumbnail(self,size):
         if self.logo == None or self.logo == '':
             return ''
-        full_path = django_settings.MEDIA_ROOT+ str(self.logo)
-        full_image = get_thumbnail(full_path,size, quality=99)
-        return full_image.url          
+        try:
+          full_image = get_thumbnail(self.logo, size, quality=99)
+          return full_image.url
+        except:
+          return "" # kludge
     
 class OrganizationAddress(models.Model):
     organization = models.ForeignKey(Organization, blank=True, null=True)

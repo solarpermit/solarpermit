@@ -94,7 +94,7 @@
 				{{orgname}}
 			{% endif %}
 			<span style="float:right;visibility:hidden;" id="edit_option_orgname" >
-				<img width="12"src="/media/images/edit.png" alt="edit" >&nbsp;Click to edit
+				<img width="12"src="{{static('images/edit.png')}}" alt="edit" >&nbsp;Click to edit
 			</span>
 		</div>
 	{% endif %}  
@@ -129,7 +129,7 @@
                 <a href="{{organization.get_clickable_website()}}" target="_blank" ><img src="{{organization.get_logo_thumbnail('32x32')}}" alt="{{orgname}}" ></a>
             {% endif %}
             <span style="float:right;visibility:hidden;" id="edit_option_logo" >
-                <img width="12"src="/media/images/edit.png" alt="edit" >&nbsp;Click to edit
+                <img width="12"src="{{static('images/edit.png')}}" alt="edit" >&nbsp;Click to edit
             </span>
         </div>
       
@@ -165,7 +165,7 @@
                 <a href="{{organization.get_clickable_website()}}" target="_blank" >{{organization.get_display_website()}}</a>
             {% endif %}
             <span style="float:right;visibility:hidden;" id="edit_option_website" >
-                <img width="12"src="/media/images/edit.png" alt="{{orgname}}" >&nbsp;Click to edit
+                <img width="12"src="{{static('images/edit.png')}}" alt="{{orgname}}" >&nbsp;Click to edit
             </span>
         </div>
       

@@ -70,25 +70,25 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'media')
-LOG_ROOT = os.path.join(os.path.dirname(__file__), 'log')
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash.
-# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = '/media/upfiles/'
-
 PROJECT_ROOT = os.path.dirname(__file__)
+LOG_ROOT = os.path.join(PROJECT_ROOT, 'log')
+
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
-
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/media/'
+STATIC_URL = '/static/'
+
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+# Example: "/home/media/media.lawrence.com/media/"
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash.
+# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+MEDIA_URL = '/media/'
 
 FIXTURE_DIRS = ( 
                 os.path.join(os.path.dirname(__file__), 'website/fixture'),

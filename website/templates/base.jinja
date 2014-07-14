@@ -9,11 +9,11 @@
         {% block forestyle %}{% endblock %}
         {% compress css %}
         {% include "website/fancybox_stylesheets.jinja" %}
-	<link rel="stylesheet" type="text/css" href="/media/js/flexcomplete/jquery.flexcomplete.css"/>
-	<link rel="stylesheet" type="text/css" href="/media/style/jquery-ui-1.10.4.custom.css"/>
-	<link href="/media/style/fileuploader.css" rel="stylesheet" type="text/css"/>
-	<link rel="stylesheet" type="text/css" href="/media/style/main.css"/>
-	<link rel="shortcut icon" href="/media/images/solarpermit_favicon.png"/>
+	<link rel="stylesheet" type="text/css" href="{{static('js/flexcomplete/jquery.flexcomplete.css')}}"/>
+	<link rel="stylesheet" type="text/css" href="{{static('style/jquery-ui-1.10.4.custom.css')}}"/>
+	<link href="{{static('style/fileuploader.css')}}" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" type="text/css" href="{{static('style/main.css')}}"/>
+	<link rel="shortcut icon" href="{{static('images/solarpermit_favicon.png')}}"/>
         {% endcompress %}
 
         {% compress js %}
@@ -82,16 +82,16 @@
 {% include "website/footer.jinja" %}
   
   {% compress js %}
-    <script src="/media/js/jquery-1.11.0.js"></script>	
-    <script src="/media/js/jquery.validate.js"></script>
-    <script src="/media/js/additional-methods.js"></script>
-    <script src="/media/js/jquery.simplemodal.js"></script>
-    <script src="/media/js/jquery.jscroll.custom.js"></script>	
-    <script src="/media/js/controller.js"></script>
-    <script src="/media/js/jquery.dajax.core.js"></script>
-    <script src="/media/js/jquery-ui-1.10.4.custom.js"></script>
-    <script src="/media/js/fileuploader.js"></script>			
-    <script type="text/javascript" src="/media/js/flexcomplete/jquery.flexcomplete.js"></script>	
+    <script src="{{static('js/jquery-1.11.0.js')}}"></script>	
+    <script src="{{static('js/jquery.validate.js')}}"></script>
+    <script src="{{static('js/additional-methods.js')}}"></script>
+    <script src="{{static('js/jquery.simplemodal.js')}}"></script>
+    <script src="{{static('js/jquery.jscroll.custom.js')}}"></script>	
+    <script src="{{static('js/controller.js')}}"></script>
+    <script src="{{static('js/jquery.dajax.core.js')}}"></script>
+    <script src="{{static('js/jquery-ui-1.10.4.custom.js')}}"></script>
+    <script src="{{static('js/fileuploader.js')}}"></script>			
+    <script type="text/javascript" src="{{static('js/flexcomplete/jquery.flexcomplete.js')}}"></script>	
     {% include "website/fancybox_scripts.jinja" %}
     <script type="text/javascript">
     	function reload_page()
@@ -310,7 +310,7 @@
     	});
     </script>
     <!--[if lte IE 9]>
-    <script type="text/javascript" src="/media/js/placeholder_ie_fix.js"></script>
+    <script type="text/javascript" src="{{static('js/placeholder_ie_fix.js')}}"></script>
     <script type='text/javascript'>
     $(document).ready(function() {
         placeholder_ie_fix('#search_field');

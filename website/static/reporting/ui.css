@@ -89,7 +89,7 @@
     margin: 0 3px;
 }
 .whatsit.loading .busy-indicator {
-    background-image: url("/media/images/ajax-loader.gif");
+    background-image: url('/static/images/ajax-loader.gif');
 }
 .selector select {
     display: inline-block;
