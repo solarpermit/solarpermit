@@ -113,6 +113,7 @@ else:
         (r'^api/read/question_list', 'website.views.api2.get_question_list'),
         #(r'^api/read/question', 'website.views.api2.get_question'),
         (r'^api/write/suggest_answer', 'website.views.api2.submit_suggestion'),
+        (r'^api/write/vote_on_suggestion', 'website.views.api2.vote_on_suggestion'),
         
         #### django-tracking2
         (r'^tracking/', include('tracking.urls')),

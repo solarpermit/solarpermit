@@ -5,7 +5,7 @@
 # django components
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template import Context
-from website.utils.httpUtil import HttpRequestProcessor
+from django.utils.safestring import mark_safe
 from django.conf import settings as django_settings
 from django.template.loader import get_template
 from django.template import Context, RequestContext, Template
@@ -20,15 +20,17 @@ import MySQLdb # database
 import MySQLdb.cursors
 from xml.dom import minidom
 import re
-from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
 import json
-from django.contrib.auth.models import User
-from website.models import API_Keys, Question
-from django.utils.safestring import mark_safe
 
 # use this in the future instead of template rendering
 import lxml.etree
-import lxml.builder 
+import lxml.builder
+import lxml.objectify
+
+from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
+from website.utils.httpUtil import HttpRequestProcessor
+from website.models import API_Keys, Question, AnswerReference
+from django.contrib.auth.models import User
 
 class AutoVivification(dict):
     """Implementation of perl's autovivification feature."""
@@ -634,12 +636,9 @@ def get_question_list(request):
                                  E.has_multivalues("1" if question.has_multivalues else "0"),
                                  E.terminology(question.terminology if question.terminology else ""),
                                  E.category(question.category.name if question.category.name else "")))
-    return HttpResponse(lxml.etree.tostring(result,
-                                            encoding="UTF-8",
-                                            xml_declaration=True),
+    return HttpResponse(xml_tostring(result),
                         content_type='application/xml')
         
-
 @csrf_exempt
 def submit_suggestion(request):
     validation_util_obj = FieldValidationCycleUtil()
@@ -864,8 +863,62 @@ def submit_suggestion(request):
     return requestProcessor.render_to_response(request,'website/api.xml', data, 'application/xml')
 
 @csrf_exempt
-def vote_suggestion(request):
-    a=0
+def vote_on_suggestion(request):
+    E = lxml.builder.ElementMaker()
+    errors = []
+    request_data = None
+    try:
+        request_data = lxml.objectify.fromstring(request.body)
+    except:
+        errors.append("Invalid request.")
+    if errors:
+        return error_response(errors)
+
+    if not request_data is not None:
+        errors.append("Invalid request.")
+    if not hasattr(request_data, 'api_username'):
+        errors.append("No api_username specified.")
+    if not hasattr(request_data, 'api_key'):
+        errors.append("No api_key specified.")
+    if not hasattr(request_data, 'answer_id'):
+        errors.append("No answer_id specified.")
+    if not hasattr(request_data, 'vote'):
+        errors.append("No vote specified.")
+    try:
+        user = User.objects.get(username=request_data.api_username)
+    except:
+        errors.append("Invalid api_username.")
+    if errors:
+        return error_response(errors)
+
+    try:
+        keys = user.api_keys_set.filter(key=request_data.api_key)
+    except:
+        return error_response(["Invalid api_key."])
+
+    try:
+        answer_id = int(request_data.answer_id)
+    except:
+        return error_response(["Invalid answer_id."])
+
+    try:
+        answer = AnswerReference.objects.get(pk=answer_id)
+    except:
+        return error_response(["Invalid answer_id."])
+
+    vote_dir = request_data.vote
+    if not (vote_dir == "up" or vote_dir == "down"):
+        return error_response(["Invalid vote."])
+
+    feedback = None
+    try:
+        validation_util_obj = FieldValidationCycleUtil()
+        feedback = validation_util_obj.process_vote(user, str(vote_dir), 'requirement', answer_id, 'confirmed')
+    except:
+        return error_response(["Unknown error."])
+
+    return HttpResponse(xml_tostring(E.result(E.status("success"))),
+                        content_type="application/xml")
 
 @csrf_exempt
 def submit_suggestion_coment(request):
@@ -874,3 +927,14 @@ def submit_suggestion_coment(request):
 @csrf_exempt
 def submit_unincoporated_comment(request):
     a=0
+
+def xml_tostring(xml):
+    return lxml.etree.tostring(xml,
+                               encoding="UTF-8",
+                               xml_declaration=True,
+                               pretty_print=True)
+
+def error_response(errors=[]):
+    E = lxml.builder.ElementMaker()
+    return HttpResponse(xml_tostring(E.result(E.status("fail"),
+                                              E.errors(*[E.error(e) for e in errors]))))
