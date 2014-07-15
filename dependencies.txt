@@ -8,6 +8,9 @@
 #  libgif-dev   (or the equivalent in your favorite package manager)
 #  libpng-dev
 #  libjpeg-dev
+#  libxml2-dev
+#  libxslt1-dev
+#  python-dev
 #
 # Required Python Packages
 #
@@ -44,6 +47,7 @@ django-jinja
 -e git+https://github.com/yourlabs/django-autocomplete-light.git@v2#egg=django-autocomplete-light
 -e git+https://github.com/db48x/python-statsd.git@b30b11fb9edddf682e2d53c78e36b8535aea516b#egg=python-statsd
 django-statsd
+lxml
 #
 # for debugging
 #

@@ -23,8 +23,12 @@ import re
 from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
 import json
 from django.contrib.auth.models import User
-from website.models import API_Keys
+from website.models import API_Keys, Question
 from django.utils.safestring import mark_safe
+
+# use this in the future instead of template rendering
+import lxml.etree
+import lxml.builder 
 
 class AutoVivification(dict):
     """Implementation of perl's autovivification feature."""
@@ -617,10 +621,24 @@ def get_jurisdiction(request):
 def get_question(request):
     a=0
 
-
-
-
-
+@csrf_exempt
+def get_question_list(request):
+    questions = Question.objects.filter(accepted=True).exclude(form_type='CF').select_related('category')
+    E = lxml.builder.ElementMaker()
+    result = E.result()
+    for question in questions:
+        result.append(E.question(E.id(str(question.id)),
+                                 E.field_label(question.label if question.label else ""),
+                                 E.instructions(question.instruction if question.instruction else ""),
+                                 E.default_format(question.default_value if question.default_value else""),
+                                 E.has_multivalues("1" if question.has_multivalues else "0"),
+                                 E.terminology(question.terminology if question.terminology else ""),
+                                 E.category(question.category.name if question.category.name else "")))
+    return HttpResponse(lxml.etree.tostring(result,
+                                            encoding="UTF-8",
+                                            xml_declaration=True),
+                        content_type='application/xml')
+        
 
 @csrf_exempt
 def submit_suggestion(request):
