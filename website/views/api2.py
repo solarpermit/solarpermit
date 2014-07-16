@@ -866,18 +866,13 @@ def submit_suggestion(request):
 @csrf_exempt
 def vote_on_suggestion(request):
     try:
-        validated_data = parse_api_request(request.body,
-                                           OrderedDict([('api_username', (get_user, 'user')),
-                                                        ('api_key', (get_api_key, None)),
-                                                        ('answer_id', (get_answer, 'answer')),
-                                                        ('vote', (lambda c, validated_data:
-                                                                      str(c) if str(c) in ["up", "down"] else None,
-                                                                  'vote_dir'))]))
-        validation_util_obj = FieldValidationCycleUtil()
-        feedback = validation_util_obj.process_vote(validated_data['user'],
-                                                    validated_data['vote_dir'],
+        request_data = parse_api_request(request.body)
+        user = get_user(request_data, 'api_username')
+        api_key = get_api_key(request_data, 'api_key', user)
+        feedback = validation_util_obj.process_vote(user,
+                                                    get_vote(request_data, 'vote'),
                                                     'requirement',
-                                                    validated_data['answer'].pk,
+                                                    get_answer(request_data, 'answer_id').pk,
                                                     'confirmed')
     except ValidationError as e:
         return error_response(e)
@@ -888,17 +883,16 @@ def vote_on_suggestion(request):
 @csrf_exempt
 def comment_on_suggestion(request):
     try:
-        validated_data = parse_api_request(request.body,
-                                           OrderedDict([('api_username', (get_user, 'user')),
-                                                        ('api_key', (get_api_key, None)),
-                                                        ('answer_id', (get_answer, 'answer')),
-                                                        ('comment', (lambda c, validated_data: str(c), None))]))
-        c = Comment(jurisdiction=validated_data['answer'].jurisdiction,
+        request_data = parse_api_request(request.body)
+        user = get_user(request_data, 'api_username')
+        api_key = get_api_key(request_data, 'api_key', user)
+        answer = get_answer(request_data, 'answer_id')
+        c = Comment(jurisdiction=answer.jurisdiction,
                     entity_name='AnswerReference',
-                    entity_id=validated_data['answer'].pk,
-                    user=validated_data['user'],
+                    entity_id=answer.pk,
+                    user=user,
                     comment_type='RC',
-                    comment=validated_data['comment'],
+                    comment=get_comment(request_data, 'comment'),
                     approval_status='P')
         c.save()
     except ValidationError as e:
@@ -910,15 +904,14 @@ def comment_on_suggestion(request):
 @csrf_exempt
 def comment_on_unincorporated(request):
     try:
-        validated_data = parse_api_request(request.body,
-                                           OrderedDict([('api_username', (get_user, 'user')),
-                                                        ('api_key', (get_api_key, None)),
-                                                        ('jurisdiction_id', (get_unincorporated, 'jurisdiction')),
-                                                        ('comment', (lambda c, validated_data: str(c), None))]))
-        c = Comment(jurisdiction=validated_data['jurisdiction'],
-                    user=validated_data['user'],
+        request_data = parse_api_request(request.body)
+        user = get_user(request_data, 'api_username')
+        api_key = get_api_key(request_data, 'api_key', user)
+        jurisdiction = get_unincorporated(request_data, 'jurisdiction_id')
+        c = Comment(jurisdiction=jurisdiction,
+                    user=user,
                     comment_type='JC',
-                    comment=validated_data['comment'],
+                    comment=get_comment(request_data, 'comment'),
                     approval_status='P')
         c.save()
     except ValidationError as e:
@@ -931,18 +924,50 @@ def comment_on_unincorporated(request):
 def submit_unincoporated_comment(request):
     a=0
 
-def get_user(username, validated_data):
+# What I really want here is a dataflow graph, so that I can collect
+# as many errors as possible at once while still having readable
+# code. See the previous revision for some code that wasn't very
+# readable but collected errors.
+
+def checked_getter(func):
+    def getter(obj, prop, *args):
+        out = None
+        if not hasattr(obj, prop):
+            raise ValidationError("No %s specified" % prop)
+        try:
+            out = func(getattr(obj, prop), *args)
+            if out is None:
+                raise ValidationError("Invalid %s." % prop)
+        except Exception as e:
+            raise ValidationError("Invalid %s." % prop)
+        return out
+    return getter
+
+@checked_getter
+def get_user(username):
     return User.objects.get(username=username)
 
-def get_api_key(api_key, validated_data):
-    return validated_data['user'].api_keys_set.filter(key=api_key)
+@checked_getter
+def get_api_key(api_key, user):
+    keys = user.api_keys_set.filter(key=api_key)
+    return keys[0] if len(keys) else None
 
-def get_answer(answer_id, validated_data):
+@checked_getter
+def get_answer(answer_id):
     return AnswerReference.objects.get(pk=int(answer_id))
 
-def get_unincorporated(jurisdiction_id, validated_data):
+@checked_getter
+def get_unincorporated(jurisdiction_id):
     j = Jurisdiction.objects.get(pk=int(jurisdiction_id))
     return j if j.jurisdiction_type == 'U' else None
+
+@checked_getter
+def get_vote(vote):
+    return str(vote) if str(vote) in ["up", "down"] else None
+
+@checked_getter
+def get_comment(comment):
+    return str(comment) if comment else None
 
 def xml_tostring(xml):
     return lxml.etree.tostring(xml,
@@ -950,29 +975,11 @@ def xml_tostring(xml):
                                xml_declaration=True,
                                pretty_print=True)
 
-def parse_api_request(xml_str, args):
-    request_data = None
-    validated_data = {}
+def parse_api_request(xml_str):
     try:
-        request_data = lxml.objectify.fromstring(xml_str)
+        return lxml.objectify.fromstring(xml_str)
     except:
         raise ValidationError("Invalid request.")
-
-    errors = []
-    if not request_data is not None:
-        errors.append("Invalid request.")
-    for (key, get_obj) in args.iteritems():
-        if not hasattr(request_data, key):
-            errors.append("No %s specified" % key)
-    if errors:
-        raise ValidationError(errors)
-    for (key, (get_obj, new_key)) in args.iteritems():
-        try:
-            validated_data[new_key or key] = get_obj(getattr(request_data, key),
-                                                     validated_data)
-        except Exception as e:
-            raise ValidationError("Invalid %s." % key)
-    return validated_data
 
 def error_response(errors=[]):
     if isinstance(errors, ValidationError):
