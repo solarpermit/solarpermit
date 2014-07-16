@@ -30,7 +30,7 @@ import lxml.objectify
 
 from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
 from website.utils.httpUtil import HttpRequestProcessor
-from website.models import API_Keys, Question, AnswerReference, Comment
+from website.models import API_Keys, Question, AnswerReference, Comment, Jurisdiction
 from django.contrib.auth.models import User
 
 class AutoVivification(dict):
@@ -908,6 +908,26 @@ def comment_on_suggestion(request):
     return success_response()
 
 @csrf_exempt
+def comment_on_unincorporated(request):
+    try:
+        validated_data = parse_api_request(request.body,
+                                           OrderedDict([('api_username', (get_user, 'user')),
+                                                        ('api_key', (get_api_key, None)),
+                                                        ('jurisdiction_id', (get_unincorporated, 'jurisdiction')),
+                                                        ('comment', (lambda c, validated_data: str(c), None))]))
+        c = Comment(jurisdiction=validated_data['jurisdiction'],
+                    user=validated_data['user'],
+                    comment_type='JC',
+                    comment=validated_data['comment'],
+                    approval_status='P')
+        c.save()
+    except ValidationError as e:
+        return error_response(e)
+    except Exception as e:
+        return error_response("Unknown error.")
+    return success_response()
+
+@csrf_exempt
 def submit_unincoporated_comment(request):
     a=0
 
@@ -919,6 +939,10 @@ def get_api_key(api_key, validated_data):
 
 def get_answer(answer_id, validated_data):
     return AnswerReference.objects.get(pk=int(answer_id))
+
+def get_unincorporated(jurisdiction_id, validated_data):
+    j = Jurisdiction.objects.get(pk=int(jurisdiction_id))
+    return j if j.jurisdiction_type == 'U' else None
 
 def xml_tostring(xml):
     return lxml.etree.tostring(xml,
