@@ -865,61 +865,25 @@ def submit_suggestion(request):
 
 @csrf_exempt
 def vote_on_suggestion(request):
-    E = lxml.builder.ElementMaker()
-    errors = []
-    request_data = None
     try:
-        request_data = lxml.objectify.fromstring(request.body)
-    except:
-        errors.append("Invalid request.")
-    if errors:
-        return error_response(errors)
-
-    if not request_data is not None:
-        errors.append("Invalid request.")
-    if not hasattr(request_data, 'api_username'):
-        errors.append("No api_username specified.")
-    if not hasattr(request_data, 'api_key'):
-        errors.append("No api_key specified.")
-    if not hasattr(request_data, 'answer_id'):
-        errors.append("No answer_id specified.")
-    if not hasattr(request_data, 'vote'):
-        errors.append("No vote specified.")
-    try:
-        user = User.objects.get(username=request_data.api_username)
-    except:
-        errors.append("Invalid api_username.")
-    if errors:
-        return error_response(errors)
-
-    try:
-        keys = user.api_keys_set.filter(key=request_data.api_key)
-    except:
-        return error_response(["Invalid api_key."])
-
-    try:
-        answer_id = int(request_data.answer_id)
-    except:
-        return error_response(["Invalid answer_id."])
-
-    try:
-        answer = AnswerReference.objects.get(pk=answer_id)
-    except:
-        return error_response(["Invalid answer_id."])
-
-    vote_dir = request_data.vote
-    if not (vote_dir == "up" or vote_dir == "down"):
-        return error_response(["Invalid vote."])
-
-    feedback = None
-    try:
+        validated_data = parse_api_request(request.body,
+                                           OrderedDict([('api_username', (get_user, 'user')),
+                                                        ('api_key', (get_api_key, None)),
+                                                        ('answer_id', (get_answer, 'answer')),
+                                                        ('vote', (lambda c, validated_data:
+                                                                      str(c) if str(c) in ["up", "down"] else None,
+                                                                  'vote_dir'))]))
         validation_util_obj = FieldValidationCycleUtil()
-        feedback = validation_util_obj.process_vote(user, str(vote_dir), 'requirement', answer_id, 'confirmed')
-    except:
-        return error_response(["Unknown error."])
-
-    return HttpResponse(xml_tostring(E.result(E.status("success"))),
-                        content_type="application/xml")
+        feedback = validation_util_obj.process_vote(validated_data['user'],
+                                                    validated_data['vote_dir'],
+                                                    'requirement',
+                                                    validated_data['answer'].pk,
+                                                    'confirmed')
+    except ValidationError as e:
+        return error_response(e)
+    except Exception as e:
+        return error_response("Unknown error.")
+    return success_response()
 
 @csrf_exempt
 def comment_on_suggestion(request):
