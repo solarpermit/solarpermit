@@ -12,6 +12,7 @@ from django.template import Context, RequestContext, Template
 from django.conf import settings
 from jinja2 import FileSystemLoader, Environment
 import hashlib
+from collections import OrderedDict
 
 # specific to api
 from django.views.decorators.csrf import csrf_exempt
@@ -29,7 +30,7 @@ import lxml.objectify
 
 from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
 from website.utils.httpUtil import HttpRequestProcessor
-from website.models import API_Keys, Question, AnswerReference
+from website.models import API_Keys, Question, AnswerReference, Comment
 from django.contrib.auth.models import User
 
 class AutoVivification(dict):
@@ -921,12 +922,39 @@ def vote_on_suggestion(request):
                         content_type="application/xml")
 
 @csrf_exempt
-def submit_suggestion_coment(request):
-    a=0
+def comment_on_suggestion(request):
+    try:
+        validated_data = parse_api_request(request.body,
+                                           OrderedDict([('api_username', (get_user, 'user')),
+                                                        ('api_key', (get_api_key, None)),
+                                                        ('answer_id', (get_answer, 'answer')),
+                                                        ('comment', (lambda c, validated_data: str(c), None))]))
+        c = Comment(jurisdiction=validated_data['answer'].jurisdiction,
+                    entity_name='AnswerReference',
+                    entity_id=validated_data['answer'].pk,
+                    user=validated_data['user'],
+                    comment_type='RC',
+                    comment=validated_data['comment'],
+                    approval_status='P')
+        c.save()
+    except ValidationError as e:
+        return error_response(e)
+    except Exception as e:
+        return error_response("Unknown error.")
+    return success_response()
 
 @csrf_exempt
 def submit_unincoporated_comment(request):
     a=0
+
+def get_user(username, validated_data):
+    return User.objects.get(username=username)
+
+def get_api_key(api_key, validated_data):
+    return validated_data['user'].api_keys_set.filter(key=api_key)
+
+def get_answer(answer_id, validated_data):
+    return AnswerReference.objects.get(pk=int(answer_id))
 
 def xml_tostring(xml):
     return lxml.etree.tostring(xml,
@@ -934,7 +962,43 @@ def xml_tostring(xml):
                                xml_declaration=True,
                                pretty_print=True)
 
+def parse_api_request(xml_str, args):
+    request_data = None
+    validated_data = {}
+    try:
+        request_data = lxml.objectify.fromstring(xml_str)
+    except:
+        raise ValidationError("Invalid request.")
+
+    errors = []
+    if not request_data is not None:
+        errors.append("Invalid request.")
+    for (key, get_obj) in args.iteritems():
+        if not hasattr(request_data, key):
+            errors.append("No %s specified" % key)
+    if errors:
+        raise ValidationError(errors)
+    for (key, (get_obj, new_key)) in args.iteritems():
+        try:
+            validated_data[new_key or key] = get_obj(getattr(request_data, key),
+                                                     validated_data)
+        except Exception as e:
+            raise ValidationError("Invalid %s." % key)
+    return validated_data
+
 def error_response(errors=[]):
+    if isinstance(errors, ValidationError):
+        errors = errors.args[0]
+    if not isinstance(errors, list):
+        errors = [errors]
     E = lxml.builder.ElementMaker()
     return HttpResponse(xml_tostring(E.result(E.status("fail"),
                                               E.errors(*[E.error(e) for e in errors]))))
+
+def success_response():
+    E = lxml.builder.ElementMaker()
+    return HttpResponse(xml_tostring(E.result(E.status("success"))),
+                        content_type="application/xml")
+
+class ValidationError(Exception):
+    pass
