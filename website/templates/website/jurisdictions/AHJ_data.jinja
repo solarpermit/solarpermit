@@ -197,7 +197,7 @@ $(document).ready(function() {
             <div class="clearboth"></div>
                     </div>    
     
-                    <div id="ahj_tab_content cssTable" class="cssTable" style="width:100%">
+                    <div id="ahj_tab_content" class="cssTable" style="width:100%">
                         <div class="cssRow">
                             <div class="cssCell" style="width:590px;">
                         {% block category_content %}    
@@ -205,7 +205,7 @@ $(document).ready(function() {
                         {% endblock %}
                             </div>
             
-                            <div class="cssCell" style="float:left">
+                            <div class="cssCell">
                             {% if show_google_map == True %}
                             {% include "website/blocks/google_map.jinja" %}
                             {% endif %}

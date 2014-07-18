@@ -22,17 +22,17 @@
        {% if question.user_can_suggest %}
        onClick="controller.suggestionField.clickAddLabel({{jurisdiction.id}}, {{question_id}});"
        {% endif %}>
-    <span style="float:left;visibility:visible;display:none;padding-right:5px"
+    <span style="visibility:visible;display:none;padding-right:5px"
           id="edit_question_{{question_id}}">
       <img width="10"
            src="{{static('images/edit.png')}}"
            alt="edit">
     </span>
-    <span style="float:left;">{{question['label'] | replace('[AHJ name]', jurisdiction.name) }}</span>
+    <span>{{question['label'] | replace('[AHJ name]', jurisdiction.name) }}</span>
+    {% with current_question_id = question['question_id'] %}
+      {% include "website/jurisdictions/ahj_actions.jinja" %}
+    {% endwith %}
   </div>
-  {% with current_question_id = question['question_id'] %}
-    {% include "website/jurisdictions/ahj_actions.jinja" %}
-  {% endwith %}
 </div>
 {% if question['description'] != None and question['description'] != '' %}
   <div style="float:left;width:100%" class="description">{{question['description']}}</div>
@@ -65,7 +65,7 @@
 {% endif %}
 {% for answer in question['answers'] %}
   <div data-debug-answer-id="{{answer.id}}" class="answer-container">
-    <div class="cssTable" style="float:left;width:100%;margin-bottom:20px">
+    <div class="cssTable">
       <div class="cssRow" id="qa_{{question_id}}_data">
         <div class="cssCell suggestion_left" style="">
           {% if question['answers'] %}
