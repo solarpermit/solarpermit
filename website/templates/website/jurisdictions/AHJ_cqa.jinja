@@ -43,7 +43,7 @@
       {% for question_id in cqa[category_id]['sorted_question_ids'] %}
         <div data-debug-question-id="{{question_id}}" class="question-container">
           <div style="margin:10px;width:100%">&nbsp;</div>
-          <div id="div_question_content_{{question_id}}" style="margin-left:25px;">
+          <div id="div_question_content_{{question_id}}">
             {% with question = cqa[category_id]['questions'][question_id] %}
               {% include 'website/jurisdictions/AHJ_cqa_qa.jinja' %}
             {% endwith %}
@@ -52,8 +52,8 @@
       {% endfor %}
 
       {# display the custom field here, at end of each category section #}
-      <div style="float:left;width:100%">
-        <div id="div_custom_question_content_{{category_id}}" style="margin-left:25px;"></div>
+      <div style="float:left; width:100%; padding-left: 25px;">
+        <div id="div_custom_question_content_{{category_id}}"></div>
         <div class="label">Don't see the info you're looking for here?</div>
         <div>Check out the other sections to the left or create a custom field to share more info with the community.</div>
         <input type="button"
