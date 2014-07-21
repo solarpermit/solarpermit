@@ -3082,3 +3082,37 @@ img {border:0;}
 .flexcomplete {
   z-index: 1;
 }
+
+.api_key_management {
+    width: 400px;
+    border: 1px solid #999;
+    text-align: center;
+}
+
+.api_key_management h2 {
+    font-size: 14px;
+    background-color: #ccc;
+    border-bottom: 1px solid #999;
+    margin: 0;
+    margin-bottom: 4px;
+    text-align: left;
+}
+
+.api_key_management p {
+    margin: 0 0 4px;
+}
+
+.api_form {
+    display: inline-block;
+}
+
+.api_button {
+    margin-bottom: 5px;
+}
+
+.key_wrap {
+    border: 1px solid #0c0;
+    max-width: 380px;
+    margin: 10px;
+    margin-bottom: 5px;
+}

@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.conf.urls.defaults import patterns, include, handler404, handler500, url
 from django.conf import settings
-from website.views import home, account, info, jurisdiction, organization, custom_field, maintenance, siteadmin, reporting
+from website.views import home, account, account_views, info, jurisdiction, organization, custom_field, maintenance, siteadmin, reporting
 from website.views.news import *
 
 import autocomplete_light
@@ -34,7 +34,11 @@ else:
         # Uncomment the next line to enable the admin:
         # url(r'^admin/', include(admin.site.urls)),
         
-        (r'^$', home.home),     
+        (r'^$', home.home),
+        url(r'^apikeys$', account_views.APIKeyListView.as_view(), name="api-keys"),
+        url(r'^apikeys/new$', account_views.APIKeyCreateView.as_view(), name="api-keys-create"),
+        url(r'^apikeys/delete/(?P<pk>.*)/$', account_views.APIKeyRevokeView.as_view(), name="api-keys-delete"),
+        url(r'^apikeys/replace/(?P<pk>.*)/$', account_views.APIKeyReplaceView.as_view(), name="api-keys-replace"),
         (r'^admin/', include(admin.site.urls)), 
         #(r'^jurisdiction_browse/(?P<state>.*)/(?P<sort_by>.*)/(?P<sort_dir>.*)/(?P<page_num>.*)/$', jurisdiction.get_state_jurisdictions),     
         #(r'^browse/', 'website.views.jurisdiction.jurisdiction_browse_by_states'),  
