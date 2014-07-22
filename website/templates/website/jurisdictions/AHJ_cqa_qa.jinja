@@ -35,7 +35,7 @@
   </div>
 </div>
 {% if question['description'] != None and question['description'] != '' %}
-  <div style="float:left;width:100%" class="description">{{question['description']}}</div>
+  <div class="description">{{question['description']}}</div>
 {% endif %}
 {% if question.user_can_suggest %}
   <div id="qa_{{question_id}}_add" class="cssCell suggestion_edit_box" style="display:none">
@@ -53,7 +53,7 @@
 {% endif %}
 {% if not question['answers'] %}
   <div class="prompt"
-       style="float:left;width:100%;margin-bottom:20px">
+       style="margin-bottom:20px">
     {% if user.is_authenticated() %}
       No info available yet...
     {% else %}
@@ -61,7 +61,7 @@
     {% endif %}
   </div>
 {% else %}
-  <div style="float:left;width:100%;display:none" class="question_messages" id="question_messages_{{question_id}}"></div>
+  <div style="display:none" class="question_messages" id="question_messages_{{question_id}}"></div>
 {% endif %}
 {% for answer in question['answers'] %}
   <div data-debug-answer-id="{{answer.id}}" class="answer-container">
