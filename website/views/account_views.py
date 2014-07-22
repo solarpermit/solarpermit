@@ -17,16 +17,14 @@ class APIKeyListView(LoginRequiredMixin, ListView):
     model = API_Keys
 
     def get_queryset(self):
-        qs = self.model.objects.all()
-        user = self.request.user
-        qs = qs.filter(user_id=user.id,enabled=True)
-        qs = qs.order_by("key")
-        return qs
+        return self.model.objects.filter(user = self.request.user,
+                                         enabled = True)            \
+                                 .order_by("create_datetime")
 
 class APIKeyCreateView(LoginRequiredMixin, View):
     model = API_Keys
     success_url = '/profile/'
-    
+
     def post(self, request, *args, **kwargs):
         user = request.user
         self.model().createNew(user).save()
@@ -48,7 +46,7 @@ class APIKeyRevokeView(LoginRequiredMixin, UpdateView):
 class APIKeyReplaceView(LoginRequiredMixin, View):
     model = API_Keys
     success_url = '/profile/'
-    
+
     def post(self, request, *args, **kwargs):
         user = request.user
         key = self.kwargs.get('pk', None)
