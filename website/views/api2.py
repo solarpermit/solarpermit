@@ -723,11 +723,7 @@ def submit_suggestion(request):
         # user validation pre-work
         try:
             # get the user id of this user
-            thisUserId = int(User.objects.get(username=directives['api_username']).pk)
-            # get the api key for this user
-            apiKeys = API_Keys.objects.filter(user_id=thisUserId)
-            for row in apiKeys:
-                thisApiKey = row.key
+            thisUser = User.objects.get(username=directives['api_username'])
         except Exception:
             errors.append('Failed to look up your username.')
         
@@ -737,8 +733,10 @@ def submit_suggestion(request):
                 output += '\t<error>' + this_error + '</error>\n'
             output += '</errors>'
         else:
+            # get the api key for this user
+            apiKeys = API_Keys.objects.filter(user_id=thisUser, key=directives['api_key'], enabled=True)
             # validate user
-            if directives['api_key'] != thisApiKey:
+            if not len(apiKeys):
                 output = '<errors>\n\t<error>User validation failure - check api_key for accuracy</error>\n</errors>'
             else:
                 ## validate jurisdiction_id
@@ -821,10 +819,9 @@ def submit_suggestion(request):
                                     output += '\t<error>' + this_error + '</error>\n'
                                 output += '</errors>'
                             else:
-                                user = User.objects.get(id=thisUserId)
                                 is_callout = 0
                                 try:
-                                    arcf = validation_util_obj.save_answer(question, directives['answer_value'], jurisdiction, 'AddRequirement', user, is_callout)
+                                    arcf = validation_util_obj.save_answer(question, directives['answer_value'], jurisdiction, 'AddRequirement', thisUser, is_callout)
                                     output = '<Result>' + str(arcf) + '</Result>'
                                 except Exception as inst:
                                     output = '<errors>\n\t<error>Failed to save answer suggestion.</error><detail>\n'
@@ -949,7 +946,7 @@ def get_user(username):
 
 @checked_getter
 def get_api_key(api_key, user):
-    keys = user.api_keys_set.filter(key=api_key)
+    keys = user.api_keys_set.filter(key=api_key, enabled=True)
     return keys[0] if len(keys) else None
 
 @checked_getter
