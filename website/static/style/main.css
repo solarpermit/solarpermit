@@ -3084,18 +3084,7 @@ img {border:0;}
 }
 
 .api_key_management {
-    width: 400px;
-    border: 1px solid #999;
-    text-align: center;
-}
-
-.api_key_management h2 {
-    font-size: 14px;
-    background-color: #ccc;
-    border-bottom: 1px solid #999;
-    margin: 0;
-    margin-bottom: 4px;
-    text-align: left;
+    padding-left: 25px;
 }
 
 .api_key_management p {
@@ -3106,13 +3095,7 @@ img {border:0;}
     display: inline-block;
 }
 
-.api_button {
-    margin-bottom: 5px;
-}
-
-.key_wrap {
-    border: 1px solid #0c0;
-    max-width: 380px;
-    margin: 10px;
-    margin-bottom: 5px;
+.keywrap {
+    display: inline-block;
+    width: 25em;
 }

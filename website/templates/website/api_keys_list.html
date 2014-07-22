@@ -1,15 +1,17 @@
 <div class="api_key_management">
-  <h2>API Key Management</h2>
+  <div class="label">API Key Management</div>
   {% for apikey in object_list %}
-  <div class="key_wrap">{{ apikey.key }}</div>
+  <div class="form_field">
+    <div class="keywrap">{{ apikey.key }}</div>
     <form id="replace-form" class="api_form replace_form" action="{% url 'api-keys-replace' pk=apikey.pk %}" method="post">{% csrf_token %}
       <input type="submit" class="api_button smallbutton" value="Replace Key" />
     </form>
     <form id="delete-form-{{ apikey.pk }}" class="api_form delete_form" action="{% url 'api-keys-delete' pk=apikey.pk %}" method="post">{% csrf_token %}
       <input type="submit" class="api_button smallbutton" value="Delete Key" />
     </form>
+  </div>
   {% empty %}
-  <p>No API keys yet.</p>
+  <div style="color:#C1CDCD;font-style:italic;"><p>No API keys yet.</p></div>
   <form id="create-form" class="api_form create_form" action="{% url 'api-keys-create' %}" method="post">{% csrf_token %}
     <input type="submit" class="api_button smallbutton" value="Generate Key" />
   </form>
