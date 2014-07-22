@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from website.models import API_Keys
 
 class LoginRequiredMixin(object):
