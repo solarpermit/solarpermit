@@ -866,6 +866,7 @@ def vote_on_suggestion(request):
         request_data = parse_api_request(request.body)
         user = get_user(request_data, 'api_username')
         api_key = get_api_key(request_data, 'api_key', user)
+        validation_util_obj = FieldValidationCycleUtil()
         feedback = validation_util_obj.process_vote(user,
                                                     get_vote(request_data, 'vote'),
                                                     'requirement',
