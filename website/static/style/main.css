@@ -2914,6 +2914,14 @@ img {border:0;}
     overflow: clip;
 }
 
+.ahj_category .twisty::before {
+    content: "▾";
+}
+
+.ahj_category.closed .twisty::before {
+    content: "▸";
+}
+
 #drawing_file .qq-upload-button{
 	background:none;
 	border:none;

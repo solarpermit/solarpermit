@@ -362,5 +362,5 @@ $(".edit_btn").tooltip({track: true});
 $("#ahj_tab_content").on('click',
 			 ".ahj_category_header",
 			 function (event) {
-			     $(this).parent().find(".ahj_category_body").slideToggle();
+			     $(this).parent().toggleClass("closed").find(".ahj_category_body").slideToggle();
 			 });
