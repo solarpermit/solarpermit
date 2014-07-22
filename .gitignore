@@ -1,8 +1,8 @@
 *pyc
 settings_local.py
-/media/cache/
 \#*\#
 *~
 /static/
 /media/
 /src/
+/website/static/CACHE/

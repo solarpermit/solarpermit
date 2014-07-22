@@ -25,7 +25,7 @@
 {% endblock %}
 {% block forejs %}
   {% compress js %}
-    {% include "autocomplete_light/_ajax_csrf.jinja" %}
+    {% include "autocomplete_light/_ajax_csrf.html" %}
     <script type="text/javascript" src="{{static('autocomplete_light/autocomplete.js')}}"></script>
     <script type="text/javascript" src="{{static('autocomplete_light/widget.js')}}"></script>
     <script type="text/javascript" src="{{static('autocomplete_light/side-by-side.js')}}"></script>

@@ -39,7 +39,8 @@ pillow
 sorl-thumbnail==11.12
 South==0.8.1
 -e git+https://github.com/db48x/django-tracking2.git@550c1b7e97617db9c046e407520ea0642ea28858#egg=django-tracking
--e git+https://github.com/db48x/django_compressor.git@offline-jinja2#egg=django-compressor
+django-appconf
+-e git+https://github.com/django-compressor/django-compressor.git#egg=django-compressor
 cssmin==0.2.0
 closure==20140110
 django-localflavor

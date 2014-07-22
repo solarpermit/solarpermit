@@ -300,13 +300,16 @@ PAGE_COLUMNS = 5 #number of columns in multiple column listing page
 
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = True
-COMPRESS_URL = '/media/'
+COMPRESS_URL = '/static/'
 COMPRESS_ROOT = os.path.join(PROJECT_ROOT, 'website', 'static')
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',
                         'compressor.filters.cssmin.CSSMinFilter']
 COMPRESS_JS_FILTERS = ['compressor.filters.closure.ClosureCompilerFilter']
 COMPRESS_CLOSURE_COMPILER_BINARY = '/usr/local/bin/closure'
 COMPRESS_CLOSURE_COMPILER_ARGUMENTS = '--language_in ECMASCRIPT5 --summary_detail_level 3'
+def COMPRESS_JINJA2_GET_ENVIRONMENT():
+    from django_jinja.base import env
+    return env
 
 # do not run migrations during testing
 SOUTH_TESTS_MIGRATE=False
