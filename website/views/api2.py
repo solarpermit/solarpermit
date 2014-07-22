@@ -5,13 +5,14 @@
 # django components
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template import Context
-from website.utils.httpUtil import HttpRequestProcessor
+from django.utils.safestring import mark_safe
 from django.conf import settings as django_settings
 from django.template.loader import get_template
 from django.template import Context, RequestContext, Template
 from django.conf import settings
 from jinja2 import FileSystemLoader, Environment
 import hashlib
+from collections import OrderedDict
 
 # specific to api
 from django.views.decorators.csrf import csrf_exempt
@@ -20,11 +21,17 @@ import MySQLdb # database
 import MySQLdb.cursors
 from xml.dom import minidom
 import re
-from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
 import json
+
+# use this in the future instead of template rendering
+import lxml.etree
+import lxml.builder
+import lxml.objectify
+
+from website.utils.fieldValidationCycleUtil import FieldValidationCycleUtil
+from website.utils.httpUtil import HttpRequestProcessor
+from website.models import API_Keys, Question, AnswerReference, Comment, Jurisdiction
 from django.contrib.auth.models import User
-from website.models import API_Keys
-from django.utils.safestring import mark_safe
 
 class AutoVivification(dict):
     """Implementation of perl's autovivification feature."""
@@ -617,11 +624,22 @@ def get_jurisdiction(request):
 def get_question(request):
     a=0
 
-
-
-
-
-
+@csrf_exempt
+def get_question_list(request):
+    questions = Question.objects.filter(accepted=True).exclude(form_type='CF').select_related('category')
+    E = lxml.builder.ElementMaker()
+    result = E.result()
+    for question in questions:
+        result.append(E.question(E.id(str(question.id)),
+                                 E.field_label(question.label if question.label else ""),
+                                 E.instructions(question.instruction if question.instruction else ""),
+                                 E.default_format(question.default_value if question.default_value else""),
+                                 E.has_multivalues("1" if question.has_multivalues else "0"),
+                                 E.terminology(question.terminology if question.terminology else ""),
+                                 E.category(question.category.name if question.category.name else "")))
+    return HttpResponse(xml_tostring(result),
+                        content_type='application/xml')
+        
 @csrf_exempt
 def submit_suggestion(request):
     validation_util_obj = FieldValidationCycleUtil()
@@ -705,11 +723,7 @@ def submit_suggestion(request):
         # user validation pre-work
         try:
             # get the user id of this user
-            thisUserId = int(User.objects.get(username=directives['api_username']).pk)
-            # get the api key for this user
-            apiKeys = API_Keys.objects.filter(user_id=thisUserId)
-            for row in apiKeys:
-                thisApiKey = row.key
+            thisUser = User.objects.get(username=directives['api_username'])
         except Exception:
             errors.append('Failed to look up your username.')
         
@@ -719,8 +733,10 @@ def submit_suggestion(request):
                 output += '\t<error>' + this_error + '</error>\n'
             output += '</errors>'
         else:
+            # get the api key for this user
+            apiKeys = API_Keys.objects.filter(user_id=thisUser, key=directives['api_key'], enabled=True)
             # validate user
-            if directives['api_key'] != thisApiKey:
+            if not len(apiKeys):
                 output = '<errors>\n\t<error>User validation failure - check api_key for accuracy</error>\n</errors>'
             else:
                 ## validate jurisdiction_id
@@ -803,10 +819,9 @@ def submit_suggestion(request):
                                     output += '\t<error>' + this_error + '</error>\n'
                                 output += '</errors>'
                             else:
-                                user = User.objects.get(id=thisUserId)
                                 is_callout = 0
                                 try:
-                                    arcf = validation_util_obj.save_answer(question, directives['answer_value'], jurisdiction, 'AddRequirement', user, is_callout)
+                                    arcf = validation_util_obj.save_answer(question, directives['answer_value'], jurisdiction, 'AddRequirement', thisUser, is_callout)
                                     output = '<Result>' + str(arcf) + '</Result>'
                                 except Exception as inst:
                                     output = '<errors>\n\t<error>Failed to save answer suggestion.</error><detail>\n'
@@ -846,13 +861,137 @@ def submit_suggestion(request):
     return requestProcessor.render_to_response(request,'website/api.xml', data, 'application/xml')
 
 @csrf_exempt
-def vote_suggestion(request):
-    a=0
+def vote_on_suggestion(request):
+    try:
+        request_data = parse_api_request(request.body)
+        user = get_user(request_data, 'api_username')
+        api_key = get_api_key(request_data, 'api_key', user)
+        validation_util_obj = FieldValidationCycleUtil()
+        feedback = validation_util_obj.process_vote(user,
+                                                    get_vote(request_data, 'vote'),
+                                                    'requirement',
+                                                    get_answer(request_data, 'answer_id').pk,
+                                                    'confirmed')
+    except ValidationError as e:
+        return error_response(e)
+    except Exception as e:
+        return error_response("Unknown error.")
+    return success_response()
 
 @csrf_exempt
-def submit_suggestion_coment(request):
-    a=0
+def comment_on_suggestion(request):
+    try:
+        request_data = parse_api_request(request.body)
+        user = get_user(request_data, 'api_username')
+        api_key = get_api_key(request_data, 'api_key', user)
+        answer = get_answer(request_data, 'answer_id')
+        c = Comment(jurisdiction=answer.jurisdiction,
+                    entity_name='AnswerReference',
+                    entity_id=answer.pk,
+                    user=user,
+                    comment_type='RC',
+                    comment=get_comment(request_data, 'comment'),
+                    approval_status='P')
+        c.save()
+    except ValidationError as e:
+        return error_response(e)
+    except Exception as e:
+        return error_response("Unknown error.")
+    return success_response()
+
+@csrf_exempt
+def comment_on_unincorporated(request):
+    try:
+        request_data = parse_api_request(request.body)
+        user = get_user(request_data, 'api_username')
+        api_key = get_api_key(request_data, 'api_key', user)
+        jurisdiction = get_unincorporated(request_data, 'jurisdiction_id')
+        c = Comment(jurisdiction=jurisdiction,
+                    user=user,
+                    comment_type='JC',
+                    comment=get_comment(request_data, 'comment'),
+                    approval_status='P')
+        c.save()
+    except ValidationError as e:
+        return error_response(e)
+    except Exception as e:
+        return error_response("Unknown error.")
+    return success_response()
 
 @csrf_exempt
 def submit_unincoporated_comment(request):
     a=0
+
+# What I really want here is a dataflow graph, so that I can collect
+# as many errors as possible at once while still having readable
+# code. See the previous revision for some code that wasn't very
+# readable but collected errors.
+
+def checked_getter(func):
+    def getter(obj, prop, *args):
+        out = None
+        if not hasattr(obj, prop):
+            raise ValidationError("No %s specified" % prop)
+        try:
+            out = func(getattr(obj, prop), *args)
+            if out is None:
+                raise ValidationError("Invalid %s." % prop)
+        except Exception as e:
+            raise ValidationError("Invalid %s." % prop)
+        return out
+    return getter
+
+@checked_getter
+def get_user(username):
+    return User.objects.get(username=username)
+
+@checked_getter
+def get_api_key(api_key, user):
+    keys = user.api_keys_set.filter(key=api_key, enabled=True)
+    return keys[0] if len(keys) else None
+
+@checked_getter
+def get_answer(answer_id):
+    return AnswerReference.objects.get(pk=int(answer_id))
+
+@checked_getter
+def get_unincorporated(jurisdiction_id):
+    j = Jurisdiction.objects.get(pk=int(jurisdiction_id))
+    return j if j.jurisdiction_type == 'U' else None
+
+@checked_getter
+def get_vote(vote):
+    return str(vote) if str(vote) in ["up", "down"] else None
+
+@checked_getter
+def get_comment(comment):
+    return str(comment) if comment else None
+
+def xml_tostring(xml):
+    return lxml.etree.tostring(xml,
+                               encoding="UTF-8",
+                               xml_declaration=True,
+                               pretty_print=True)
+
+def parse_api_request(xml_str):
+    try:
+        return lxml.objectify.fromstring(xml_str)
+    except:
+        raise ValidationError("Invalid request.")
+
+def error_response(errors=[]):
+    if isinstance(errors, ValidationError):
+        errors = errors.args[0]
+    if not isinstance(errors, list):
+        errors = [errors]
+    E = lxml.builder.ElementMaker()
+    return HttpResponse(xml_tostring(E.result(E.status("fail"),
+                                              E.errors(*[E.error(e) for e in errors]))))
+
+def success_response():
+    E = lxml.builder.ElementMaker()
+    return HttpResponse(xml_tostring(E.result(E.status("success"))),
+                        content_type="application/xml")
+
+class ValidationError(Exception):
+    pass

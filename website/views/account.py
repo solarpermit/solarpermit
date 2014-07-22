@@ -8,6 +8,7 @@ from dajax.core import Dajax
 from django.conf import settings as django_settings
 from django.core.mail.message import EmailMessage
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
 
 from website.utils.mathUtil import MathUtil
 #from website.models import Jurisdiction
@@ -16,7 +17,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.template.loader import get_template
 from django.template import Context, RequestContext, Template
-from website.models import UserDetail, OrganizationMember, UserFavorite, Jurisdiction, AnswerReference, ViewOrgs
+from website.models import API_Keys, UserDetail, OrganizationMember, UserFavorite, Jurisdiction, AnswerReference, ViewOrgs
+from website.views import account_views
 from jinja2 import FileSystemLoader, Environment
 import hashlib
 from django.conf import settings
@@ -1103,6 +1105,12 @@ def user_profile_full(request):
     data_org_members =  org_member_obj.get_user_orgs(user)                          
     data['orgmembers'] = data_org_members['orgmembers'] 
     data['orgmembers_invite'] = data_org_members['orgmembers_invite'] 
+    
+    ############### API keys - start #####################
+    data['user_profile_apikeys_div'] = 'user_profile_apikeys_div'
+    data['form_apikeys'] = 'form_apikeys'
+    listbody = account_views.APIKeyListView.as_view()(request).render().rendered_content
+    data['body_apikeys'] = listbody
     
     message_data = get_system_message(request) #get the message List
     data =  dict(data.items() + message_data.items())   #merge message list to data
