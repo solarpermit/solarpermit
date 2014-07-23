@@ -194,6 +194,7 @@ INSTALLED_APPS = (
     'django_jinja',
     'autocomplete_light',
     'django_statsd',
+    'impostor',
 )
 
 #setup memcached for production use!
@@ -204,6 +205,7 @@ CACHE_BACKEND = 'locmem://'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    'impostor.backend.AuthBackend',
 )
 
 #Celery Settings
