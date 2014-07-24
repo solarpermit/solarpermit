@@ -3,4 +3,5 @@ $('.delete_form > a').on("click", function (e) {
 });
 $('.api_button').on("click", function (e) {
     $('.api_button').attr('disabled', 'disabled');
+    $(e.target).parent().submit();
 });
