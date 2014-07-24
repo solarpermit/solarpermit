@@ -134,19 +134,10 @@ class NotificationHelper():
         from jinja2 import FileSystemLoader, Environment
         template_dirs = settings.TEMPLATE_DIRS
         env = Environment(loader=FileSystemLoader(template_dirs))
-        template = env.get_template('website/emails/notification.html')
+        template = env.get_template('website/emails/notification.jinja')
         body = template.render(**data) 
            
         subject = data['subject']
-        '''
-        tp = get_template('website/emails/notification.html')
-        c = Context(data)
-        body = tp.render(c)
-        '''    
-  
-        #self.strMsg += body
-        #self.strMsg += str(body)
-        
         from_mail = django_settings.DEFAULT_FROM_EMAIL        
         msg = EmailMessage( subject, body, from_mail, [data['user'].email])
         msg.content_subtype = "html"   

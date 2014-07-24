@@ -298,15 +298,7 @@ def jurisdiction_comment(request):
         return HttpResponse(dajax.json())
     return
 
-def send_email(data, to_mail, subject='Flag Comment', template='flag_comment.html'): 
-    email_host = django_settings.EMAIL_HOST
-    if not email_host:
-        return
-
-    #tp = django_get_template('website/emails/' + template)
-    #c = Context(data)
-    #body = tp.render(c)
-    
+def send_email(data, to_mail, subject='Flag Comment', template='flag_comment.jinja'):
     requestProcessor = data['requestProcessor']
     request = data['request']
     body = requestProcessor.decode_jinga_template(request, 'website/emails/' + template, data, '')
