@@ -29,7 +29,7 @@ def update_reports(question, jurisdictions=None, before=None, previous=None):
         if 'name' in report:
             stats = dict(temporal_stats.get_report(report['name']))
             for row in report['table']:
-                k = row['key'].lower()
+                k = temporal_stats.normalize(row['key'])
                 v = row['value']
                 if v:
                     stats[k](question.id).increment(delta=v)
