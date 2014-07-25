@@ -1181,11 +1181,14 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             rec['content'] = json.loads(rec['value'])
             question['logged_in_user_suggested_a_value'] = rec['creator_id'] == user.id
             votes = data['answers_votes'].get(rec['id'], None)
+            suggestion_has_votes = votes and \
+                                   (votes['total_up_votes'] > 0 or \
+                                    votes['total_down_votes'] > 0)
+            users_existing_suggestions = [a for a in question['answers'] if a['creator_id'] == user.id]
             if rec['creator_id'] == user.id:
                 question['user_can_suggest'] = question['has_multivalues'] or \
-                                               (not votes or \
-                                                (votes['total_up_votes'] == 0 and \
-                                                 votes['total_down_votes'] == 0))
+                                               len(users_existing_suggestions) == 0 or \
+                                               suggestion_has_votes
 
         if rec['question_id'] == 4:
             show_google_map = True
@@ -1717,11 +1720,14 @@ def get_question_data(request, jurisdiction, question, data):
             data['question']['pending_answer_ids'].append(answer['id'])
         answer['content'] = json.loads(answer['value'])
         votes = data['answers_votes'].get(answer['id'], None)
-        data['question']['user_can_suggest'] = data['question']['has_multivalues'] or \
-                                               (answer['creator_id'] == user.id and \
-                                                (not votes or
-                                                 (votes['total_up_votes'] == 0 and \
-                                                  votes['total_down_votes'] == 0)))
+        suggestion_has_votes = votes and \
+                               (votes['total_up_votes'] > 0 or \
+                                votes['total_down_votes'] > 0)
+        users_existing_suggestions = [a for a in answers if a.creator_id == user.id]
+        if answer['creator_id'] == user.id:
+            data['question']['user_can_suggest'] = question.has_multivalues or \
+                                                   len(users_existing_suggestions) == 0 or \
+                                                   suggestion_has_votes
         if answer['question_id'] == 16:
             fee_info = validation_util_obj.process_fee_structure(json.loads(answer['value']) )
             for key in fee_info.keys():
