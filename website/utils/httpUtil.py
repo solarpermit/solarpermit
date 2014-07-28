@@ -59,12 +59,12 @@ class HttpRequestProcessor():
             return '' #return blank to avoid processing at the view
     
     # for jinja2
-    def render_to_response(self, request, filename, context={}, mimetype=''):
+    def render_to_response(self, request, filename, context={}, mimetype='', **kwargs):
         # don't add any new callers to this; you should be calling the
         # django render_to_response directly
         user = request.user
         context['user_searches'] = UserSearch.get_user_recent(user)
-        return render(request, filename.replace(".html", ".jinja"), context, content_type=mimetype)
+        return render(request, filename.replace(".html", ".jinja"), context, content_type=mimetype, **kwargs)
     
     def decode_jinga_template(self, request, filename, context={}, mimetype=''):
         return render_to_string(filename.replace(".html", ".jinja"), context, RequestContext(request, context))

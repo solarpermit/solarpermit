@@ -251,9 +251,8 @@ def upload(request):
 
 def page_404(request):
     data = {}
-    
     requestProcessor = HttpRequestProcessor(request)
     #return HttpResponseNotFound('<h1>Page not found</h1>')
-    return requestProcessor.render_to_response(request,'website/info/404.html', data, '')
+    return requestProcessor.render_to_response(request,'website/info/404.html', data, '', status=404)
 
 
