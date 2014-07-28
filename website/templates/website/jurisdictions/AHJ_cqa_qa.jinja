@@ -19,6 +19,7 @@
        title="{{question['terminology']}}"
        data-icon="{{icon}}"
        data-label_tooltip="{{label_tooltip}}"
+       style="padding-left: 25px;"
        {% if question.user_can_suggest %}
        onClick="controller.suggestionField.clickAddLabel({{jurisdiction.id}}, {{question_id}});"
        {% endif %}>
@@ -35,7 +36,7 @@
   </div>
 </div>
 {% if question['description'] != None and question['description'] != '' %}
-  <div class="description">{{question['description']}}</div>
+  <div style="float:left;width:100%;padding-left: 25px" class="description">{{question['description']}}</div>
 {% endif %}
 {% if question.user_can_suggest %}
   <div id="qa_{{question_id}}_add" class="cssCell suggestion_edit_box" style="display:none">
@@ -67,7 +68,7 @@
   <div data-debug-answer-id="{{answer.id}}" class="answer-container">
     <div class="cssTable">
       <div class="cssRow" id="qa_{{question_id}}_data">
-        <div class="cssCell suggestion_left" style="">
+        <div class="cssCell suggestion_left" style="padding-left: 25px">
           {% if question['answers'] %}
             <div class="suggestion_header" id="suggestion_header_{{answer['id']}}">
               {{ answer_heading }}

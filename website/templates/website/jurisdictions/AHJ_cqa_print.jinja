@@ -68,7 +68,7 @@
         {% set terminology = questions_terminology.get(current_question_id) %}   
         {% set question_has_answers = questions_have_answers.get(current_question_id) %}        
 
-            <div id="div_question_content_{{current_question_id}}" style="margin-left:25px;">     
+            <div id="div_question_content_{{current_question_id}}" style="padding-left:25px;">     
                 <div style="width:100%;" class="qasv_content need_tooltip" id="child_of_div_{{current_question_id}}" >            
                     <div class="label"  title="{{terminology}}" >
                         <span style="float:left;visibility:visible;display:none;padding-right:5px" id="edit_question_{{current_question_id}}"   ><img width="10" src="{{static('images/edit.png')}}" alt="edit" ></span>
