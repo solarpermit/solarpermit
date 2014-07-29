@@ -1989,7 +1989,7 @@ input_error{
 .voteup {
 	background:#FFFFFF;
 	height:26px;
-	width:80px;
+	width:20px;
 	padding:2px 5px 5px 30px;
 	font-family:Tahoma, Geneva, sans-serif;
 	font-size:11px;
@@ -2019,7 +2019,7 @@ input_error{
 .voteup.disabled {
 	background:#FFFFFF;
 	height:26px;
-	width:80px;
+	width:20px;
 	padding:2px 5px 5px 30px;
 	font-family:Tahoma, Geneva, sans-serif;
 	font-size:11px;
@@ -2921,6 +2921,23 @@ img {border:0;}
     content: "▸";
 }
 
+.ahj_category_body {
+    width: 100%;
+    display: table-row-group;
+}
+
+@media (min-width:1310px) and (max-width:1635px) {
+    .question-container {
+	width: 47%;
+    }
+}
+
+@media (min-width:1635px) {
+    .question-container {
+	width: 30%;
+    }
+}
+
 #drawing_file .qq-upload-button{
 	background:none;
 	border:none;
@@ -3112,5 +3129,12 @@ img {border:0;}
 }
 
 .question-container {
-    margin-bottom: 3em;
+    border:1px #b9d1fc solid;
+    border-spacing: 15px 7px !important;
+    border-collapse: collapse;
+    display: inline-block;
+    min-width: 350px;
+    padding: 5px;
+    margin: 5px;
+    vertical-align: top;
 }

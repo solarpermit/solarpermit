@@ -34,7 +34,7 @@
       <span id="up_vote_{{current_answer_id}}">
         <span id="up_vote_num_{{current_answer_id}}">{{votes['total_up_votes'] if votes else '0'}}</span>
         <input type="button" id="voteup_{{current_answer_id}}"
-               name="voteup_{{current_answer_id}}" value="Approve"
+               name="voteup_{{current_answer_id}}" title="Approve"
                class="voteup {{class_canvoteup}} {{class_up_disabled}}"
                data-answerid="{{current_answer_id}}"
                data-terminology="{{terminology}}" data-canvotedown=""/>

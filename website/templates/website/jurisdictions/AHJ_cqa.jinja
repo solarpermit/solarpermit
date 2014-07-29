@@ -53,7 +53,7 @@
       <div class="ahj_category_body">
         {% for question_id in cqa[category_id]['sorted_question_ids'] %}
           <div data-debug-question-id="{{question_id}}" class="question-container">
-            <div id="div_question_content_{{question_id}}" style="margin-left:25px;">
+            <div id="div_question_content_{{question_id}}">
               {% with question = cqa[category_id]['questions'][question_id] %}
                 {% include 'website/jurisdictions/AHJ_cqa_qa.jinja' %}
               {% endwith %}
