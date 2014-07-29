@@ -40,7 +40,12 @@ def differences(last, current):
     for (i, report) in enumerate(current):
         if 'name' in report:
             for (r, row) in enumerate(report['table']):
-                output[i]['table'][r]['value'] = row['value'] - last[i]['table'][r]['value']
+                last_val = last[i]['table'][r]['value']
+                cur_val = row['value']
+                if last_val is not None and cur_val is not None:
+                    output[i]['table'][r]['value'] = row['value'] - last[i]['table'][r]['value']
+                else:
+                    output[i]['table'][r]['value'] = cur_val
     return output
 
 def run_reports(question, **kwargs):
