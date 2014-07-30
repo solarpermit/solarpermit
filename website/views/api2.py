@@ -918,10 +918,6 @@ def comment_on_unincorporated(request):
         return error_response("Unknown error.")
     return success_response()
 
-@csrf_exempt
-def submit_unincoporated_comment(request):
-    a=0
-
 # What I really want here is a dataflow graph, so that I can collect
 # as many errors as possible at once while still having readable
 # code. See the previous revision for some code that wasn't very
@@ -942,6 +938,10 @@ def checked_getter(func):
     return getter
 
 @checked_getter
+def get_prop(val):
+    return val
+
+@checked_getter
 def get_user(username):
     return User.objects.get(username=username)
 
@@ -953,6 +953,11 @@ def get_api_key(api_key, user):
 @checked_getter
 def get_answer(answer_id):
     return AnswerReference.objects.get(pk=int(answer_id))
+
+@checked_getter
+def get_incorporated(jurisdiction_id):
+    j = Jurisdiction.objects.get(pk=int(jurisdiction_id))
+    return j if j.jurisdiction_type not in ['U', 'CINP', 'CONP'] else None
 
 @checked_getter
 def get_unincorporated(jurisdiction_id):
@@ -988,7 +993,7 @@ def error_response(errors=[]):
     return HttpResponse(xml_tostring(E.result(E.status("fail"),
                                               E.errors(*[E.error(e) for e in errors]))))
 
-def success_response():
+def success_response(messages=[]):
     E = lxml.builder.ElementMaker()
     return HttpResponse(xml_tostring(E.result(E.status("success"))),
                         content_type="application/xml")
