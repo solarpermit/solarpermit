@@ -247,12 +247,12 @@ LOGGING = {
         },
     },
     'loggers': {
-        '': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False, # this tells logger to send logging message
-                                # to its parent (will send if set to True)
-        },
+#        '': {
+#            'handlers': ['console'],
+#            'level': 'DEBUG',
+#            'propagate': False, # this tells logger to send logging message
+#                                # to its parent (will send if set to True)
+#        },
         #'django.db': {
         #},
         'django.request': {
@@ -275,7 +275,7 @@ SORT_CLASS = 'sort'
 
 DEFAULT_CONTENT_TYPE = 'text/html'
 
-#SITE_URL = "http://dev.solarpermit.org"
+SITE_URL = "http://solarpermit.org/"
 FIRST_MAX_FAILED_LOGIN_ATTEMPTS = 5
 SECOND_MAX_FAILED_LOGIN_ATTEMPTS = 8
 TIME_PERIOD_FOR_FAILED_LOGIN_ATTEMPTS = 5
@@ -339,12 +339,18 @@ if DEBUG:
     INSTALLED_APPS += ('django_extensions',
                        'debug_toolbar')
 
+_CANONICAL_SITE_URL = SITE_URL
+try:
+    _CANONICAL_SITE_URL = CANONICAL_SITE_URL
+except:
+    pass
+
 # this has to be after we import settings_local, obviously
-JINJA2_GLOBALS = {
-    # note, this does not work for string values (although that's fixed in a newer version of django-jinja)
+JINJA2_CONSTANTS = {
     'INTERNAL_IPS': INTERNAL_IPS,
     'ENABLE_GOOGLE_ANALYTICS': ENABLE_GOOGLE_ANALYTICS,
     'FORUM_INTEGRATION': FORUM_INTEGRATION,
+    'CANONICAL_SITE_URL': _CANONICAL_SITE_URL,
 }
 
 try:
