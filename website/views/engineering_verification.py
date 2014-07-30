@@ -81,10 +81,10 @@ class ElectricalElement(lxml.objectify.ObjectifiedElement):
 
 def testcase_response(results=[]):
     E = lxml.builder.ElementMaker()
-    status = "failure"
+    status = "success"
     for result in results:
-        if result[0]:
-            status = "success"
+        if not result[0]:
+            status = "failure"
             break
     def getnode(result):
         if result[0]:
