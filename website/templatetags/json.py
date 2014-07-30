@@ -1,10 +1,8 @@
-from django_jinja import library
+from django_jinja import filter
 from django.utils.safestring import mark_safe
 import jinja2
 import simplejson
 
-lib = library.Library()
-
-@lib.filter
+@filter
 def json(value):
     return mark_safe(simplejson.dumps(value))
