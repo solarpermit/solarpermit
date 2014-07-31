@@ -937,6 +937,13 @@ def checked_getter(func):
         return out
     return getter
 
+def optional_getter(func):
+    def getter(obj, prop, *args):
+        if hasattr(obj, prop):
+            return func(getattr(obj, prop), *args)
+        return None
+    return getter
+
 @checked_getter
 def get_prop(val):
     return val

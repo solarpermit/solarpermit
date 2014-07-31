@@ -10,7 +10,10 @@ import lxml.builder
 import lxml.objectify
 
 import website
-from website.views.api2 import parse_api_request, get_prop, get_user, get_api_key, get_incorporated, checked_getter, ValidationError, xml_tostring, error_response
+from website.views.api2 import parse_api_request, get_prop, get_user,         \
+                               get_api_key, get_incorporated, checked_getter, \
+                               optional_getter, ValidationError, xml_tostring,\
+                               error_response
 
 @csrf_exempt
 def verify(request):
@@ -20,11 +23,11 @@ def verify(request):
         user = get_user(directives, 'api_username')
         api_key = get_api_key(directives, 'api_key', user)
         jurisdiction = get_incorporated(directives, 'jurisdiction_id')
-        code = get_code(directives, 'override_code', jurisdiction)
         system = get_prop(request_data, 'system')
         ac = get_prop(system, 'ac')
         dc = get_prop(system, 'dc')
         ground = get_prop(system, 'ground')
+        code = get_code(jurisdiction, get_override_code(directives, 'override_code'))
         tests = [f[1] for f in inspect.getmembers(code) if inspect.isfunction(f[1])]
         def dotest(f):
             try:
@@ -42,11 +45,28 @@ def verify(request):
         return error_response(traceback.print_exc())
     return testcase_response(results=results)
 
-@checked_getter
-def get_code(override, jurisdiction):
-    # TODO: look it up from the jurisdiction
-    mod = getattr(website.utils.engineering_verification, str(override))
-    return mod if inspect.ismodule(mod) else None
+def get_code(jurisdiction, override):
+    code_name = override
+    if override is None:
+        try:
+            year = json.loads(jurisdiction.answerreference_set
+                                          .filter(question_id = 1,
+                                                  approval_status = 'A')
+                                          .order_by("-create_datetime")[0]
+                                          .value)['value']
+            code_name = "nec%s" % year
+        except:
+            raise ValidationError("No NEC code version for this jurisdiction, use override_code.")
+    mod = getattr(website.utils.engineering_verification, str(code_name))
+    if not inspect.ismodule(mod):
+        if override is not None:
+            raise ValidationError("Invalid override_code.")
+        raise ValidationError("This jurisdiction has an invalid or unsupported NEC code version, use override_code.")
+    return mod
+
+@optional_getter
+def get_override_code(override):
+    return str(override)
 
 def parse_verification_request(xml_str):
     parser = lxml.etree.XMLParser(remove_blank_text=True)
