@@ -220,15 +220,6 @@ table {border-spacing: 0;}
     color: #555555;
     font-family: Tahoma,Geneva,sans-serif;
     font-size: 12px;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-.label {
-    color: #555555;
-    font-family: Tahoma,Geneva,sans-serif;
-    font-size: 12px;
-    font-weight: bold;
     text-decoration: none;
 }
 
@@ -236,7 +227,6 @@ table {border-spacing: 0;}
     color: #555555;
     font-family: Tahoma,Geneva,sans-serif;
     font-size: 11px;
-    font-weight: bold;
     text-decoration: none;
 }
 
@@ -2826,6 +2816,7 @@ img {border:0;}
 .qasv_content > div.label {
     padding-left: 25px;
     display: inline-block;
+    font-size: larger;
 }
 
 .q_action_link{

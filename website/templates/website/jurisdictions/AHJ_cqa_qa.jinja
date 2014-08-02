@@ -22,12 +22,6 @@
        {% if question.user_can_suggest %}
        onClick="controller.suggestionField.clickAddLabel({{jurisdiction.id}}, {{question_id}});"
        {% endif %}>
-    <span style="visibility:visible;display:none;padding-right:5px"
-          id="edit_question_{{question_id}}">
-      <img width="10"
-           src="{{static('images/edit.png')}}"
-           alt="edit">
-    </span>
     <span>{{question['label'] | replace('[AHJ name]', jurisdiction.name) }}</span>
   </div>
   {% with current_question_id = question['question_id'] %}
