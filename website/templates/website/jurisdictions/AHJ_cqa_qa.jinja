@@ -19,7 +19,6 @@
        title="{{question['terminology']}}"
        data-icon="{{icon}}"
        data-label_tooltip="{{label_tooltip}}"
-       style="padding-left: 25px;"
        {% if question.user_can_suggest %}
        onClick="controller.suggestionField.clickAddLabel({{jurisdiction.id}}, {{question_id}});"
        {% endif %}>
@@ -30,10 +29,10 @@
            alt="edit">
     </span>
     <span>{{question['label'] | replace('[AHJ name]', jurisdiction.name) }}</span>
-    {% with current_question_id = question['question_id'] %}
-      {% include "website/jurisdictions/ahj_actions.jinja" %}
-    {% endwith %}
   </div>
+  {% with current_question_id = question['question_id'] %}
+    {% include "website/jurisdictions/ahj_actions.jinja" %}
+  {% endwith %}
 </div>
 {% if question['description'] != None and question['description'] != '' %}
   <div style="float:left;width:100%;padding-left: 25px" class="description">{{question['description']}}</div>

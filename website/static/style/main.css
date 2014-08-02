@@ -2823,6 +2823,11 @@ img {border:0;}
 
 .qq-upload-list{width:300px;}
 
+.qasv_content > div.label {
+    padding-left: 25px;
+    display: inline-block;
+}
+
 .q_action_link{
     width: 20px;
     height: 17px;
