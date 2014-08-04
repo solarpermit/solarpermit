@@ -1454,7 +1454,7 @@ def get_answer_comment_txt(jurisdiction, answer_id, login_user):
         comment['new_comment_total'] = comment_total - 0
                     
     if comment['comment_total'] == 0:
-        comment['comment_text'] = "Add a comment"
+        comment['comment_text'] = "Comment"
     else:
         comment['comment_text'] = str(comment['comment_total']) + " comments" 
         if comment['new_comment_total'] != comment['comment_total']:
