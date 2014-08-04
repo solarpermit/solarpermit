@@ -36,7 +36,7 @@
   </div>
 </div>
 {% if question['description'] != None and question['description'] != '' %}
-  <div style="float:left;width:100%;padding-left: 25px" class="description">{{question['description']}}</div>
+  <div style="padding-left: 25px" class="description">{{question['description']}}</div>
 {% endif %}
 {% if question.user_can_suggest %}
   <div id="qa_{{question_id}}_add" class="cssCell suggestion_edit_box" style="display:none">
@@ -129,7 +129,7 @@
                    data-id="{{answer['id']}}"
                    data-jid="{{jurisdiction.id}}"
                    id="answer_comment_{{answer['id']}}">
-                  Add a comment
+                  Comment
                 </a>
               {% else %}
                 <div class="valhis">
@@ -139,7 +139,7 @@
                      data-id="{{answer['id']}}"
                      data-jid="{{jurisdiction.id}}"
                      onClick="controller.postRequest('/jurisdiction_comment/', {ajax: 'open_jurisdiction_comment', urisdiction_id: {{jurisdiction.id}}, entity_id: {{answer['id']}}, entity_name: 'AnswerReference'}); return false;">
-                    Add a comment
+                    Comment
                   </a>
                 </div>
               {% endif %}
@@ -149,13 +149,13 @@
                  id="validation_history_{{answer['id']}}"
                  href="#" class="comments need_history"
                  title="">
-                Validation history
+                Validation History
               </a> -
               <span class="prompt_small">Sign in to add a comment</span>
             {% endif %}
           </div>
         </div>
-        <div class="csscell suggestion_right">
+        <div class="cssCell suggestion_right">
           {% include "/website/jurisdictions/ahj_answer_votes.jinja" %}
           {% if user.is_superuser == 1 and answer['approval_status'] != 'A' %}
             <div>
