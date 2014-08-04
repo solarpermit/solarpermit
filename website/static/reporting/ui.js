@@ -206,7 +206,7 @@
                             function (metric) {
                               return "integral(solarpermit.counters.question."+ report.name +"."+ report.question_id +"."+ metric.toLowerCase() +".count)";
                             });
-        $.ajax({ url: document.location.protocol +"//"+ document.location.hostname +":8080/render/",
+        $.ajax({ url: "https:" +"//"+ document.location.hostname +":8080/render/",
                  data: { from: "00:00_20120601",
                          target: metrics,
                          format: "json" },
