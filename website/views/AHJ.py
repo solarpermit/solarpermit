@@ -117,7 +117,7 @@ def jurisdiction_comment(request):
                 label = af.question.question[:78]+ '...'
             data['label'] = label
             
-            data['commnets'] = comments
+            data['comments'] = comments
             
             others_afs = AnswerReference.objects.filter(jurisdiction = jurisdiction, question = af.question, approval_status='A').exclude(id = entity_id).order_by('-create_datetime')
             if len(others_afs) > 0 :
@@ -285,7 +285,7 @@ def jurisdiction_comment(request):
                 userview.last_comment = last_comment
                 userview.view_datetime = datetime.datetime.now()
                 userview.save()
-            data['commnets'] = comments
+            data['comments'] = comments
             
             body = requestProcessor.decode_jinga_template(request,'website/blocks/comments_list.html', data, '')
             dajax.assign('#old_list ul', 'innerHTML', body)
@@ -359,7 +359,7 @@ def view_unincorporated_AHJ(request, jurisdiction):
         
     data['parent_jurisdiction'] = parent_jurisdiction
     comments = comments = Comment.objects.filter(jurisdiction = jurisdiction, parent_comment__isnull = True).order_by('-create_datetime')
-    data['commnets'] = comments
+    data['comments'] = comments
     data['userview_last_comment'] = 0
     if ajax != None:
         if ajax == 'create_jurisdiction_ucomment':
@@ -385,7 +385,7 @@ def view_unincorporated_AHJ(request, jurisdiction):
             comment.save()
             dajax.script('controller.closeSecondDialog();')
             comments = comments = Comment.objects.filter(jurisdiction = jurisdiction, parent_comment__isnull = True).order_by('-create_datetime')
-            data['commnets'] = comments
+            data['comments'] = comments
             body = requestProcessor.decode_jinga_template(request,'website/blocks/ucomment_list.html', data, '') 
             script = requestProcessor.decode_jinga_template(request,'website/blocks/ucomment_list.js' , data, '')
             dajax.assign('.ul-level-1','innerHTML', body) 

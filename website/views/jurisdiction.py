@@ -799,7 +799,7 @@ def jurisdiction_comment(request):
                 label = af.question.question[:78]+ '...'
             data['label'] = label
             
-            data['commnets'] = comments
+            data['comments'] = comments
             
             others_afs = AnswerReference.objects.filter(jurisdiction = jurisdiction, question = af.question, approval_status='A').exclude(id = entity_id).order_by('-create_datetime')
             if len(others_afs) > 0 :
@@ -948,7 +948,7 @@ def jurisdiction_comment(request):
                 userview.last_comment = last_comment
                 userview.view_datetime = datetime.datetime.now()
                 userview.save()
-            data['commnets'] = comments
+            data['comments'] = comments
             
             body = requestProcessor.decode_jinga_template(request,'website/blocks/comments_list.html', data, '')
             dajax.assign('#old_list ul', 'innerHTML', body)
