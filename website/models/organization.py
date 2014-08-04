@@ -146,7 +146,7 @@ class Organization(models.Model):
         if self.logo == None or self.logo == '':
             return ''
         try:
-          full_image = get_thumbnail(self.logo, size, quality=99)
+          full_image = get_thumbnail(org_logo_path(self.logo.name), size, quality=99)
           return full_image.url
         except:
           return "" # kludge
@@ -240,3 +240,5 @@ class OrganizationMember(models.Model):
             
         return org    
     
+def org_logo_path(name):
+    return 'org_logos/'+ name

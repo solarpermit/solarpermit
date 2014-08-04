@@ -123,7 +123,7 @@
     <div class="form_field show_data"  {% if access == 'Admin'%}onmouseover="controller.initOrgEditFieldEvent(this);"{% endif %}>
         <div class="label">Logo:</div>
         <div id="form_field_data_logo" class="show_data data" > 
-            {% if organization.get_logo_thumbnail('32x32') == '' or organization.get_logo_thumbnail('32x32') == None %}
+            {% if not organization.logo %}
                 No logo available
             {% else %}
                 <a href="{{organization.get_clickable_website()}}" target="_blank" ><img src="{{organization.get_logo_thumbnail('32x32')}}" alt="{{orgname}}" ></a>

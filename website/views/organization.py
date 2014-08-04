@@ -291,7 +291,7 @@ def organization(request):
                 
             if org.logo != None and org.logo !='':
                 try:
-                    data['thum'] = get_thumbnail(org.logo, '140x140', quality=99)
+                    data['thum'] = get_thumbnail(org_logo_path(org.logo.name), '140x140', quality=99)
                 except: #in case file missing, don't crash
                     data['thum'] = ''
             else:
@@ -347,7 +347,6 @@ def organization(request):
             if website != None:     
                 org.website = website           
                 
-                
             store_file_name = requestProcessor.getParameter('file_store_name')
             if store_file_name != '' and store_file_name != None:
                 org.logo = store_file_name
@@ -355,7 +354,7 @@ def organization(request):
             
             if org.logo != None and org.logo !='':
                 try:
-                    data['thum'] = get_thumbnail(org.logo, '140x140', quality=99)
+                    data['thum'] = get_thumbnail(org_logo_path(org.logo.name), '140x140', quality=99)
                 except:
                     data['thum'] = ''
             else:
