@@ -145,7 +145,8 @@
                  tr.append($("<th>").append($("<label>", { for: name }).append($("<span>", { 'class': "legend-dot" }),
                                                                                $("<span>", { text: row.key }))),
                            $("<td>").append($("<input>", { type: "checkbox",
-                                                           checked: true,
+                                                           checked: (row.key != "Total" &&
+                                                                     row.key != "Unanswered"),
                                                            name: name,
                                                            'class': name })));
                  table.append(tr);
