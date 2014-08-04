@@ -108,42 +108,22 @@
             {% endif %}
           </div>
           <div class="valhis">
-            {% if user.is_authenticated(): %}
-              {% if answer['approval_status'] == 'A' %}
-                <div id="validation_history_div_{{answer['id']}}" style="display:none;"></div>
-                <a class="comments need_history need_history_dialog"
-                   data-id="{{answer['id']}}"
-                   id="validation_history_{{answer['id']}}"
-                   href="javascript:void(0);"
-                   title="">
-                  Validation history</a> -
-                <a class="comments need_comment"
-                   href="#"
-                   data-id="{{answer['id']}}"
-                   data-jid="{{jurisdiction.id}}"
-                   id="answer_comment_{{answer['id']}}">
-                  Add a comment
-                </a>
-              {% else %}
-                <div class="valhis">
-                  <a id="answer_comment_{{answer['id']}}"
-                     href="#"
-                     class="comments need_comment"
-                     data-id="{{answer['id']}}"
-                     data-jid="{{jurisdiction.id}}"
-                     onClick="controller.postRequest('/jurisdiction_comment/', {ajax: 'open_jurisdiction_comment', urisdiction_id: {{jurisdiction.id}}, entity_id: {{answer['id']}}, entity_name: 'AnswerReference'}); return false;">
-                    Add a comment
-                  </a>
-                </div>
-              {% endif %}
+            <div id="validation_history_div_{{answer['id']}}" style="display:none;"></div>
+            <a class="comments need_history need_history_dialog"
+               data-id="{{answer['id']}}"
+               id="validation_history_{{answer['id']}}"
+               href="javascript:void(0);"
+               title="">
+              Validation history</a> -
+            {% if user.is_authenticated() and answer['approval_status'] == 'A': %}
+              <a class="comments need_comment"
+                 href="#"
+                 data-id="{{answer['id']}}"
+                 data-jid="{{jurisdiction.id}}"
+                 id="answer_comment_{{answer['id']}}">
+                {{answer['comment_text']}}
+              </a>
             {% else %}
-              <div id="validation_history_div_{{answer['id']}}" style="display:none;"></div>
-              <a data-id="{{answer['id']}}"
-                 id="validation_history_{{answer['id']}}"
-                 href="#" class="comments need_history"
-                 title="">
-                Validation history
-              </a> -
               <span class="prompt_small">Sign in to add a comment</span>
             {% endif %}
           </div>

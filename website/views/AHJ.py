@@ -1189,6 +1189,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                 question['user_can_suggest'] = question['has_multivalues'] or \
                                                len(users_existing_suggestions) == 0 or \
                                                suggestion_has_votes
+            rec['comment_text'] = get_answer_comment_txt(jurisdiction, rec['id'], user)['comment_text']
 
         if rec['question_id'] == 4:
             show_google_map = True
@@ -1441,9 +1442,9 @@ def get_answers_comments(jurisdiction, answers, login_user):
             
     return answers_comments   
 
-def get_answer_comment_txt(jurisdiction, answer, login_user):
+def get_answer_comment_txt(jurisdiction, answer_id, login_user):
     comment = {}
-    comment_total = Comment.objects.filter(jurisdiction__exact=jurisdiction, entity_name = 'AnswerReference', entity_id = answer.id).count()
+    comment_total = Comment.objects.filter(jurisdiction__exact=jurisdiction, entity_name = 'AnswerReference', entity_id = answer_id).count()
     comment['comment_total'] = comment_total
     try:
         userviews = UserCommentView.objects.filter(jurisdiction__exact=jurisdiction, entity_name = 'AnswerReference', entity_id = answer.id, user = login_user)
