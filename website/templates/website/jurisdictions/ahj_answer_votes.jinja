@@ -32,9 +32,9 @@
         {% endif %}
       {% endif %}
       <span id="up_vote_{{current_answer_id}}">
-        <span id="up_vote_num_{{current_answer_id}}">{{votes['total_up_votes'] if votes else '0'}}</span>
+        <span id="up_vote_num_{{current_answer_id}}" class="votenum">{{votes['total_up_votes'] if votes else '0'}}</span>
         <input type="button" id="voteup_{{current_answer_id}}"
-               name="voteup_{{current_answer_id}}" value="Approve"
+               name="voteup_{{current_answer_id}}" title="Approve"
                class="voteup {{class_canvoteup}} {{class_up_disabled}}"
                data-answerid="{{current_answer_id}}"
                data-terminology="{{terminology}}" data-canvotedown=""/>
@@ -50,7 +50,7 @@
                data-answerid="{{current_answer_id}}"
                data-terminology="{{terminology}}" data-canvoteup=""
                title="Reject"/>
-        <span id="down_vote_num_{{current_answer_id}}">{{votes['total_down_votes'] if votes else '0'}}</span>
+        <span id="down_vote_num_{{current_answer_id}}" class="votenum">{{votes['total_down_votes'] if votes else '0'}}</span>
       </span>
 
       <div id="vote_confirmation_{{current_answer_id}}" class="vote_confirmation_msg" >
