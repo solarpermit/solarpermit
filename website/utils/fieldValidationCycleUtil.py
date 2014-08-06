@@ -8,7 +8,7 @@ import operator
 from datetime import timedelta, date
 from django.conf import settings as django_settings
 from website.utils.mathUtil import MathUtil
-
+from django.utils.safestring import mark_safe
 
 class FieldValidationCycleUtil():
   
@@ -1390,7 +1390,7 @@ class FieldValidationCycleUtil():
             fee_ids[key] = sorted(fee_ids.get(key)) 
         data['fee_items'] = fee_ids             # need to order them
         data['highest_fee_type_id'] = highest_fee_type_id   
-        data['highest_fee_item_ids'] = highest_fee_item_ids 
+        data['highest_fee_item_ids_json'] = mark_safe(json.dumps(highest_fee_item_ids))
                 
   
         return data
