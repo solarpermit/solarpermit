@@ -2,6 +2,7 @@ import re
 import json
 import inspect
 import traceback
+import importlib
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -18,7 +19,7 @@ from website.views.api2 import parse_api_request, get_prop, get_user,         \
 @csrf_exempt
 def verify(request):
     try:
-        request_data = parse_api_request(request.body)
+        request_data = parse_verification_request(request.body)
         directives = get_prop(request_data, 'directives')
         user = get_user(directives, 'api_username')
         api_key = get_api_key(directives, 'api_key', user)
@@ -31,7 +32,7 @@ def verify(request):
         tests = [f[1] for f in inspect.getmembers(code) if inspect.isfunction(f[1])]
         def dotest(f):
             try:
-                f(request_data)
+                f(directives=directives, ac=ac, dc=dc, ground=ground)
             except ValidationError as e:
                 return (False, f.__name__, e.args[0])
             except Exception:
@@ -41,7 +42,6 @@ def verify(request):
     except ValidationError as e:
         return error_response(e)
     except Exception as e:
-        print e
         return error_response(traceback.print_exc())
     return testcase_response(results=results)
 
@@ -57,7 +57,12 @@ def get_code(jurisdiction, override):
             code_name = "nec%s" % year
         except:
             raise ValidationError("No NEC code version for this jurisdiction, use override_code.")
-    mod = getattr(website.utils.engineering_verification, str(code_name))
+    try:
+        mod = importlib.import_module("website.utils.engineering_verification."+ str(code_name))
+    except:
+        if override is not None:
+            raise ValidationError("Invalid override_code.")
+        raise ValidationError("This jurisdiction has an invalid or unsupported NEC code version, use override_code.")
     if not inspect.ismodule(mod):
         if override is not None:
             raise ValidationError("Invalid override_code.")
@@ -88,7 +93,6 @@ class ElectricalElement(lxml.objectify.ObjectifiedElement):
             if tag != 'specifications':
                 raise e
             try:
-                parent = self.getparent()
                 definition_id = super(ElectricalElement, self).__getattr__('definition')
                 root = [n for n in self.iterancestors()][-1]
                 definition = next(r for r in root.iter()
@@ -96,7 +100,7 @@ class ElectricalElement(lxml.objectify.ObjectifiedElement):
                                      hasattr(r, 'id') and \
                                      super(ElectricalElement, r).__getattr__('id') == definition_id)
                 return definition.specifications
-            except:
+            except Exception as e:
                 raise AttributeError
 
 def testcase_response(results=[]):

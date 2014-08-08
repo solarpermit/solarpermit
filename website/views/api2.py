@@ -927,7 +927,11 @@ def checked_getter(func):
     def getter(obj, prop, *args):
         out = None
         if not hasattr(obj, prop):
-            raise ValidationError("No %s specified" % prop)
+            if hasattr(obj, "tag"):
+                if hasattr(obj, "id"):
+                    raise ValidationError("No %s found for %s with id '%s'." % (prop, obj.tag, obj.id))
+                raise ValidationError("No %s found for %s." % (prop, obj.tag))
+            raise ValidationError("No %s found." % prop)
         try:
             out = func(getattr(obj, prop), *args)
             if out is None:
@@ -998,7 +1002,7 @@ def error_response(errors=[]):
         errors = [errors]
     E = lxml.builder.ElementMaker()
     return HttpResponse(xml_tostring(E.result(E.status("fail"),
-                                              E.errors(*[E.error(e) for e in errors]))))
+                                              E.errors(*[E.error(e if e else "Unknown error.") for e in errors]))))
 
 def success_response(messages=[]):
     E = lxml.builder.ElementMaker()
