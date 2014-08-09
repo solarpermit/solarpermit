@@ -25,7 +25,7 @@ def nec2014_690_7_A(directives=None, ac=None, dc=None, ground=None):
         specs = nec.get_prop(component, 'specifications')
         dc_voltage_max = nec.get_dc_voltage_max(specs, 'dc_voltage_max') or nec.volts(600)
         if voc > dc_voltage_max:
-            raise ValidationError("NEC 2014 690.7(A): VOC of %s (at an ambient temperature of %s) exceeds maximum voltage of %s of the %s with id '%s'." % (voc, ambient_low_f, dc_voltage_max, component.tag, component.id))
+            raise ValidationError("NEC 2014 690.7(A): VOC of %s (at an ambient temperature of %s) exceeds maximum voltage of %s of the %s with id '%s'." % (voc, nec.format_as_fahrenheit(ambient_low_f), dc_voltage_max, component.tag, component.id))
         return voc
     for child in dc.iterchildren():
         recurse(child)

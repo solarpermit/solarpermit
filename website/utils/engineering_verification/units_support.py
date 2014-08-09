@@ -1,3 +1,4 @@
+# coding: utf-8
 from units import unit
 import units
 import units.predefined
@@ -23,3 +24,9 @@ def celsius(num):
 volts_per_fahrenheit = volts / rankine
 volts_per_celsius = volts / kelvin
 
+def format_as_fahrenheit(temp):
+    temp = rankine(temp)
+    return "%.0f °F" % (temp.num - 459.67)
+def format_as_celsius(temp):
+    temp = kelvin(temp)
+    return "%.0f °C" % (temp.num - 273.15)
