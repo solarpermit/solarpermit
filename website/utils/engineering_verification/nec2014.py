@@ -32,7 +32,7 @@ def nec2014_690_7_A(directives=None, ac=None, dc=None, ground=None):
         recurse(child)
 
 def nec2014_690_9(directives=None, ac=None, dc=None, ground=None):
-    fail_msg = "NEC 2014 690.43: No breaker or fused_disconnect found between %s with id %s and the %s with id %s"
+    fail_msg = "NEC 2014 690.43: No breaker or fused_disconnect found between %s with id '%s' and the %s with id '%s'"
     for type in ('main_panel', 'sub_panel'):
         for panel in ac.iterdescendants(type):
             for inverter in filter(lambda component: component.tag == 'inverter',
@@ -42,8 +42,21 @@ def nec2014_690_9(directives=None, ac=None, dc=None, ground=None):
                                                       inverter.iterancestors()))):
                     raise ValidationError(fail_msg % (panel.tag, panel.id, inverter.tag, inverter.id))
 
+def nec2014_690_12_dc(directives=None, ac=None, dc=None, ground=None):
+    fail_msg = "NEC 2014 690.12: inverter with id '%s' has no integrated_dc_disconnect and there is no disconnect or or fused_disconnect between it and the modules connected to it."
+    for inverter in filter(lambda component: component.tag == 'inverter',
+                           dc.itercomponents()):
+        specs = nec.get_prop(inverter, 'specifications')
+        if not nec.get_integrated_dc_disconnect(specs, 'integrated_dc_disconnect'):
+            for module in filter(lambda component: component.tag == 'module',
+                                 inverter.itercomponents()):
+                if not any(filter(lambda component: component.tag in ('disconnect', 'fused_disconnect'),
+                                  itertools.takewhile(lambda parent: parent != inverter,
+                                                      module.iterancestors()))):
+                    raise ValidationError(fail_msg % (inverter.id))
+
 def nec2014_690_43(directives=None, ac=None, dc=None, ground=None):
-    fail_msg = "NEC 2014 690.43: %s with id %s is connected to %s but not to ground."
+    fail_msg = "NEC 2014 690.43: %s with id '%s' is connected to %s but not to ground."
     for string in (ac, dc):
         for component in string.itercomponents():
             if component.tag != 'wire':

@@ -61,6 +61,10 @@ def get_voc_stc(voc):
 def get_dc_voltage_max(voltage):
     return volts(to_num(voltage))
 
+@optional_getter
+def get_integrated_dc_disconnect(disconnect):
+    return bool(disconnect)
+
 def to_num(element):
     if isinstance(element, lxml.objectify.IntElement):
         return int(element)
