@@ -20,9 +20,8 @@ def nec2014_690_7_A(directives=None, ac=None, dc=None, ground=None):
         voc = nec.volts(0)
         if component.tag == 'module':
             voc = voc_ambient(component)
-        for child in component.iterchildren():
-            if child.tag not in ('id', 'definition', 'specifications'):
-                voc += recurse(child)
+        for child in component.iterchildcomponents():
+            voc += recurse(child)
         specs = nec.get_prop(component, 'specifications')
         dc_voltage_max = nec.get_dc_voltage_max(specs, 'dc_voltage_max') or nec.volts(600)
         if voc > dc_voltage_max:

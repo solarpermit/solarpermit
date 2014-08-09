@@ -35,7 +35,7 @@ def verify(request):
                 f(directives=directives, ac=ac, dc=dc, ground=ground)
             except ValidationError as e:
                 return (False, f.__name__, e.args[0])
-            except Exception:
+            except Exception as e:
                 return (False, f.__name__, "Unknown error.")
             return (True, f.__name__)
         results = [dotest(f) for f in tests]
@@ -102,6 +102,15 @@ class ElectricalElement(lxml.objectify.ObjectifiedElement):
                 return definition.specifications
             except Exception as e:
                 raise AttributeError
+    @classmethod
+    def _component_iter(cls, iter):
+        for node in iter:
+            if isinstance(node, ElectricalElement) and node.tag not in ('id', 'definition', 'specifications'):
+                yield node
+    def itercomponents(self):
+        return ElectricalElement._component_iter(self.iterdescendants())
+    def iterchildcomponents(self):
+        return ElectricalElement._component_iter(self.iterchildren())
 
 def testcase_response(results=[]):
     E = lxml.builder.ElementMaker()
