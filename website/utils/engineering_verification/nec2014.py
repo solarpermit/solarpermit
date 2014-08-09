@@ -55,6 +55,24 @@ def nec2014_690_12_dc(directives=None, ac=None, dc=None, ground=None):
                                                       module.iterancestors()))):
                     raise ValidationError(fail_msg % (inverter.id))
 
+def nec2014_690_13_D(directives=None, ac=None, dc=None, ground=None):
+    fail_msg = "NEC 2014 690.13(D): More than 6 disconnects exist in the %s string."
+    def is_disconnect(component):
+        if component.tag == 'breaker':
+            return True
+        if component.tag in ('disconnect', 'fused_disconnect'):
+            return not (any(filter(lambda component: component.tag == 'inverter',
+                                   component.iterancestors())) and \
+                        any(filter(lambda component: component.tag == 'module',
+                                   component.itercomponents())))
+        if component.tag == 'inverter':
+            specs = nec.get_prop(component, 'specifications')
+            if nec.get_integrated_dc_disconnect(specs, 'integrated_dc_disconnect'):
+                return True
+    for string in (ac, dc):
+        if len(filter(is_disconnect, string.itercomponents())) > 6:
+            raise ValidationError(fail_msg % string.tag)
+
 def nec2014_690_43(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.43: %s with id '%s' is connected to %s but not to ground."
     for string in (ac, dc):
