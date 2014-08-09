@@ -1,4 +1,5 @@
 import pdb
+import itertools
 import units.predefined
 
 from . import nec_support as nec
@@ -29,6 +30,17 @@ def nec2014_690_7_A(directives=None, ac=None, dc=None, ground=None):
         return voc
     for child in dc.iterchildren():
         recurse(child)
+
+def nec2014_690_9(directives=None, ac=None, dc=None, ground=None):
+    fail_msg = "NEC 2014 690.43: No breaker or fused_disconnect found between %s with id %s and the %s with id %s"
+    for type in ('main_panel', 'sub_panel'):
+        for panel in ac.iterdescendants(type):
+            for inverter in filter(lambda component: component.tag == 'inverter',
+                                   panel.itercomponents()):
+                if not any(filter(lambda component: component.tag in ('breaker', 'fused_disconnect'),
+                                  itertools.takewhile(lambda parent: parent != panel,
+                                                      inverter.iterancestors()))):
+                    raise ValidationError(fail_msg % (panel.tag, panel.id, inverter.tag, inverter.id))
 
 def nec2014_690_43(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.43: %s with id %s is connected to %s but not to ground."
