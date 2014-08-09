@@ -29,3 +29,12 @@ def nec2014_690_7_A(directives=None, ac=None, dc=None, ground=None):
         return voc
     for child in dc.iterchildren():
         recurse(child)
+
+def nec2014_690_43(directives=None, ac=None, dc=None, ground=None):
+    fail_msg = "NEC 2014 690.43: %s with id %s is connected to %s but not to ground."
+    for string in (ac, dc):
+        for component in string.itercomponents():
+            if component.tag != 'wire':
+                if not any(filter(lambda node: node.tag == component.tag,
+                                  ground.findcomponent(component.id))):
+                    raise ValidationError(fail_msg % (component.tag, component.id, string.tag))

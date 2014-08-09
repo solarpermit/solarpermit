@@ -111,7 +111,10 @@ class ElectricalElement(lxml.objectify.ObjectifiedElement):
         return ElectricalElement._component_iter(self.iterdescendants())
     def iterchildcomponents(self):
         return ElectricalElement._component_iter(self.iterchildren())
-
+    def findcomponent(self, id):
+        for node in ElectricalElement._component_iter(self.iterdescendants()):
+            if node.id == id:
+                yield node
 def testcase_response(results=[]):
     E = lxml.builder.ElementMaker()
     status = "success"
