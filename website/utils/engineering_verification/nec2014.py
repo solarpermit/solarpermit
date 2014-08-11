@@ -34,7 +34,7 @@ def nec2014_690_7_A(directives=None, ac=None, dc=None, ground=None):
 def nec2014_690_6_1(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.6: AC module with id of '%s' is downstream of an inverter."
     for module in ac.iterdescendants('module'):
-        if filter(lambda component: component.tag == 'inverter', module.iterancestors()):
+        if module.iterancestors('inverter'):
             raise ValidationError(fail_msg % module.id)
 
 def nec2014_690_6_2(directives=None, ac=None, dc=None, ground=None):
@@ -56,8 +56,7 @@ def nec2014_690_9(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.43: No breaker or fused_disconnect found between %s with id '%s' and the %s with id '%s'"
     for type in ('main_panel', 'sub_panel'):
         for panel in ac.iterdescendants(type):
-            for inverter in filter(lambda component: component.tag == 'inverter',
-                                   panel.itercomponents()):
+            for inverter in panel.itercomponents('inverter'):
                 if not any(filter(lambda component: component.tag in ('breaker', 'fused_disconnect'),
                                   itertools.takewhile(lambda parent: parent != panel,
                                                       inverter.iterancestors()))):
@@ -65,12 +64,10 @@ def nec2014_690_9(directives=None, ac=None, dc=None, ground=None):
 
 def nec2014_690_12_dc(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.12: Inverter with id '%s' has no integrated_dc_disconnect and there is no disconnect or or fused_disconnect between it and the modules connected to it."
-    for inverter in filter(lambda component: component.tag == 'inverter',
-                           dc.itercomponents()):
+    for inverter in dc.itercomponents('inverter'):
         specs = nec.get_prop(inverter, 'specifications')
         if not nec.get_integrated_dc_disconnect(specs, 'integrated_dc_disconnect'):
-            for module in filter(lambda component: component.tag == 'module',
-                                 inverter.itercomponents()):
+            for module in inverter.itercomponents('module'):
                 if not any(filter(lambda component: component.tag in ('disconnect', 'fused_disconnect'),
                                   itertools.takewhile(lambda parent: parent != inverter,
                                                       module.iterancestors()))):
@@ -78,8 +75,7 @@ def nec2014_690_12_dc(directives=None, ac=None, dc=None, ground=None):
 
 def nec2014_690_12_ac(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.12: There is no disconnect or or fused_disconnect between inverter with id '%s' and the main_panel."
-    for inverter in filter(lambda component: component.tag == 'inverter',
-                           dc.itercomponents()):
+    for inverter in dc.itercomponents('inverter'):
         if not any(filter(lambda component: component.tag in ('disconnect', 'fused_disconnect'),
                           itertools.takewhile(lambda parent: parent.tag != 'main_panel',
                                               inverter.iterancestors()))):
@@ -90,8 +86,7 @@ def nec2014_690_13(directives=None, ac=None, dc=None, ground=None):
     def is_disconnect(component):
         return component.tag in ('disconnect', 'fused_disconnect')
     for inverter in dc.iterdescendants('inverter'):
-        for module in filter(lambda component: component.tag == 'module',
-                             inverter.itercomponents()):
+        for module in inverter.itercomponents('module'):
             intervening_components = itertools.takewhile(lambda c: c != module,
                                                          inverter.itercomponents())
             if len(list(intervening_components)) > 0:
@@ -106,10 +101,8 @@ def nec2014_690_13_D(directives=None, ac=None, dc=None, ground=None):
         if component.tag == 'breaker':
             return True
         if component.tag in ('disconnect', 'fused_disconnect'):
-            return not (any(filter(lambda component: component.tag == 'inverter',
-                                   component.iterancestors())) and \
-                        any(filter(lambda component: component.tag == 'module',
-                                   component.itercomponents())))
+            return not (any(component.iterancestors('inverter')) and \
+                        any(component.itercomponents('module')))
         if component.tag == 'inverter':
             specs = nec.get_prop(component, 'specifications')
             if nec.get_integrated_dc_disconnect(specs, 'integrated_dc_disconnect'):
@@ -164,8 +157,7 @@ def nec2014_690_43(directives=None, ac=None, dc=None, ground=None):
 
 def 690_47_B_2(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.47(B)(2): Grounding rod with id '%s' is not made of copper."
-    for rod in filter(lambda c: c.tag == 'grounding_rod',
-                      ground.itercomponents()):
+    for rod in ground.itercomponents('grounding_rod'):
         specs = get_prop(rod, 'specifications')
         material = get_material(specs, 'material')
         if material != "Cu":

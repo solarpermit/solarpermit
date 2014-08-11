@@ -107,9 +107,15 @@ class ElectricalElement(lxml.objectify.ObjectifiedElement):
         for node in iter:
             if isinstance(node, ElectricalElement) and node.tag not in ('id', 'definition', 'specifications'):
                 yield node
-    def itercomponents(self):
+    def itercomponents(self, tag=None):
+        if tag is not None:
+            return filter(lambda c: c.tag == tag,
+                          self.itercomponents())
         return ElectricalElement._component_iter(self.iterdescendants())
-    def iterchildcomponents(self):
+    def iterchildcomponents(self, tag=None):
+        if tag is not None:
+            return filter(lambda c: c.tag == tag,
+                          self.iterchildcomponents())
         return ElectricalElement._component_iter(self.iterchildren())
     def findcomponent(self, id):
         for node in ElectricalElement._component_iter(self.iterdescendants()):
