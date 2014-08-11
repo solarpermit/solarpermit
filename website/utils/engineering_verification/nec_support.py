@@ -73,6 +73,10 @@ def get_ac_output_voltage(voltage):
 def get_ac_output_amps(voltage):
     return amps(to_num(voltage))
 
+@optional_getter
+def get_material(mat):
+    return str(mat)
+
 def to_num(element):
     if isinstance(element, lxml.objectify.IntElement):
         return int(element)
