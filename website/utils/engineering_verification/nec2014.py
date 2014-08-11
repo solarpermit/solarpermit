@@ -85,7 +85,7 @@ def nec2014_690_13(directives=None, ac=None, dc=None, ground=None):
                              inverter.itercomponents()):
             intervening_components = itertools.takewhile(lambda c: c != module,
                                                          inverter.itercomponents())
-            if len(intervening_components) > 0:
+            if len(list(intervening_components)) > 0:
                 specs = nec.get_prop(inverter, 'specifications')
                 integrated_dc_disconnect = nec.get_integrated_dc_disconnect(specs, 'integrated_dc_disconnect')
                 if not (integrated_dc_disconnect or any(is_disconnect, intervening_components)):
@@ -105,7 +105,7 @@ def nec2014_690_13_D(directives=None, ac=None, dc=None, ground=None):
             specs = nec.get_prop(component, 'specifications')
             if nec.get_integrated_dc_disconnect(specs, 'integrated_dc_disconnect'):
                 return True
-    if len(filter(is_disconnect, dc.itercomponents())) > 6:
+    if len(list(filter(is_disconnect, dc.itercomponents()))) > 6:
         raise ValidationError(fail_msg)
 
 def nec2014_690_15_D(directives=None, ac=None, dc=None, ground=None):
@@ -117,7 +117,7 @@ def nec2014_690_15_D(directives=None, ac=None, dc=None, ground=None):
             return True
         if component.tag in ('disconnect', 'fused_disconnect'):
             return True
-    if len(filter(is_disconnect, tree.itercomponents())) > 6:
+    if len(list(filter(is_disconnect, dc.itercomponents()))) > 6:
         raise ValidationError(fail_msg)
 
 def nec2014_690_43(directives=None, ac=None, dc=None, ground=None):
