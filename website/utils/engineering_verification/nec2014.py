@@ -109,6 +109,18 @@ def nec2014_690_13_D(directives=None, ac=None, dc=None, ground=None):
         if len(filter(is_disconnect, tree.itercomponents())) > 6:
             raise ValidationError(fail_msg % tree.tag)
 
+def nec2014_690_15_D(directives=None, ac=None, dc=None, ground=None):
+    fail_msg = "NEC 2014 690.13(D): More than 6 disconnects exist in the ac tree."
+    def is_disconnect(component):
+        if component.tag == 'breaker':
+            if any(component.iterancestors('sub_panel')):
+                return False
+            return True
+        if component.tag in ('disconnect', 'fused_disconnect'):
+            return True
+    if len(filter(is_disconnect, tree.itercomponents())) > 6:
+        raise ValidationError(fail_msg)
+
 def nec2014_690_43(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.43: %s with id '%s' is connected to %s but not to ground."
     for tree in (ac, dc):
