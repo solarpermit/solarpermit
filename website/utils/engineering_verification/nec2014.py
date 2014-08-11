@@ -83,9 +83,8 @@ def nec2014_690_13(directives=None, ac=None, dc=None, ground=None):
     for inverter in dc.iterdescendants('inverter'):
         for module in filter(lambda component: component.tag == 'module',
                              inverter.itercomponents()):
-            intervening_components = filter(lambda c: c.tag == 'wire',
-                                            itertools.takewhile(lambda c: c != module,
-                                                                inverter.itercomponents()))
+            intervening_components = itertools.takewhile(lambda c: c != module,
+                                                         inverter.itercomponents())
             if len(intervening_components) > 0:
                 specs = nec.get_prop(inverter, 'specifications')
                 integrated_dc_disconnect = nec.get_integrated_dc_disconnect(specs, 'integrated_dc_disconnect')
