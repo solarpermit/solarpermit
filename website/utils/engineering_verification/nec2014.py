@@ -46,9 +46,9 @@ def nec2014_690_6_2(directives=None, ac=None, dc=None, ground=None):
 def nec2014_690_6_3(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.6: AC module with id of '%s' must have both output_ac_voltage and output_ac_amps specified."
     for module in ac.iterdescendants('module'):
-        specs = get_prop(module, 'specifications')
-        voltage = get_output_ac_voltage(specs, 'output_ac_voltage')
-        current = get_output_ac_current(specs, 'output_ac_amps')
+        specs = nec.get_prop(module, 'specifications')
+        voltage = nec.get_output_ac_voltage(specs, 'output_ac_voltage')
+        current = nec.get_output_ac_current(specs, 'output_ac_amps')
         if voltage is None or current is None:
             raise ValidationError(fail_msg % module.id)
 
