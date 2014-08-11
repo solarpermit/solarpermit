@@ -92,7 +92,7 @@ def nec2014_690_13(directives=None, ac=None, dc=None, ground=None):
                     raise ValidationError(fail_msg % ())
 
 def nec2014_690_13_D(directives=None, ac=None, dc=None, ground=None):
-    fail_msg = "NEC 2014 690.13(D): More than 6 disconnects exist in the %s tree."
+    fail_msg = "NEC 2014 690.13(D): More than 6 disconnects exist in the dc tree."
     def is_disconnect(component):
         if component.tag == 'breaker':
             return True
@@ -105,9 +105,8 @@ def nec2014_690_13_D(directives=None, ac=None, dc=None, ground=None):
             specs = nec.get_prop(component, 'specifications')
             if nec.get_integrated_dc_disconnect(specs, 'integrated_dc_disconnect'):
                 return True
-    for tree in (ac, dc):
-        if len(filter(is_disconnect, tree.itercomponents())) > 6:
-            raise ValidationError(fail_msg % tree.tag)
+    if len(filter(is_disconnect, dc.itercomponents())) > 6:
+        raise ValidationError(fail_msg)
 
 def nec2014_690_15_D(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.13(D): More than 6 disconnects exist in the ac tree."
