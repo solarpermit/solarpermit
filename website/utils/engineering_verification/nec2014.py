@@ -31,6 +31,27 @@ def nec2014_690_7_A(directives=None, ac=None, dc=None, ground=None):
     for child in dc.iterchildren():
         recurse(child)
 
+def nec2014_690_6_1(directives=None, ac=None, dc=None, ground=None):
+    fail_msg = "NEC 2014 690.6: AC module with id of '%s' is downstream of an inverter."
+    for module in ac.iterdescendants('module'):
+        if filter(lambda component: component.tag == 'inverter', module.iterancestors()):
+            raise ValidationError(fail_msg % module.id)
+
+def nec2014_690_6_2(directives=None, ac=None, dc=None, ground=None):
+    fail_msg = "NEC 2014 690.6: AC module with id of '%s' must not also appear in the DC tree."
+    for module in ac.iterdescendants('module'):
+        if dc.findcomponent(module.id):
+            raise ValidationError(fail_msg % module.id)
+
+def nec2014_690_6_3(directives=None, ac=None, dc=None, ground=None):
+    fail_msg = "NEC 2014 690.6: AC module with id of '%s' must have both output_ac_voltage and output_ac_amps specified."
+    for module in ac.iterdescendants('module'):
+        specs = get_prop(module, 'specifications')
+        voltage = get_output_ac_voltage(specs, 'output_ac_voltage')
+        current = get_output_ac_current(specs, 'output_ac_amps')
+        if voltage is None or current is None:
+            raise ValidationError(fail_msg % module.id)
+
 def nec2014_690_9(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.43: No breaker or fused_disconnect found between %s with id '%s' and the %s with id '%s'"
     for type in ('main_panel', 'sub_panel'):

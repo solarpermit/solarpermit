@@ -7,6 +7,7 @@ units.predefined.define_units()
 units.scaled_unit('R', 'K', 5.0/9.0)
 
 volts = unit('V')
+amps = unit('A')
 kelvin = unit('K')
 rankine = unit('R')
 

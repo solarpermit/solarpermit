@@ -65,6 +65,14 @@ def get_dc_voltage_max(voltage):
 def get_integrated_dc_disconnect(disconnect):
     return bool(disconnect)
 
+@optional_getter
+def get_ac_output_voltage(voltage):
+    return volts(to_num(voltage))
+
+@optional_getter
+def get_ac_output_amps(voltage):
+    return amps(to_num(voltage))
+
 def to_num(element):
     if isinstance(element, lxml.objectify.IntElement):
         return int(element)
