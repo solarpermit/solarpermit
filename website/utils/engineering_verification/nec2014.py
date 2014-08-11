@@ -155,7 +155,7 @@ def nec2014_690_43(directives=None, ac=None, dc=None, ground=None):
                                   ground.findcomponent(component.id))):
                     raise ValidationError(fail_msg % (component.tag, component.id, tree.tag))
 
-def 690_47_B_2(directives=None, ac=None, dc=None, ground=None):
+def nec2014_690_47_B_2(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.47(B)(2): Grounding rod with id '%s' is not made of copper."
     for rod in ground.itercomponents('grounding_rod'):
         specs = get_prop(rod, 'specifications')
