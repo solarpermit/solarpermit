@@ -76,6 +76,22 @@ def nec2014_690_12_dc(directives=None, ac=None, dc=None, ground=None):
                                                       module.iterancestors()))):
                     raise ValidationError(fail_msg % (inverter.id))
 
+def nec2014_690_13(directives=None, ac=None, dc=None, ground=None):
+    fail_msg = "NEC 2014 690.13: There are DC components between inverter with id '%s' and module with id '%s', but the inverter does not have an integrated_dc_disconnect, nor is there a disconnect or fused_disconnect between them."
+    def is_disconnect(component):
+        return component.tag in ('disconnect', 'fused_disconnect')
+    for inverter in dc.iterdescendants('inverter'):
+        for module in filter(lambda component: component.tag == 'module',
+                             inverter.itercomponents()):
+            intervening_components = filter(lambda c: c.tag == 'wire',
+                                            itertools.takewhile(lambda c: c != module,
+                                                                inverter.itercomponents()))
+            if len(intervening_components) > 0:
+                specs = nec.get_prop(inverter, 'specifications')
+                integrated_dc_disconnect = nec.get_integrated_dc_disconnect(specs, 'integrated_dc_disconnect')
+                if not (integrated_dc_disconnect or any(is_disconnect, intervening_components)):
+                    raise ValidationError(fail_msg % ())
+
 def nec2014_690_13_D(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.13(D): More than 6 disconnects exist in the %s string."
     def is_disconnect(component):
