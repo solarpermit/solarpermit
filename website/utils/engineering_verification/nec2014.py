@@ -31,6 +31,29 @@ def nec2014_690_7_A(directives=None, ac=None, dc=None, ground=None):
     for child in dc.iterchildren():
         recurse(child)
 
+def nec2014_690_8(directives=None, ac=None, dc=None, ground=None):
+    fail_msg = "NEC 2014 690.8: Current at %s with id '%s' exceeds 80% of its max_amps value."
+    def recurse(component):
+        current = nec.amps(0)
+        for child in component.iterchildcomponents():
+            current += recurse(child)
+        specs = nec.get_prop(component, 'specifications')
+        this_current = nec.amps(0)
+        if component.tag == 'module':
+            this_current = nec.get_isc_stc(specs, 'isc_stc')
+        elif component.tag == 'inverter':
+            this_current = nec.get_ac_output_amps(specs, 'ac_output_amps')
+        current = max(current, this_current)
+        max_current = nec.get_max_amps(specs, 'max_amps')
+        if max_current is None:
+            raise ValidationError("NEC 2014 690.8: No max_amps defined for %s with id '%s'." % (component.tag, component.id))
+        if (current > (.8 * max_current)):
+            raise ValidationError(fail_msg % (component.tag, component.id))
+        return current
+    for tree in (ac, dc):
+        for child in tree.iterchildren():
+            recurse(child)
+
 def nec2014_690_6_1(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.6: AC module with id of '%s' is downstream of an inverter."
     for module in ac.iterdescendants('module'):

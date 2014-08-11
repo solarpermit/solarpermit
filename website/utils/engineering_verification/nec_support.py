@@ -70,8 +70,16 @@ def get_ac_output_voltage(voltage):
     return volts(to_num(voltage))
 
 @optional_getter
-def get_ac_output_amps(voltage):
-    return amps(to_num(voltage))
+def get_ac_output_amps(amperage):
+    return amps(to_num(amperage))
+
+@optional_getter
+def get_isc_atc(amperage):
+    return amps(to_num(amperage))
+
+@optional_getter
+def get_max_amps(amperage):
+    return amps(to_num(amperage))
 
 @optional_getter
 def get_material(mat):
