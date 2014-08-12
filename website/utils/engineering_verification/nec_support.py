@@ -1,7 +1,7 @@
 import lxml
 from units_support import *
 
-from website.views.api2 import get_prop, checked_getter, optional_getter, ValidationError
+from website.views.api2 import checked_getter, optional_getter, ValidationError
 
 def pass_fail(func):
     def testcase(*args, **kwargs):
@@ -45,39 +45,43 @@ def predefined_coeff(ambient):
         return 1.25
     raise ValidationError("ambient temp too low")
 
-@optional_getter
+@checked_getter('specifications')
+def get_specifications(node):
+    return node
+
+@optional_getter('override_ambient_low_f')
 def get_override_ambient_low_f(override):
     return fahrenheit(to_num(override))
 
-@optional_getter
+@optional_getter('temperature_coefficient_of_voc')
 def get_temperature_coefficient_of_voc(coeff):
     return volts_per_fahrenheit(to_num(coeff))
 
-@checked_getter
+@checked_getter('voc_stc')
 def get_voc_stc(voc):
     return volts(to_num(voc))
 
-@optional_getter
+@optional_getter('dc_voltage_max')
 def get_dc_voltage_max(voltage):
     return volts(to_num(voltage))
 
-@optional_getter
+@optional_getter('integrated_dc_disconnect')
 def get_integrated_dc_disconnect(disconnect):
     return bool(disconnect)
 
-@optional_getter
+@optional_getter('ac_output_voltage')
 def get_ac_output_voltage(voltage):
     return volts(to_num(voltage))
 
-@optional_getter
+@optional_getter('ac_output_amps')
 def get_ac_output_amps(amperage):
     return amps(to_num(amperage))
 
-@optional_getter
+@optional_getter('isc_atc')
 def get_isc_atc(amperage):
     return amps(to_num(amperage))
 
-@optional_getter
+@optional_getter('max_amps')
 def get_max_amps(amperage):
     return amps(to_num(amperage))
 

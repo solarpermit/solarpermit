@@ -7,11 +7,11 @@ from . import nec_support as nec
 from website.views.api2 import ValidationError
 
 def nec2014_690_7_A(directives=None, ac=None, dc=None, ground=None):
-    ambient_low_f = nec.get_override_ambient_low_f(directives, 'override_ambient_low_f') or fahrenheit(-40)
+    ambient_low_f = nec.get_override_ambient_low_f(directives) or fahrenheit(-40)
     def voc_ambient(module):
-        specs = nec.get_prop(module, 'specifications')
-        voc = nec.get_voc_stc(specs, 'voc_stc')
-        coeff = nec.get_temperature_coefficient_of_voc(specs, 'temperature_coefficient_of_voc')
+        specs = nec.get_specifications(module)
+        voc = nec.get_voc_stc(specs)
+        coeff = nec.get_temperature_coefficient_of_voc(specs)
         if coeff is None:
             return nec.predefined_coeff(ambient_low_f) * voc
         else:
@@ -23,8 +23,8 @@ def nec2014_690_7_A(directives=None, ac=None, dc=None, ground=None):
             voc = voc_ambient(component)
         for child in component.iterchildcomponents():
             voc += recurse(child)
-        specs = nec.get_prop(component, 'specifications')
-        dc_voltage_max = nec.get_dc_voltage_max(specs, 'dc_voltage_max') or nec.volts(600)
+        specs = nec.get_specifications(component)
+        dc_voltage_max = nec.get_dc_voltage_max(specs) or nec.volts(600)
         if voc > dc_voltage_max:
             raise ValidationError("NEC 2014 690.7(A): VOC of %s (at an ambient temperature of %s) exceeds maximum voltage of %s of the %s with id '%s'." % (voc, nec.format_as_fahrenheit(ambient_low_f), dc_voltage_max, component.tag, component.id))
         return voc
@@ -37,14 +37,14 @@ def nec2014_690_8(directives=None, ac=None, dc=None, ground=None):
         current = nec.amps(0)
         for child in component.iterchildcomponents():
             current += recurse(child)
-        specs = nec.get_prop(component, 'specifications')
+        specs = nec.get_specifications(component)
         this_current = nec.amps(0)
         if component.tag == 'module':
-            this_current = nec.get_isc_stc(specs, 'isc_stc')
+            this_current = nec.get_isc_stc(specs)
         elif component.tag == 'inverter':
-            this_current = nec.get_ac_output_amps(specs, 'ac_output_amps')
+            this_current = nec.get_ac_output_amps(specs)
         current = max(current, this_current)
-        max_current = nec.get_max_amps(specs, 'max_amps')
+        max_current = nec.get_max_amps(specs)
         if max_current is None:
             raise ValidationError("NEC 2014 690.8: No max_amps defined for %s with id '%s'." % (component.tag, component.id))
         if (current > (.8 * max_current)):
@@ -69,9 +69,9 @@ def nec2014_690_6_2(directives=None, ac=None, dc=None, ground=None):
 def nec2014_690_6_3(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.6: AC module with id of '%s' must have both output_ac_voltage and output_ac_amps specified."
     for module in ac.iterdescendants('module'):
-        specs = nec.get_prop(module, 'specifications')
-        voltage = nec.get_output_ac_voltage(specs, 'output_ac_voltage')
-        current = nec.get_output_ac_current(specs, 'output_ac_amps')
+        specs = nec.get_specifications(module)
+        voltage = nec.get_output_ac_voltage(specs)
+        current = nec.get_output_ac_current(specs)
         if voltage is None or current is None:
             raise ValidationError(fail_msg % module.id)
 
@@ -88,8 +88,8 @@ def nec2014_690_9(directives=None, ac=None, dc=None, ground=None):
 def nec2014_690_12_dc(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.12: Inverter with id '%s' has no integrated_dc_disconnect and there is no disconnect or or fused_disconnect between it and the modules connected to it."
     for inverter in dc.itercomponents('inverter'):
-        specs = nec.get_prop(inverter, 'specifications')
-        if not nec.get_integrated_dc_disconnect(specs, 'integrated_dc_disconnect'):
+        specs = nec.get_specifications(inverter)
+        if not nec.get_integrated_dc_disconnect(specs):
             for module in inverter.itercomponents('module'):
                 if not any(filter(lambda component: component.tag in ('disconnect', 'fused_disconnect'),
                                   itertools.takewhile(lambda parent: parent != inverter,
@@ -113,8 +113,8 @@ def nec2014_690_13(directives=None, ac=None, dc=None, ground=None):
             intervening_components = itertools.takewhile(lambda c: c != module,
                                                          inverter.itercomponents())
             if len(list(intervening_components)) > 0:
-                specs = nec.get_prop(inverter, 'specifications')
-                integrated_dc_disconnect = nec.get_integrated_dc_disconnect(specs, 'integrated_dc_disconnect')
+                specs = nec.get_specifications(inverter)
+                integrated_dc_disconnect = nec.get_integrated_dc_disconnect(specs)
                 if not (integrated_dc_disconnect or any(is_disconnect, intervening_components)):
                     raise ValidationError(fail_msg % (inverter.id, panel.id))
 
@@ -127,8 +127,8 @@ def nec2014_690_13_D(directives=None, ac=None, dc=None, ground=None):
             return not (any(component.iterancestors('inverter')) and \
                         any(component.itercomponents('module')))
         if component.tag == 'inverter':
-            specs = nec.get_prop(component, 'specifications')
-            if nec.get_integrated_dc_disconnect(specs, 'integrated_dc_disconnect'):
+            specs = nec.get_specifications(component)
+            if nec.get_integrated_dc_disconnect(specs):
                 return True
     if len(list(filter(is_disconnect, dc.itercomponents()))) > 6:
         raise ValidationError(fail_msg)
@@ -181,7 +181,7 @@ def nec2014_690_43(directives=None, ac=None, dc=None, ground=None):
 def nec2014_690_47_B_2(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.47(B)(2): Grounding rod with id '%s' is not made of copper."
     for rod in ground.itercomponents('grounding_rod'):
-        specs = get_prop(rod, 'specifications')
-        material = get_material(specs, 'material')
+        specs = nec.get_specifications(rod)
+        material = nec.get_material(specs)
         if material != "Cu":
             raise ValidationError(fail_msg % rod.id)

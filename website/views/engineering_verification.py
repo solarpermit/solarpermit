@@ -11,7 +11,7 @@ import lxml.builder
 import lxml.objectify
 
 import website
-from website.views.api2 import parse_api_request, get_prop, get_user,         \
+from website.views.api2 import parse_api_request, get_user,         \
                                get_api_key, get_incorporated, checked_getter, \
                                optional_getter, ValidationError, xml_tostring,\
                                error_response
@@ -20,15 +20,15 @@ from website.views.api2 import parse_api_request, get_prop, get_user,         \
 def verify(request):
     try:
         request_data = parse_verification_request(request.body)
-        directives = get_prop(request_data, 'directives')
-        user = get_user(directives, 'api_username')
-        api_key = get_api_key(directives, 'api_key', user)
-        jurisdiction = get_incorporated(directives, 'jurisdiction_id')
-        system = get_prop(request_data, 'system')
-        ac = get_prop(system, 'ac')
-        dc = get_prop(system, 'dc')
-        ground = get_prop(system, 'ground')
-        code = get_code(jurisdiction, get_override_code(directives, 'override_code'))
+        directives = get_directives(request_data)
+        user = get_user(directives)
+        api_key = get_api_key(directives, user)
+        jurisdiction = get_incorporated(directives)
+        system = get_system(request_data)
+        ac = get_ac(system)
+        dc = get_dc(system)
+        ground = get_ground(system)
+        code = get_code(jurisdiction, get_override_code(directives))
         tests = [f[1] for f in inspect.getmembers(code) if inspect.isfunction(f[1])]
         def dotest(f):
             try:
@@ -69,7 +69,27 @@ def get_code(jurisdiction, override):
         raise ValidationError("This jurisdiction has an invalid or unsupported NEC code version, use override_code.")
     return mod
 
-@optional_getter
+@checked_getter('directives')
+def get_directives(node):
+    return node
+
+@checked_getter('system')
+def get_system(node):
+    return node
+
+@checked_getter('ac')
+def get_ac(node):
+    return node
+
+@checked_getter('dc')
+def get_dc(node):
+    return node
+
+@checked_getter('ground')
+def get_ground(node):
+    return node
+
+@optional_getter('override_code')
 def get_override_code(override):
     return str(override)
 
