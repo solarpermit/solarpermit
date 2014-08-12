@@ -16,11 +16,9 @@
      data-id="{{question_id}}"
      data-jurid="{{jurisdiction.id}}">
   <div class="label"
-       title="{{question['terminology']}}"
        data-icon="{{icon}}"
        data-label_tooltip="{{label_tooltip}}"
        {% if question.user_can_suggest %}
-       onClick="controller.suggestionField.clickAddLabel({{jurisdiction.id}}, {{question_id}});"
        {% endif %}>
     <span>{{question['label'] | replace('[AHJ name]', jurisdiction.name) }}</span>
   </div>
@@ -29,7 +27,7 @@
   {% endwith %}
 </div>
 {% if question['description'] != None and question['description'] != '' %}
-  <div style="padding-left: 25px" class="description">{{question['description']}}</div>
+  <div class="description">{{question['description']}}</div>
 {% endif %}
 {% if question.user_can_suggest %}
   <div id="qa_{{question_id}}_add" class="cssCell suggestion_edit_box" style="display:none">
@@ -47,7 +45,7 @@
 {% endif %}
 {% if not question['answers'] %}
   <div class="prompt"
-       style="margin-bottom:20px">
+       style="margin-bottom:20px; padding-top: 5px">
     {% if user.is_authenticated() %}
       No info available yet...
     {% else %}
@@ -61,7 +59,7 @@
   <div data-debug-answer-id="{{answer.id}}" class="answer-container">
     <div class="cssTable">
       <div class="cssRow" id="qa_{{question_id}}_data">
-        <div class="cssCell suggestion_left" style="padding-left: 25px">
+        <div class="cssCell suggestion_left">
           {% if question['answers'] %}
             <div class="suggestion_header" id="suggestion_header_{{answer['id']}}">
               {{ answer_heading }}
@@ -107,28 +105,39 @@
               </div>
             {% endif %}
           </div>
-          <div class="valhis">
-            <div id="validation_history_div_{{answer['id']}}" style="display:none;"></div>
-            <a class="comments need_history need_history_dialog"
-               data-id="{{answer['id']}}"
-               id="validation_history_{{answer['id']}}"
-               href="javascript:void(0);"
-               title="">
-              Validation History</a> -
-            {% if user.is_authenticated() and answer['approval_status'] == 'A': %}
-              <a class="comments need_comment"
-                 href="#"
-                 data-id="{{answer['id']}}"
-                 data-jid="{{jurisdiction.id}}"
-                 id="answer_comment_{{answer['id']}}">
-                {{answer['comment_text']}}
-              </a>
+	  <div class="valhis closed" data-id="{{answer['id']}}">
+            {% if user.is_authenticated(): %}
+              {% if answer['approval_status'] == 'A' %}
+	      	<span class="twisty" style="display:inline;">Validation History</span>
+              {% else %}
+                <div class="commentlink">
+                  <a id="answer_comment_{{answer['id']}}"
+                     href="#"
+                     class="comments need_comment"
+                     data-id="{{answer['id']}}"
+                     data-jid="{{jurisdiction.id}}"
+                     onClick="controller.postRequest('/jurisdiction_comment/', {ajax: 'open_jurisdiction_comment', jurisdiction_id: {{jurisdiction.id}}, entity_id: {{answer['id']}}, entity_name: 'AnswerReference'}); return false;">
+                    Comment
+                  </a>
+                </div>
+              {% endif %}
             {% else %}
-              <span class="prompt_small">Sign in to add a comment</span>
+	      <span class="twisty" style="display:inline;">Validation History</span>
             {% endif %}
           </div>
         </div>
         <div class="cssCell suggestion_right">
+	  {% if user.is_authenticated(): %}
+	    <a class="comments need_comment"
+               href="#"
+               data-id="{{answer['id']}}"
+               data-jid="{{jurisdiction.id}}"
+               id="answer_comment_{{answer['id']}}">
+              Comment
+            </a>
+	  {% else %}
+	  <span class="prompt_small" style="padding-bottom: 5px">Sign in to vote or add a comment</span>
+	  {% endif %}
           {% include "/website/jurisdictions/ahj_answer_votes.jinja" %}
           {% if user.is_superuser == 1 and answer['approval_status'] != 'A' %}
             <div>
@@ -142,6 +151,9 @@
           {% endif %}
         </div>
       </div>
+      {% if answer['approval_status'] == 'A' %}
+      <div class="cssRow valhis_box" id="validation_history_div_{{answer['id']}}" style="display: none;"></div>
+      {% endif %}
       {% if answer['creator_id'] == user.id and answer['approval_status'] == 'P' %}
         <div class="cssRow">
           <div class="cssCell">

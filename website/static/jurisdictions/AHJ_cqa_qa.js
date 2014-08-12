@@ -1,22 +1,23 @@
-var $questionLabel = $('.qasv_content');
+var $questionLabel = $('.question-container');
 $questionLabel.each(function () {
 
     var $container = $(this);
     $container.removeClass('need_tooltip');
-    var $target = $container.find('div.label');
+    var $label = $container.find('div.label');
+    var $target = $container.find('.editicon');
     var $editButton = $container.parent().find('input.editbt.canedit');
-    var jurId = $editButton.data('jurid');
-    var questionId = $editButton.data('qid');
+    var jurId = $container.find('.qasv_content').data('jurid');
+    var questionId = $container.find('.qasv_content').data('id');
     if ($editButton.length > 0) {
-        $target.click(function (){
+        $label.click(function (){
             return controller.suggestionField.clickEditBt($editButton.data('id'),
                                                           'answer',
                                                           jurId,
                                                           questionId);
         });
     }
-    var showIcon = $target.data('icon');
-    var label_tooltip = $target.data('label_tooltip');
+    var showIcon = $label.data('icon');
+    var label_tooltip = $label.data('label_tooltip');
     if (showIcon == 'Y') {
         $target.tooltip({track: true,
             content: function() {
@@ -27,7 +28,7 @@ $questionLabel.each(function () {
                     else
                     {
                         var v1 = $target.attr('title');
-                        if (v1 != 'None') {
+                        if (v1) {
                             var a_or_an = 'a';
                             var vowels = 'aeiou';
                             if (vowels.indexOf(v1.charAt(0)) >= 0)
@@ -41,26 +42,6 @@ $questionLabel.each(function () {
                 }
             }
         });
-
-        $target.mouseover(function (e) {
-            $target.addClass("field_mo_l1").addClass("field_mo_l2");
-            $container.addClass("editdiv");
-            //show_edit_cancel_btns(pendingAids);
-        });
-        $target.mouseleave(function (e) {
-            $target.removeClass("field_mo_l2");
-        });
-        $container.parent().mouseleave(function (e) {
-            $target.removeClass("field_mo_l1").removeClass("field_mo_l2");
-            $container.removeClass("editdiv");
-            //hide_edit_cancel_btns(pendingAids);
-        });
-        var is_print = $target.data('print');
-        if (is_print == 'F'){
-            $target.click(function (){
-                return controller.suggestionField.clickAddLabel(jurId, questionId);
-            });
-        }
     }
 });
 
@@ -202,33 +183,31 @@ function confirm_rejected(entity_id, value_terminology)
         });
     return false;
 }
-
+/*
 var $historyTooltip = $('.need_history');
 $historyTooltip.mouseover(function (event) {
-    //alert('validaetion');
     var $target = $(event.target);
-    //var $target = $(event.target);
-    //$target.removeClass('need_history');
+    $target.removeClass('need_history');
     var answerId = $target.data('id');
-    //alert(answerId);
-    controller.postRequest('.', {ajax: 'validation_history', entity_id: answerId, entity_name: 'requirement', destination: '' });
-    $target.tooltip({track: true,
-        content: function() {
-            return $('#validation_history_div_'+answerId).html();
-        }
-    });
+    controller.postRequest('.', {ajax: 'validation_history', entity_id: answerId, entity_name: 'requirement', destination: '', callback:
+				 function() { $target.tooltip({track: true,
+							       content: function() {
+								   return $('#validation_history_div_'+answerId).html();
+							       }
+							      });
+					    }});
 });
+
 var $historyDialog = $('.need_history_dialog');
 $historyDialog.click(function (event) {
     var $target = $(event.target);
     //$target.removeClass('need_history_dialog');
     var answerId = $target.data('id');
-    //alert('history dialog');
     $target.click(function () {
         controller.postRequest('.', {ajax: 'validation_history', entity_id: answerId, entity_name: 'requirement', destination: 'dialog' });
     });
 });
-
+*/
 var $commentsDialog = $('.need_comment');
 $commentsDialog.each(function () {
     var $target = $(this);
@@ -282,80 +261,6 @@ $('.canedit').each(function(event)
         return controller.suggestionField.clickEditBt(answer_id,terminology,jur_id,qid,answer_id);
     });
 });
-
-$('.add_to_favorites').click(function(event)
-{
-    var $target = $(event.target);
-    var questionId = $target.data('id');
-    var jid = $target.data('jid');
-    $('#add_to_favorites_'+questionId).unbind('click');
-    $('#add_to_favorites_'+questionId).attr('disabled', 'disabled');
-    controller.postRequest('.', {ajax: 'add_to_views', jurisdiction_id: jid, question_id: questionId, entity_name: 'favorites', destination: '' });
-});
-
-$('.add_to_quirks').click(function(event)
-{
-
-    var $target = $(event.target);
-    var questionId = $target.data('id');
-    var jid = $target.data('jid');
-    $('#add_to_quirks_'+questionId).unbind('click');
-    $('#add_to_quirks_'+questionId).attr('disabled', 'disabled');
-    controller.postRequest('.', {ajax: 'add_to_views', jurisdiction_id: jid, question_id: questionId, entity_name: 'quirks', destination: '' });
-});
-
-$('.remove_from_favorites').click(function(event)
-{
-    var $target = $(event.target);
-    var questionId = $target.data('id');
-    var jid = $target.data('jid');
-    controller.postRequest('.', {ajax: 'remove_from_views', jurisdiction_id: jid, question_id: questionId, entity_name: 'favorites', destination: '' });
-});
-
-$('.remove_from_quirks').click(function(event)
-{
-    var $target = $(event.target);
-    var questionId = $target.data('id');
-    var jid = $target.data('jid');
-    controller.postRequest('.', {ajax: 'remove_from_views', jurisdiction_id: jid, question_id: questionId, entity_name: 'quirks', destination: '' });
-});
-
-$('.q_action_link').each(function() {
-    $(this).mouseover(function (e) {
-        var $target = $(e.target);
-        var questionId = $target.data('id');
-        $('#ahj_actions_'+questionId).show();
-        $('#more_'+questionId).attr('src', '/static/images/more_on.png');
-    }).mouseout(function (e) {
-        var $target = $(e.target);
-        var questionId = $target.data('id');
-        var p =  $target.position();
-        var l = p.left ;
-        var t = p.top ;
-        var startX = e.pageX ;
-        var startY = e.pageY ;
-        //alert($target.width());
-        //alert(l);alert(t);alert(startX);alert(startY);
-        if ( (startX > l && startX < l+ 150) && ( t+$target.height()-5 < startY && startY < t+100 +$target.height()) ) {} else{
-                //alert(123);
-                $('#ahj_actions_'+questionId).hide();
-                $('#more_'+questionId).attr('src', '/static/images/more_off.png');
-        }
-    });
- });
-
- $('.ahj_action_flyout').mouseover(function (){
-        qid = $(this).data('id');
-        $('#ahj_actions_'+qid).show();
-    $('#more_'+qid).attr('src', '/static/images/more_on.png');
- });
-
- $('.ahj_action_flyout').mouseout(function (){
-        qid = $(this).data('id');
-        $('#ahj_actions_'+qid).hide();
-    $('#more_'+qid).attr('src', '/static/images/more_off.png');
- });
-
 $(".cancel_btn").tooltip({track: true});
 $(".edit_btn").tooltip({track: true});
 
@@ -363,4 +268,68 @@ $("#ahj_tab_content").on('click',
 			 ".ahj_category_header",
 			 function (event) {
 			     $(this).parent().toggleClass("closed").find(".ahj_category_body").slideToggle();
+			 });
+
+$("#ahj_tab_content").on('click',
+			 ".valhis",
+			 function (event) {
+			     $that = $(this);
+			     $box = $that.parent().parent().siblings(".valhis_box");
+			     answerId = $that.data('id');
+			     if (!$box.html() || $box.html() == "") {
+				 controller.postRequest('.', {ajax: 'validation_history', entity_id: answerId, entity_name: 'requirement', destination: '', callback:
+							      function() {
+								  $box.slideToggle();
+								  $that.toggleClass("closed");
+							      }});
+			     } else {
+				 $box.slideToggle();
+				 $that.toggleClass("closed");
+			     }
+			 });
+
+var category = window.location.pathname.match('/([^/]*?)/$')[1];
+
+$("#ahj_tab_content").on('click',
+			 ".add_to_favorites",
+			 function (event) {
+			     $that = $(this);
+			     questionId = $that.data('id');
+			     jid = $that.data('jid');
+			     $('#favorite_field_'+questionId).unbind('click');
+			     $('#favorite_field_'+questionId).attr('disabled', 'disabled');
+			     controller.postRequest('.', {ajax: 'add_to_views', jurisdiction_id: jid, question_id: questionId, entity_name: 'favorites', category: category });
+			 });
+
+$("#ahj_tab_content").on('click',
+			 ".remove_from_favorites",
+			 function (event) {
+			     $that = $(this);
+			     questionId = $that.data('id');
+			     jid = $that.data('jid');
+			     $('#favorite_field_'+questionId).unbind('click');
+			     $('#favorite_field_'+questionId).attr('disabled', 'disabled');
+			     controller.postRequest('.', {ajax: 'remove_from_views', jurisdiction_id: jid, question_id: questionId, entity_name: 'favorites', category: category });
+			 });
+
+$("#ahj_tab_content").on('click',
+			 ".add_to_quirks",
+			 function (event) {
+			     $that = $(this);
+			     questionId = $that.data('id');
+			     jid = $that.data('jid');
+			     $('#favorite_field_'+questionId).unbind('click');
+			     $('#favorite_field_'+questionId).attr('disabled', 'disabled');
+			     controller.postRequest('.', {ajax: 'add_to_views', jurisdiction_id: jid, question_id: questionId, entity_name: 'quirks', category: category });
+			 });
+
+$("#ahj_tab_content").on('click',
+			 ".remove_from_quirks",
+			 function (event) {
+			     $that = $(this);
+			     questionId = $that.data('id');
+			     jid = $that.data('jid');
+			     $('#favorite_field_'+questionId).unbind('click');
+			     $('#favorite_field_'+questionId).attr('disabled', 'disabled');
+			     controller.postRequest('.', {ajax: 'remove_from_views', jurisdiction_id: jid, question_id: questionId, entity_name: 'quirks', category: category });
 			 });

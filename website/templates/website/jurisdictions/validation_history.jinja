@@ -1,5 +1,4 @@
 <div {% if destination != 'dialog' %}class="black_tooltip" {% endif %}>
-    <p><strong>Validation History</strong></p>
     <p>
         {% if answer.creator.is_superuser == 0 %}
             Suggested by {{answer.creator.get_profile().get_display_name()}} on {{create_datetime}}
@@ -14,10 +13,6 @@
     {% if vote | length > 0 %}
     <p>
         Verified as accurate on {{approval_datetime}}
-        </br>
-        {{vote.get('total_up_votes')}} up votes
-        <br/>
-        {{vote.get('total_down_votes')}} down votes
     </p>   
     {% endif %}     
 </div>  

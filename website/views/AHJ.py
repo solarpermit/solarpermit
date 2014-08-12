@@ -909,8 +909,11 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                     data['quirk_number_of_questions'] = len(quirks['view_questions'])
 
                 # update the quirks or the favorite fields count
+                quirk_id = '#quirk_' + str(question_id)
                 dajax.assign('#quirkcount','innerHTML', data['quirk_number_of_questions'])
-                dajax.assign('#quirk_'+str(question_id),'innerHTML', 'Added to quirks')
+                dajax.remove_css_class(quirk_id, 'add_to_quirks')
+                dajax.add_css_class(quirk_id, 'remove_from_quirks')
+                dajax.assign(quirk_id, 'text', 'Unquirk')
 
             elif entity_name == 'favorites':
                 data['user_number_of_favorite_fields'] = 0
@@ -922,8 +925,11 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                             data['user_number_of_favorite_fields'] = len(user_favorite_fields['view_questions'])
 
                     # update the quirks or the favorite fields count
+                    favorite_id = '#favorite_field_' + str(question_id)
                     dajax.assign('#favfieldscount','innerHTML', data['user_number_of_favorite_fields'])
-                    dajax.assign('#favorite_field_'+str(question_id),'innerHTML', 'Added to favorite fields')
+                    dajax.remove_css_class(favorite_id, 'add_to_favorites')
+                    dajax.add_css_class(favorite_id, 'remove_from_favorites')
+                    dajax.assign(favorite_id, 'text', 'Unfavorite')
 
             return HttpResponse(dajax.json())
             
@@ -960,8 +966,12 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                     if 'view_questions' in quirks:
                         data['quirk_number_of_questions'] = len(quirks['view_questions'])    
                             
-                    # update the quirks or the favorite fields count
-                    dajax.assign('#quirkcount','innerHTML', data['quirk_number_of_questions'])                    
+                    # update the quirks count & page HTML
+                    quirk_id = '#quirk_' + str(question_id)
+                    dajax.assign('#quirkcount','innerHTML', data['quirk_number_of_questions'])
+                    dajax.remove_css_class(quirk_id, 'remove_from_quirks')
+                    dajax.add_css_class(quirk_id, 'add_to_quirks')
+                    dajax.assign(quirk_id, 'text', 'Quirk')
                                 
                 elif entity_name == 'favorites':        
                     data['user_number_of_favorite_fields'] = 0    
@@ -973,9 +983,14 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                                 data['user_number_of_favorite_fields'] = len(user_favorite_fields['view_questions'])             
                                    
                         # update the quirks or the favorite fields count
-                        dajax.assign('#favfieldscount','innerHTML', data['user_number_of_favorite_fields']) 
-                            
-                dajax.assign('#div_question_content_'+str(question_id),'innerHTML', '') 
+                        favorite_id = '#favorite_field_' + str(question_id)
+                        dajax.assign('#favfieldscount','innerHTML', data['user_number_of_favorite_fields'])
+                        dajax.remove_css_class(favorite_id, 'remove_from_favorites')
+                        dajax.add_css_class(favorite_id, 'add_to_favorites')
+                        dajax.assign(favorite_id, 'text', 'Favorite')
+
+                if category == 'quirks' or category == 'favorite_fields':
+                    dajax.script('$("#div_question_content_' + str(question_id) + '").parent().remove();')
                 
             return HttpResponse(dajax.json())
         

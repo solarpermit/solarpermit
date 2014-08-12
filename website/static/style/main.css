@@ -1741,7 +1741,7 @@ input_error{
 }
 .show_data div.label{padding-left:25px;line-height:21px;}
 .show_data div.qa_data{padding-left:25px;}
-.field_mo_l1{	
+.field_mo_l1{
 	background-image: url("../images/edit_off.png");
 	background-repeat:no-repeat;
 	margin-left: 0px;
@@ -2135,7 +2135,11 @@ ul.paperlist li span.author{
 .ahj-tab .field_mo_l1{	
 	background-image: url("../images/edit_off.png");
 	background-repeat:no-repeat;
-	padding-left:25px;
+	cursor: pointer;
+}
+.ahj-tab .field_mo_l1:hover{	
+	background-image: url("../images/edit_on.png");
+	background-repeat:no-repeat;
 	cursor: pointer;
 }
 .ahj-tab .field_mo_l3 {
@@ -2226,6 +2230,7 @@ ul.paperlist li span.author{
 
 .suggestion_left {
     min-width: 225px;
+    vertical-align: bottom !important;
     width: 80%;
 }
 
@@ -2722,7 +2727,43 @@ img {border:0;}
 #username, #password {
 	width: 235px !important;
 }
-.valhis{clear:both;}
+
+.editicon {
+    display: inline-block;
+    background-size: 17px 17px;
+    width: 17px;
+    height: 17px;
+}
+
+.valhis {
+    clear: both;
+    cursor: pointer;
+    font-family: Tahoma,Geneva,sans-serif;
+    font-size: 11px;
+    font-weight: normal;
+    margin-bottom: 5px;
+    text-decoration: none;
+}
+
+.closed {
+    margin-bottom: 0px;
+}
+
+.valhis .twisty::before {
+    content: "▾";
+}
+
+.valhis.closed .twisty::before {
+    content: "▸";
+}
+
+.valhis_box {
+    border: 1px dotted lightgrey;
+    display: table-row;
+    margin: 5px;
+    padding: 5px;
+    cursor: default !important;
+}
 
 .data-container {
 	<!--margin-top:90px;-->
@@ -2826,7 +2867,6 @@ img {border:0;}
 .qq-upload-list{width:300px;}
 
 .qasv_content > div.label {
-    padding-left: 25px;
     display: inline-block;
     font-size: larger;
 }
