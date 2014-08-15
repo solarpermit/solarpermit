@@ -85,9 +85,15 @@ def get_isc_atc(amperage):
 def get_max_amps(amperage):
     return amps(to_num(amperage))
 
-@optional_getter
+@optional_getter('material')
 def get_material(mat):
     return str(mat)
+
+@optional_getter('size_awg')
+def get_size_awg(awg):
+    return str(awg)
+
+wire_sizes = ["14", "12", "10", "8", "6", "4", "3", "2", "1", "1/0", "2/0", "3/0", "4/0", "250", "350", "400", "500", "700", "800"]
 
 def to_num(element):
     if isinstance(element, lxml.objectify.IntElement):

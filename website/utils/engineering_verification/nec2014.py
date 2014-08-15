@@ -177,6 +177,21 @@ def nec2014_690_43(directives=None, ac=None, dc=None, ground=None):
                                   ground.findcomponent(component.id))):
                     raise ValidationError(fail_msg % (component.tag, component.id, tree.tag))
 
+def nec2014_690_46(directives=None, ac=None, dc=None, ground=None):
+    fail_msg = "NEC 2014 690.46: Wire with id '%s' is connected to a ground_lug, and so must be 6 AWG or larger"
+    def doTest(wire):
+        spec = nec.get_specifications(wire)
+        size = nec.get_size_awg(specs)
+        if nec.wire_sizes.index(size) <= 3:
+            raise ValidationError(fail_msg % wire.id)
+
+    for lug in ground.itercomponents('ground_lug'):
+        for wire in lug.iterchildcomponents('wire'):
+            doTest(wire)
+    for wire in ground.itercomponents('wire'):
+        if len(list(wire.iterchildcomponents('ground_lug'))) > 0:
+            doTest(wire)
+
 def nec2014_690_47_B_2(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.47(B)(2): Grounding rod with id '%s' is not made of copper."
     for rod in ground.itercomponents('grounding_rod'):
