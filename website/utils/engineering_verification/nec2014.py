@@ -40,8 +40,12 @@ def nec2014_690_8(directives=None, ac=None, dc=None, ground=None):
         this_current = nec.amps(0)
         if component.tag == 'module':
             this_current = nec.get_isc_stc(specs)
+            if this_current is None:
+                raise ValidationError("NEC 2014 690.8: No isc_stc specified for module with id '%s'." % component.id)
         elif component.tag == 'inverter':
             this_current = nec.get_ac_output_amps(specs)
+            if this_current is None:
+                raise ValidationError("NEC 2014 690.8: No ac_output_amps specified for module with id '%s'." % component.id)
         current = max(current, this_current)
         max_current = nec.get_max_amps(specs)
         if max_current is None:
@@ -177,10 +181,41 @@ def nec2014_690_43(directives=None, ac=None, dc=None, ground=None):
                                   ground.findcomponent(component.id))):
                     raise ValidationError(fail_msg % (component.tag, component.id, tree.tag))
 
+def nec2014_690_45(directives=None, ac=None, dc=None, ground=None):
+    fail_msg = "NEC 2014 690.45: Wire with id '%s' needs to be size '%s' or larger to handle %s current during a ground fault."
+    def recurse(component):
+        current = nec.amps(0)
+        for child in component.iterchildcomponents():
+            current += recurse(child)
+        specs = nec.get_specifications(component)
+        this_current = nec.amps(0)
+        if component.tag == 'module':
+            this_current = nec.get_isc_stc(specs)
+            if this_current is None:
+                raise ValidationError("NEC 2014 690.45: No isc_stc specified for module with id '%s'." % component.id)
+        elif component.tag == 'inverter':
+            this_current = nec.get_ac_output_amps(specs)
+            if this_current is None:
+                raise ValidationError("NEC 2014 690.45: No ac_output_amps specified for module with id '%s'." % component.id)
+        current = max(current, this_current)
+        if component.tag == 'wire':
+            size = nec.get_size_awg(component)
+            material = nec.get_material(component)
+            sizes = nec.ground_fault_wire_sizes[material]
+            for (c, s) in sizes.iteritems():
+                if c >= current:
+                    if nec.wire_sizes.index(s) > nec.wire_sizes.index(size):
+                        raise ValidationError(fail_msg % (component.id, s, current))
+                    break;
+        return current
+    for child in ground.iterchildren():
+        recurse(child)
+
+
 def nec2014_690_46(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.46: Wire with id '%s' is connected to a ground_lug, and so must be 6 AWG or larger"
     def doTest(wire):
-        spec = nec.get_specifications(wire)
+        specs = nec.get_specifications(wire)
         size = nec.get_size_awg(specs)
         if nec.wire_sizes.index(size) <= 3:
             raise ValidationError(fail_msg % wire.id)
