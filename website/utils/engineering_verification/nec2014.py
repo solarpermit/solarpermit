@@ -1,5 +1,4 @@
 import itertools
-import units.predefined
 
 from . import nec_support as nec
 # TODO: move this
@@ -136,28 +135,16 @@ def nec2014_690_13_D(directives=None, ac=None, dc=None, ground=None):
     if len(list(filter(is_disconnect, dc.itercomponents()))) > 6:
         raise ValidationError(fail_msg)
 
-def nec2014_690_15_1(directives=None, ac=None, dc=None, ground=None):
-    fail_msg = "NEC 2014 690.15: There are no AC disconnects between inverter with id '%s' and main_panel with id '%s'."
+def nec2014_690_15(directives=None, ac=None, dc=None, ground=None):
+    fail_msg = "NEC 2014 690.15: There are no breakers or fused AC disconnects between inverter with id '%s' and main_panel with id '%s'."
     def is_disconnect(component):
-        return component.tag in ('disconnect', 'fused_disconnect')
+        return component.tag in ('breaker', 'fused_disconnect')
     for panel in ac.iterdescendants('main_panel'):
         for inverter in itertools.takewhile(lambda component: component.tag == 'inverter',
                                             panel.itercomponents()):
             intervening_components = itertools.takewhile(lambda c: c != panel,
                                                          inverter.itercomponents())
             if len(list(filter(is_disconnect, intervening_components))) == 0:
-                raise ValidationError(fail_msg % (inverter.id, panel.id))
-
-def nec2014_690_15_1(directives=None, ac=None, dc=None, ground=None):
-    fail_msg = "NEC 2014 690.15: There is no breaker between inverter with id '%s' and main_panel with id '%s'."
-    def is_breaker(component):
-        return component.tag == 'breaker'
-    for panel in ac.iterdescendants('main_panel'):
-        for inverter in itertools.takewhile(lambda component: component.tag == 'inverter',
-                                            panel.itercomponents()):
-            intervening_components = itertools.takewhile(lambda c: c != panel,
-                                                         inverter.itercomponents())
-            if len(list(filter(is_breaker, intervening_components))) == 0:
                 raise ValidationError(fail_msg % (inverter.id, panel.id))
 
 def nec2014_690_15_D(directives=None, ac=None, dc=None, ground=None):
