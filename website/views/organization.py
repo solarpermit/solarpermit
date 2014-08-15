@@ -423,7 +423,7 @@ def organization(request):
                         email_data['site_url'] = settings.SITE_URL
                         to_mail = [org_member.user.email]
                         subject = 'Removed from '+ org.name
-                        template = 'remove_member_org.html'
+                        template = 'remove_member_org.jinja'
                         send_org_email(email_data, to_mail, subject,  template)
                     except:
                         pass
@@ -468,7 +468,7 @@ def organization(request):
                             email_data['right'] = role_type.name
                             to_mail = [member.user.email]
                             subject = 'Change right in '+ org.name
-                            template = 'change_org_right.html'
+                            template = 'change_org_right.jinja'
                             send_org_email(email_data, to_mail, subject,  template)
                         except:
                             pass
@@ -552,7 +552,7 @@ def organization(request):
                 to_mail = [admin.email]
                 email_data['username'] = admin.username
                 email_data['orgid'] = org_id
-                send_org_email(email_data, to_mail, subject,  'request_org.html')
+                send_org_email(email_data, to_mail, subject,  'request_org.jinja')
                 
             org_member_obj = OrganizationMember()
             data_org_members =  org_member_obj.get_user_orgs(user)                        
@@ -620,12 +620,12 @@ def organization(request):
                 org_member.status = 'A'
                 org_member.join_date = datetime.datetime.now()
                 subject = 'Approve to Join '+ org.name
-                template = 'approve_request_org.html'
+                template = 'approve_request_org.jinja'
                 text = 'Approved'
             else:
                 org_member.status = 'R'
                 subject = 'Reject to Join '+ org.name
-                template = 'reject_member_org.html'
+                template = 'reject_member_org.jinja'
                 text = 'Denied'
             org_member.save()
             email_data['member_me'] = org_member
@@ -643,7 +643,7 @@ def organization(request):
                 org_member.delete()
                 email_data['member_me'] = temp_member
                 subject = 'Cancel to Join '+ org.name
-                template = 'cancel_org_request.html'
+                template = 'cancel_org_request.jinja'
                 admins = get_org_admin(org)
                 for admin in admins:
                     to_mail = [admin.email]   
@@ -778,7 +778,7 @@ def organization(request):
             email_data['right'] = admin_role.name
             to_mail = [new_admin.user.email]
             subject = 'Change right in '+ organization.name
-            template = 'change_org_right.html'
+            template = 'change_org_right.jinja'
             send_org_email(email_data, to_mail, subject,  template)
             
             '''
@@ -842,7 +842,7 @@ def organization(request):
             email_data['user'] = user
             to_mail = [temp_member.invitor.email]
             subject = 'Decline the invite from '+ temp_member.organization.name
-            template = 'decline_invite_org.html'
+            template = 'decline_invite_org.jinja'
             send_org_email(email_data, to_mail, subject,  template)
             
             '''
@@ -923,7 +923,7 @@ def organization(request):
             email_data['user'] = user
             to_mail = [temp_member.invitor.email]
             subject = 'Accept the invite from '+ temp_member.organization.name
-            template = 'accept_invite_org.html'
+            template = 'accept_invite_org.jinja'
             send_org_email(email_data, to_mail, subject,  template)
             
             if caller == 'org_details':
@@ -974,7 +974,7 @@ def organization(request):
                 type = 'MI'
             
             subject = 'Invitation to join '+ org.name  + ' on SolarPermit.org'
-            template = 'invite_member.html'
+            template = 'invite_member.jinja'
             for uid in users_list:
                 user1 = User.objects.get(id = uid)
                 try:
@@ -1013,7 +1013,7 @@ def organization(request):
                 email_data['type'] = type
                 
                 email_data['invitation_key'] = invitation_key              
-                send_org_email(email_data, to_mail, subject,  'invite_non_member.html')                   
+                send_org_email(email_data, to_mail, subject,  'invite_non_member.jinja')
                 
             dajax.script('controller.closeSecondDialog();')
         if (ajax == 'change_org_right'):
@@ -1034,7 +1034,7 @@ def organization(request):
             email_data['username'] = user.username
             to_mail = [invited_user.email]
             subject = 'Change right in '+ org.name
-            template = 'change_org_right.html'
+            template = 'change_org_right.jinja'
             send_org_email(email_data, to_mail, subject,  template)
             #except:
             #    org_member = OrganizationMember()
@@ -1229,7 +1229,7 @@ def get_members(organization, page_number):
 
     return members
 
-def send_org_email(data, to_mail, subject='Orgnization Email', template='request_org.html'): 
+def send_org_email(data, to_mail, subject='Orgnization Email', template='request_org.jinja'):
     #subject = 'Request to reset password'
     tp = get_template('website/emails/' + template)
     c = Context(data)
@@ -1345,7 +1345,7 @@ def send_delete_org_email(user, org):
             else:
                 data['username'] = member.email
                 to_mail = [member.email]
-            send_org_email(data, to_mail, subject='Delete Org', template='delete_org.html')
+            send_org_email(data, to_mail, subject='Delete Org', template='delete_org.jinja')
                     
             
                
