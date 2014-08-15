@@ -69,6 +69,10 @@ def get_dc_voltage_max(voltage):
 def get_integrated_dc_disconnect(disconnect):
     return bool(disconnect)
 
+@optional_getter('nominal_voltage_ac')
+def get_nominal_voltage_ac(voltage):
+    return volts(to_num(voltage))
+
 @optional_getter('ac_output_voltage')
 def get_ac_output_voltage(voltage):
     return volts(to_num(voltage))
@@ -93,7 +97,13 @@ def get_material(mat):
 def get_size_awg(awg):
     return str(awg)
 
-wire_sizes = ["14", "12", "10", "8", "6", "4", "3", "2", "1", "1/0", "2/0", "3/0", "4/0", "250", "350", "400", "500", "600", "700", "800", "1200"]
+@optional_getter('insulation')
+def get_insulation(insulation):
+    return str(insulation)
+
+wire_sizes = ["18", "16", "14", "12", "10", "8", "6", "4", "3", "2", "1",
+              "1/0", "2/0", "3/0", "4/0", "250", "300", "350", "400", "500",
+              "600", "700", "750", "800", "900", "1000", "1200"]
 ground_current_wire_sizes = { "Cu": { amps(15):   "14",
                                       amps(20):   "12",
                                       amps(60):   "10",

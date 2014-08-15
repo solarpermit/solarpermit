@@ -28,19 +28,22 @@ def verify(request):
         ac = get_ac(system)
         dc = get_dc(system)
         ground = get_ground(system)
+        sanity = get_code(jurisdiction, 'sanity')
         code = get_code(jurisdiction, get_override_code(directives))
-        tests = [f[1] for f in inspect.getmembers(code) if inspect.isfunction(f[1])]
-        def dotest(f):
-            try:
-                f(directives=directives, ac=ac, dc=dc, ground=ground)
-            except ValidationError as e:
-                return (False, f.__name__, e.args[0])
-            except Exception as e:
-                #import pdb
-                #pdb.set_trace()
-                return (False, f.__name__, "Unknown error.")
-            return (True, f.__name__)
-        results = [dotest(f) for f in tests]
+        def runtests(module):
+            tests = [f[1] for f in inspect.getmembers(module) if inspect.isfunction(f[1])]
+            def dotest(f):
+                try:
+                    f(directives=directives, ac=ac, dc=dc, ground=ground)
+                except ValidationError as e:
+                    return (False, f.__name__, e.args[0])
+                except Exception as e:
+                    import pdb
+                    pdb.set_trace()
+                    return (False, f.__name__, "Unknown error.")
+                return (True, f.__name__)
+            return [dotest(f) for f in tests]
+        results = runtests(sanity) + runtests(code)
     except ValidationError as e:
         return error_response(e)
     except Exception as e:
