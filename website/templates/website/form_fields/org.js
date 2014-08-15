@@ -58,7 +58,7 @@
 	});      
 	
 	$('.org_remove').click(function(event){
-		$target = $(event.target);
+		$target = $(event.target.parentNode);
 		var memberId = $target.data('memberid');
 		var orgId = $target.data('orgid');
 		var orgName = $target.data('orgname');			
@@ -139,4 +139,4 @@
 		            cancelText: 'Cancel',
 		            callback: decline_invitation
 		        });
-		}			
+		}
