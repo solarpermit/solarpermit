@@ -3,6 +3,29 @@
   <status>failure</status>
   <results>
     <fail>
+      <testcase>sanity_1</testcase>
+      <message>Sanity test: No main_panel found in ac tree.</message>
+    </fail>
+    <fail>
+      <testcase>sanity_2</testcase>
+      <message>Sanity test: inverter with id '0' has no specifications or definition.</message>
+    </fail>
+    <pass>
+      <testcase>sanity_3</testcase>
+    </pass>
+    <pass>
+      <testcase>sanity_4</testcase>
+    </pass>
+    <pass>
+      <testcase>sanity_5</testcase>
+    </pass>
+    <pass>
+      <testcase>sanity_6</testcase>
+    </pass>
+    <pass>
+      <testcase>sanity_7</testcase>
+    </pass>
+    <fail>
       <testcase>nec2014_690_12_ac</testcase>
       <message>NEC 2014 690.12: There is no disconnect or or fused_disconnect between inverter with id '0' and the main_panel.</message>
     </fail>
@@ -17,13 +40,20 @@
       <testcase>nec2014_690_13_D</testcase>
     </pass>
     <pass>
-      <testcase>nec2014_690_15_1</testcase>
+      <testcase>nec2014_690_15</testcase>
     </pass>
     <pass>
       <testcase>nec2014_690_15_D</testcase>
     </pass>
     <pass>
       <testcase>nec2014_690_43</testcase>
+    </pass>
+    <fail>
+      <testcase>nec2014_690_45</testcase>
+      <message>No specifications found for module with id '1'.</message>
+    </fail>
+    <pass>
+      <testcase>nec2014_690_46</testcase>
     </pass>
     <pass>
       <testcase>nec2014_690_47_B_2</testcase>
