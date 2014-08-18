@@ -1,4 +1,4 @@
-import os
+import os
 from unittest import TestSuite
 from optparse import make_option
 
@@ -29,6 +29,7 @@ class XMLTestCase(TestCase):
     case = None
     expect = None
     client = Client()
+    maxDiff = 10000
     def __init__(self, filename, write_expect=False, *args, **kwargs):
         TestCase.__init__(self, *args, **kwargs)
         self.writing = write_expect
@@ -47,7 +48,7 @@ class XMLTestCase(TestCase):
                 expectfile.write(response.content)
         try:
             with open(self.expect) as expectfile:
-                self.assertEqual(expectfile.read(), response.content)
+                self.assertMultiLineEqual(expectfile.read(), response.content)
         except IOError as e:
             raise CommandError("Could not open or read file '%s'." % self.expect)
 
