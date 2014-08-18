@@ -2,7 +2,11 @@ html, body{
 	overflow:visible!important;
 }
 #print-main{width:960px;margin:0 auto;overflow:visible;}
-#print-main .main_content{border:0px;height:auto;}
+#print-main .main_content{
+	border:0px;
+	height:auto;
+	overflow: auto;
+}
 #print-main .ahj-tab{border:0px!important;}
 #print-main .page_title{color:#00A8E4;padding-left:0px;}
 #print-main h3.title{font-size: 20px;font-weight: bold;border-bottom:2px solid #C1CDCD;}
