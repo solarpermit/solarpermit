@@ -18,29 +18,33 @@ $questionLabel.each(function () {
     }
     var showIcon = $label.data('icon');
     var label_tooltip = $label.data('label_tooltip');
-    if (showIcon == 'Y') {
-        $target.tooltip({track: true,
-            content: function() {
-                if (showIcon == 'Y') {
-                    if (label_tooltip != '') {
-                        return label_tooltip;
-                    }
-                    else
-                    {
-                        var v1 = $target.attr('title');
-                        if (v1) {
-                            var a_or_an = 'a';
-                            var vowels = 'aeiou';
-                            if (vowels.indexOf(v1.charAt(0)) >= 0)
-                                a_or_an = 'an';
 
-                            return 'Suggest ' + a_or_an + ' ' + v1 + ' for this field';
-                        } else {
+    function tooltip_content() {
+        if (showIcon == 'Y') {
+            if (label_tooltip != '') {
+                return label_tooltip;
+            } else {
+                var v1 = $target.attr('title');
+                if (v1) {
+                    var a_or_an = 'a';
+                    var vowels = 'aeiou';
+                    if (vowels.indexOf(v1.charAt(0)) >= 0)
+                        a_or_an = 'an';
+		    
+                    return 'Suggest ' + a_or_an + ' ' + v1 + ' for this field';
+                } else {
                             return 'Suggest a value for this field';
-                        }
-                    }
                 }
             }
+        }
+    }
+    
+    if (showIcon == 'Y') {
+        $target.tooltip({track: true,
+            content: tooltip_content
+        });
+        $label.tooltip({track: true,
+            content: tooltip_content
         });
     }
 });
@@ -183,31 +187,7 @@ function confirm_rejected(entity_id, value_terminology)
         });
     return false;
 }
-/*
-var $historyTooltip = $('.need_history');
-$historyTooltip.mouseover(function (event) {
-    var $target = $(event.target);
-    $target.removeClass('need_history');
-    var answerId = $target.data('id');
-    controller.postRequest('.', {ajax: 'validation_history', entity_id: answerId, entity_name: 'requirement', destination: '', callback:
-				 function() { $target.tooltip({track: true,
-							       content: function() {
-								   return $('#validation_history_div_'+answerId).html();
-							       }
-							      });
-					    }});
-});
 
-var $historyDialog = $('.need_history_dialog');
-$historyDialog.click(function (event) {
-    var $target = $(event.target);
-    //$target.removeClass('need_history_dialog');
-    var answerId = $target.data('id');
-    $target.click(function () {
-        controller.postRequest('.', {ajax: 'validation_history', entity_id: answerId, entity_name: 'requirement', destination: 'dialog' });
-    });
-});
-*/
 var $commentsDialog = $('.need_comment');
 $commentsDialog.each(function () {
     var $target = $(this);
@@ -274,11 +254,12 @@ $("#ahj_tab_content").on('click',
 			 ".valhis",
 			 function (event) {
 			     $that = $(this);
-			     $box = $that.parent().parent().siblings(".valhis_box");
+			     $box = $that.parent().parent().parent().siblings(".valhis_box");
 			     answerId = $that.data('id');
 			     if (!$box.html() || $box.html() == "") {
 				 controller.postRequest('.', {ajax: 'validation_history', entity_id: answerId, entity_name: 'requirement', destination: '', callback:
 							      function() {
+								  if (!$box.html() || $box.html() == "") { $box.html("<i>Loading, please wait.</i>"); }
 								  $box.slideToggle();
 								  $that.toggleClass("closed");
 							      }});
