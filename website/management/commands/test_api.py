@@ -1,4 +1,4 @@
-import os
+import os
 from unittest import TestSuite
 from optparse import make_option
 
@@ -35,6 +35,7 @@ class XMLTestCase(TestCase):
         self.filename = filename
         self.case = os.path.join(CASEDIR, filename)
         self.expect = os.path.join(EXPECTDIR, filename)
+        self._testMethodDoc = self.case
     def runTest(self, result=None):
         with open(self.case) as casefile:
             response = self.client.post("/api/read/engineering_verification",
