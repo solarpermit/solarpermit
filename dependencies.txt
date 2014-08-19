@@ -50,6 +50,7 @@ django-jinja>=1.0.3
 -e git+https://github.com/db48x/django-statsd.git@fix-timer-errors#egg=django-statsd
 lxml
 impostor
+hg+https://bitbucket.org/adonohue/units/#egg=units
 #
 # for debugging
 #

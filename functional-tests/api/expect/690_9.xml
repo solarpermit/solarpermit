@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result>
+  <status>failure</status>
+  <results>
+    <pass>
+      <testcase>nec2014_690_12_ac</testcase>
+    </pass>
+    <pass>
+      <testcase>nec2014_690_12_dc</testcase>
+    </pass>
+    <pass>
+      <testcase>nec2014_690_13</testcase>
+    </pass>
+    <pass>
+      <testcase>nec2014_690_13_D</testcase>
+    </pass>
+    <pass>
+      <testcase>nec2014_690_15_1</testcase>
+    </pass>
+    <pass>
+      <testcase>nec2014_690_15_D</testcase>
+    </pass>
+    <pass>
+      <testcase>nec2014_690_43</testcase>
+    </pass>
+    <pass>
+      <testcase>nec2014_690_47_B_2</testcase>
+    </pass>
+    <pass>
+      <testcase>nec2014_690_6_1</testcase>
+    </pass>
+    <pass>
+      <testcase>nec2014_690_6_2</testcase>
+    </pass>
+    <pass>
+      <testcase>nec2014_690_6_3</testcase>
+    </pass>
+    <pass>
+      <testcase>nec2014_690_7_A</testcase>
+    </pass>
+    <fail>
+      <testcase>nec2014_690_8</testcase>
+      <message>Unknown error.</message>
+    </fail>
+    <fail>
+      <testcase>nec2014_690_9</testcase>
+      <message>NEC 2014 690.43: No breaker or fused_disconnect found between main_panel with id '0' and the inverter with id '3'</message>
+    </fail>
+  </results>
+</result>

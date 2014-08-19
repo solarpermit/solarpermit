@@ -864,13 +864,13 @@ def submit_suggestion(request):
 def vote_on_suggestion(request):
     try:
         request_data = parse_api_request(request.body)
-        user = get_user(request_data, 'api_username')
-        api_key = get_api_key(request_data, 'api_key', user)
+        user = get_user(request_data)
+        api_key = get_api_key(request_data, user)
         validation_util_obj = FieldValidationCycleUtil()
         feedback = validation_util_obj.process_vote(user,
-                                                    get_vote(request_data, 'vote'),
+                                                    get_vote(request_data),
                                                     'requirement',
-                                                    get_answer(request_data, 'answer_id').pk,
+                                                    get_answer(request_data).pk,
                                                     'confirmed')
     except ValidationError as e:
         return error_response(e)
@@ -882,15 +882,15 @@ def vote_on_suggestion(request):
 def comment_on_suggestion(request):
     try:
         request_data = parse_api_request(request.body)
-        user = get_user(request_data, 'api_username')
-        api_key = get_api_key(request_data, 'api_key', user)
-        answer = get_answer(request_data, 'answer_id')
+        user = get_user(request_data)
+        api_key = get_api_key(request_data, user)
+        answer = get_answer(request_data)
         c = Comment(jurisdiction=answer.jurisdiction,
                     entity_name='AnswerReference',
                     entity_id=answer.pk,
                     user=user,
                     comment_type='RC',
-                    comment=get_comment(request_data, 'comment'),
+                    comment=get_comment(request_data),
                     approval_status='P')
         c.save()
     except ValidationError as e:
@@ -903,13 +903,13 @@ def comment_on_suggestion(request):
 def comment_on_unincorporated(request):
     try:
         request_data = parse_api_request(request.body)
-        user = get_user(request_data, 'api_username')
-        api_key = get_api_key(request_data, 'api_key', user)
-        jurisdiction = get_unincorporated(request_data, 'jurisdiction_id')
+        user = get_user(request_data)
+        api_key = get_api_key(request_data, user)
+        jurisdiction = get_unincorporated(request_data)
         c = Comment(jurisdiction=jurisdiction,
                     user=user,
                     comment_type='JC',
-                    comment=get_comment(request_data, 'comment'),
+                    comment=get_comment(request_data),
                     approval_status='P')
         c.save()
     except ValidationError as e:
@@ -918,52 +918,72 @@ def comment_on_unincorporated(request):
         return error_response("Unknown error.")
     return success_response()
 
-@csrf_exempt
-def submit_unincoporated_comment(request):
-    a=0
-
 # What I really want here is a dataflow graph, so that I can collect
 # as many errors as possible at once while still having readable
 # code. See the previous revision for some code that wasn't very
 # readable but collected errors.
 
-def checked_getter(func):
-    def getter(obj, prop, *args):
-        out = None
-        if not hasattr(obj, prop):
-            raise ValidationError("No %s specified" % prop)
-        try:
-            out = func(getattr(obj, prop), *args)
-            if out is None:
+def checked_getter(prop):
+    def checker(func):
+        def getter(obj, *args):
+            out = None
+            if not hasattr(obj, prop):
+                if hasattr(obj, "tag"):
+                    if hasattr(obj, "id"):
+                        raise ValidationError("No %s found for %s with id '%s'." % (prop, obj.tag, obj.id))
+                    raise ValidationError("No %s found for %s." % (prop, obj.tag))
+                raise ValidationError("No %s found." % prop)
+            try:
+                out = func(getattr(obj, prop), *args)
+                if out is None:
+                    raise ValidationError("Invalid %s." % prop)
+            except Exception as e:
                 raise ValidationError("Invalid %s." % prop)
-        except Exception as e:
-            raise ValidationError("Invalid %s." % prop)
-        return out
-    return getter
+            return out
+        return getter
+    return checker
 
-@checked_getter
+def optional_getter(prop):
+    def checker(func):
+        def getter(obj, *args):
+            if hasattr(obj, prop):
+                return func(getattr(obj, prop), *args)
+            return None
+        return getter
+    return checker
+
+#@checked_getter
+#def get_prop(val):
+#    return val
+
+@checked_getter('api_username')
 def get_user(username):
     return User.objects.get(username=username)
 
-@checked_getter
+@checked_getter('api_key')
 def get_api_key(api_key, user):
     keys = user.api_keys_set.filter(key=api_key, enabled=True)
     return keys[0] if len(keys) else None
 
-@checked_getter
+@checked_getter('answer_id')
 def get_answer(answer_id):
     return AnswerReference.objects.get(pk=int(answer_id))
 
-@checked_getter
+@checked_getter('jurisdiction_id')
+def get_incorporated(jurisdiction_id):
+    j = Jurisdiction.objects.get(pk=int(jurisdiction_id))
+    return j if j.jurisdiction_type not in ['U', 'CINP', 'CONP'] else None
+
+@checked_getter('jurisdiction_id')
 def get_unincorporated(jurisdiction_id):
     j = Jurisdiction.objects.get(pk=int(jurisdiction_id))
     return j if j.jurisdiction_type == 'U' else None
 
-@checked_getter
+@checked_getter('vote')
 def get_vote(vote):
     return str(vote) if str(vote) in ["up", "down"] else None
 
-@checked_getter
+@checked_getter('comment')
 def get_comment(comment):
     return str(comment) if comment else None
 
@@ -986,9 +1006,9 @@ def error_response(errors=[]):
         errors = [errors]
     E = lxml.builder.ElementMaker()
     return HttpResponse(xml_tostring(E.result(E.status("fail"),
-                                              E.errors(*[E.error(e) for e in errors]))))
+                                              E.errors(*[E.error(e if e else "Unknown error.") for e in errors]))))
 
-def success_response():
+def success_response(messages=[]):
     E = lxml.builder.ElementMaker()
     return HttpResponse(xml_tostring(E.result(E.status("success"))),
                         content_type="application/xml")

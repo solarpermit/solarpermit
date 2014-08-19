@@ -432,7 +432,7 @@ $(document).ready(function() {
             answer_comment = answers_comments[answer_id];
             var comment_text = '';
             if (parseInt(answer_comment['comment_total']) == 0)
-                comment_text = "Add a comment";
+                comment_text = "Comment";
             else 
             {
                 comment_text = answer_comment['comment_total'] + " comments" ;
@@ -486,14 +486,22 @@ $(document).ready(function() {
         
         for (var i=0;i<quirk_questions.length;i++)
         {
-            if (category != 'quirks')
-                $('#quirk_'+quirk_questions[i]).html('Added to quirks');   
+            if (category != 'quirks') {
+	       $quirk = $('#quirk_' + quirk_questions[i]);
+	       $quirk.text('Unquirk');
+	       $quirk.removeClass('add_to_quirks');
+	       $quirk.addClass('remove_from_quirks');
+	    }
         }
  
         for (var i=0;i<favorite_questions.length;i++)
         {
-            if (category != 'favorite_fields')
-                $('#favorite_field_'+favorite_questions[i]).html('Added to favorite fields');   
+            if (category != 'favorite_fields') {
+ 	       $favorite = $('#favorite_field_' + favorite_questions[i]);
+	       $favorite.text('Unfavorite');
+	       $favorite.removeClass('add_to_favorites');
+	       $favorite.addClass('remove_from_favorites');
+	    }
         }
                                                                                
         return false;

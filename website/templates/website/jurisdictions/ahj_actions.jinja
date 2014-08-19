@@ -1,30 +1,25 @@
 {% if user.is_authenticated() %}
-       <div class="q_action_link" id="q_action_link_{{current_question_id}}" data-id="{{current_question_id}}" >
-            <img class="q_more_actions" id="more_{{current_question_id}}"   src="{{static('images/more_off.png')}}" alt="more_inactive" data-id="{{current_question_id}}" style="margin:opx;padding:0px">
-
-       <ul id="ahj_actions_{{current_question_id}}" class="ahj_action_flyout" data-id="{{current_question_id}}" >
-                <li id="favorite_field_{{current_question_id}}" style="list-style-type: none;text-align: left; margin:  0 0 0 0px;padding: 0px 5px 0px 5px">
-            {% if category == 'favorite_fields' %}
-                    <a class="remove_from_favorites" data-id="{{current_question_id}}" data-jid="{{jurisdiction_id}}" id="remove_from_favorites_{{current_question_id}}" >Remove from favorites</a>
-            {% else %}
-                {% if current_question_id not in favorite_questions %}
-                    <a class="add_to_favorites" data-id="{{current_question_id}}" data-jid="{{jurisdiction_id}}" id="add_to_favorites_{{current_question_id}}" >Add to favorites</a>
-                {% else %}
-                    Added to favorites
-                {% endif %}
-            {% endif %}
-                </li>
-                <li id="quirk_{{current_question_id}}"     style="list-style-type: none;text-align: left;margin: 0 0 0 0px;padding: 0px 5px 0px 5px">
-            {% if category == 'quirks' %}
-                    <a class="remove_from_quirks" data-id="{{current_question_id}}" data-jid="{{jurisdiction_id}}" id="remove_from_quirks_{{current_question_id}}" >Remove from quirks</a>
-            {% else %}        
-                {% if current_question_id not in quirk_questions %}
-                    <a class="add_to_quirks" data-id="{{current_question_id}}" data-jid="{{jurisdiction_id}}" id="add_to_quirks_{{current_question_id}}">Add to quirks</a>
-                {% else %}
-                    Added to quirks
-                {% endif %}
-            {% endif %}
-                </li>
-        </ul>
-    </div>
+       {% if question.user_can_suggest %}
+       <div class="field_mo_l1 editicon" style="vertical-align:middle;" id="edit_question_{{question_id}}" title="{{question['terminology']}}" onclick="controller.suggestionField.clickAddLabel({{jurisdiction_id}}, {{question_id}});">
+       </div>
+       ·
+       {% endif %}
+       {% if category == 'favorite_fields' %}
+           <a class="remove_from_favorites comments" data-id="{{question_id}}" data-jid="{{jurisdiction_id}}" id="favorite_field_{{question_id}}" >Unfavorite</a>
+       {% else %}
+           {% if question_id not in favorite_questions %}
+               <a class="add_to_favorites comments" data-id="{{question_id}}" data-jid="{{jurisdiction_id}}" id="favorite_field_{{question_id}}" >Favorite</a>
+           {% else %}
+	       Unfavorite
+           {% endif %}
+       {% endif %}
+       ·
+       <a class="comments need_comment"
+          href="#"
+          data-id="{{answer['id']}}"
+          data-jid="{{jurisdiction.id}}"
+          id="answer_comment_{{answer['id']}}">
+         Comment
+       </a>
+       ·
 {% endif %}

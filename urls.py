@@ -116,6 +116,7 @@ else:
         (r'^api/read/jurisdiction', 'website.views.api2.get_jurisdiction'),
         (r'^api/read/question_list', 'website.views.api2.get_question_list'),
         #(r'^api/read/question', 'website.views.api2.get_question'),
+        (r'^api/read/engineering_verification', 'website.views.engineering_verification.verify'),
         (r'^api/write/suggest_answer', 'website.views.api2.submit_suggestion'),
         (r'^api/write/vote_on_suggestion', 'website.views.api2.vote_on_suggestion'),
         (r'^api/write/comment_on_answer', 'website.views.api2.comment_on_suggestion'),
