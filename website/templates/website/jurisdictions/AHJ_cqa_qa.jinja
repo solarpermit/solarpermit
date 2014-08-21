@@ -42,13 +42,27 @@
   </div>
 {% endif %}
 {% if not question['answers'] %}
-  <div class="prompt"
-       style="margin-bottom:20px; padding-top: 5px">
-    {% if user.is_authenticated() %}
-      No info available yet...
-    {% else %}
-      Please sign in to suggest {{question['terminology']}}.
-    {% endif %}
+  <div class="answer-container">
+    <div class="cssTable">
+      <div class="cssCell suggestion_left">
+        {% if user.is_authenticated() %}
+          <div class="field answer_field">
+            <div class="prompt">
+              No info available yet...
+            </div>
+          </div>
+          {% with needs_separator = False %}
+            {% include "website/jurisdictions/ahj_actions_question.jinja" %}
+          {% endwith %}
+        {% else %}
+          <div class="field answer_field">
+            <div class="prompt" style="margin-bottom: 15px">
+              Please sign in to suggest {{question['terminology']}}.
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
   </div>
 {% else %}
   <div style="display:none" class="question_messages" id="question_messages_{{question_id}}"></div>
@@ -59,11 +73,11 @@
       <div class="cssTable" id="qa_{{question_id}}_data">
         <div class="cssCell suggestion_left">
           {% if question['answers'] %}
-	    {% if answer_heading  or (loop.index != 1 and answer['has_multivalues'] != 1) %}
+            {% if answer_heading  or (loop.index != 1 and answer['has_multivalues'] != 1) %}
             <div class="suggestion_header" id="suggestion_header_{{answer['id']}}">
               {% if answer_heading %}{{ answer_heading }}{% elif loop.index != 1 and answer['has_multivalues'] != 1 %}New Suggestion{% endif %}
             </div>
-	    {% endif %}
+            {% endif %}
           {% endif %}
           <div class="field answer_field"
                id="{{answer['id']}}"
@@ -105,51 +119,17 @@
               </div>
             {% endif %}
           </div>
-	  <span style="float:left; vertical-align:bottom; padding: 0.25em 0">
-	  {% if loop.index == 1 %}
-	  {% with %}
-	    {% set current_question_id = question['question_id'] %}
-    	    {% include "website/jurisdictions/ahj_actions.jinja" %}
-	  {% endwith %}
-	  {% else %}
-	    <a class="comments need_comment"
-               href="#"
-	       data-id="{{answer['id']}}"
-               data-jid="{{jurisdiction.id}}"
-               id="answer_comment_{{answer['id']}}">
-              Comment
-            </a>
-  	  ·
-	  {% endif %}
-	  {% if user.is_authenticated() %}
-	  {% endif %}
-	  <div class="valhis closed" data-id="{{answer['id']}}">
-            {% if user.is_authenticated() %}
-              {% if answer['approval_status'] == 'A' %}
-	      	<span style="display:inline;"><a class="comments" href="javascript:void(0);">Validation History</a></span>
-              {% else %}
-                <div class="commentlink">
-                  <a id="answer_comment_{{answer['id']}}"
-                     href="#"
-                     class="comments need_comment"
-                     data-id="{{answer['id']}}"
-                     data-jid="{{jurisdiction.id}}"
-                     onClick="controller.postRequest('/jurisdiction_comment/', {ajax: 'open_jurisdiction_comment', jurisdiction_id: {{jurisdiction.id}}, entity_id: {{answer['id']}}, entity_name: 'AnswerReference'}); return false;">
-                    Comment
-                  </a>
-                </div>
-              {% endif %}
-            {% else %}
-	      <span style="display:inline;"><a class="comments" href="javascript:void(0);">Validation History</a></span>
-            {% endif %}
-          </div>
-	  </span>
+          {% if loop.index == 1 and user.is_authenticated() %}
+            {% with needs_separator = True %}
+              {% include "website/jurisdictions/ahj_actions_question.jinja" %}
+            {% endwith %}
+          {% endif %}
+          {% include "website/jurisdictions/ahj_actions_answer.jinja" %}
         </div>
         <div class="cssCell suggestion_right">
-	  {% if user.is_authenticated(): %}
-	  {% else %}
-	  <span class="prompt_small" style="padding-bottom: 5px">Sign in to vote or add a comment</span>
-	  {% endif %}
+          {% if not user.is_authenticated() %}
+            <span class="prompt_small" style="padding-bottom: 5px">Sign in to vote or add a comment</span>
+          {% endif %}
           {% include "/website/jurisdictions/ahj_answer_votes.jinja" %}
           {% if user.is_superuser == 1 and answer['approval_status'] != 'A' %}
             <div>
@@ -163,9 +143,7 @@
           {% endif %}
         </div>
       </div>
-      {% if answer['approval_status'] == 'A' %}
       <div class="cssTable valhis_box" id="validation_history_div_{{answer['id']}}" style="display: none;"></div>
-      {% endif %}
       {% if answer['creator_id'] == user.id and answer['approval_status'] == 'P' %}
         <div class="cssTable">
           <div class="cssCell">
