@@ -12,7 +12,7 @@
 var controller = new function () {
 	var self = this;
 	//LSS: Change lssSMFUrl to your SMF installation with a trailing slash
-	this.lssSMFUrl = location.protocol + location.host + "/forum/";
+	this.lssSMFUrl = "/forum/";
 	
 	//LSS:
 	//hotfix 8-29-13
