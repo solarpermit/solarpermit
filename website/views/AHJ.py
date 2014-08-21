@@ -147,6 +147,8 @@ def jurisdiction_comment(request):
             dajax.script('controller.updateUrlAnchor("#view_comment");')
         
         if ajax =='create_jurisdiction_comment':
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             answer_id = requestProcessor.getParameter('answer_id')
             jid = requestProcessor.getParameter('jurisdiction_id')
             comment_type = 'JC'
@@ -162,6 +164,8 @@ def jurisdiction_comment(request):
             dajax.script('controller.showSecondDialog("#secondDialogDiv");')
         
         if ajax =='comment_create_submit':
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             entity_id = requestProcessor.getParameter('entity_id')
             entity_name = requestProcessor.getParameter('entity_name')
             jurisdiction_id = requestProcessor.getParameter('jurisdiction_id')
@@ -211,6 +215,8 @@ def jurisdiction_comment(request):
             dajax.script('controller.updateUrlAnchor("#add_comment");')               
                 
         if ajax =='reply_comment':
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             cid = requestProcessor.getParameter('cid')
             comment = Comment.objects.get(id = cid)            
             data['comment'] = comment
@@ -221,6 +227,8 @@ def jurisdiction_comment(request):
             
         
         if ajax == 'cancel_reply':
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             cid = requestProcessor.getParameter('cid')
             body = '<a class="smallbutton commentReplayBtn" data-cid="'+cid+'" href="#">Reply</a><a class="smallbutton commentFlagBtn" data-cid="'+cid+'" href="#">Flag</a>'
             dajax.assign('#button-div-'+str(cid),'innerHTML', body) 
@@ -363,6 +371,8 @@ def view_unincorporated_AHJ(request, jurisdiction):
     data['userview_last_comment'] = 0
     if ajax != None:
         if ajax == 'create_jurisdiction_ucomment':
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             data['comment_type'] = 'JC'
             data['parent_comment'] = ''
             body = requestProcessor.decode_jinga_template(request,'website/blocks/create_ucomment.html', data, '') 
@@ -372,6 +382,8 @@ def view_unincorporated_AHJ(request, jurisdiction):
             dajax.script('controller.showSecondDialog("#secondDialogDiv", {top: 185});')
             
         if ajax == 'ucomment_create_submit':
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             comment_text = requestProcessor.getParameter('comment')
             parent_comment = requestProcessor.getParameter('parent_comment')
             comment = Comment()
@@ -392,6 +404,8 @@ def view_unincorporated_AHJ(request, jurisdiction):
             dajax.script(script)
         
         if ajax == 'cancel_reply':
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             cid = requestProcessor.getParameter('cid')
             body = '<a class="smallbutton ucommentReplyBtn" data-cid="'+cid+'" href="#">Reply</a><a class="smallbutton ucommentDeleteBtn" data-cid="'+cid+'" href="#">Delete</a><a class="smallbutton ucommentFlagBtn" data-cid="'+cid+'" href="#">Flag</a>'
             dajax.assign('#button-div-'+str(cid),'innerHTML', body) 
@@ -399,6 +413,8 @@ def view_unincorporated_AHJ(request, jurisdiction):
             dajax.script(script)
         
         if ajax =='reply_comment':
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             cid = requestProcessor.getParameter('cid')
             comment = Comment.objects.get(id = cid)            
             data['comment'] = comment
@@ -427,6 +443,8 @@ def view_unincorporated_AHJ(request, jurisdiction):
             
             dajax.assign('#comment_'+str(cid), 'innerHTML', '<p>This comment had been flagged as inappropriate and is hidden pending review.</p>')
         if ajax == 'remove_comment':
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             cid = requestProcessor.getParameter('cid')
             try:
                 comment = Comment.objects.get(id = cid)
@@ -613,7 +631,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             return HttpResponse(dajax.json())   
         
         if (ajax == 'get_ahj_questions_actions'):
-            if not user.is_authenticated():
+            if not request.user.is_authenticated():
                 return HttpResponse(status=403)
             data['questions_actions'] = get_ahj_actions( jurisdiction, user)
              
@@ -659,7 +677,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             return HttpResponse(dajax.json())      
     
         if (ajax == 'get_ahj_num_quirks_favorites'):
-            if not user.is_authenticated():
+            if not request.user.is_authenticated():
                 return HttpResponse(status=403)
             view_questions_obj = ViewQuestions()
             quirks = view_questions_obj.get_jurisdiction_quirks(jurisdiction)
@@ -781,6 +799,8 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             return HttpResponse(dajax.json())         
                 
         if (ajax == 'suggestion_submit'):     
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             answers = {} 
             data['user'] = user      
             data['jurisdiction'] = jurisdiction           
@@ -817,6 +837,8 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             return HttpResponse(dajax.json())      
         
         if (ajax == 'suggestion_edit_submit'):     
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             answers = {} 
             data['user'] = user        
             answer_id = requestProcessor.getParameter('answer_id')
@@ -859,7 +881,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             view_obj = None
             user = request.user
             if not user.is_authenticated():
-                return HttpResponse(status=401)
+                return HttpResponse(status=403)
             entity_name = requestProcessor.getParameter('entity_name') 
             question_id = requestProcessor.getParameter('question_id') 
 
@@ -1024,6 +1046,8 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
         
         if (ajax == 'cancel_suggestion'):
             user = request.user
+            if not user.is_authenticated():
+                return HttpResponse(status=403)
             data['user'] = user        
             entity_id = requestProcessor.getParameter('entity_id') 
     
@@ -1051,8 +1075,9 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             return HttpResponse(dajax.json())           
         
         if (ajax == 'approve_suggestion'):
-            
             user = request.user
+            if not user.is_authenticated():
+                return HttpResponse(status=403)
             data['user'] = user
             entity_id = requestProcessor.getParameter('entity_id') 
             answer = AnswerReference.objects.get(id=entity_id) 
@@ -1076,6 +1101,8 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             dajax = Dajax()
             ajax = requestProcessor.getParameter('ajax')
             user = request.user
+            if not user.is_authenticated():
+                return HttpResponse(status=403)
             entity_id = requestProcessor.getParameter('entity_id')
             entity_name = requestProcessor.getParameter('entity_name')
             vote = requestProcessor.getParameter('vote')

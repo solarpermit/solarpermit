@@ -90,6 +90,8 @@ def change_password(request):
     
     
         if (ajax == 'change_password_submit'):
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             data = {}
             form_id = 'form_change_password'
 
@@ -308,9 +310,9 @@ def account(request):
             return HttpResponse(dajax.json())  
         
         if (ajax == 'user_profile'):
-                              
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             user = request.user
-            user = User.objects.get(id=user.id)
             orgmembers = OrganizationMember.objects.filter(user = user, organization__status = 'A').exclude(status__iexact='RM').exclude(status__iexact='R').exclude(status__iexact='AI').exclude(status__iexact='MI')
             data['orgmembers'] = orgmembers            
             orgmembers_invite = OrganizationMember.objects.filter(user = user, organization__status = 'A').exclude(status__iexact='RM').exclude(status__iexact='R').exclude(status__iexact='A').exclude(status__iexact='P')
@@ -358,6 +360,8 @@ def account(request):
             return HttpResponse(dajax.json())                  
         
         if (ajax == 'user_profile_submit'):
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             form_id = 'form_user_profile'      
             data['form_id'] = form_id
             error_message = {}
@@ -573,6 +577,8 @@ def account(request):
             return HttpResponse(dajax.json())   
         
         if (ajax == 'change_password_submit'):
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             data = {}
             form_id = 'form_change_password'
 
@@ -689,7 +695,7 @@ def account(request):
 def user_profile(request, id):
     data = {}
     requestProcessor = HttpRequestProcessor(request)      
-    if not request.user.is_authenticated(): 
+    if not request.user.is_authenticated():
         return redirect(settings.SITE_URL)
     else:              
         user = User.objects.get(id=id)
@@ -932,6 +938,8 @@ def user_profile_full(request):
     ajax = requestProcessor.getParameter('ajax')
     if (ajax != None):   
         if (ajax == 'user_profile_first_name_submit'):     
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             data['first_name'] = requestProcessor.getParameter('field_first_name')        
             data['form_first_name'] = 'form_first_name'   
             user_profile_first_name_div = requestProcessor.getParameter('user_profile_first_name_div')   
@@ -944,6 +952,8 @@ def user_profile_full(request):
             return HttpResponse(dajax.json())  
         
         if (ajax == 'user_profile_last_name_submit'):     
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             data['last_name'] = requestProcessor.getParameter('field_last_name')        
             data['form_last_name'] = 'form_last_name'   
             user_profile_last_name_div = requestProcessor.getParameter('user_profile_last_name_div')   
@@ -956,6 +966,8 @@ def user_profile_full(request):
             return HttpResponse(dajax.json())  
                          
         if (ajax == 'user_profile_email_submit'):     
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             data['email'] = requestProcessor.getParameter('field_email')        
             data['form_email'] = 'form_email'   
             user_profile_email_div = requestProcessor.getParameter('user_profile_email_div')   
@@ -968,6 +980,8 @@ def user_profile_full(request):
             return HttpResponse(dajax.json()) 
         
         if (ajax == 'user_profile_title_submit'):     
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             data['title'] = requestProcessor.getParameter('title')        
             data['form_title'] = 'form_title'   
             user_profile_title_div = requestProcessor.getParameter('user_profile_title_div')   
@@ -982,6 +996,8 @@ def user_profile_full(request):
             return HttpResponse(dajax.json())                  
         
         if (ajax == 'user_profile_password_submit'):     
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             data['password'] = requestProcessor.getParameter('password') 
             data['verify_password'] = requestProcessor.getParameter('verify_password')                           
             data['form_password'] = 'form_password'   
@@ -996,6 +1012,8 @@ def user_profile_full(request):
         
         
         if (ajax == 'user_profile_display_as_submit'):     
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             data['display_as'] = requestProcessor.getParameter('display_as')
 
             user_profile_display_as_div = requestProcessor.getParameter('user_profile_display_as_div')   
@@ -1029,6 +1047,8 @@ def user_profile_full(request):
             return HttpResponse(dajax.json())     
         
         if (ajax == 'user_profile_username_submit'):     
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             data['username'] = requestProcessor.getParameter('username')        
             data['form_username'] = 'form_username'   
             user_profile_username_div = requestProcessor.getParameter('user_profile_username_div')   
@@ -1278,6 +1298,8 @@ def user_favorite(request):
     
     if (ajax != None):
         if ajax == 'add_favorite':
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             entity_id = requestProcessor.getParameter('entity_id')
             entity_name = requestProcessor.getParameter('entity_name')
             
@@ -1306,6 +1328,8 @@ def user_favorite(request):
             
             #dajax.script('alert('+jurisdiction_id+')')
         if ajax == 'remove_favorite' or ajax =='remove_favorite_jurisdiction':
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             entity_id = requestProcessor.getParameter('entity_id')
             entity_name = requestProcessor.getParameter('entity_name')
             
@@ -1333,6 +1357,8 @@ def user_favorite(request):
                 dajax.script("controller.showMessage('Remove success.', 'success', 3)")
         
         if ajax == 'show_jurisdiction_updates':
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             jid = requestProcessor.getParameter('jurisdiction_id')
             
             if jid == '0':
@@ -1357,6 +1383,8 @@ def user_favorite(request):
             dajax.assign('#updates-list','innerHTML', body)
         
         if ajax == 'open_notification_setting':
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             data['options'] =[['I', 'Immediately'], ['D', 'Daily'], ['W', 'Weekly'], ['M', 'Monthly'], ['N', 'Never']] 
             data['name'] = 'notifcations'
             data['id'] = 'notifcation'
@@ -1373,6 +1401,8 @@ def user_favorite(request):
             dajax.script('controller.showModalDialog("#fancyboxformDiv");')
         
         if ajax == 'notification_setting_submit':
+            if not request.user.is_authenticated():
+                return HttpResponse(status=403)
             data = []
             notification = requestProcessor.getParameter('notifcations')
             if notification != None or notification != '':
