@@ -272,11 +272,7 @@ $(document).ready(function() {
 
     function show_hide_vote_confirmation(id)
     {
-        $('#vote_confirmation_'+id).fadeIn(1000, function() {
-                $('#vote_confirmation_'+id).fadeOut(8000, function () {
-                          
-                });                
-            });            
+        controller.showMessage("Your vote has been recorded.", 'success', 3);
     }
 
     
