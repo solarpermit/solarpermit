@@ -11,9 +11,8 @@
 
 var controller = new function () {
 	var self = this;
-/* for forum bridge integration
 	//LSS: Change lssSMFUrl to your SMF installation with a trailing slash
-	this.lssSMFUrl = 'http://test.solarpermit.org/forum/';
+	this.lssSMFUrl = location.protocol + location.host + "/forum/";
 	
 	//LSS:
 	//hotfix 8-29-13
@@ -75,7 +74,7 @@ var controller = new function () {
 		});
 	}
 	//LSS: End
-*/
+
 	// submit form to server, with optional callbacks for success and error
 /* for forum bridge imtegration
 	//LSS: hotfix 8-29-13
