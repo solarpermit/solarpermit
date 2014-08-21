@@ -1918,7 +1918,7 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
                                        temp_table.approval_status = 'A')) OR
                             (website_answerreference.approval_status = 'P' AND
                              website_question.has_multivalues = '0' AND
-                             website_answerreference.create_datetime != (
+                             website_answerreference.create_datetime >= (
                                  SELECT MAX(create_datetime)
                                  FROM website_answerreference AS temp_table
                                  WHERE temp_table.question_id = website_answerreference.question_id AND
@@ -1999,7 +1999,7 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
                                                        temp_table.approval_status = 'A')) OR
                                             (temp_answers.approval_status = 'P' AND
                                              website_question.has_multivalues = '0' AND
-                                             temp_answers.create_datetime != (
+                                             temp_answers.create_datetime >= (
                                                  SELECT MAX(create_datetime)
                                                  FROM website_answerreference AS temp_table
                                                  WHERE temp_table.question_id = temp_answers.question_id AND
