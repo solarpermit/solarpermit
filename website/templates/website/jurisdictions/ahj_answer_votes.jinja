@@ -1,7 +1,7 @@
 {% if user.is_authenticated(): %}
   {% with %}
     {% set current_answer_id = answer['id'] %}
-    {% set votes = answers_votes[current_answer_id] %}
+    {% set votes = answer['votes'] %}
     <span class="vote_panel">
       {% if answer['creator_id'] == user.id %}
         {% set class_canvoteup = '' %}

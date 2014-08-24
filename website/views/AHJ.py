@@ -1195,10 +1195,8 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
     show_google_map = False
     (question_ids, view) = get_questions_in_category(user, jurisdiction, category)
     data['view'] = view
-    data['answers_votes'] = get_jurisdiction_voting_info('VoteRequirement', jurisdiction, user)
     data['cqa'] = get_categorized_ahj_data(jurisdiction, category,
                                            empty_data_fields_hidden, user,
-                                           all_votes=data['answers_votes'],
                                            question_ids = question_ids)
     if 1 in data['cqa'] and 4 in data['cqa'][1]['questions']:
         show_google_map = True
@@ -1319,7 +1317,7 @@ def get_jurisdiction_voting_info(category_name, jurisdiction, login_user, catego
         category_objs = QuestionCategory.objects.filter(accepted=1)
     else:
         category_objs = QuestionCategory.objects.filter(name__iexact=category, accepted=1)
-    
+
     if len(action_category) > 0:
         if questions == None:
             votes = Action.objects.filter(category__in=action_category, jurisdiction=jurisdiction, question_category__in=category_objs).order_by('question_category', 'entity_id', '-action_datetime')    
@@ -1347,33 +1345,23 @@ def get_jurisdiction_voting_info(category_name, jurisdiction, login_user, catego
                 if vote.data == 'Vote: Up':
                     vote_info[vote.entity_id]['total_up_votes'] = vote_info[vote.entity_id]['total_up_votes'] + 1   
                     vote_info[vote.entity_id]['up_vote_found'] = True
+                    vote_info[vote.entity_id]['can_vote_down'] = True
                     vote_info[vote.entity_id]['num_consecutive_last_down_votes'] = 0
                     if vote.user == login_user:
                         vote_info[vote.entity_id]['login_user_last_vote'] = 'up'
                                                          
                 elif vote.data == 'Vote: Down':
                     vote_info[vote.entity_id]['total_down_votes'] = vote_info[vote.entity_id]['total_down_votes'] + 1   
-                        
+                    vote_info[vote.entity_id]['can_vote_up'] = True                       
                     if 'last_down_vote_date' not in vote_info[vote.entity_id]:
                         #vote_info[vote.entity_id]['last_down_vote'] = vote
                         datetime_util_obj = DatetimeHelper(vote.action_datetime)
-                        last_down_vote_date = datetime_util_obj.showStateTimeFormat(jurisdiction.state)                    
+                        last_down_vote_date = datetime_util_obj.showStateTimeFormat(jurisdiction.state)
                         vote_info[vote.entity_id]['last_down_vote_date'] = last_down_vote_date
-                        
-                    if vote.user == login_user:
+                    if vote.user_id == login_user.id:
                         vote_info[vote.entity_id]['login_user_last_vote'] = 'down'                        
-                                                
                     if vote_info[vote.entity_id]['up_vote_found'] == False:
                         vote_info[vote.entity_id]['num_consecutive_last_down_votes'] = vote_info[vote.entity_id]['num_consecutive_last_down_votes'] + 1
-    
-                    
-            #if vote.user_id not in vote_info[vote.entity_id]['user_last_vote_on_this_item']:
-            #    vote_info[vote.entity_id]['user_last_vote_on_this_item'][vote.user_id] = vote
-                    
-            # temp test data
-            #vote_info[vote.entity_id]['can_vote_up'] = False
-            #vote_info[vote.entity_id]['can_vote_down'] = False
-                        
     return vote_info    
 
 def get_ahj_action_html(request, jurisdiction, questions, login_user, category):
@@ -1705,7 +1693,6 @@ def get_question_data(request, jurisdiction, question, data):
 
     data['user'] = user
     data['jurisdiction'] = jurisdiction
-    data['answers_votes'] = get_jurisdiction_voting_info('VoteRequirement', jurisdiction, user, questions = [question.id])
     data['question_id'] = question.id
     data['question'] = question.__dict__.copy()
     data['question']['answers'] = []
@@ -1714,9 +1701,9 @@ def get_question_data(request, jurisdiction, question, data):
     data['question']['terminology'] = Question().get_question_terminology(question.id)
     data['question']['pending_answer_ids'] = []
 
-    cqa = get_categorized_ahj_data(jurisdiction, None, False, user, question_ids = [question.id])
+    cqa = get_categorized_ahj_data(jurisdiction, None, False, user,
+                                   question_ids = [question.id])
     data['question']['answers'] = cqa[question.category.id]['questions'][question.id]['answers']
-    #data['display_headings'] = get_answers_headings(data['question']['answers'], user)
     return data
 
 def get_answer_voting_info(category_name, jurisdiction, login_user, answer_ids):
@@ -1802,7 +1789,7 @@ def get_questions_in_category(user, jurisdiction, category):
 def get_categorized_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, all_votes=None, question_ids = None):
     records = get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, question_ids = question_ids)
     if not all_votes:
-        all_votes = get_jurisdiction_voting_info('VoteRequirement', jurisdiction, user)
+        all_votes = get_jurisdiction_voting_info('VoteRequirement', jurisdiction, user, questions = question_ids)
     records_by_category = {}
     for rec in records:
         cid = rec['category_id']
@@ -1831,6 +1818,7 @@ def get_categorized_ahj_data(jurisdiction, category, empty_data_fields_hidden, u
             rec['content'] = json.loads(rec['value'])
             question['logged_in_user_suggested_a_value'] = rec['creator_id'] == user.id
             votes = all_votes.get(rec['id'], None)
+            rec['votes'] = votes
             suggestion_has_votes = votes and \
                                    (votes['total_up_votes'] > 0 or \
                                     votes['total_down_votes'] > 0)
