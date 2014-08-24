@@ -1195,52 +1195,13 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
     show_google_map = False
     (question_ids, view) = get_questions_in_category(user, jurisdiction, category)
     data['view'] = view
-    records = get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, question_ids = question_ids)
     data['answers_votes'] = get_jurisdiction_voting_info('VoteRequirement', jurisdiction, user)
-    records_by_category = {}
-    for rec in records:
-        cid = rec['category_id']
-        if not cid in records_by_category:
-            records_by_category[cid] = { 'cat_description': rec['cat_description'],
-                                         'sorted_question_ids': [],
-                                         'questions': {} }
-        qid = rec['question_id']
-        if not rec['id']: # this is a question
-            assert(rec['question_id'] not in records_by_category[cid]['questions']) # shouldn't get duplicate questions
-            records_by_category[cid]['sorted_question_ids'].append(qid)
-            rec['answers'] = []
-            rec['logged_in_user_suggested_a_value'] = False
-            rec['user_can_suggest'] = True
-            rec['terminology'] = Question().get_question_terminology(qid)
-            rec['pending_answer_ids'] = []
-            records_by_category[cid]['questions'][qid] = rec
-        else: # it's an answer
-            assert(rec['question_id'] in records_by_category[cid]['questions'])
-            question = records_by_category[cid]['questions'][qid]
-            question['answers'].append(rec)
-            if rec['creator_id'] == user.id and rec['approval_status'] == 'P':
-                question['pending_answer_ids'].append(rec['id'])
-            rec['content'] = json.loads(rec['value'])
-            question['logged_in_user_suggested_a_value'] = rec['creator_id'] == user.id
-            votes = data['answers_votes'].get(rec['id'], None)
-            suggestion_has_votes = votes and \
-                                   (votes['total_up_votes'] > 0 or \
-                                    votes['total_down_votes'] > 0)
-            users_existing_suggestions = [a for a in question['answers'] if a['creator_id'] == user.id]
-            if rec['creator_id'] == user.id:
-                question['user_can_suggest'] = question['has_multivalues'] or \
-                                               len(users_existing_suggestions) == 0 or \
-                                               suggestion_has_votes
-            rec['comment_text'] = get_answer_comment_txt(jurisdiction, rec['id'], user)['comment_text']
-
-        if rec['question_id'] == 4:
-            show_google_map = True
-                  
-        if rec['id'] != None:
-            if rec['question_id'] == 16:
-                fee_info = validation_util_obj.process_fee_structure(json.loads(rec['value']) )                   
-                for key in fee_info.keys():
-                    data[key] = fee_info.get(key)
+    data['cqa'] = get_categorized_ahj_data(jurisdiction, category,
+                                           empty_data_fields_hidden, user,
+                                           all_votes=data['answers_votes'],
+                                           question_ids = question_ids)
+    if 1 in data['cqa'] and 4 in data['cqa'][1]['questions']:
+        show_google_map = True
 
     if category == 'all_info' or show_google_map == True:
         data['show_google_map'] = show_google_map
@@ -1249,8 +1210,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
         data['str_address'] = question.get_addresses_for_map(jurisdiction)  
         data['google_api_key'] = django_settings.GOOGLE_API_KEY     
 
-    data['cqa'] = records_by_category
-        
     if category != 'favorite_fields' and category != 'quirks':           
         request.session['empty_data_fields_hidden'] = data['empty_data_fields_hidden']    
       
@@ -1755,28 +1714,9 @@ def get_question_data(request, jurisdiction, question, data):
     data['question']['terminology'] = Question().get_question_terminology(question.id)
     data['question']['pending_answer_ids'] = []
 
-    answers = get_jurisdiction_answers(jurisdiction, templates, questions)
-    for answer_obj in answers:
-        answer = answer_obj.__dict__.copy()
-        data['question']['answers'].append(answer)
-        if answer['creator_id'] == user.id and answer['approval_status'] == 'P':
-            data['question']['pending_answer_ids'].append(answer['id'])
-        answer['content'] = json.loads(answer['value'])
-        votes = data['answers_votes'].get(answer['id'], None)
-        suggestion_has_votes = votes and \
-                               (votes['total_up_votes'] > 0 or \
-                                votes['total_down_votes'] > 0)
-        users_existing_suggestions = [a for a in answers if a.creator_id == user.id]
-        if answer['creator_id'] == user.id:
-            data['question']['user_can_suggest'] = question.has_multivalues or \
-                                                   len(users_existing_suggestions) == 0 or \
-                                                   suggestion_has_votes
-        if answer['question_id'] == 16:
-            fee_info = validation_util_obj.process_fee_structure(json.loads(answer['value']) )
-            for key in fee_info.keys():
-                data[key] = fee_info.get(key)
-        answer['attachments'] = answer_obj.answerattachment_set
-    data['display_headings'] = get_answers_headings(answers, user)
+    cqa = get_categorized_ahj_data(jurisdiction, None, False, user, question_ids = [question.id])
+    data['question']['answers'] = cqa[question.category.id]['questions'][question.id]['answers']
+    #data['display_headings'] = get_answers_headings(data['question']['answers'], user)
     return data
 
 def get_answer_voting_info(category_name, jurisdiction, login_user, answer_ids):
@@ -1858,6 +1798,49 @@ def get_questions_in_category(user, jurisdiction, category):
         else:
             category_questions = Question.objects.filter(accepted=1, category__in=category_objs).values('id').distinct()             
             return ([q.get('id') for q in category_questions], False)
+
+def get_categorized_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, all_votes=None, question_ids = None):
+    records = get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, question_ids = question_ids)
+    if not all_votes:
+        all_votes = get_jurisdiction_voting_info('VoteRequirement', jurisdiction, user)
+    records_by_category = {}
+    for rec in records:
+        cid = rec['category_id']
+        if not cid in records_by_category:
+            records_by_category[cid] = { 'cat_description': rec['cat_description'],
+                                         'sorted_question_ids': [],
+                                         'questions': {} }
+        qid = rec['question_id']
+        if not rec['id']: # this is a question
+            assert(rec['question_id'] not in records_by_category[cid]['questions']) # shouldn't get duplicate questions
+            records_by_category[cid]['sorted_question_ids'].append(qid)
+            rec['answers'] = []
+            rec['logged_in_user_suggested_a_value'] = False
+            rec['user_can_suggest'] = True
+            rec['terminology'] = Question().get_question_terminology(qid)
+            rec['pending_answer_ids'] = []
+            records_by_category[cid]['questions'][qid] = rec
+            if rec['question_id'] == 16 and rec['value']:
+                rec['fee_info'] = FieldValidationCycleUtil().process_fee_structure(json.loads(rec['value']))
+        else: # it's an answer
+            assert(rec['question_id'] in records_by_category[cid]['questions'])
+            question = records_by_category[cid]['questions'][qid]
+            question['answers'].append(rec)
+            if rec['creator_id'] == user.id and rec['approval_status'] == 'P':
+                question['pending_answer_ids'].append(rec['id'])
+            rec['content'] = json.loads(rec['value'])
+            question['logged_in_user_suggested_a_value'] = rec['creator_id'] == user.id
+            votes = all_votes.get(rec['id'], None)
+            suggestion_has_votes = votes and \
+                                   (votes['total_up_votes'] > 0 or \
+                                    votes['total_down_votes'] > 0)
+            users_existing_suggestions = [a for a in question['answers'] if a['creator_id'] == user.id]
+            if rec['creator_id'] == user.id:
+                question['user_can_suggest'] = question['has_multivalues'] or \
+                                               len(users_existing_suggestions) == 0 or \
+                                               suggestion_has_votes
+            rec['comment_text'] = get_answer_comment_txt(jurisdiction, rec['id'], user)['comment_text']
+    return records_by_category
 
 def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, question_ids = []):
     # if we're in a special category then the meaning of an empty
