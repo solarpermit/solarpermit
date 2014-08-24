@@ -3196,7 +3196,7 @@ img {border:0;}
     padding: 0 0.75em 0.75em;
 }
 
-.answer-container.secondary {
+.answer-container.pending {
     border-top:1px darkgrey solid;
     background-color: lightgrey;
     padding: 0.75em;

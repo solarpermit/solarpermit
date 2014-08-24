@@ -68,16 +68,18 @@
   <div style="display:none" class="question_messages" id="question_messages_{{question_id}}"></div>
 {% endif %}
 {% for answer in question['answers'] %}
-  <div data-debug-answer-id="{{answer.id}}" class="answer-container{% if loop.index != 1 %} secondary{% endif %}"{% if answer['has_multivalues'] == 1 %}style="background-color: transparent;"{% endif %}>
+  <div data-debug-answer-id="{{answer.id}}"
+    {% with status = 'approved' if answer['approval_status'] == 'A' else 'pending',
+            quantity = 'multi' if answer['has_multivalues'] else 'single' %}
+       class="answer-container {{status}} {{quantity}}">
+    {% endwith %}
     <div class="cssTable">
       <div class="cssTable" id="qa_{{question_id}}_data">
         <div class="cssCell suggestion_left">
-          {% if question['answers'] %}
-            {% if answer_heading  or (loop.index != 1 and answer['has_multivalues'] != 1) %}
+          {% if answer['approval_status'] == 'P' %}
             <div class="suggestion_header" id="suggestion_header_{{answer['id']}}">
-              {% if answer_heading %}{{ answer_heading }}{% elif loop.index != 1 and answer['has_multivalues'] != 1 %}New Suggestion{% endif %}
+              New Suggestion
             </div>
-            {% endif %}
           {% endif %}
           <div class="field answer_field"
                id="{{answer['id']}}"
