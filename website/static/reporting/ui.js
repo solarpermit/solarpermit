@@ -52,6 +52,12 @@
                               machine.select(); } });
                      });
 
+      var remove_report = $("<div>", { 'class': 'remove_report', 'title': 'Remove this report' });
+      remove_report.on("click",
+		       function (e) {
+			   $(e.target).closest('.whatsit').remove();
+			   updateStateHistory();
+		       });
       if (initial_report && initial_report.filter) {
         $(container).data("filter", initial_report.filter);
       }
@@ -59,9 +65,10 @@
       machine.selector_ui = $("<div>", { 'class': 'selector' }).append($("<div>", { 'class': 'busy-indicator' }),
                                                                        question_select,
                                                                        filter_link,
+								       remove_report,
                                                                        $("<div><span class='description'></div>"))
-        .appendTo(stuff);
-      machine.container = $("<div>").appendTo(stuff);
+      .appendTo(stuff);
+      machine.container = $("<div>", { 'style': 'padding-left: 320px; overflow: hidden;' }).appendTo(stuff);
       stuff.appendTo("#all-reports");
       return 'ui-ready';
     }
@@ -136,6 +143,14 @@
       var ui = $("<div>", { id: "report"+ report.idx, 'class': "report" }), table;
       ui.append($("<div>", { id: "graph"+ report.idx, 'class': "graph" }));
       if (report.type == "temporal") {
+	  ui.addClass("temporal");
+	  $slider = machine.selector_ui.parent().find('.date-slider');
+	  if ($slider.length <= 0) {
+          machine.selector_ui.after(temporal_header = $("<div>", { 'class': "temporal_header" }),
+				    $("<div>", { 'class': 'date-slider' }));
+	  temporal_header.append($("<span>", { 'style': "float: left" }),
+				 $("<span>", { 'style': "float: right" }));
+	}
         ui.append(table = $("<table>", { 'class': "data_table" }));
         table.append($("<tr class='even'><th class='header_row'>Value</th><th class='header_row_right'>Jurisdictions</th></tr>"));
         $.each(report.table,
@@ -165,11 +180,6 @@
         }
       }
       if (report.type == "temporal") {
-        ui.append(temporal_table = $("<table>", { 'class': "data_table temporal_table" }),
-                  $("<div>", { 'class': 'date-slider' }));
-        temporal_table.append($("<tr class='even'><th class='header_row'>From</th><th class='header_row_right'>To</th></tr>"),
-                              $("<tr>", { 'class': "odd" }).append($("<td>").append($("<span>", { html: "&nbsp;" })),
-                                                                   $("<td>").append($("<span>", { html: "&nbsp;" }))));
       }
       return ui;
     }
@@ -216,28 +226,30 @@
                                 min = Date.UTC(2013,6,1) / 1000; // June 2013
                             var end = max,
                                 start = min; //Math.max(monthago() / 1000, min);
-                            var slider = container.find(".date-slider").slider({ range: true,
+                     var slider = machine.selector_ui.parent().find(".date-slider").slider({ range: true,
                                                                                  min: min,
                                                                                  max: max,
                                                                                  values: [ start, end ],
-                                                                                 step: 86400,
-                                                                                 slide: draw,
-                                                                                 change: draw
-                                                                               });
-                            var checkboxes = container.find("input[type=checkbox]");
+                                                                                 step: 86400 
+											  });
+		     slider.on('slide', draw);
+//		     $(window).on('resize', draw);
+                     var checkboxes = container.find("input[type=checkbox]");
                             checkboxes.on("change", draw);
                             draw();
                             function draw(event, ui) {
                               var s = ui ? ui.values[0] : start,
                                   e = ui ? ui.values[1] : end;
-                              var cells = container.find(".temporal_table span");
+			      var cells = machine.selector_ui.parent().find(".temporal_header span");
                               $(cells[0]).text(formatStamp(s));
                               $(cells[1]).text(formatStamp(e));
                               var processed = processData(data, s, e, checkboxes);
                               r.clear();
                               if (!(processed[0].length && processed[1].length))
                                 return;
-                              graph = r.linechart(0, 0, 320, 320, processed[0], processed[1], { snapEnds: false });
+			      var width = container.parent().width() - 25;
+				console.log(width);
+				graph = r.linechart(15, 0, width, 320, processed[0], processed[1], { snapEnds: false, axis: '0 0 0 1' });
                               $.each(graph.lines,
                                      function(i, l) {
                                        if (l.node)

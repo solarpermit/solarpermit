@@ -26,13 +26,15 @@
     margin: 0 2em;
 }
 .whatsit table, .whatsit td, .whatsit th {
-    max-width: 960px;
-    text-align:left;
-    font-size: 14px;
     border-top: 1px solid #bdbdbd;
     border-right: 1px solid #bdbdbd;
+    font-size: 14px;
+    margin: 5px;
+    max-width: 960px;
+    text-align:left;
 }
 .whatsit .data_table {
+    margin-right: 0.5em;
     min-width: 320px;
 }
 .whatsit td, .whatsit th {
@@ -71,16 +73,54 @@
     margin: .1em .4em 0 .2em;
     background-color: transparent;
 }
+
 .report {
-    max-width: 320px;
-    margin-left: 25px;
+    clear: left;
     display: inline-block;
+    float:left;
+    margin-left: -320px;
     vertical-align: top;
+    width: 320px;
 }
+
+.report.temporal {
+    clear: right;
+    float: right;
+    margin-left: 345px;
+    margin-right: 25px;
+    width: 95%;
+}
+
+.report.temporal .data_table {
+    margin-left: 1.5em;
+}
+
 .graph {
     width: 320px;
     height: 320px;
+    margin: 5px;
 }
+
+.report.temporal > .graph {
+    width: 100%;
+}
+
+.remove_report {
+    background-image: url('/static/images/x.png');
+    background-position: left center;
+    cursor: pointer;
+    display: inline;
+    float: right;
+    height: 17px;
+    margin-right: 0.25em;
+    width: 17px;
+}
+
+.temporal_header {
+    height: 1em;
+    margin-bottom: 0.25em;
+}
+
 .whatsit .busy-indicator {
     background-image: none;
     display: inline-block;
@@ -98,4 +138,8 @@
 }
 .selector a {
     display: inline-block;
+}
+
+.date-slider {
+    margin: 0.75em;
 }
