@@ -9,6 +9,59 @@
 		<!-- other overrides as necessary -->
 	</directives>
 	<system>
+		<ac>
+			<main_panel>
+				<id>1</id>
+				<specifications>
+					<manufacturer>Zinsco</manufacturer>
+					<model>200A Main Service</model>
+					<max_amps>200</max_amps>
+					<nominal_voltage_ac>240</nominal_voltage_ac>
+					<main_breaker_size>200</main_breaker_size>
+					<supports_tap_on_line_side>true</supports_tap_on_line_side>
+					<conection_method>breaker</conection_method>
+				</specifications>
+				<breaker>
+					<id>2</id>
+					<specifications>
+						<max_amps>40</max_amps>
+						<nominal_voltage_ac>240</nominal_voltage_ac>
+						<manufacturer>Zinsco</manufacturer>
+						<model>Compatible 40A Breaker</model>
+					</specifications>
+					<wire>
+						<id>3</id>
+						<specifications>
+							<size_awg>1</size_awg> <!-- string; smallest to largest = 18,16,14,12,10,8,6,4,3,2,1,1/0,2/0,3/0,4/0,250,300,350,400,500,600,700,750,800,900,1000 see table B.310.15(B)(2)(3) -->
+							<insulation>THWN-2</insulation> <!-- string: TW, UF, RHW, THHW, THW, THWN, etc etc.... table B.310.15(B)(2)(1) -->
+							<material>Cu</material> <!-- copper (Cu) or aluminum (Al)) -->
+							<linear_feet>20</linear_feet>
+						</specifications>
+						<inverter>
+							<id>4</id>
+							<specifications>
+								<manufacturer>SMA America</manufacturer>
+								<model>SB6000US (240V)</model>
+								<weight_lbs>148.812</weight_lbs>
+								<cec_efficiency>0.955</cec_efficiency>
+								<dc_input_max_watts>6350</dc_input_max_watts>
+								<dc_voltage_max>600</dc_voltage_max>
+								<dc_voltage_nominal>310</dc_voltage_nominal>
+								<mpp_voltage_min>250</mpp_voltage_min>
+								<mpp_voltage_max>480</mpp_voltage_max>
+								<minimum_voltage>250</minimum_voltage>
+								<start_voltage>300</start_voltage>
+								<mppt_quantity>1</mppt_quantity>
+								<fused_strings_per_mppt>4</fused_strings_per_mppt>
+								<integrated_dc_disconnect>true</integrated_dc_disconnect>
+								<output_ac_voltage>240</output_ac_voltage>
+								<output_ac_amps>25</output_ac_amps>
+							</specifications>
+						</inverter>
+					</wire>
+				</breaker>
+			</main_panel>
+		</ac>
 		<ground>
 			<ground_rod>
 				<id>27</id>
