@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request>
+	<directives>
+		<jurisdiction_id>1</jurisdiction_id>
+                <api_username>db48x</api_username>
+                <api_key>42</api_key>
+		<override_ambient_low_f>14</override_ambient_low_f>
+		<override_ambient_high_f>120</override_ambient_high_f>
+		<!-- other overrides as necessary -->
+	</directives>
+	<system>
+		<ground>
+			<ground_rod>
+				<id>27</id>
+				<specifications>
+					<diameter_inches>0.625</diameter_inches> <!-- typically 1/2", 5/8", or 3/4" -->
+					<material>Cu</material>
+				</specifications>
+			</ground_rod>
+		</ground>
+	</system>
+</request>
