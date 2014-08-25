@@ -38,8 +38,6 @@ def verify(request):
                 except ValidationError as e:
                     return (False, f.__name__, e.args[0])
                 except Exception as e:
-                    import pdb
-                    pdb.set_trace()
                     return (False, f.__name__, "Unknown error.")
                 return (True, f.__name__)
             return [dotest(f) for f in tests]

@@ -29,12 +29,14 @@ class XMLTestCase(TestCase):
     case = None
     expect = None
     client = Client()
+    maxDiff = 10000
     def __init__(self, filename, write_expect=False, *args, **kwargs):
         TestCase.__init__(self, *args, **kwargs)
         self.writing = write_expect
         self.filename = filename
         self.case = os.path.join(CASEDIR, filename)
         self.expect = os.path.join(EXPECTDIR, filename)
+        self._testMethodDoc = self.case
     def runTest(self, result=None):
         with open(self.case) as casefile:
             response = self.client.post("/api/read/engineering_verification",
@@ -46,7 +48,7 @@ class XMLTestCase(TestCase):
                 expectfile.write(response.content)
         try:
             with open(self.expect) as expectfile:
-                self.assertEqual(expectfile.read(), response.content)
+                self.assertMultiLineEqual(expectfile.read(), response.content)
         except IOError as e:
             raise CommandError("Could not open or read file '%s'." % self.expect)
 
