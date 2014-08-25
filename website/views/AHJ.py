@@ -1665,9 +1665,9 @@ def get_question_answers_dajax(request, jurisdiction, question, data):
     data = get_question_data(request, jurisdiction, question, data)
     body = requestProcessor.decode_jinga_template(request,'website/jurisdictions/AHJ_cqa_qa.html', data, '')
     dajax.assign('#div_question_content_'+str(question.id),'innerHTML', body)
-    import os
-    with open(os.path.join(django_settings.PROJECT_ROOT, 'website/static/jurisdictions/AHJ_cqa_qa.js')) as f:
-        dajax.script(f.read())
+    #import os
+    #with open(os.path.join(django_settings.PROJECT_ROOT, 'website/static/jurisdictions/AHJ_cqa_qa.js')) as f:
+    #    dajax.script(f.read())
     
     if data['category'] == 'all_info':          
         question_categories = QuestionCategory.objects.filter(accepted=1)

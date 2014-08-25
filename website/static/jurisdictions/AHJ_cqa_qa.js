@@ -251,23 +251,30 @@ $("#ahj_tab_content").on('click',
 			 });
 
 $("#ahj_tab_content").on('click',
-			 ".valhis",
-			 function (event) {
-			     $that = $(this);
-			     $box = $that.parent().parent().parent().siblings(".valhis_box");
-			     answerId = $that.data('id');
-			     if (!$box.html() || $box.html() == "") {
-				 controller.postRequest('.', {ajax: 'validation_history', entity_id: answerId, entity_name: 'requirement', destination: '', callback:
-							      function() {
-								  if (!$box.html() || $box.html() == "") { $box.html("<i>Loading, please wait.</i>"); }
-								  $box.slideToggle();
-								  $that.toggleClass("closed");
-							      }});
-			     } else {
-				 $box.slideToggle();
-				 $that.toggleClass("closed");
-			     }
-			 });
+                         ".valhis",
+                         function (event) {
+                           var $that = $(this);
+                           var $box = $that.parent().parent().parent().siblings(".valhis_box");
+                           var answerId = $that.data('id');
+                           if (!$box.html() || $box.html() == "") {
+                             controller.postRequest('.',
+                                                    { ajax: 'validation_history',
+                                                      entity_id: answerId,
+                                                      entity_name: 'requirement',
+                                                      destination: '',
+                                                      callback: function() {
+                                                                  if (!$box.html() || $box.html() == "") {
+                                                                    $box.html("<i>Loading, please wait.</i>");
+                                                                  }
+                                                                  $box.slideToggle();
+                                                                  //$that.toggleClass("closed");
+                                                                }
+                                                    });
+                           } else {
+                             $box.slideToggle();
+                             //$that.toggleClass("closed");
+                           }
+                         });
 
 var category = window.location.pathname.match('/([^/]*?)/$')[1];
 
