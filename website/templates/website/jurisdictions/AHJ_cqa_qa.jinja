@@ -25,7 +25,13 @@
   </div>
 </div>
 {% if question['description'] != None and question['description'] != '' %}
-  <div class="description">{{question['description']}}</div>
+  <div class="description">
+    {% if question['form_type'] == 'CF' %}
+      {{question['description']}}
+    {% else %}
+      {{question['description'] | safe}}
+    {% endif %}
+  </div>
 {% endif %}
 {% if question.user_can_suggest %}
   <div id="qa_{{question_id}}_add" class="cssCell suggestion_edit_box" style="display:none">
