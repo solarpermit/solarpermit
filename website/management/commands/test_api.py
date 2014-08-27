@@ -50,7 +50,7 @@ class XMLTestCase(TestCase):
             with open(self.expect) as expectfile:
                 self.assertMultiLineEqual(expectfile.read(), response.content)
         except IOError as e:
-            raise CommandError("Could not open or read file '%s'." % self.expect)
+            self.assertMultiLineEqual("", response.content)
 
 class XMLTestSuite(TestSuite):
     _files = filter(lambda f: f.endswith('.xml'), os.listdir(CASEDIR))
