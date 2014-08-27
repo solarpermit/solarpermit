@@ -36,7 +36,7 @@
     </fail>
     <fail>
       <testcase>nec2014_690_13</testcase>
-      <message>Unknown error.</message>
+      <message>NEC 2014 690.13: There are DC components between inverter with id '1' and module with id '3', but the inverter does not have an integrated_dc_disconnect, nor is there a disconnect or fused_disconnect between them.</message>
     </fail>
     <pass>
       <testcase>nec2014_690_13_D</testcase>

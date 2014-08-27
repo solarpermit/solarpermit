@@ -49,7 +49,8 @@ def sanity_6(directives=None, ac=None, dc=None, ground=None):
     for inverter in ac.itercomponents('inverter'):
         specs = nec.get_specifications(inverter)
         output_voltage = nec.get_ac_output_voltage(specs)
-        for ancestor in inverter.iterancestors():
+        for ancestor in itertools.takewhile(lambda component: component.tag not in ('ac', 'dc', 'ground'),
+                                            inverter.iterancestors()):
             specs = nec.get_specifications(ancestor)
             nominal_voltage = nec.get_nominal_voltage_ac(specs)
             if nominal_voltage is not None and output_voltage is not None and (output_voltage != nominal_voltage):

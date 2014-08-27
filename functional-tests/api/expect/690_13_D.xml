@@ -6,10 +6,9 @@
       <testcase>sanity_1</testcase>
       <message>Sanity test: No main_panel found in ac tree.</message>
     </fail>
-    <fail>
+    <pass>
       <testcase>sanity_2</testcase>
-      <message>Sanity test: breaker with id '0' has no specifications or definition.</message>
-    </fail>
+    </pass>
     <pass>
       <testcase>sanity_3</testcase>
     </pass>
@@ -19,10 +18,9 @@
     <pass>
       <testcase>sanity_5</testcase>
     </pass>
-    <fail>
+    <pass>
       <testcase>sanity_6</testcase>
-      <message>No specifications found for ac.</message>
-    </fail>
+    </pass>
     <pass>
       <testcase>sanity_7</testcase>
     </pass>
@@ -51,7 +49,7 @@
     </pass>
     <fail>
       <testcase>nec2014_690_45</testcase>
-      <message>No specifications found for breaker with id '0'.</message>
+      <message>NEC 2014 690.45: No ac_output_amps specified for module with id '5'.</message>
     </fail>
     <pass>
       <testcase>nec2014_690_46</testcase>
@@ -69,7 +67,7 @@
     </fail>
     <fail>
       <testcase>nec2014_690_6_3</testcase>
-      <message>Unknown error.</message>
+      <message>NEC 2014 690.6: AC module with id of '8' must have both output_ac_voltage and output_ac_amps specified.</message>
     </fail>
     <pass>
       <testcase>nec2014_690_7_A</testcase>

@@ -116,13 +116,19 @@ class ElectricalElement(lxml.objectify.ObjectifiedElement):
             if tag != 'specifications':
                 raise e
             try:
-                definition_id = super(ElectricalElement, self).__getattr__('definition')
                 root = [n for n in self.iterancestors()][-1]
-                definition = next(r for r in root.iter()
-                                  if r.tag == self.tag and \
-                                     hasattr(r, 'id') and \
-                                     super(ElectricalElement, r).__getattr__('id') == definition_id)
-                return definition.specifications
+                definition_id = None
+                if hasattr(self, 'definition'):
+                    definition_id = super(ElectricalElement, self).__getattr__('definition')
+                elif hasattr(self, 'id'):
+                    definition_id = super(ElectricalElement, self).__getattr__('id')
+                if definition_id is not None:
+                    definition = next(r for r in root.iter()
+                                      if r.tag == self.tag and \
+                                         hasattr(r, 'id') and \
+                                         super(ElectricalElement, r).__getattr__('id') == definition_id)
+                    return definition.specifications
+                return None
             except Exception as e:
                 raise AttributeError
     @classmethod

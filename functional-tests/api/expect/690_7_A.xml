@@ -8,7 +8,7 @@
     </fail>
     <fail>
       <testcase>sanity_2</testcase>
-      <message>Sanity test: inverter with id '1' has no specifications or definition.</message>
+      <message>Sanity test: wire with id '14' has no specifications or definition.</message>
     </fail>
     <pass>
       <testcase>sanity_3</testcase>
@@ -21,10 +21,9 @@
       <testcase>sanity_5</testcase>
       <message>No specifications found for wire with id '14'.</message>
     </fail>
-    <fail>
+    <pass>
       <testcase>sanity_6</testcase>
-      <message>No specifications found for inverter with id '1'.</message>
-    </fail>
+    </pass>
     <pass>
       <testcase>sanity_7</testcase>
     </pass>
@@ -38,7 +37,7 @@
     </fail>
     <fail>
       <testcase>nec2014_690_13</testcase>
-      <message>Unknown error.</message>
+      <message>NEC 2014 690.13: There are DC components between inverter with id '1' and module with id '3', but the inverter does not have an integrated_dc_disconnect, nor is there a disconnect or fused_disconnect between them.</message>
     </fail>
     <pass>
       <testcase>nec2014_690_13_D</testcase>
@@ -54,7 +53,7 @@
     </pass>
     <fail>
       <testcase>nec2014_690_45</testcase>
-      <message>No specifications found for module with id '3'.</message>
+      <message>NEC 2014 690.45: No isc_stc specified for module with id '3'.</message>
     </fail>
     <pass>
       <testcase>nec2014_690_46</testcase>
@@ -77,7 +76,7 @@
     </fail>
     <fail>
       <testcase>nec2014_690_8</testcase>
-      <message>No specifications found for inverter with id '1'.</message>
+      <message>NEC 2014 690.8: No ac_output_amps specified for module with id '1'.</message>
     </fail>
     <pass>
       <testcase>nec2014_690_9</testcase>

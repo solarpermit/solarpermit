@@ -49,7 +49,7 @@
     </pass>
     <fail>
       <testcase>nec2014_690_45</testcase>
-      <message>No specifications found for wallpaper with id '-1'.</message>
+      <message>NEC 2014 690.45: No ac_output_amps specified for module with id '2'.</message>
     </fail>
     <pass>
       <testcase>nec2014_690_46</testcase>
