@@ -82,9 +82,9 @@ def nec2014_690_9(directives=None, ac=None, dc=None, ground=None):
     for type in ('main_panel', 'sub_panel'):
         for panel in ac.iterdescendants(type):
             for inverter in panel.itercomponents('inverter'):
-                if not any(filter(lambda component: component.tag in ('breaker', 'fused_disconnect'),
-                                  itertools.takewhile(lambda parent: parent != panel,
-                                                      inverter.iterancestors()))):
+                if len(filter(lambda component: component.tag in ('breaker', 'fused_disconnect'),
+                              itertools.takewhile(lambda parent: parent != panel,
+                                                  inverter.iterancestors()))) == 0:
                     raise ValidationError(fail_msg % (panel.tag, panel.id, inverter.tag, inverter.id))
 
 def nec2014_690_12_dc(directives=None, ac=None, dc=None, ground=None):
@@ -164,8 +164,8 @@ def nec2014_690_43(directives=None, ac=None, dc=None, ground=None):
     for tree in (ac, dc):
         for component in tree.itercomponents():
             if component.tag not in ('breaker', 'wire'):
-                if not any(filter(lambda node: node.tag == component.tag,
-                                  ground.findcomponent(component.id))):
+                if len(filter(lambda node: node.tag == component.tag,
+                              ground.findcomponent(component.id))) == 0:
                     raise ValidationError(fail_msg % (component.tag, component.id, tree.tag))
 
 def nec2014_690_45(directives=None, ac=None, dc=None, ground=None):
