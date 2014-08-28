@@ -24,6 +24,9 @@
     <pass>
       <testcase>sanity_7</testcase>
     </pass>
+    <pass>
+      <testcase>sanity_8</testcase>
+    </pass>
     <fail>
       <testcase>nec2014_690_12_ac</testcase>
       <message>NEC 2014 690.12: There is no disconnect or or fused_disconnect between inverter with id '0' and the main_panel.</message>

@@ -2,46 +2,44 @@
 <result>
   <status>failure</status>
   <results>
-    <fail>
+    <pass>
       <testcase>sanity_1</testcase>
-      <message>Sanity test: No main_panel found in ac tree.</message>
-    </fail>
+    </pass>
     <fail>
       <testcase>sanity_2</testcase>
-      <message>Sanity test: inverter with id '1' has no specifications or definition.</message>
+      <message>Sanity test: wire with id '999' has no specifications or definition.</message>
     </fail>
     <pass>
       <testcase>sanity_3</testcase>
     </pass>
-    <pass>
-      <testcase>sanity_4</testcase>
-    </pass>
-    <pass>
-      <testcase>sanity_5</testcase>
-    </pass>
     <fail>
-      <testcase>sanity_6</testcase>
-      <message>No specifications found for inverter with id '1'.</message>
+      <testcase>sanity_4</testcase>
+      <message>No specifications found for wire with id '999'.</message>
     </fail>
+    <fail>
+      <testcase>sanity_5</testcase>
+      <message>No specifications found for wire with id '999'.</message>
+    </fail>
+    <pass>
+      <testcase>sanity_6</testcase>
+    </pass>
     <pass>
       <testcase>sanity_7</testcase>
     </pass>
     <fail>
       <testcase>sanity_8</testcase>
-      <message>No specifications found for inverter with id '1'.</message>
+      <message>Sanity test: The ground_rod with id '27' has a specification named 'wire' which looks like a component; specifications may only contain text nodes and not elements.</message>
     </fail>
     <fail>
       <testcase>nec2014_690_12_ac</testcase>
-      <message>NEC 2014 690.12: There is no disconnect or or fused_disconnect between inverter with id '1' and the main_panel.</message>
+      <message>NEC 2014 690.12: There is no disconnect or or fused_disconnect between inverter with id '4' and the main_panel.</message>
     </fail>
-    <fail>
+    <pass>
       <testcase>nec2014_690_12_dc</testcase>
-      <message>NEC 2014 690.12: Inverter with id '1' has no integrated_dc_disconnect and there is no disconnect or or fused_disconnect between it and the modules connected to it.</message>
-    </fail>
-    <fail>
+    </pass>
+    <pass>
       <testcase>nec2014_690_13</testcase>
-      <message>NEC 2014 690.13: There are DC components between inverter with id '1' and module with id '3', but the inverter does not have an integrated_dc_disconnect, nor is there a disconnect or fused_disconnect between them.</message>
-    </fail>
+    </pass>
     <pass>
       <testcase>nec2014_690_13_D</testcase>
     </pass>
@@ -53,12 +51,11 @@
     </pass>
     <fail>
       <testcase>nec2014_690_43</testcase>
-      <message>NEC 2014 690.43: module with id '3' is connected to dc but not to ground.</message>
+      <message>NEC 2014 690.43: inverter with id '4' is connected to ac but not to ground.</message>
     </fail>
-    <fail>
+    <pass>
       <testcase>nec2014_690_45</testcase>
-      <message>No specifications found for inverter with id '1'.</message>
-    </fail>
+    </pass>
     <pass>
       <testcase>nec2014_690_46</testcase>
     </pass>
@@ -74,12 +71,13 @@
     <pass>
       <testcase>nec2014_690_6_3</testcase>
     </pass>
-    <pass>
+    <fail>
       <testcase>nec2014_690_7_A</testcase>
-    </pass>
+      <message>NEC 2014 690.7(A): VOC of 888.22 V (at an ambient temperature of 14 °F) exceeds maximum voltage of 600.00 V of the inverter with id '4'.</message>
+    </fail>
     <fail>
       <testcase>nec2014_690_8</testcase>
-      <message>No specifications found for inverter with id '1'.</message>
+      <message>NEC 2014 690.8: No ac_output_amps specified for module with id '4'.</message>
     </fail>
     <pass>
       <testcase>nec2014_690_9</testcase>

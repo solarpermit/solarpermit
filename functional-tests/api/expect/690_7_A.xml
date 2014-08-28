@@ -6,26 +6,26 @@
       <testcase>sanity_1</testcase>
       <message>Sanity test: No main_panel found in ac tree.</message>
     </fail>
-    <fail>
+    <pass>
       <testcase>sanity_2</testcase>
-      <message>Sanity test: wire with id '14' has no specifications or definition.</message>
-    </fail>
+    </pass>
     <pass>
       <testcase>sanity_3</testcase>
     </pass>
-    <fail>
+    <pass>
       <testcase>sanity_4</testcase>
-      <message>No specifications found for wire with id '14'.</message>
-    </fail>
-    <fail>
+    </pass>
+    <pass>
       <testcase>sanity_5</testcase>
-      <message>No specifications found for wire with id '14'.</message>
-    </fail>
+    </pass>
     <pass>
       <testcase>sanity_6</testcase>
     </pass>
     <pass>
       <testcase>sanity_7</testcase>
+    </pass>
+    <pass>
+      <testcase>sanity_8</testcase>
     </pass>
     <fail>
       <testcase>nec2014_690_12_ac</testcase>
