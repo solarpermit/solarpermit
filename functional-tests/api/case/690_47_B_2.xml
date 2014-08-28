@@ -2,10 +2,12 @@
 <request>
 	<directives>
 		<jurisdiction_id>1</jurisdiction_id>
-                <api_username>db48x</api_username>
-                <api_key>42</api_key>
+		<api_username>db48x</api_username>
+		<api_key>42</api_key>
 		<override_ambient_low_f>14</override_ambient_low_f>
 		<override_ambient_high_f>120</override_ambient_high_f>
+		<override_code>nec2014</override_code>
+		<override_code>nec2014_690_43</override_code>
 		<!-- other overrides as necessary -->
 	</directives>
 	<system>
@@ -199,6 +201,11 @@
 				<specifications>
 					<diameter_inches>0.625</diameter_inches> <!-- typically 1/2", 5/8", or 3/4" -->
 					<material>Cu</material>
+					<wire>
+					  <main_panel>
+					    <id>1</id>
+					  </main_panel>
+					</wire>
 				</specifications>
 			</ground_rod>
 		</ground>

@@ -247,12 +247,12 @@ LOGGING = {
         },
     },
     'loggers': {
-        '': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False, # this tells logger to send logging message
-                                # to its parent (will send if set to True)
-        },
+#        '': {
+#            'handlers': ['console'],
+#            'level': 'DEBUG',
+#            'propagate': False, # this tells logger to send logging message
+#                                # to its parent (will send if set to True)
+#        },
         #'django.db': {
         #},
         'django.request': {
