@@ -1,86 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <result>
-  <status>failure</status>
+  <status>partial</status>
   <results>
     <pass>
-      <testcase>sanity_1</testcase>
-    </pass>
-    <fail>
-      <testcase>sanity_2</testcase>
-      <message>Sanity test: wire with id '999' has no specifications or definition.</message>
-    </fail>
-    <pass>
-      <testcase>sanity_3</testcase>
-    </pass>
-    <fail>
-      <testcase>sanity_4</testcase>
-      <message>No specifications found for wire with id '999'.</message>
-    </fail>
-    <fail>
-      <testcase>sanity_5</testcase>
-      <message>No specifications found for wire with id '999'.</message>
-    </fail>
-    <pass>
-      <testcase>sanity_6</testcase>
-    </pass>
-    <pass>
-      <testcase>sanity_7</testcase>
-    </pass>
-    <fail>
-      <testcase>sanity_8</testcase>
-      <message>Sanity test: The ground_rod with id '27' has a specification named 'wire' which looks like a component; specifications may only contain text nodes and not elements.</message>
-    </fail>
-    <fail>
-      <testcase>nec2014_690_12_ac</testcase>
-      <message>NEC 2014 690.12: There is no disconnect or or fused_disconnect between inverter with id '4' and the main_panel.</message>
-    </fail>
-    <pass>
-      <testcase>nec2014_690_12_dc</testcase>
-    </pass>
-    <pass>
-      <testcase>nec2014_690_13</testcase>
-    </pass>
-    <pass>
-      <testcase>nec2014_690_13_D</testcase>
-    </pass>
-    <pass>
-      <testcase>nec2014_690_15</testcase>
-    </pass>
-    <pass>
-      <testcase>nec2014_690_15_D</testcase>
-    </pass>
-    <fail>
-      <testcase>nec2014_690_43</testcase>
-      <message>NEC 2014 690.43: inverter with id '4' is connected to ac but not to ground.</message>
-    </fail>
-    <pass>
-      <testcase>nec2014_690_45</testcase>
-    </pass>
-    <pass>
-      <testcase>nec2014_690_46</testcase>
-    </pass>
-    <pass>
       <testcase>nec2014_690_47_B_2</testcase>
-    </pass>
-    <pass>
-      <testcase>nec2014_690_6_1</testcase>
-    </pass>
-    <pass>
-      <testcase>nec2014_690_6_2</testcase>
-    </pass>
-    <pass>
-      <testcase>nec2014_690_6_3</testcase>
-    </pass>
-    <fail>
-      <testcase>nec2014_690_7_A</testcase>
-      <message>NEC 2014 690.7(A): VOC of 888.22 V (at an ambient temperature of 14 °F) exceeds maximum voltage of 600.00 V of the inverter with id '4'.</message>
-    </fail>
-    <fail>
-      <testcase>nec2014_690_8</testcase>
-      <message>NEC 2014 690.8: No ac_output_amps specified for module with id '4'.</message>
-    </fail>
-    <pass>
-      <testcase>nec2014_690_9</testcase>
     </pass>
   </results>
 </result>
