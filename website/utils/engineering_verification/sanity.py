@@ -1,3 +1,5 @@
+import lxml
+import website.views.engineering_verification as eng
 import itertools
 
 from . import nec_support as nec
@@ -64,3 +66,12 @@ def sanity_7(directives=None, ac=None, dc=None, ground=None):
             voltage = nec.get_nominal_voltage_ac(specs)
             if voltage is None:
                 raise ValidationError(fail_msg % panel.id)
+
+def sanity_8(directives=None, ac=None, dc=None, ground=None):
+    fail_msg = "Sanity test: The %s with id '%s' has a specification named '%s' which looks like a component; specifications may only contain text nodes and not elements."
+    for tree in (ac, dc, ground):
+        for component in tree.itercomponents():
+            specs = nec.get_specifications(component)
+            for spec in specs.iterchildren():
+                if isinstance(spec, eng.ElectricalElement):
+                    raise ValidationError(fail_msg % (component.tag, component.id, spec.tag))
