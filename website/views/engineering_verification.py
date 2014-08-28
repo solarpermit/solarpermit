@@ -41,7 +41,10 @@ def verify(request):
                     return (False, f.__name__, "Unknown error.")
                 return (True, f.__name__)
             return [dotest(f) for f in tests]
-        results = runtests(sanity) + runtests(code)
+        if code != sanity:
+            results = runtests(sanity) + runtests(code)
+        else:
+            results = runtests(sanity)
     except ValidationError as e:
         return error_response(e)
     except Exception as e:
