@@ -30,6 +30,7 @@ def verify(request):
         ground = get_ground(system)
         sanity = get_code(jurisdiction, 'sanity')
         code = get_code(jurisdiction, get_override_code(directives))
+        test_names = get_tests(directives)
         def runtests(module):
             tests = [f[1] for f in inspect.getmembers(module) if inspect.isfunction(f[1])]
             def dotest(f):
@@ -40,13 +41,16 @@ def verify(request):
                 except Exception as e:
                     return (False, f.__name__, "Unknown error.")
                 return (True, f.__name__)
-            return [dotest(f) for f in tests]
-        results = runtests(sanity) + runtests(code)
+            return [dotest(f) for f in tests if test_names is None or f.__name__ in test_names]
+        if code != sanity:
+            results = runtests(sanity) + runtests(code)
+        else:
+            results = runtests(sanity)
     except ValidationError as e:
         return error_response(e)
     except Exception as e:
-        return error_response(traceback.print_exc())
-    return testcase_response(results=results)
+        return error_response(traceback.print_exc(), complete=True)
+    return testcase_response(results=results, complete=test_names is None)
 
 def get_code(jurisdiction, override):
     code_name = override
@@ -71,6 +75,11 @@ def get_code(jurisdiction, override):
             raise ValidationError("Invalid override_code.")
         raise ValidationError("This jurisdiction has an invalid or unsupported NEC code version, use override_code.")
     return mod
+
+@optional_getter('override_tests')
+def get_tests(tests):
+    return set(map(lambda s: s.strip(),
+                   str(tests).split(",")))
 
 @checked_getter('directives')
 def get_directives(node):
@@ -150,9 +159,9 @@ class ElectricalElement(lxml.objectify.ObjectifiedElement):
         for node in ElectricalElement._component_iter(self.iterdescendants()):
             if node.id == id:
                 yield node
-def testcase_response(results=[]):
+def testcase_response(results=[], complete=True):
     E = lxml.builder.ElementMaker()
-    status = "success"
+    status = "success" if complete else "partial"
     for result in results:
         if not result[0]:
             status = "failure"

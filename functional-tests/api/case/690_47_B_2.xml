@@ -7,7 +7,7 @@
 		<override_ambient_low_f>14</override_ambient_low_f>
 		<override_ambient_high_f>120</override_ambient_high_f>
 		<override_code>nec2014</override_code>
-		<override_code>nec2014_690_43</override_code>
+		<override_tests>nec2014_690_47_B_2</override_tests>
 		<!-- other overrides as necessary -->
 	</directives>
 	<system>

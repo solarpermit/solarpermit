@@ -27,6 +27,10 @@
       <testcase>sanity_7</testcase>
     </pass>
     <fail>
+      <testcase>sanity_8</testcase>
+      <message>No specifications found for inverter with id '1'.</message>
+    </fail>
+    <fail>
       <testcase>nec2014_690_12_ac</testcase>
       <message>NEC 2014 690.12: There is no disconnect or or fused_disconnect between inverter with id '1' and the main_panel.</message>
     </fail>

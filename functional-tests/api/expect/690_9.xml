@@ -26,6 +26,10 @@
       <testcase>sanity_7</testcase>
       <message>No specifications found for main_panel with id '0'.</message>
     </fail>
+    <fail>
+      <testcase>sanity_8</testcase>
+      <message>No specifications found for main_panel with id '0'.</message>
+    </fail>
     <pass>
       <testcase>nec2014_690_12_ac</testcase>
     </pass>
