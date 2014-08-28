@@ -1,5 +1,5 @@
 {% if user.is_authenticated() %}
-  <span>
+  <span class="question-actions">
     {% if question.user_can_suggest %}
       <div class="field_mo_l1 editicon" style="vertical-align:middle;" id="edit_question_{{question_id}}" title="{{question['terminology']}}" onclick="controller.suggestionField.clickAddLabel({{jurisdiction_id}}, {{question_id}});"></div>
       ·
@@ -12,9 +12,6 @@
       {% else %}
         Unfavorite
       {% endif %}
-    {% endif %}
-    {% if needs_separator %}
-      ·&nbsp;
     {% endif %}
   </span>
 {% endif %}

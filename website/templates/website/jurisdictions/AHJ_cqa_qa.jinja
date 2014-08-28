@@ -10,19 +10,19 @@
     {% set label_tooltip = '' %}
   {% endif %}
 {% endif %}
-<div style="width:100%;"
-     class="qasv_content need_tooltip"
+<div class="qasv_content need_tooltip"
      id="child_of_div_{{question_id}}"
      data-id="{{question_id}}"
      data-jurid="{{jurisdiction.id}}">
-  <div class="label"
-       data-icon="{{icon}}"
-       data-label_tooltip="{{label_tooltip}}"
-       {% if question.user_can_suggest %}
-       title="{{question['terminology']}}" onclick="controller.suggestionField.clickAddLabel({{jurisdiction_id}}, {{question_id}});"
-       {% endif %}>
-    <span>{{question['label'] | replace('[AHJ name]', jurisdiction.name) }}</span>
-  </div>
+  {% include "website/jurisdictions/ahj_actions_question.jinja" %}
+  <span class="label"
+        data-icon="{{icon}}"
+        data-label_tooltip="{{label_tooltip}}"
+        {% if question.user_can_suggest %}
+        title="{{question['terminology']}}" onclick="controller.suggestionField.clickAddLabel({{jurisdiction_id}}, {{question_id}});"
+        {% endif %}>
+    {{question['label'] | replace('[AHJ name]', jurisdiction.name) }}
+  </span>
 </div>
 {% if question['description'] != None and question['description'] != '' %}
   <div class="description">
@@ -57,9 +57,6 @@
               No info available yet...
             </div>
           </div>
-          {% with needs_separator = False %}
-            {% include "website/jurisdictions/ahj_actions_question.jinja" %}
-          {% endwith %}
         {% else %}
           <div class="field answer_field">
             <div class="prompt" style="margin-bottom: 15px">
@@ -127,11 +124,6 @@
               </div>
             {% endif %}
           </div>
-          {% if loop.index == 1 and user.is_authenticated() %}
-            {% with needs_separator = True %}
-              {% include "website/jurisdictions/ahj_actions_question.jinja" %}
-            {% endwith %}
-          {% endif %}
           {% include "website/jurisdictions/ahj_actions_answer.jinja" %}
         </div>
         <div class="cssCell suggestion_right">

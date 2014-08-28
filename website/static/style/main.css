@@ -2842,6 +2842,10 @@ img {border:0;}
 	cursor: hand;	
 }
 
+.question-actions {
+    float: right;
+}
+
 .ahj_action_flyout {
 	z-index:6000;
 	display:none;
