@@ -87,6 +87,14 @@ function formatStamp(stamp) {
                                                      day: "numeric"
                                                    });
 }
+function formatStampShort(stamp) {
+  if (typeof stamp === "string")
+    stamp = parseInt(stamp, 10);
+    return new Date(stamp * 1000).toLocaleDateString(window.navigator.userLanguage ||
+						     window.navigator.language,
+						     { year: "numeric",
+						       month: "short" });
+}
 function tomorrow() {
   d = new Date();
   d.setUTCDate(d.getUTCDate()+1);

@@ -14,6 +14,7 @@
     } else {
       add_ui();
     }
+
   });
   $("#add-filter").on("click", $.fancybox.close);
   $("#add-another").on("click", add_ui);
@@ -188,7 +189,8 @@
                                      : [],
           sum = values.reduce(function (a, b) { return a+b; }, 0),
           idx = report.idx;
-      var r = Raphael(container.find("#graph"+ idx).get(0)), graph, path_colors = [];
+      var $graph_box = container.find("#graph" + idx);
+      var r = Raphael($graph_box.get(0)), graph, path_colors = [];
       if (report.type == "histogram") {
         if (sum <= 0)
           return;
@@ -223,7 +225,7 @@
                  dataType: "json",
                  success: function(data) {
                             var max = tomorrow() / 1000,
-                                min = Date.UTC(2013,6,1) / 1000; // June 2013
+                                min = Date.UTC(2013,5,1) / 1000; // June 2013
                             var end = max,
                                 start = min; //Math.max(monthago() / 1000, min);
                      var slider = machine.selector_ui.parent().find(".date-slider").slider({ range: true,
@@ -231,40 +233,72 @@
                                                                                  max: max,
                                                                                  values: [ start, end ],
                                                                                  step: 86400 
-											  });
+											   });
 		     slider.on('slide', draw);
-//		     $(window).on('resize', draw);
+		     $graph_box.on('click', function(e) { showPopup($graph_box, draw); });
                      var checkboxes = container.find("input[type=checkbox]");
-                            checkboxes.on("change", draw);
-                            draw();
-                            function draw(event, ui) {
-                              var s = ui ? ui.values[0] : start,
-                                  e = ui ? ui.values[1] : end;
-			      var cells = machine.selector_ui.parent().find(".temporal_header span");
-                              $(cells[0]).text(formatStamp(s));
-                              $(cells[1]).text(formatStamp(e));
-                              var processed = processData(data, s, e, checkboxes);
-                              r.clear();
-                              if (!(processed[0].length && processed[1].length))
-                                return;
-			      var width = container.parent().width() - 25;
-				console.log(width);
-				graph = r.linechart(15, 0, width, 320, processed[0], processed[1], { snapEnds: false, axis: '0 0 0 1' });
-                              $.each(graph.lines,
-                                     function(i, l) {
-                                       if (l.node)
-                                         path_colors[i] = $(l.node).css("stroke");
-                                     });
-                              var color_idx = 0;
-                              container.find(".legend-dot")
-                                       .each(function (idx, elem) {
-                                               if (checkboxes[idx].checked)
-                                                 color(color_idx++, elem);
-                                               else
-                                                 $(elem).css("background-color", "transparent");
-                                             });
-                            }
-                          }
+                     checkboxes.on("change", draw);
+                     draw();
+                     function draw(event, ui, special_container, axes, width, height) {
+			 var r_local = r;
+			 var container_local = container;
+			 if (special_container) {
+			     r_local = Raphael(special_container.get(0)), graph, path_colors = [];
+			     container_local = special_container;
+			 }
+                         var s = ui ? ui.values[0] : start,
+                             e = ui ? ui.values[1] : end;
+			 var cells = machine.selector_ui.parent().find(".temporal_header span");
+                         $(cells[0]).text(formatStamp(s));
+                         $(cells[1]).text(formatStamp(e));
+                         var processed = processData(data, s, e, checkboxes);
+                         r_local.clear();
+                         if (!(processed[0].length && processed[1].length))
+                             return;
+			 if (!width) {
+			     var width = container_local.parent().width() - 25;
+			 }
+			 if (!height) {
+			     var height = 320;
+			 }
+			 if (axes) {
+			     var xoffset = 15;
+			     var xstep = Math.floor((e - s) / 2629740);
+			     var ystep = 10;
+			 } else {
+			     var xoffset = 10;
+			     var xstep, ystep;
+			 }
+			 graph = r_local.linechart(xoffset, 0, width, height, processed[0], processed[1], { snapEnds: false, axis: axes, axisxstep: xstep, axisystep: ystep });
+
+			 if (axes) {
+			     $.each(graph.axis[0].text.items, function(i, label) {
+				 var old = label.attr("text");
+				 if (old) {
+				     var newLabel = formatStampShort(old);
+				     if(newLabel) {
+					 label.attr({ text: newLabel });
+				     }
+				 }
+			     });
+			 }
+
+                         $.each(graph.lines,
+                                function(i, l) {
+                                    if (l.node)
+                                        path_colors[i] = $(l.node).css("stroke");
+                                });
+			 
+                         var color_idx = 0;
+                         container_local.find(".legend-dot")
+                             .each(function (idx, elem) {
+                                 if (checkboxes[idx].checked)
+                                     color(color_idx++, elem);
+                                 else
+                                     $(elem).css("background-color", "transparent");
+                             });
+                     }
+                 }
                });
       }
       var n = 0;
@@ -486,4 +520,35 @@
 
     container.data("filter", filter);
   }
+
+  function showPopup(graph, drawer) {
+      var docHeight = $(document).height(); // Grab the height of the page
+      var scrollTop = $(window).scrollTop(); // Grab the px value from the top of the page to where you're scrolling
+      var height = window.innerHeight * 0.8;
+      var width = window.innerWidth * 0.8;
+
+      var overlay = $('<div>', { 'class': 'overlay-bg' });
+      var content = $('<div>', { 'class': 'overlay-content' }).html("<div class='remove_report'/>").appendTo(overlay);
+      overlay.appendTo('body').show().css({ 'height': docHeight });
+      $('.overlay-content').css({'top': scrollTop + 20 + 'px'}); // Set the content 20px from the window top
+      var $graph = $('<div>', { 'class': 'whatsit', 'style': 'height: ' + height + 'px;' }).appendTo(content);
+      content.show();
+      drawer('', '', $graph, '0 0 1 1', width, height - 15);
+
+      // Hide popup when user clicks on close button
+      overlay.find('.remove_report').on('click', function() {
+	  $('.overlay-bg, .overlay-content').remove();
+      });
+      
+      // Hides the popup if user clicks anywhere outside the container
+      $('.overlay-bg').on('click', function() {
+	  $('.overlay-bg, .overlay-content').remove();
+      });
+      
+      // Prevents the overlay from closing if user clicks inside the popup overlay
+      $('.overlay-content').on('click', function() {
+	  return false;
+      });
+  }
+
 })();
