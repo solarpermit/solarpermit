@@ -82,7 +82,7 @@ def get_ac_output_amps(amperage):
     return amps(to_num(amperage))
 
 @optional_getter('isc_atc')
-def get_isc_atc(amperage):
+def get_isc_stc(amperage):
     return amps(to_num(amperage))
 
 @optional_getter('max_amps')

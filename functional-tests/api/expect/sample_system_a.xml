@@ -2,6 +2,6 @@
 <result>
   <status>fail</status>
   <errors>
-    <error>No NEC code version for this jurisdiction, use override_code.</error>
+    <error>This jurisdiction has an invalid or unsupported NEC code version, use override_code.</error>
   </errors>
 </result>

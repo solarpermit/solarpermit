@@ -72,8 +72,8 @@ def nec2014_690_6_3(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.6: AC module with id of '%s' must have both output_ac_voltage and output_ac_amps specified."
     for module in ac.iterdescendants('module'):
         specs = nec.get_specifications(module)
-        voltage = nec.get_output_ac_voltage(specs)
-        current = nec.get_output_ac_current(specs)
+        voltage = nec.get_ac_output_voltage(specs)
+        current = nec.get_ac_output_amps(specs)
         if voltage is None or current is None:
             raise ValidationError(fail_msg % module.id)
 
@@ -82,9 +82,9 @@ def nec2014_690_9(directives=None, ac=None, dc=None, ground=None):
     for type in ('main_panel', 'sub_panel'):
         for panel in ac.iterdescendants(type):
             for inverter in panel.itercomponents('inverter'):
-                if not any(filter(lambda component: component.tag in ('breaker', 'fused_disconnect'),
-                                  itertools.takewhile(lambda parent: parent != panel,
-                                                      inverter.iterancestors()))):
+                if len(filter(lambda component: component.tag in ('breaker', 'fused_disconnect'),
+                              itertools.takewhile(lambda parent: parent != panel,
+                                                  inverter.iterancestors()))) == 0:
                     raise ValidationError(fail_msg % (panel.tag, panel.id, inverter.tag, inverter.id))
 
 def nec2014_690_12_dc(directives=None, ac=None, dc=None, ground=None):
@@ -117,8 +117,8 @@ def nec2014_690_13(directives=None, ac=None, dc=None, ground=None):
             if len(list(intervening_components)) > 0:
                 specs = nec.get_specifications(inverter)
                 integrated_dc_disconnect = nec.get_integrated_dc_disconnect(specs)
-                if not (integrated_dc_disconnect or any(is_disconnect, intervening_components)):
-                    raise ValidationError(fail_msg % (inverter.id, panel.id))
+                if not (integrated_dc_disconnect or any(filter(is_disconnect, intervening_components))):
+                    raise ValidationError(fail_msg % (inverter.id, module.id))
 
 def nec2014_690_13_D(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.13(D): More than 6 disconnects exist in the dc tree."
@@ -164,8 +164,8 @@ def nec2014_690_43(directives=None, ac=None, dc=None, ground=None):
     for tree in (ac, dc):
         for component in tree.itercomponents():
             if component.tag not in ('breaker', 'wire'):
-                if not any(filter(lambda node: node.tag == component.tag,
-                                  ground.findcomponent(component.id))):
+                if len(filter(lambda node: node.tag == component.tag,
+                              ground.findcomponent(component.id))) == 0:
                     raise ValidationError(fail_msg % (component.tag, component.id, tree.tag))
 
 def nec2014_690_45(directives=None, ac=None, dc=None, ground=None):
