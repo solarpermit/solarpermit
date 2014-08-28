@@ -18,11 +18,11 @@ def sanity_2(directives=None, ac=None, dc=None, ground=None):
                 raise ValidationError(fail_msg % (component.tag, component.id))
 
 def sanity_3(directives=None, ac=None, dc=None, ground=None):
-    fail_msg = "Sanity test: %s with id '%s' has no id."
+    fail_msg = "Sanity test: A %s inside the %s has no id."
     for tree in (ac, dc, ground):
         for component in tree.itercomponents():
             if not hasattr(component, 'id'):
-                raise ValidationError(fail_msg % (component.tag, component.id))
+                raise ValidationError(fail_msg % (component.tag, tree.tag))
 
 def sanity_4(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "Sanity test: Wire with id '%s' has no size_awg, insulation or material."
