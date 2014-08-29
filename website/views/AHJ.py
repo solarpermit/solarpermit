@@ -2037,7 +2037,7 @@ def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, questio
                              display_order ASC,
                              question_id ASC,
                              approval_status ASC,
-                             create_datetime DESC,
+                             create_datetime ASC,
                              id DESC;'''
     query_str = query_str % { 'jurisdiction_id': jurisdiction.id,
                               'placeholder': placeholder }
