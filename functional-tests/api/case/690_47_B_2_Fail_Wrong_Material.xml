@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request>
+	<directives>
+		<jurisdiction_id>1</jurisdiction_id>
+		<api_username>db48x</api_username>
+		<api_key>42</api_key>
+		<override_code>nec2014</override_code>
+		<override_tests>nec2014_690_47_B_2</override_tests>
+		<!-- other overrides as necessary -->
+	</directives>
+	<system>
+		<ac>
+		</ac>
+		<dc>
+		</dc>
+		<ground>
+			<grounding_rod>
+				<id>27</id>
+				<specifications>
+					<material>U</material>
+				</specifications>
+			</grounding_rod>
+		</ground>
+	</system>
+</request>

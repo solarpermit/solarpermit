@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result>
+  <status>failure</status>
+  <results>
+    <fail>
+      <testcase>nec2014_690_47_B_2</testcase>
+      <message>NEC 2014 690.47(B)(2): Grounding rod with id '27' is not made of copper.</message>
+    </fail>
+  </results>
+</result>
