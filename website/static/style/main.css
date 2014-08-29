@@ -1493,12 +1493,8 @@ input_error{
     padding: 8px;
 }
 .comments {
-    font-family: Tahoma,Geneva,sans-serif;
-    font-size: 11px;
-    font-weight: normal;
-    text-decoration: none;
-    clear:both;
-    margin-top:5px;
+    background-image: url("../images/comment.png");
+    vertical-align: middle;
 }
 #commenticon {
     background-image: url("../images/comment.png");
@@ -1511,9 +1507,6 @@ input_error{
     z-index: 500;
 }
 .comments:hover {
-    font-family: Tahoma,Geneva,sans-serif;
-    font-weight: normal;
-    text-decoration: underline;
 }
 .newcomment {
     background: none repeat scroll 0 0 #F0F2FB;
@@ -1747,7 +1740,6 @@ input_error{
 .field_mo_l1{
 	background-image: url("../images/edit_off.png");
 	background-repeat:no-repeat;
-	margin-left: 0px;
 }
 .field_mo_l1:hover{	
 	background-image: url("../images/edit_on.png");
@@ -2121,29 +2113,6 @@ ul.paperlist li span.author{
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e3e3e3', endColorstr='#ffffff');  
 }
 .ahj-tab #ahj_tab_content{clear:both;}
-.ahj-tab .field_mo_l1{	
-	background-image: url("../images/edit_off.png");
-	background-repeat:no-repeat;
-	cursor: pointer;
-}
-.ahj-tab .field_mo_l1:hover{	
-	background-image: url("../images/edit_on.png");
-	background-repeat:no-repeat;
-	cursor: pointer;
-}
-.ahj-tab .field_mo_l3 {
-    background-image: url("../images/cancel_off.png");
-    background-repeat: no-repeat;
-    cursor: pointer;
-}
-.ahj-tab div.cancel_btn .field_mo_l3{height:21px;width:21px;display:block;}
-.ahj-tab div.edit_btn .field_mo_l1{height:21px;display:block;}
-.ahj-tab .field_mo_l2{	
-	background-image: url("../images/edit_on.png");
-	background-repeat:no-repeat;
-	padding-left:25px;
-	cursor: pointer;
-}
 .ahj-tab .editdiv{
 	border-radius:5px;
 }
@@ -2232,11 +2201,13 @@ ul.paperlist li span.author{
 	border-radius:5px;
 }
 .suggestion_left .field input.editbt{
+	background-color: transparent;
 	display:block;
 	padding:0;
 	border:0;
-	width:21px;
-	height:21px;	
+        background-size: 16px 16px;
+	width: 16px;
+	height: 16px;	
 	text-indent: -1000px;
 	cursor:pointer;
 }
@@ -2252,17 +2223,18 @@ ul.paperlist li span.author{
 }
 
 .suggestion_left .field input.cancelbt{
+	background-color: transparent;
 	display:block;
 	padding:0;
 	border:0;
-	width:21px;
-	height:21px;	
+	width: 16px;
+	height: 16px;	
 	text-indent: -1000px;
 	cursor:pointer;
-	background: url("../images/cancel_off.png") no-repeat 0px 0px;
+	background: url("../images/cancel_off.png") no-repeat -2.5px -2.5px;
 }
 .suggestion_left .field input.cancelbt:hover{
-	background: url("../images/cancel_on.png") no-repeat 0px 0px;
+	background: url("../images/cancel_on.png") no-repeat -2.5px -2.5px;
 }
 .suggestion_left .field div.cancel_btn{
 	float:left;
@@ -2715,11 +2687,17 @@ img {border:0;}
 	width: 235px !important;
 }
 
-.editicon {
+.actionicon {
     display: inline-block;
-    background-size: 17px 17px;
-    width: 17px;
-    height: 17px;
+    background-size: 16px 16px;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+}
+
+.actionicon:hover {
+    cursor: pointer;
+    cursor: hand;	
 }
 
 .valhis {
@@ -2822,9 +2800,12 @@ img {border:0;}
 	width:100%;
 }
 
+.add_to_favorites {
+	background-image: url("../images/favorite-icon.png");
+}
+
 .add_to_favorites:hover {
-	cursor: pointer;
-	cursor: hand;	
+	background-image: url("../images/favorite-icon.png");
 }
 
 .add_to_quirks:hover {
@@ -2832,9 +2813,12 @@ img {border:0;}
 	cursor: hand;	
 }
 
+.remove_from_favorites {
+	background-image: url("../images/favorite-icon-filled.png");
+}
+
 .remove_from_favorites:hover {
-	cursor: pointer;
-	cursor: hand;	
+	background-image: url("../images/favorite-icon-filled.png");
 }
 
 .remove_from_quirks:hover {

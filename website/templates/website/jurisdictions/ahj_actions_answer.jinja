@@ -1,15 +1,12 @@
 <span>
   {% if user.is_authenticated() %}
-    <a class="comments need_comment"
-       href="#"
-       data-id="{{answer['id']}}"
-       data-jid="{{jurisdiction.id}}"
-       id="answer_comment_{{answer['id']}}">
-      Comment
-    </a>
-    ·
+    <div class="comments actionicon need_comment"
+         data-id="{{answer['id']}}"
+         data-jid="{{jurisdiction.id}}"
+         id="answer_comment_{{answer['id']}}">
+    </div>
   {% endif %}
   <div class="valhis closed" data-id="{{answer['id']}}">
-    <span style="display:inline;"><a class="comments" href="javascript:void(0);">Validation History</a></span>
+    <span style="display:inline;"><a href="javascript:void(0);">Validation History</a></span>
   </div>
 </span>

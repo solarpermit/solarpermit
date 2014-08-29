@@ -91,13 +91,18 @@
                {% endif %}>
             {% if answer['creator_id'] == user.id and answer['approval_status'] == 'P' %}
               {# need to take into account if votes have been registered for this answer #}
-              <span class="cancel_btn" id="cancel_btn_{{answer['id']}}" title="Cancel your message" style="width:20px;float:left;">
+              <span class="cancel_btn"
+                    id="cancel_btn_{{answer['id']}}"
+                    title="Cancel your message"
+                    style="width:16px; margin-right: 4px; float: left;">
                 <input class="cancelbt field_mo_l3 cancel_this_value"
                        type="button"
                        value=""
                        data-id="{{answer['id']}}">
               </span>
-              <span class="edit_btn" id="edit_btn_{{answer['id']}}" title="Edit your suggestion" style="width:35px;float:left">
+              <span class="edit_btn" id="edit_btn_{{answer['id']}}"
+                    title="Edit your suggestion"
+                    style="width: 16px; margin-right: 4px; float: left">
                 <input class="editbt canedit field_mo_l1 edit_this_value"
                        id="edit_button_{{answer['id']}}"
                        type="button" value=""

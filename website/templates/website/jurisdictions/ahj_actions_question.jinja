@@ -1,17 +1,24 @@
 {% if user.is_authenticated() %}
   <span class="question-actions">
     {% if question.user_can_suggest %}
-      <div class="field_mo_l1 editicon" style="vertical-align:middle;" id="edit_question_{{question_id}}" title="{{question['terminology']}}" onclick="controller.suggestionField.clickAddLabel({{jurisdiction_id}}, {{question_id}});"></div>
-      ·
+      <div class="field_mo_l1 actionicon"
+           id="edit_question_{{question_id}}"
+           title="{{question['terminology']}}"
+           onclick="controller.suggestionField.clickAddLabel({{jurisdiction_id}},
+           {{question_id}});">
+      </div>
     {% endif %}
-    {% if category == 'favorite_fields' %}
-      <a class="remove_from_favorites comments" data-id="{{question_id}}" data-jid="{{jurisdiction_id}}" id="favorite_field_{{question_id}}">Unfavorite</a>
-    {% else %}
-      {% if question_id not in favorite_questions %}
-        <a class="add_to_favorites comments" data-id="{{question_id}}" data-jid="{{jurisdiction_id}}" id="favorite_field_{{question_id}}">Favorite</a>
+    {% with %}
+      {% if category == 'favorite_fields' or question_id in favorite_questions %}
+        {% set class = "remove_from_favorites" %}
       {% else %}
-        Unfavorite
+        {% set class = "add_to_favorites" %}
       {% endif %}
-    {% endif %}
+      <div class="{{class}} actionicon"
+           data-id="{{question_id}}"
+           data-jid="{{jurisdiction_id}}"
+           id="favorite_field_{{question_id}}">
+      </div>
+    {% endwith %}
   </span>
 {% endif %}

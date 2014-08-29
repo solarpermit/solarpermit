@@ -951,7 +951,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                     dajax.assign('#favfieldscount','innerHTML', data['user_number_of_favorite_fields'])
                     dajax.remove_css_class(favorite_id, 'add_to_favorites')
                     dajax.add_css_class(favorite_id, 'remove_from_favorites')
-                    dajax.assign(favorite_id, 'text', 'Unfavorite')
 
             return HttpResponse(dajax.json())
             
