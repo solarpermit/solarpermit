@@ -9,12 +9,16 @@
 		<!-- other overrides as necessary -->
 	</directives>
 	<system>
+		<ac>
+		</ac>
+		<dc>
+		</dc>
 		<ground>
 			<ground_rod>
 				<id>27</id>
-				<specifications>
-					<material>Cu</material>
-				</specifications>
+					<specifications>
+						<material>Cu</material>
+					</specifications>
 			</ground_rod>
 		</ground>
 	</system>
