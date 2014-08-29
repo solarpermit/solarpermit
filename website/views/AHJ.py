@@ -1797,36 +1797,37 @@ def get_categorized_ahj_data(jurisdiction, category, empty_data_fields_hidden, u
                                          'sorted_question_ids': [],
                                          'questions': {} }
         qid = rec['question_id']
-        if not rec['id']: # this is a question
-            assert(rec['question_id'] not in records_by_category[cid]['questions']) # shouldn't get duplicate questions
-            records_by_category[cid]['sorted_question_ids'].append(qid)
-            rec['answers'] = []
-            rec['logged_in_user_suggested_a_value'] = False
-            rec['user_can_suggest'] = True
-            rec['terminology'] = Question().get_question_terminology(qid)
-            rec['pending_answer_ids'] = []
-            records_by_category[cid]['questions'][qid] = rec
-            if rec['question_id'] == 16 and rec['value']:
-                rec['fee_info'] = FieldValidationCycleUtil().process_fee_structure(json.loads(rec['value']))
-        else: # it's an answer
-            assert(rec['question_id'] in records_by_category[cid]['questions'])
-            question = records_by_category[cid]['questions'][qid]
-            question['answers'].append(rec)
-            if rec['creator_id'] == user.id and rec['approval_status'] == 'P':
-                question['pending_answer_ids'].append(rec['id'])
-            rec['content'] = json.loads(rec['value'])
-            question['logged_in_user_suggested_a_value'] = rec['creator_id'] == user.id
-            votes = all_votes.get(rec['id'], None)
-            rec['votes'] = votes
-            suggestion_has_votes = votes and \
-                                   (votes['total_up_votes'] > 0 or \
-                                    votes['total_down_votes'] > 0)
-            users_existing_suggestions = [a for a in question['answers'] if a['creator_id'] == user.id]
-            if rec['creator_id'] == user.id:
-                question['user_can_suggest'] = question['has_multivalues'] or \
-                                               len(users_existing_suggestions) == 0 or \
-                                               suggestion_has_votes
-            rec['comment_text'] = get_answer_comment_txt(jurisdiction, rec['id'], user)['comment_text']
+        if qid != 283 or (qid == 283 and jurisdiction.state == 'CA'):
+            if not rec['id']: # this is a question
+                assert(rec['question_id'] not in records_by_category[cid]['questions']) # shouldn't get duplicate questions
+                records_by_category[cid]['sorted_question_ids'].append(qid)
+                rec['answers'] = []
+                rec['logged_in_user_suggested_a_value'] = False
+                rec['user_can_suggest'] = True
+                rec['terminology'] = Question().get_question_terminology(qid)
+                rec['pending_answer_ids'] = []
+                records_by_category[cid]['questions'][qid] = rec
+                if rec['question_id'] == 16 and rec['value']:
+                    rec['fee_info'] = FieldValidationCycleUtil().process_fee_structure(json.loads(rec['value']))
+            else: # it's an answer
+                assert(rec['question_id'] in records_by_category[cid]['questions'])
+                question = records_by_category[cid]['questions'][qid]
+                question['answers'].append(rec)
+                if rec['creator_id'] == user.id and rec['approval_status'] == 'P':
+                    question['pending_answer_ids'].append(rec['id'])
+                rec['content'] = json.loads(rec['value'])
+                question['logged_in_user_suggested_a_value'] = rec['creator_id'] == user.id
+                votes = all_votes.get(rec['id'], None)
+                rec['votes'] = votes
+                suggestion_has_votes = votes and \
+                                       (votes['total_up_votes'] > 0 or \
+                                        votes['total_down_votes'] > 0)
+                users_existing_suggestions = [a for a in question['answers'] if a['creator_id'] == user.id]
+                if rec['creator_id'] == user.id:
+                    question['user_can_suggest'] = question['has_multivalues'] or \
+                                                   len(users_existing_suggestions) == 0 or \
+                                                   suggestion_has_votes
+                rec['comment_text'] = get_answer_comment_txt(jurisdiction, rec['id'], user)['comment_text']
     return records_by_category
 
 def get_ahj_data(jurisdiction, category, empty_data_fields_hidden, user, question_ids = []):
