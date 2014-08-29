@@ -14,12 +14,12 @@
 		<dc>
 		</dc>
 		<ground>
-			<ground_rod>
+			<grounding_rod>
 				<id>27</id>
 					<specifications>
 						<material>Cu</material>
 					</specifications>
-			</ground_rod>
+			</grounding_rod>
 		</ground>
 	</system>
 </request>
