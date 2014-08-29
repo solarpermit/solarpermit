@@ -18,12 +18,20 @@
 }
 .whatsit {
     margin: 2em;
-    padding: .5em;
     border: thin solid lightgray;
     border-radius: .25em;
+    overflow: hidden;
 }
 #add-another {
     margin: 0 2em;
+}
+.whatsit > .pie-container,
+.whatsit > .temporal-container {
+    padding: .5em;
+    clear: left;
+}
+.whatsit > .temporal-container {
+    border-top: 1px solid lightgray;
 }
 .whatsit table, .whatsit td, .whatsit th {
     border-top: 1px solid #bdbdbd;
@@ -31,7 +39,7 @@
     font-size: 14px;
     margin: 5px;
     max-width: 960px;
-    text-align:left;
+    text-align: left;
 }
 .whatsit .data_table {
     margin-right: 0.5em;
@@ -75,30 +83,28 @@
 }
 
 .report {
-    clear: left;
     display: inline-block;
-    float:left;
-    margin-left: -320px;
+    float: left;
     vertical-align: top;
     width: 320px;
+    padding-left: 25px;
 }
 
 .report.temporal {
-    clear: right;
-    float: right;
-    margin-left: 345px;
-    margin-right: 25px;
-    width: 95%;
+    width: 47%;
 }
 
 .report.temporal .data_table {
-    margin-left: 1.5em;
 }
 
 .graph {
     width: 320px;
     height: 320px;
     margin: 5px;
+}
+
+.report.temporal > .graph > svg {
+    margin-left: -1.5em;
 }
 
 .report.temporal > .graph {

@@ -66,12 +66,7 @@ def get_reports(question):
            (question.display_template in reports_by_type and reports_by_type[question.display_template])
 
 def add_temporal_reports(reports):
-    new_reports = []
-    for r in reports:
-        new_reports.append(r)
-        if 'name' in r:
-            new_reports.append(make_temporal(r))
-    return new_reports
+    return reports + [make_temporal(r) for r in reports]
 
 def make_temporal(report):
     if not 'name' in report:

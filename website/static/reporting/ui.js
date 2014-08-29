@@ -66,7 +66,8 @@
                                                                         remove_report,
                                                                         $("<div><span class='description'></div>"))
                                                                 .appendTo(stuff);
-       machine.container = $("<div>", { 'style': 'padding-left: 320px; overflow: hidden;' }).appendTo(stuff);
+       machine.pie_container = $("<div>", { 'class': 'pie-container' }).appendTo(stuff);
+       machine.temporal_container = $("<div>", { 'class': 'temporal-container' }).appendTo(stuff);
        stuff.appendTo("#all-reports");
        return 'ui-ready';
      }
@@ -103,7 +104,8 @@
        return 'loading';
      }
      function show_error(event, state) {
-       machine.container.empty();
+       machine.pie_container.empty();
+       machine.temporal_container.empty();
        var again = $("<a>", { text: "Try again" }).on("click", machine.select);
        $("<span>", { text: "Oops, there was an error." }).append(again)
                                                          .appendTo(machine.container);
@@ -111,14 +113,15 @@
        return 'ui-ready';
      }
      function show_reports(event, state, data) {
-       machine.container.empty();
+       machine.pie_container.empty();
+       machine.temporal_container.empty();
        if (data.description)
          machine.selector_ui.find(".description").html(data.description);
        else
          machine.selector_ui.find(".description").empty();
        $.each(data.reports,
               function (idx, report) {
-                show_report(report, machine.container);
+                show_report(report, report.type == 'temporal' ? machine.temporal_container : machine.pie_container);
               });
        machine.selector_ui.removeClass("loading");
        return 'reports-ready';
@@ -142,8 +145,8 @@
            ui.addClass("temporal");
            $slider = machine.selector_ui.parent().find('.date-slider');
            if ($slider.length <= 0) {
-             machine.selector_ui.after(temporal_header = $("<div>", { 'class': "temporal_header" }),
-                                       $("<div>", { 'class': 'date-slider' }));
+             machine.temporal_container.append(temporal_header = $("<div>", { 'class': "temporal_header" }),
+					       $("<div>", { 'class': 'date-slider' }));
              temporal_header.append($("<span>", { 'style': "float: left" }),
                                     $("<span>", { 'style': "float: right" }));
          }
