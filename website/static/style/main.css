@@ -2801,11 +2801,11 @@ img {border:0;}
 }
 
 .add_to_favorites {
-	background-image: url("../images/favorite-icon.png");
+	background-image: url("../images/add-to-favorites-hollow.png");
 }
 
 .add_to_favorites:hover {
-	background-image: url("../images/favorite-icon.png");
+	background-image: url("../images/add-to-favorites-hollow.png");
 }
 
 .add_to_quirks:hover {
@@ -2814,11 +2814,11 @@ img {border:0;}
 }
 
 .remove_from_favorites {
-	background-image: url("../images/favorite-icon-filled.png");
+	background-image: url("../images/add-to-favorites.png");
 }
 
 .remove_from_favorites:hover {
-	background-image: url("../images/favorite-icon-filled.png");
+	background-image: url("../images/add-to-favorites.png");
 }
 
 .remove_from_quirks:hover {
