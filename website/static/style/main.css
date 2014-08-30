@@ -1971,87 +1971,73 @@ input_error{
 	
 }
 
+.vote_panel {
+    float: right;
+    border: 1px solid #007baa;
+    border-radius: 4px;
+    padding: 3px;
+}
+
 .votenum {
     font-size: 0.85em;
+    padding: 0 1px;
+}
+
+.voteup, .votedown {
+	background:#FFFFFF;
+	height: 22px;
+	width: 22px;
+	-webkit-border-radius:4px;
+	-moz-border-radius:4px;
+	border-radius:4px;
+	border:1px transparent solid;
+        margin: 0;
+        padding: 0;
+	cursor: pointer;
+}
+
+.voteup:hover, .votedown:hover {
+	-webkit-border-radius:4px;
+	-moz-border-radius:4px;
+	border-radius:4px;
+	border:1px #b5b5b5 solid;
+	background: #e3e3e3;
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e3e3e3');  
+	text-decoration:none;
 }
 
 .voteup {
-	background:#FFFFFF;
-	height:25px;
-	width:25px;
-	-webkit-border-radius:4px;
-	-moz-border-radius:4px;
-	border-radius:4px;
-	border:1px transparent solid;
-	margin-left: -3px;
-	cursor: pointer;
-	background: url('/static/images/thumb_up_off.png') no-repeat scroll 3px 3px;
+	background: url('/static/images/thumb_up_off.png') no-repeat 2px 2px;
 }
 
 .voteup:hover {
-	-webkit-border-radius:4px;
-	-moz-border-radius:4px;
-	border-radius:4px;
-	border:1px #b5b5b5 solid;
-	background: #e3e3e3;
-	background: url('/static/images/thumb_up_on.png') no-repeat, -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e3e3e3)); 
-	background: url('/static/images/thumb_up_on.png') no-repeat, -moz-linear-gradient(top,  #ffffff,  #e3e3e3);  
-	background-position: 3px 3px, center;
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e3e3e3');  
-	text-decoration:none;
+	background: url('/static/images/thumb_up_on.png') no-repeat 2px 2px, -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e3e3e3)); 
+	background: url('/static/images/thumb_up_on.png') no-repeat 2px 2px, -moz-linear-gradient(top,  #ffffff,  #e3e3e3);  
 }
 
 .voteup.disabled {
-	background:#FFFFFF;
-	height:25px;
-	width:25px;
-	-webkit-border-radius:4px;
-	-moz-border-radius:4px;
-	border-radius:4px;
-	border:1px transparent solid;
-	margin-left: -3px;
-	cursor: default;
-	background: url('/static/images/thumb_up_disabled.png') no-repeat 3px 3px;
+	background: url('/static/images/thumb_up_disabled.png') no-repeat 2px 2px;
 }
 
+.voteup.disabled.answerer {
+    opacity: .5;
+}
 
 .votedown  {
-	background:#FFFFFF;
-	height:25px;
-	width:25px;
-	-webkit-border-radius:4px;
-	-moz-border-radius:4px;
-	border-radius:4px;
-	border:1px transparent solid;
-	margin: 2px -3px 2px -3px;
-	cursor: pointer;
-	background: url('/static/images/thumb_down_off.png') no-repeat 3px 3px; 
+	background: url('/static/images/thumb_down_off.png') no-repeat 2px 2px; 
 }
 
 .votedown:hover {
-	-webkit-border-radius:4px;
-	-moz-border-radius:4px;
-	border-radius:4px;
-	border:1px #b5b5b5 solid;
-	background: #e3e3e3;
-	background: url('/static/images/thumb_down_on.png') no-repeat 8px 3px, -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e3e3e3)); 
-	background: url('/static/images/thumb_down_on.png') no-repeat 8px 3px, -moz-linear-gradient(top,  #ffffff,  #e3e3e3);  
-	background-position: 3px 3px, center;
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e3e3e3');  
-	text-decoration:none;
+	background: url('/static/images/thumb_down_on.png') no-repeat 2px 2px, -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e3e3e3)); 
+	background: url('/static/images/thumb_down_on.png') no-repeat 2px 2px, -moz-linear-gradient(top,  #ffffff,  #e3e3e3);  
 }
 
 .votedown.disabled {
-	background:#FFFFFF;
-	height:25px;
-	width:25px;
-	-webkit-border-radius:4px;
-	-moz-border-radius:4px;
-	border-radius:4px;
-	border:1px transparent solid;
-	margin: 2px -3px 2px -3px;
-	cursor: default;
-	background: url('/static/images/thumb_down_disabled.png') no-repeat 3px 3px;
+	background: url('/static/images/thumb_down_disabled.png') no-repeat 2px 2px;
+}
+
+.votedown.disabled.answerer {
+    opacity: .5;
 }
 
 ul.paperlist li{
@@ -2274,15 +2260,6 @@ ul.paperlist li span.author{
 .suggestion_edit_box .qq-upload-list{
 	list-style:none;
 	margin: 15px 35px 15px 0px;
-}
-
-.vote_panel:before {
-    content: '';
-    display: inline-block;
-}
-
-.vote_panel {
-    float: right;
 }
 
 .last_down_votes {

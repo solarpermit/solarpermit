@@ -6,8 +6,8 @@
       {% if answer['creator_id'] == user.id %}
         {% set class_canvoteup = '' %}
         {% set class_canvotedown = '' %}
-        {% set class_up_disabled = 'disabled' %}
-        {% set class_down_disabled = 'disabled' %}
+        {% set class_up_disabled = 'disabled answerer' %}
+        {% set class_down_disabled = 'disabled answerer' %}
       {% else %}
         {% if votes %}
           {% if votes['can_vote_up'] %}
