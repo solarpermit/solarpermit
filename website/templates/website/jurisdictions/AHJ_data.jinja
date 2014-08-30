@@ -164,7 +164,7 @@ $(document).ready(function() {
     {% endif %}    
 
             </span>
-            {% if category != 'favorite_fields' and category != 'quirks' %}
+            {% if category != 'favorite_fields' %}
             <span style="padding-left:10px;">
             <input type="checkbox" name="empty_data_fields_hidden" id="empty_data_fields_hidden" value="1" {% if empty_data_fields_hidden | int == 1 %}checked{% endif %} /> 
             {% if empty_data_fields_hidden | int == 1 %}Empty data fields hidden.  Uncheck to show.{% else %}Empty data fields visible. Check to hide.{% endif %}
@@ -304,15 +304,12 @@ $(document).ready(function() {
         process_ahj_comments(data);      
         process_ahj_answers_votes(data);    
         process_ahj_top_contributors(data);        
-        process_ahj_qirks(data);   
         process_ahj_user_favorites(data);  
         process_ahj_answers_attachments(data);              
     }  
      
     function process_ahj_qirks_user_favorites(data) {      
-        process_ahj_qirks(data);   
         process_ahj_user_favorites(data);  
-           
     }     
     
     function process_ahj_answers_attachments(data) {
@@ -334,12 +331,6 @@ $(document).ready(function() {
                                                                                
         return false;
     }           
-    
-    function process_ahj_qirks(data)
-    {
-        quirkcount = data['quirk_number_of_questions'];
-        $('#quirkcount').html(quirkcount);
-    }
     
     function process_ahj_user_favorites(data)
     {
@@ -480,16 +471,6 @@ $(document).ready(function() {
         quirk_questions = questions_actions['quirk_questions'];
         favorite_questions = questions_actions['favorite_questions'];
         
-        for (var i=0;i<quirk_questions.length;i++)
-        {
-            if (category != 'quirks') {
-	       $quirk = $('#quirk_' + quirk_questions[i]);
-	       $quirk.text('Unquirk');
-	       $quirk.removeClass('add_to_quirks');
-	       $quirk.addClass('remove_from_quirks');
-	    }
-        }
- 
         for (var i=0;i<favorite_questions.length;i++)
         {
             if (category != 'favorite_fields') {

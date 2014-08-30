@@ -680,12 +680,6 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
             if not request.user.is_authenticated():
                 return HttpResponse(status=403)
             view_questions_obj = ViewQuestions()
-            quirks = view_questions_obj.get_jurisdiction_quirks(jurisdiction)
-
-            data['quirk_number_of_questions'] = 0
-            if 'view_id' in quirks:
-                data['quirk_number_of_questions'] = len(quirks['view_questions'])
-
             data['user_number_of_favorite_fields'] = 0
             user_obj = User.objects.get(id=user.id)
             if user_obj != None:
@@ -923,21 +917,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                     view_questions_obj.save()
 
             view_questions_obj = ViewQuestions()
-            if entity_name == 'quirks':
-                quirks = view_questions_obj.get_jurisdiction_quirks(jurisdiction)
-
-                data['quirk_number_of_questions'] = 0
-                if 'view_questions' in quirks:
-                    data['quirk_number_of_questions'] = len(quirks['view_questions'])
-
-                # update the quirks or the favorite fields count
-                quirk_id = '#quirk_' + str(question_id)
-                dajax.assign('#quirkcount','innerHTML', data['quirk_number_of_questions'])
-                dajax.remove_css_class(quirk_id, 'add_to_quirks')
-                dajax.add_css_class(quirk_id, 'remove_from_quirks')
-                dajax.assign(quirk_id, 'text', 'Unquirk')
-
-            elif entity_name == 'favorites':
+            if entity_name == 'favorites':
                 data['user_number_of_favorite_fields'] = 0
                 if request.user.is_authenticated():
                     user_obj = User.objects.get(id=request.user.id)
@@ -980,21 +960,7 @@ def view_AHJ_cqa(request, jurisdiction, category='all_info'):
                         view_questions_obj.delete()
                 
                 view_questions_obj = ViewQuestions()
-                if entity_name == 'quirks':
-                    quirks = view_questions_obj.get_jurisdiction_quirks(jurisdiction)
-                        
-                    data['quirk_number_of_questions'] = 0    
-                    if 'view_questions' in quirks:
-                        data['quirk_number_of_questions'] = len(quirks['view_questions'])    
-                            
-                    # update the quirks count & page HTML
-                    quirk_id = '#quirk_' + str(question_id)
-                    dajax.assign('#quirkcount','innerHTML', data['quirk_number_of_questions'])
-                    dajax.remove_css_class(quirk_id, 'remove_from_quirks')
-                    dajax.add_css_class(quirk_id, 'add_to_quirks')
-                    dajax.assign(quirk_id, 'text', 'Quirk')
-                                
-                elif entity_name == 'favorites':        
+                if entity_name == 'favorites':
                     data['user_number_of_favorite_fields'] = 0    
                     if request.user.is_authenticated():
                         user_obj = User.objects.get(id=request.user.id)

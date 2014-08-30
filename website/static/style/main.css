@@ -2790,11 +2790,6 @@ img {border:0;}
 	background-image: url("../images/add-to-favorites.png");
 }
 
-.add_to_quirks:hover {
-	cursor: pointer;
-	cursor: hand;	
-}
-
 .remove_from_favorites {
 	background-image: url("../images/add-to-favorites.png");
         width: 14px;
@@ -2804,11 +2799,6 @@ img {border:0;}
 
 .remove_from_favorites:hover {
 	background-image: url("../images/add-to-favorites-hollow.png");
-}
-
-.remove_from_quirks:hover {
-	cursor: pointer;
-	cursor: hand;	
 }
 
 .question-actions {
