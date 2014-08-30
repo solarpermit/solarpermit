@@ -75,3 +75,9 @@ def sanity_8(directives=None, ac=None, dc=None, ground=None):
             for spec in specs.iterchildren():
                 if isinstance(spec, eng.ElectricalElement):
                     raise ValidationError(fail_msg % (component.tag, component.id, spec.tag))
+
+def sanity_9(directives=None, ac=None, dc=None, ground=None):
+    fail_msg = "Sanity test: All systems must have at least one grounding_rod."
+    for tree in (ac, dc, ground):
+        if len(tree.itercomponents('grounding_rod')) > 0:
+            raise ValidationError(fail_msg)
