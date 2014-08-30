@@ -2670,11 +2670,13 @@ img {border:0;}
     width: 16px;
     height: 16px;
     margin: 0;
+    opacity: .8;
 }
 
 .actionicon:hover {
     cursor: pointer;
-    cursor: hand;	
+    cursor: hand;
+    opacity: 1;
 }
 
 .valhis {
