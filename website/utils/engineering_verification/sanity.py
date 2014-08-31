@@ -78,6 +78,5 @@ def sanity_8(directives=None, ac=None, dc=None, ground=None):
 
 def sanity_9(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "Sanity test: All systems must have at least one grounding_rod."
-    for tree in (ac, dc, ground):
-        if len(tree.itercomponents('grounding_rod')) > 0:
-            raise ValidationError(fail_msg)
+    if len(ac.getparent().itercomponents('grounding_rod')) <= 0:
+        raise ValidationError(fail_msg)
