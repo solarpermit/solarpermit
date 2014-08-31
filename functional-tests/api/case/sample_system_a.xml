@@ -2,12 +2,11 @@
 <request>
 	<directives>
 		<jurisdiction_id>1</jurisdiction_id>
-                <api_username>db48x</api_username>
-                <api_key>42</api_key>
+		<api_username>db48x</api_username>
+		<api_key>42</api_key>
 		<override_code>nec2014</override_code>
 		<override_ambient_low_f>14</override_ambient_low_f>
 		<override_ambient_high_f>120</override_ambient_high_f>
-		<!-- other overrides as necessary -->
 	</directives>
 	<system>
 		<ac>
@@ -37,7 +36,7 @@
 							<insulation>THWN-2</insulation> <!-- string: TW, UF, RHW, THHW, THW, THWN, etc etc.... table B.310.15(B)(2)(1) -->
 							<material>Cu</material> <!-- copper (Cu) or aluminum (Al)) -->
 							<linear_feet>20</linear_feet>
-                                                        <max_amps>32</max_amps>
+							<max_amps>32</max_amps>
 						</specifications>
 						<inverter>
 							<id>4</id>
@@ -58,7 +57,7 @@
 								<integrated_dc_disconnect>true</integrated_dc_disconnect>
 								<ac_output_voltage>240</ac_output_voltage>
 								<ac_output_amps>25</ac_output_amps>
-                                                                <max_amps>150</max_amps>
+								<max_amps>150</max_amps>
 							</specifications>
 						</inverter>
 					</wire>
@@ -75,7 +74,7 @@
 						<insulation>USE-2</insulation>
 						<material>Cu</material>
 						<linear_feet>60</linear_feet>
-                                                <max_amps>100</max_amps>
+						<max_amps>100</max_amps>
 					</specifications>
 					<module>
 						<id>6</id>
@@ -112,7 +111,7 @@
 							<eu_dc_max_voltage>1000</eu_dc_max_voltage>
 							<us_max_series_fuse_rating_amps>20</us_max_series_fuse_rating_amps>
 							<eu_max_series_fuse_rating_amps>20</eu_max_series_fuse_rating_amps>
-                                                        <max_amps>32</max_amps>
+							<max_amps>32</max_amps>
 						</specifications>
 					</module>
 					<module>
