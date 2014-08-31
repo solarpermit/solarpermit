@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result>
+  <status>failure</status>
+  <results>
+    <fail>
+      <testcase>sanity_7</testcase>
+      <message>Sanity test: main_panel with id '1' must have nominal_voltage_ac set.</message>
+    </fail>
+  </results>
+</result>

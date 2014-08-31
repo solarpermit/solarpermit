@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result>
+  <status>failure</status>
+  <results>
+    <fail>
+      <testcase>sanity_6</testcase>
+      <message>Inverter with id '4' has output_ac_voltage of 240.00 V which does not match the nominal_votage (280.00 V) of the upstream main_panel with id 1.</message>
+    </fail>
+  </results>
+</result>
