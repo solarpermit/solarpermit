@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result>
+  <status>failure</status>
+  <results>
+    <fail>
+      <testcase>nec2014_690_15_D</testcase>
+      <message>Unknown error.</message>
+    </fail>
+  </results>
+</result>
