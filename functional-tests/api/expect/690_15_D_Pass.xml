@@ -1,10 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <result>
-  <status>failure</status>
+  <status>partial</status>
   <results>
-    <fail>
+    <pass>
       <testcase>nec2014_690_15_D</testcase>
-      <message>Unknown error.</message>
-    </fail>
+    </pass>
   </results>
 </result>
