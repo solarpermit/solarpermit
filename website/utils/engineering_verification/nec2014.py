@@ -32,7 +32,7 @@ def nec2014_690_7_A(directives=None, ac=None, dc=None, ground=None):
             recurse(child)
 
 def nec2014_690_8(directives=None, ac=None, dc=None, ground=None):
-    fail_msg = "NEC 2014 690.8: Current at %s with id '%s' exceeds 80% of its max_amps value."
+    fail_msg = "NEC 2014 690.8: Current of %s at %s with id '%s' exceeds 80%% of its max_amps value."
     def recurse(component):
         current = nec.amps(0)
         for child in component.iterchildcomponents():
@@ -52,7 +52,7 @@ def nec2014_690_8(directives=None, ac=None, dc=None, ground=None):
         if max_current is None:
             raise ValidationError("NEC 2014 690.8: No max_amps defined for %s with id '%s'." % (component.tag, component.id))
         if (current > (.8 * max_current)):
-            raise ValidationError(fail_msg % (component.tag, component.id))
+            raise ValidationError(fail_msg % (current, component.tag, component.id))
         return current
     for tree in filter(eng.is_electrical, (ac, dc)):
         for child in tree.iterchildren():
@@ -109,10 +109,16 @@ def nec2014_690_12_ac(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.12: There is no disconnect or or fused_disconnect between inverter with id '%s' and the main_panel."
     if eng.is_electrical(dc):
         for inverter in dc.itercomponents('inverter'):
-            if not any(filter(lambda component: component.tag in ('disconnect', 'fused_disconnect'),
-                              itertools.takewhile(lambda parent: parent.tag != 'main_panel',
-                                                  inverter.iterancestors()))):
-                raise ValidationError(fail_msg % (inverter.id))
+            specs = nec.get_specifications(inverter)
+            if not nec.get_integrated_dc_disconnect(specs):
+                if not any(filter(lambda component: component.tag == 'breaker',
+                                  itertools.takewhile(lambda parent: parent.tag != 'main_panel',
+                                                      inverter.iterancestors()))):
+                    for module in inverter.itercomponents('module'):
+                        if not any(filter(lambda component: component.tag in ('disconnect', 'fused_disconnect'),
+                                          itertools.takewhile(lambda parent: parent != inverter,
+                                                              module.iterancestors()))):
+                            raise ValidationError(fail_msg % (inverter.id))
 
 def nec2014_690_13(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.13: There are DC components between inverter with id '%s' and module with id '%s', but the inverter does not have an integrated_dc_disconnect, nor is there a disconnect or fused_disconnect between them."
@@ -198,9 +204,13 @@ def nec2014_690_45(directives=None, ac=None, dc=None, ground=None):
                 raise ValidationError("NEC 2014 690.45: No ac_output_amps specified for module with id '%s'." % component.id)
         current = max(current, this_current)
         if component.tag == 'wire':
-            size = nec.get_size_awg(component)
-            material = nec.get_material(component)
-            sizes = nec.ground_fault_wire_sizes[material]
+            size = nec.get_size_awg(specs)
+            material = nec.get_material(specs)
+            if size is None:
+                raise ValidationError("NEC 2014 690.45: wire with id '%s' has no size_awg." % component.id)
+            if material is None:
+                raise ValidationError("NEC 2014 690.45: wire with id '%s' has no size_awg." % component.id)
+            sizes = nec.ground_current_wire_sizes[material]
             for (c, s) in sizes.iteritems():
                 if c >= current:
                     if nec.wire_sizes.index(s) > nec.wire_sizes.index(size):

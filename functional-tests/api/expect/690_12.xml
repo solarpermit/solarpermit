@@ -4,7 +4,7 @@
   <results>
     <fail>
       <testcase>nec2014_690_12_ac</testcase>
-      <message>NEC 2014 690.12: There is no disconnect or or fused_disconnect between inverter with id '0' and the main_panel.</message>
+      <message>NEC 2014 690.12: There is no disconnect or or fused_disconnect between inverter with id '2' and the main_panel.</message>
     </fail>
     <fail>
       <testcase>nec2014_690_12_dc</testcase>
