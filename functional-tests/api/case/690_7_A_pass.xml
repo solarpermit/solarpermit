@@ -15,7 +15,7 @@
       <inverter>
 	<id>1</id>
 	<specifications>
-	  <dc_voltage_max>600</dc_voltage_max>
+	  <dc_max_voltage>600</dc_max_voltage>
         </specifications>
 	<wire>
 	  <id>2</id>
@@ -24,7 +24,7 @@
 	    <insulation>USE-2</insulation>
 	    <material>Cu</material>
 	    <linear_feet>60</linear_feet>
-	    <dc_voltage_max>1000</dc_voltage_max>
+	    <dc_max_voltage>1000</dc_max_voltage>
 	  </specifications>
           <module>
 	    <id>3</id>
