@@ -10,13 +10,11 @@
 	</directives>
 	<system>
 		<ac>
-			<main_panel>
-				<wire>
-					<specifications>
-						<size_awg>10</size_awg>
-					</specifications>
-				</wire>
-			</main_panel>
+			<wire>
+				<specifications>
+					<size_awg>10</size_awg>
+				</specifications>
+			</wire>
 		</ac>
 	</system>
 </request>

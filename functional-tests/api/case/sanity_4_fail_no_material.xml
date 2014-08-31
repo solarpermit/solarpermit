@@ -10,21 +10,15 @@
 	</directives>
 	<system>
 		<ac>
-			<main_panel>
-				<id>10</id>
-				<wire>
-					<id>20</id>
-					<specifications>
-						<size_awg>10</size_awg>
-						<insulation>USE-2</insulation>
-					</specifications>
-				</wire>
-			</main_panel>
+			<wire>
+				<id>20</id>
+				<specifications>
+					<size_awg>10</size_awg>
+					<insulation>USE-2</insulation>
+				</specifications>
+			</wire>
 		</ac>
 		<ground>
-			<main_panel>
-				<id>40</id>
-			</main_panel>
 		</ground>
 	</system>
 </request>

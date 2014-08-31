@@ -10,21 +10,15 @@
 	</directives>
 	<system>
 		<ac>
-			<main_panel>
-				<id>20</id>
-				<wire>
-					<id>10</id>
-					<specifications>
-						<insulation>USE-2</insulation>
-						<material>Cu</material>
-					</specifications>
-				</wire>
-			</main_panel>
+			<wire>
+				<id>10</id>
+				<specifications>
+					<insulation>USE-2</insulation>
+					<material>Cu</material>
+				</specifications>
+			</wire>
 		</ac>
 		<ground>
-			<main_panel>
-				<id>30</id>
-			</main_panel>
 		</ground>
 	</system>
 </request>
