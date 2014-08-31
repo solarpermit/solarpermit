@@ -10,9 +10,15 @@
 	</directives>
 	<system>
 		<ac>
+			<wire>
+				<id>20</id>
+			</wire>
 		</ac>
 		<ground>
-                  <main_panel/>
+			<main_panel>
+				<id>10</id>
+			</main_panel>
 		</ground>
 	</system>
 </request>
+ 

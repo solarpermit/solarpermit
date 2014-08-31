@@ -15,6 +15,7 @@
 					<specifications>
 						<size_awg>10</size_awg>
 					</specifications>
+				</wire>
 			</main_panel>
 		</ac>
 	</system>

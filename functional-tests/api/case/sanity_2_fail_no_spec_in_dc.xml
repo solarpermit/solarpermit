@@ -11,17 +11,20 @@
 	<system>
 		<dc>
 			<inverter>
+				<id>10</id>
 			</inverter>
 		</dc>
 		<ac>
 			<inverter>
+				<id>20</id>
 				<specifications/>
 			</inverter>
 		</ac>
 		<ground>
-            <main_panel>
-            	<specifications/>
-            </main_panel>
+			<main_panel>
+				<id>40</id>
+				<specifications/>
+			</main_panel>
 		</ground>
 	</system>
 </request>

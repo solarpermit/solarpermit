@@ -11,10 +11,13 @@
 	<system>
 		<ac>
 			<main_panel>
+				<id>10</id>
 				<wire>
+					<id>20</id>
 					<specifications>
 						<size_awg>15</size_awg>
 					</specifications>
+				</wire>
 			</main_panel>
 		</ac>
 	</system>

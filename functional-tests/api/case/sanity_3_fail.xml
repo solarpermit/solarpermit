@@ -11,12 +11,12 @@
 	<system>
 		<ac>
 			<main_panel>
-				<id>
-				</id>
+				<id>10</id>
 			</main_panel>
 		</ac>
 		<ground>
 			<main_panel>
+				<specifications/>
 			</main_panel>
 		</ground>
 	</system>

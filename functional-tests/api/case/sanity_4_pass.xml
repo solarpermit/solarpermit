@@ -19,6 +19,7 @@
 						<insulation>USE-2</insulation>
 						<material>Cu</material>
 					</specifications>
+				</wire>
 			</main_panel>
 		</ac>
 		<ground>

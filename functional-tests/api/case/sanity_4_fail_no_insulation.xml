@@ -11,17 +11,19 @@
 	<system>
 		<ac>
 			<main_panel>
-				<id>
-				</id>
+				<id>20</id>
 				<wire>
+					<id>10</id>
 					<specifications>
 						<size_awg>10</size_awg>
 						<material>Cu</material>
 					</specifications>
+				</wire>
 			</main_panel>
 		</ac>
 		<ground>
 			<main_panel>
+				<id>30</id>
 			</main_panel>
 		</ground>
 	</system>

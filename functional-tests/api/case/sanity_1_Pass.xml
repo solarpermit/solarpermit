@@ -10,10 +10,19 @@
 	</directives>
 	<system>
 		<ac>
-                  <main_panel/>
+			<main_panel>
+				<id/>
+			</main_panel>
 		</ac>
+		<dc>
+			<main_panel>
+				<id/>
+			</main_panel>
+		</dc>
 		<ground>
-                  <main_panel/>
+			<main_panel>
+				<id/>
+			</main_panel>
 		</ground>
 	</system>
 </request>
