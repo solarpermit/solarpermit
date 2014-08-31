@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result>
+  <status>failure</status>
+  <results>
+    <fail>
+      <testcase>sanity_2</testcase>
+      <message>Sanity test: inverter with id '10' has no specifications or definition.</message>
+    </fail>
+  </results>
+</result>

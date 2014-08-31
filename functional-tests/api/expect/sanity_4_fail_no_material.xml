@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result>
+  <status>failure</status>
+  <results>
+    <fail>
+      <testcase>sanity_4</testcase>
+      <message>Sanity test: Wire with id '20' has no size_awg, insulation or material.</message>
+    </fail>
+  </results>
+</result>

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result>
+  <status>failure</status>
+  <results>
+    <fail>
+      <testcase>sanity_1</testcase>
+      <message>Sanity test: No main_panel found in ac tree.</message>
+    </fail>
+  </results>
+</result>
