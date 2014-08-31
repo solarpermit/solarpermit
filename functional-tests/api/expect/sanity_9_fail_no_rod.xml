@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result>
+  <status>failure</status>
+  <results>
+    <fail>
+      <testcase>sanity_9</testcase>
+      <message>Sanity test: All systems must have at least one grounding_rod.</message>
+    </fail>
+  </results>
+</result>
