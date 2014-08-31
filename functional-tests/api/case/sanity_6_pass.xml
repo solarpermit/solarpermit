@@ -18,13 +18,12 @@
 					<specifications>
 						<ac_nominal_voltage>240</ac_nominal_voltage>
 					</specifications>
-						<inverter>
-							<id>4</id>
-							<specifications>
-								<ac_output_voltage>240</ac_output_voltage>
-							</specifications>
-						</inverter>
-					</wire>
+					<inverter>
+						<id>4</id>
+						<specifications>
+							<ac_output_voltage>240</ac_output_voltage>
+						</specifications>
+					</inverter>
 				</breaker>
 			</main_panel>
 		</ac>

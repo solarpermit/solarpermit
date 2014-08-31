@@ -9,10 +9,12 @@
 	</directives>
 	<system>
 		<ac>
-			<main_panel><id>1</id>
+			<main_panel>
+				<id>1</id>
 				<specifications>
 					<ac_nominal_voltage>280</ac_nominal_voltage>
 				</specifications>
-			</ac>
+			</main_panel>
+		</ac>
 	</system>
 </request>
