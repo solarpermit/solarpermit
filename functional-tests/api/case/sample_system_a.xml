@@ -4,6 +4,7 @@
 		<jurisdiction_id>1</jurisdiction_id>
                 <api_username>db48x</api_username>
                 <api_key>42</api_key>
+		<override_code>nec2014</override_code>
 		<override_ambient_low_f>14</override_ambient_low_f>
 		<override_ambient_high_f>120</override_ambient_high_f>
 		<!-- other overrides as necessary -->
@@ -36,6 +37,7 @@
 							<insulation>THWN-2</insulation> <!-- string: TW, UF, RHW, THHW, THW, THWN, etc etc.... table B.310.15(B)(2)(1) -->
 							<material>Cu</material> <!-- copper (Cu) or aluminum (Al)) -->
 							<linear_feet>20</linear_feet>
+                                                        <max_amps>32</max_amps>
 						</specifications>
 						<inverter>
 							<id>4</id>
@@ -56,6 +58,7 @@
 								<integrated_dc_disconnect>true</integrated_dc_disconnect>
 								<output_ac_voltage>240</output_ac_voltage>
 								<output_ac_amps>25</output_ac_amps>
+                                                                <max_amps>150</max_amps>
 							</specifications>
 						</inverter>
 					</wire>
@@ -68,10 +71,11 @@
 				<wire>
 					<id>5</id>
 					<specifications>
-						<size_awg>10</size_awg>
+						<size_awg>8</size_awg>
 						<insulation>USE-2</insulation>
 						<material>Cu</material>
 						<linear_feet>60</linear_feet>
+                                                <max_amps>100</max_amps>
 					</specifications>
 					<module>
 						<id>6</id>
@@ -108,6 +112,7 @@
 							<max_voltage_eu>1000</max_voltage_eu>
 							<max_series_fuse_rating_us>20</max_series_fuse_rating_us>
 							<max_series_fuse_rating_eu>20</max_series_fuse_rating_eu>
+                                                        <max_amps>32</max_amps>
 						</specifications>
 					</module>
 					<module>
@@ -128,22 +133,6 @@
 					</module>
 					<module>
 						<id>11</id>
-						<definition>6</definition>
-					</module>
-					<module>
-						<id>12</id>
-						<definition>6</definition>
-					</module>
-					<module>
-						<id>13</id>
-						<definition>6</definition>
-					</module>
-					<module>
-						<id>14</id>
-						<definition>6</definition>
-					</module>
-					<module>
-						<id>15</id>
 						<definition>6</definition>
 					</module>
 				</wire>
@@ -174,27 +163,11 @@
 						<id>22</id>
 						<definition>6</definition>
 					</module>
-					<module>
-						<id>23</id>
-						<definition>6</definition>
-					</module>
-					<module>
-						<id>24</id>
-						<definition>6</definition>
-					</module>
-					<module>
-						<id>25</id>
-						<definition>6</definition>
-					</module>
-					<module>
-						<id>26</id>
-						<definition>6</definition>
-					</module>
 				</wire>
 			</inverter>
 		</dc>
 		<ground>
-			<ground_rod>
+			<grounding_rod>
 				<id>27</id>
 				<specifications>
 					<diameter_inches>0.625</diameter_inches> <!-- typically 1/2", 5/8", or 3/4" -->
@@ -223,7 +196,7 @@
 								<wire>
 									<id>30</id>
 									<specifications>
-										<size_awg>10</size_awg>
+										<size_awg>6</size_awg>
 										<insulation>USE-2</insulation>
 										<material>Cu</material>
 										<linear_feet>60</linear_feet>
@@ -236,6 +209,7 @@
 										</specifications>
 										<racking>
 											<id>32</id>
+                                                                                        <specifications/>
 										</racking>
 									</ground_lug>
 									<ground_lug>
@@ -403,7 +377,7 @@
 						</wire>
 					</main_panel>
 				</wire>
-			</ground_rod>
+			</grounding_rod>
 		</ground>
 	</system>
 </request>
