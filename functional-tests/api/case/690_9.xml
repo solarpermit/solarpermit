@@ -5,6 +5,7 @@
     <api_username>db48x</api_username>
     <api_key>42</api_key>
     <override_code>nec2014</override_code>
+    <override_tests>nec2014_690_9</override_tests>
     <override_ambient_low_f>20</override_ambient_low_f>
     <override_ambient_high_f>120</override_ambient_high_f>
     <!-- other overrides as necessary -->
