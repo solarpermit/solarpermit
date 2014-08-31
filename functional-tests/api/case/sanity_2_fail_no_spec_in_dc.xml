@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request>
+	<directives>
+		<jurisdiction_id>1</jurisdiction_id>
+		<api_username>db48x</api_username>
+		<api_key>42</api_key>
+		<override_code>sanity</override_code>
+		<override_tests>sanity_2</override_tests>
+		<!-- other overrides as necessary -->
+	</directives>
+	<system>
+		<dc>
+			<inverter>
+			</inverter>
+		</dc>
+		<ac>
+			<inverter>
+				<specifications/>
+			</inverter>
+		</ac>
+		<ground>
+            <main_panel>
+            	<specifications/>
+            </main_panel>
+		</ground>
+	</system>
+</request>
