@@ -17,7 +17,7 @@
 					<manufacturer>Zinsco</manufacturer>
 					<model>200A Main Service</model>
 					<max_amps>200</max_amps>
-					<nominal_voltage_ac>240</nominal_voltage_ac>
+					<ac_nominal_voltage>240</ac_nominal_voltage>
 					<main_breaker_size>200</main_breaker_size>
 					<supports_tap_on_line_side>true</supports_tap_on_line_side>
 					<conection_method>breaker</conection_method>
@@ -26,7 +26,7 @@
 					<id>2</id>
 					<specifications>
 						<max_amps>40</max_amps>
-						<nominal_voltage_ac>240</nominal_voltage_ac>
+						<ac_nominal_voltage>240</ac_nominal_voltage>
 						<manufacturer>Zinsco</manufacturer>
 						<model>Compatible 40A Breaker</model>
 					</specifications>
@@ -47,17 +47,17 @@
 								<weight_lbs>148.812</weight_lbs>
 								<cec_efficiency>0.955</cec_efficiency>
 								<dc_input_max_watts>6350</dc_input_max_watts>
-								<dc_voltage_max>600</dc_voltage_max>
-								<dc_voltage_nominal>310</dc_voltage_nominal>
-								<mpp_voltage_min>250</mpp_voltage_min>
-								<mpp_voltage_max>480</mpp_voltage_max>
+								<dc_max_voltage>600</dc_max_voltage>
+								<dc_nominal_voltage>310</dc_nominal_voltage>
+								<mpp_min_voltage>250</mpp_min_voltage>
+								<mpp_max_voltage>480</mpp_max_voltage>
 								<minimum_voltage>250</minimum_voltage>
 								<start_voltage>300</start_voltage>
 								<mppt_quantity>1</mppt_quantity>
 								<fused_strings_per_mppt>4</fused_strings_per_mppt>
 								<integrated_dc_disconnect>true</integrated_dc_disconnect>
-								<output_ac_voltage>240</output_ac_voltage>
-								<output_ac_amps>25</output_ac_amps>
+								<ac_output_voltage>240</ac_output_voltage>
+								<ac_output_amps>25</ac_output_amps>
                                                                 <max_amps>150</max_amps>
 							</specifications>
 						</inverter>
@@ -106,12 +106,12 @@
 							<noct_c>45</noct_c>
 							<noct_c_plus>2</noct_c_plus>
 							<noct_c_minus>2</noct_c_minus>
-							<operating_temp_min>-40</operating_temp_min>
-							<operating_temp_max>85</operating_temp_max>
-							<max_voltage_us>600</max_voltage_us>
-							<max_voltage_eu>1000</max_voltage_eu>
-							<max_series_fuse_rating_us>20</max_series_fuse_rating_us>
-							<max_series_fuse_rating_eu>20</max_series_fuse_rating_eu>
+							<operating_temp_min_f>-40</operating_temp_min_f>
+							<operating_temp_max_f>85</operating_temp_max_f>
+							<us_dc_max_voltage>600</us_dc_max_voltage>
+							<eu_dc_max_voltage>1000</eu_dc_max_voltage>
+							<us_max_series_fuse_rating_amps>20</us_max_series_fuse_rating_amps>
+							<eu_max_series_fuse_rating_amps>20</eu_max_series_fuse_rating_amps>
                                                         <max_amps>32</max_amps>
 						</specifications>
 					</module>
@@ -204,7 +204,7 @@
 									<ground_lug>
 										<id>31</id>
 										<specifications>
-											<max_voltage_dc>1000</max_voltage_dc>
+											<dc_max_voltage>1000</dc_max_voltage>
 											<weeb>false</weeb>
 										</specifications>
 										<racking>

@@ -62,7 +62,7 @@ def get_temperature_coefficient_of_voc(coeff):
 def get_voc_stc(voc):
     return volts(to_num(voc))
 
-@optional_getter('dc_voltage_max')
+@optional_getter('dc_max_voltage')
 def get_dc_voltage_max(voltage):
     return volts(to_num(voltage))
 
@@ -70,15 +70,15 @@ def get_dc_voltage_max(voltage):
 def get_integrated_dc_disconnect(disconnect):
     return bool(disconnect)
 
-@optional_getter('nominal_voltage_ac')
+@optional_getter('ac_nominal_voltage')
 def get_nominal_voltage_ac(voltage):
     return volts(to_num(voltage))
 
-@optional_getter('output_ac_voltage')
+@optional_getter('ac_output_voltage')
 def get_ac_output_voltage(voltage):
     return volts(to_num(voltage))
 
-@optional_getter('output_ac_amps')
+@optional_getter('ac_output_amps')
 def get_ac_output_amps(amperage):
     return amps(to_num(amperage))
 
