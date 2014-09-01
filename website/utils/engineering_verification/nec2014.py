@@ -166,16 +166,16 @@ def nec2014_690_15(directives=None, ac=None, dc=None, ground=None):
                     raise ValidationError(fail_msg % (inverter.id, panel.id))
 
 def nec2014_690_15_D(directives=None, ac=None, dc=None, ground=None):
-    fail_msg = "NEC 2014 690.13(D): More than 6 disconnects exist in the ac tree."
+    fail_msg = "NEC 2014 690.15(D): More than 6 disconnects exist in the ac tree."
     def is_disconnect(component):
         if component.tag == 'breaker':
-            if any(component.iterancestors('sub_panel')):
+            if len(list(component.iterancestors('sub_panel'))) > 0:
                 return False
             return True
         if component.tag in ('disconnect', 'fused_disconnect'):
             return True
-    if eng.is_electrical(dc):
-        if len(list(filter(is_disconnect, dc.itercomponents()))) > 6:
+    if eng.is_electrical(ac):
+        if len(list(filter(is_disconnect, ac.itercomponents()))) > 6:
             raise ValidationError(fail_msg)
 
 def nec2014_690_43(directives=None, ac=None, dc=None, ground=None):

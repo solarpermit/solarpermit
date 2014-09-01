@@ -35,27 +35,29 @@
 					<manufacturer>Zinsco</manufacturer>
 				</specifications>
 			</breaker>
-			<inverter>
-				<id>4</id>
-				<specifications>
-					<integrated_dc_disconnect>true</integrated_dc_disconnect>
-				</specifications>
-			</inverter>
-			<inverter>
-				<id>5</id>
-				<specifications>
-					<integrated_dc_disconnect>true</integrated_dc_disconnect>
-				</specifications>
-			</inverter>
-			<inverter>
-				<id>6</id>
-				<specifications>
-					<integrated_dc_disconnect>true</integrated_dc_disconnect>
-				</specifications>
-			</inverter>
+                        <disconnect>
+				<id>50</id>
+				<inverter>
+					<id>4</id>
+					<specifications>
+						<integrated_dc_disconnect>true</integrated_dc_disconnect>
+					</specifications>
+				</inverter>
+                        </disconnect>
+                        <fused_disconnect>
+				<id>60</id>
+				<inverter>
+					<id>5</id>
+					<specifications/>
+				</inverter>
+                        </fused_disconnect>
+                        <disconnect>
+				<id>70</id>
+				<inverter>
+					<id>6</id>
+					<specifications/>
+				</inverter>
+                        </disconnect>
 		</ac>
-		<dc>
-			<id/>
-		</dc>
 	</system>
 </request>

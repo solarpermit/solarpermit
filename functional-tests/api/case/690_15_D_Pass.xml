@@ -9,10 +9,42 @@
 	</directives>
 	<system>
 		<ac>
-			<id/>
+			<breaker>
+				<id>10</id>
+				<specifications>
+					<manufacturer>Zinsco</manufacturer>
+				</specifications>
+			</breaker>
+			<breaker>
+				<id>20</id>
+				<specifications>
+					<manufacturer>Zinsco</manufacturer>
+				</specifications>
+			</breaker>
+			<breaker>
+				<id>30</id>
+				<specifications>
+					<manufacturer>Zinsco</manufacturer>
+				</specifications>
+			</breaker>
+			<breaker>
+				<id>40</id>
+				<specifications>
+					<manufacturer>Zinsco</manufacturer>
+				</specifications>
+			</breaker>
+                        <disconnect>
+				<id>50</id>
+				<inverter>
+					<id>4</id>
+					<specifications>
+						<integrated_dc_disconnect>true</integrated_dc_disconnect>
+					</specifications>
+				</inverter>
+                        </disconnect>
+                        <fused_disconnect>
+				<id>60</id>
+                        </fused_disconnect>
 		</ac>
-		<dc>
-			<id/>
-		</dc>
 	</system>
 </request>
