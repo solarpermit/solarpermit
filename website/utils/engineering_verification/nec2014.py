@@ -158,10 +158,9 @@ def nec2014_690_15(directives=None, ac=None, dc=None, ground=None):
         return component.tag in ('breaker', 'fused_disconnect')
     if eng.is_electrical(ac):
         for panel in ac.iterdescendants('main_panel'):
-            for inverter in itertools.takewhile(lambda component: component.tag == 'inverter',
-                                                panel.itercomponents()):
-                intervening_components = itertools.takewhile(lambda c: c != panel,
-                                                             inverter.itercomponents())
+            for inverter in panel.itercomponents('inverter'):
+                intervening_components = list(itertools.takewhile(lambda c: c != panel,
+                                                                  inverter.iterancestors()))
                 if len(list(filter(is_disconnect, intervening_components))) == 0:
                     raise ValidationError(fail_msg % (inverter.id, panel.id))
 
