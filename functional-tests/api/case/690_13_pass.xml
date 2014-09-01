@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request>
+  <directives>
+    <jurisdiction_id>1</jurisdiction_id>
+    <api_username>db48x</api_username>
+    <api_key>42</api_key>
+    <override_code>nec2014</override_code>
+    <override_tests>nec2014_690_13</override_tests>
+  </directives>
+  <system>
+    <dc>
+      <inverter>
+        <id>0</id>
+        <module>
+          <id>1</id>
+        </module>
+      </inverter>
+
+      <inverter>
+        <id>2</id>
+        <specifications>
+          <integrated_dc_disconnect>true</integrated_dc_disconnect>
+        </specifications>
+        <module>
+          <id>3</id>
+        </module>
+      </inverter>
+
+      <inverter>
+        <id>4</id>
+        <specifications/>
+        <disconnect>
+          <id>5</id>
+          <module>
+            <id>6</id>
+          </module>
+        </disconnect>
+      </inverter>
+
+      <inverter>
+        <id>7</id>
+        <specifications/>
+        <fused_disconnect>
+          <id>8</id>
+          <module>
+            <id>9</id>
+          </module>
+        </fused_disconnect>
+      </inverter>
+
+      <inverter>
+        <id>10</id>
+        <specifications/>
+        <fused_disconnect>
+          <id>11</id>
+          <wire>
+            <id>12</id>
+            <module>
+              <id>13</id>
+            </module>
+          </wire>
+        </fused_disconnect>
+      </inverter>
+
+      <inverter>
+        <id>14</id>
+        <specifications/>
+        <wire>
+          <id>15</id>
+          <disconnect>
+            <id>16</id>
+            <module>
+              <id>17</id>
+            </module>
+          </disconnect>
+        </wire>
+      </inverter>
+
+      <inverter>
+        <id>18</id>
+        <specifications/>
+        <wire>
+          <id>19</id>
+          <wire>
+            <id>20</id>
+            <disconnect>
+              <id>21</id>
+              <module>
+                <id>22</id>
+              </module>
+            </disconnect>
+          </wire>
+        </wire>
+      </inverter>
+    </dc>
+  </system>
+</request>

@@ -1,3 +1,4 @@
+import lxml
 import itertools
 
 import website.views.engineering_verification as eng
@@ -127,12 +128,12 @@ def nec2014_690_13(directives=None, ac=None, dc=None, ground=None):
     if eng.is_electrical(dc):
         for inverter in dc.iterdescendants('inverter'):
             for module in inverter.itercomponents('module'):
-                intervening_components = itertools.takewhile(lambda c: c != module,
-                                                             inverter.itercomponents())
-                if len(list(intervening_components)) > 0:
+                intervening_components = list(itertools.takewhile(lambda c: c != module,
+                                                                  inverter.itercomponents()))
+                if len(intervening_components) > 0:
                     specs = nec.get_specifications(inverter)
                     integrated_dc_disconnect = nec.get_integrated_dc_disconnect(specs)
-                    if not (integrated_dc_disconnect or any(filter(is_disconnect, intervening_components))):
+                    if not (integrated_dc_disconnect or len(list(filter(is_disconnect, intervening_components))) > 0):
                         raise ValidationError(fail_msg % (inverter.id, module.id))
 
 def nec2014_690_13_D(directives=None, ac=None, dc=None, ground=None):

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result>
+  <status>failure</status>
+  <results>
+    <fail>
+      <testcase>nec2014_690_13</testcase>
+      <message>NEC 2014 690.13: There are DC components between inverter with id '0' and module with id '2', but the inverter does not have an integrated_dc_disconnect, nor is there a disconnect or fused_disconnect between them.</message>
+    </fail>
+  </results>
+</result>
