@@ -17,9 +17,15 @@ class Command(BaseCommand):
                                                          action='store_true',
                                                          dest='write_expect',
                                                          default=False,
-                                                         help="Instead of testing the responses, write the responses out to the expect files."),)
+                                                         help="Instead of testing the responses, write the responses out to the expect files."),
+                                             make_option("--case",
+                                                         action='store',
+                                                         dest='case',
+                                                         default=None,
+                                                         help="Name of a case file to use."),)
     def handle(self, **options):
-        unittest.TextTestRunner().run(XMLTestSuite(options['write_expect']))
+        unittest.TextTestRunner().run(XMLTestSuite(write_expect = options['write_expect'],
+                                                   case = options['case']))
 
 TESTDIR = os.path.join(settings.PROJECT_ROOT, 'functional-tests', 'api')
 CASEDIR = os.path.join(TESTDIR, 'case')
@@ -53,10 +59,14 @@ class XMLTestCase(TestCase):
             self.assertMultiLineEqual("", response.content)
 
 class XMLTestSuite(TestSuite):
-    _files = filter(lambda f: f.endswith('.xml'), os.listdir(CASEDIR))
+    _files = None
     writing = False
-    def __init__(self, write_expect=False, *args, **kwargs):
+    def __init__(self, write_expect=False, case=None, *args, **kwargs):
         unittest.TestSuite.__init__(self, *args, **kwargs)
         self.writing = write_expect
+        if case is None:
+            self._files = filter(lambda f: f.endswith('.xml'), os.listdir(CASEDIR))
+        else:
+            self._files = filter(lambda f: f == case, os.listdir(CASEDIR))
     def __iter__(self):
         return (XMLTestCase(f, write_expect=self.writing) for f in self._files)
