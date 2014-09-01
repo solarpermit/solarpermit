@@ -209,7 +209,7 @@ def nec2014_690_45(directives=None, ac=None, dc=None, ground=None):
             if size is None:
                 raise ValidationError("NEC 2014 690.45: wire with id '%s' has no size_awg." % component.id)
             if material is None:
-                raise ValidationError("NEC 2014 690.45: wire with id '%s' has no size_awg." % component.id)
+                raise ValidationError("NEC 2014 690.45: wire with id '%s' has no material." % component.id)
             sizes = nec.ground_current_wire_sizes[material]
             for (c, s) in sizes.iteritems():
                 if c >= current:
