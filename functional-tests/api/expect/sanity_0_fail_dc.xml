@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result>
+  <status>failure</status>
+  <results>
+    <fail>
+      <testcase>sanity_0</testcase>
+      <message>Sanity test: The system must have a dc node, and it must contain at least one component.</message>
+    </fail>
+  </results>
+</result>

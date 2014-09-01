@@ -8,11 +8,11 @@ from website.views.api2 import ValidationError
 
 def sanity_0(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "Sanity test: The system must have a %s node, and it must contain at least one component."
-    if not eng.is_electrical(ac) and len(ac.itercomponents()) <= 0:
+    if not eng.is_electrical(ac) or len(list(ac.itercomponents())) <= 0:
         raise ValidationError(fail_msg % 'ac')
-    if not eng.is_electrical(dc) and len(dc.itercomponents()) <= 0:
+    if not eng.is_electrical(dc) or len(list(dc.itercomponents())) <= 0:
         raise ValidationError(fail_msg % 'dc')
-    if not eng.is_electrical(ground) and len(ground.itercomponents()) <= 0:
+    if not eng.is_electrical(ground) or len(list(ground.itercomponents())) <= 0:
         raise ValidationError(fail_msg % 'ground')
 
 def sanity_1(directives=None, ac=None, dc=None, ground=None):
