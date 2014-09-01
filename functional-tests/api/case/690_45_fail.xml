@@ -8,12 +8,6 @@
 	</directives>
 	<system>
 		<ac>
-			<inverter>
-				<id>4</id>
-				<specifications>
-					<ac_output_amps>150</ac_output_amps>
-				</specifications>
-			</inverter>
 		</ac>
 		<dc>
 		</dc>
@@ -21,9 +15,14 @@
 			<wire>
 				<id>10</id>
 				<specifications>
-					<size_awg>12<size_awg>
+					<size_awg>12</size_awg>
+					<material>Cu</material>
 				</specifications>
 				<inverter>
+					<id>30</id>
+					<specifications>
+						<ac_output_amps>300</ac_output_amps>
+					</specifications>
 				</inverter>
 			</wire>
 		</ground>

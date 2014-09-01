@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result>
+  <status>failure</status>
+  <results>
+    <fail>
+      <testcase>nec2014_690_45</testcase>
+      <message>NEC 2014 690.45: Wire with id '10' needs to be size '4' or larger to handle 300.00 A current during a ground fault.</message>
+    </fail>
+  </results>
+</result>
