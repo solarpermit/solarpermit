@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result>
+  <status>failure</status>
+  <results>
+    <fail>
+      <testcase>sanity_8</testcase>
+      <message>Sanity test: The main_panel with id '1' has a specification named 'max_amps' which looks like a component; specifications may only contain text nodes and not elements.</message>
+    </fail>
+  </results>
+</result>

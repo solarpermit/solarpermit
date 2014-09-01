@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result>
+  <status>partial</status>
+  <results>
+    <pass>
+      <testcase>sanity_8</testcase>
+    </pass>
+  </results>
+</result>

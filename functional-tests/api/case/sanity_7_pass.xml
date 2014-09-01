@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request>
+	<directives>
+		<jurisdiction_id>1</jurisdiction_id>
+		<api_username>db48x</api_username>
+		<api_key>42</api_key>
+		<override_code>sanity</override_code>
+		<override_tests>sanity_7</override_tests>
+	</directives>
+	<system>
+		<ac>
+			<main_panel>
+				<id>1</id>
+				<specifications>
+					<ac_nominal_voltage>280</ac_nominal_voltage>
+				</specifications>
+			</main_panel>
+		</ac>
+	</system>
+</request>

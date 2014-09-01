@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result>
+  <status>failure</status>
+  <results>
+    <fail>
+      <testcase>nec2014_690_7_A</testcase>
+      <message>NEC 2014 690.7(A): VOC of 668.40 V (at an ambient temperature of 20 °F) exceeds maximum voltage of 600.00 V of the inverter with id '1'.</message>
+    </fail>
+  </results>
+</result>

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result>
+  <status>failure</status>
+  <results>
+    <fail>
+      <testcase>sanity_3</testcase>
+      <message>Sanity test: A main_panel inside the ground has no id.</message>
+    </fail>
+  </results>
+</result>

@@ -89,15 +89,15 @@ def get_directives(node):
 def get_system(node):
     return node
 
-@checked_getter('ac')
+@optional_getter('ac')
 def get_ac(node):
     return node
 
-@checked_getter('dc')
+@optional_getter('dc')
 def get_dc(node):
     return node
 
-@checked_getter('ground')
+@optional_getter('ground')
 def get_ground(node):
     return node
 
@@ -159,6 +159,10 @@ class ElectricalElement(lxml.objectify.ObjectifiedElement):
         for node in ElectricalElement._component_iter(self.iterdescendants()):
             if node.id == id:
                 yield node
+
+def is_electrical(item):
+    return isinstance(item, ElectricalElement)
+
 def testcase_response(results=[], complete=True):
     E = lxml.builder.ElementMaker()
     status = "success" if complete else "partial"

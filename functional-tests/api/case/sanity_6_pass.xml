@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request>
+	<directives>
+		<jurisdiction_id>1</jurisdiction_id>
+		<api_username>db48x</api_username>
+		<api_key>42</api_key>
+		<override_code>sanity</override_code>
+		<override_tests>sanity_6</override_tests>
+	</directives>
+	<system>
+		<ac>
+			<main_panel><id>1</id>
+				<specifications>
+					<ac_nominal_voltage>240</ac_nominal_voltage>
+				</specifications>
+				<breaker>
+					<id>2</id>
+					<specifications>
+						<ac_nominal_voltage>240</ac_nominal_voltage>
+					</specifications>
+					<inverter>
+						<id>4</id>
+						<specifications>
+							<ac_output_voltage>240</ac_output_voltage>
+						</specifications>
+					</inverter>
+				</breaker>
+			</main_panel>
+		</ac>
+	</system>
+</request>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request>
+	<directives>
+		<jurisdiction_id>1</jurisdiction_id>
+		<api_username>db48x</api_username>
+		<api_key>42</api_key>
+		<override_code>sanity</override_code>
+		<override_tests>sanity_4</override_tests>
+		<!-- other overrides as necessary -->
+	</directives>
+	<system>
+		<ac>
+			<wire>
+				<id>10</id>
+				<specifications>
+					<size_awg>10</size_awg>
+					<material>Cu</material>
+				</specifications>
+			</wire>
+		</ac>
+		<ground>
+		</ground>
+	</system>
+</request>

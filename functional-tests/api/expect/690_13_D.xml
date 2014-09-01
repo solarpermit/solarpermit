@@ -3,84 +3,8 @@
   <status>failure</status>
   <results>
     <fail>
-      <testcase>sanity_1</testcase>
-      <message>Sanity test: No main_panel found in ac tree.</message>
-    </fail>
-    <pass>
-      <testcase>sanity_2</testcase>
-    </pass>
-    <pass>
-      <testcase>sanity_3</testcase>
-    </pass>
-    <pass>
-      <testcase>sanity_4</testcase>
-    </pass>
-    <pass>
-      <testcase>sanity_5</testcase>
-    </pass>
-    <pass>
-      <testcase>sanity_6</testcase>
-    </pass>
-    <pass>
-      <testcase>sanity_7</testcase>
-    </pass>
-    <pass>
-      <testcase>sanity_8</testcase>
-    </pass>
-    <fail>
-      <testcase>nec2014_690_12_ac</testcase>
-      <message>NEC 2014 690.12: There is no disconnect or or fused_disconnect between inverter with id '5' and the main_panel.</message>
-    </fail>
-    <pass>
-      <testcase>nec2014_690_12_dc</testcase>
-    </pass>
-    <pass>
-      <testcase>nec2014_690_13</testcase>
-    </pass>
-    <fail>
       <testcase>nec2014_690_13_D</testcase>
       <message>NEC 2014 690.13(D): More than 6 disconnects exist in the dc tree.</message>
     </fail>
-    <pass>
-      <testcase>nec2014_690_15</testcase>
-    </pass>
-    <pass>
-      <testcase>nec2014_690_15_D</testcase>
-    </pass>
-    <pass>
-      <testcase>nec2014_690_43</testcase>
-    </pass>
-    <fail>
-      <testcase>nec2014_690_45</testcase>
-      <message>NEC 2014 690.45: No ac_output_amps specified for module with id '5'.</message>
-    </fail>
-    <pass>
-      <testcase>nec2014_690_46</testcase>
-    </pass>
-    <pass>
-      <testcase>nec2014_690_47_B_2</testcase>
-    </pass>
-    <fail>
-      <testcase>nec2014_690_6_1</testcase>
-      <message>NEC 2014 690.6: AC module with id of '8' is downstream of an inverter.</message>
-    </fail>
-    <fail>
-      <testcase>nec2014_690_6_2</testcase>
-      <message>NEC 2014 690.6: AC module with id of '8' must not also appear in the DC tree.</message>
-    </fail>
-    <fail>
-      <testcase>nec2014_690_6_3</testcase>
-      <message>NEC 2014 690.6: AC module with id of '8' must have both output_ac_voltage and output_ac_amps specified.</message>
-    </fail>
-    <pass>
-      <testcase>nec2014_690_7_A</testcase>
-    </pass>
-    <fail>
-      <testcase>nec2014_690_8</testcase>
-      <message>NEC 2014 690.8: No max_amps defined for breaker with id '0'.</message>
-    </fail>
-    <pass>
-      <testcase>nec2014_690_9</testcase>
-    </pass>
   </results>
 </result>

@@ -1,0 +1,30 @@
+<request>
+	<directives>
+		<jurisdiction_id>1</jurisdiction_id>
+		<api_username>db48x</api_username>
+		<api_key>42</api_key>
+		<override_code>nec2014</override_code>
+		<override_tests>nec2014_690_45</override_tests>
+	</directives>
+	<system>
+		<ac>
+		</ac>
+		<dc>
+		</dc>
+		<ground>
+			<wire>
+				<id>10</id>
+				<specifications>
+					<size_awg>12</size_awg>
+					<material>Cu</material>
+				</specifications>
+				<inverter>
+					<id>30</id>
+					<specifications>
+						<ac_output_amps>300</ac_output_amps>
+					</specifications>
+				</inverter>
+			</wire>
+		</ground>
+	</system>
+</request>

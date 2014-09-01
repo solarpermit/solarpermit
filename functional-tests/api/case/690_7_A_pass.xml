@@ -5,6 +5,7 @@
     <api_username>db48x</api_username>
     <api_key>42</api_key>
     <override_code>nec2014</override_code>
+    <override_tests>nec2014_690_7_A</override_tests>
     <override_ambient_low_f>20</override_ambient_low_f>
     <override_ambient_high_f>120</override_ambient_high_f>
     <!-- other overrides as necessary -->
@@ -14,7 +15,7 @@
       <inverter>
 	<id>1</id>
 	<specifications>
-	  <dc_voltage_max>600</dc_voltage_max>
+	  <dc_max_voltage>600</dc_max_voltage>
         </specifications>
 	<wire>
 	  <id>2</id>
@@ -23,7 +24,7 @@
 	    <insulation>USE-2</insulation>
 	    <material>Cu</material>
 	    <linear_feet>60</linear_feet>
-	    <dc_voltage_max>1000</dc_voltage_max>
+	    <dc_max_voltage>1000</dc_max_voltage>
 	  </specifications>
           <module>
 	    <id>3</id>

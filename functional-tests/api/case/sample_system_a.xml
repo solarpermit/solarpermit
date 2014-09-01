@@ -2,11 +2,11 @@
 <request>
 	<directives>
 		<jurisdiction_id>1</jurisdiction_id>
-                <api_username>db48x</api_username>
-                <api_key>42</api_key>
+		<api_username>db48x</api_username>
+		<api_key>42</api_key>
+		<override_code>nec2014</override_code>
 		<override_ambient_low_f>14</override_ambient_low_f>
 		<override_ambient_high_f>120</override_ambient_high_f>
-		<!-- other overrides as necessary -->
 	</directives>
 	<system>
 		<ac>
@@ -16,7 +16,7 @@
 					<manufacturer>Zinsco</manufacturer>
 					<model>200A Main Service</model>
 					<max_amps>200</max_amps>
-					<nominal_voltage_ac>240</nominal_voltage_ac>
+					<ac_nominal_voltage>240</ac_nominal_voltage>
 					<main_breaker_size>200</main_breaker_size>
 					<supports_tap_on_line_side>true</supports_tap_on_line_side>
 					<conection_method>breaker</conection_method>
@@ -25,7 +25,7 @@
 					<id>2</id>
 					<specifications>
 						<max_amps>40</max_amps>
-						<nominal_voltage_ac>240</nominal_voltage_ac>
+						<ac_nominal_voltage>240</ac_nominal_voltage>
 						<manufacturer>Zinsco</manufacturer>
 						<model>Compatible 40A Breaker</model>
 					</specifications>
@@ -36,6 +36,7 @@
 							<insulation>THWN-2</insulation> <!-- string: TW, UF, RHW, THHW, THW, THWN, etc etc.... table B.310.15(B)(2)(1) -->
 							<material>Cu</material> <!-- copper (Cu) or aluminum (Al)) -->
 							<linear_feet>20</linear_feet>
+							<max_amps>32</max_amps>
 						</specifications>
 						<inverter>
 							<id>4</id>
@@ -45,17 +46,18 @@
 								<weight_lbs>148.812</weight_lbs>
 								<cec_efficiency>0.955</cec_efficiency>
 								<dc_input_max_watts>6350</dc_input_max_watts>
-								<dc_voltage_max>600</dc_voltage_max>
-								<dc_voltage_nominal>310</dc_voltage_nominal>
-								<mpp_voltage_min>250</mpp_voltage_min>
-								<mpp_voltage_max>480</mpp_voltage_max>
+								<dc_max_voltage>600</dc_max_voltage>
+								<dc_nominal_voltage>310</dc_nominal_voltage>
+								<mpp_min_voltage>250</mpp_min_voltage>
+								<mpp_max_voltage>480</mpp_max_voltage>
 								<minimum_voltage>250</minimum_voltage>
 								<start_voltage>300</start_voltage>
 								<mppt_quantity>1</mppt_quantity>
 								<fused_strings_per_mppt>4</fused_strings_per_mppt>
 								<integrated_dc_disconnect>true</integrated_dc_disconnect>
-								<output_ac_voltage>240</output_ac_voltage>
-								<output_ac_amps>25</output_ac_amps>
+								<ac_output_voltage>240</ac_output_voltage>
+								<ac_output_amps>25</ac_output_amps>
+								<max_amps>150</max_amps>
 							</specifications>
 						</inverter>
 					</wire>
@@ -68,10 +70,11 @@
 				<wire>
 					<id>5</id>
 					<specifications>
-						<size_awg>10</size_awg>
+						<size_awg>8</size_awg>
 						<insulation>USE-2</insulation>
 						<material>Cu</material>
 						<linear_feet>60</linear_feet>
+						<max_amps>100</max_amps>
 					</specifications>
 					<module>
 						<id>6</id>
@@ -102,12 +105,13 @@
 							<noct_c>45</noct_c>
 							<noct_c_plus>2</noct_c_plus>
 							<noct_c_minus>2</noct_c_minus>
-							<operating_temp_min>-40</operating_temp_min>
-							<operating_temp_max>85</operating_temp_max>
-							<max_voltage_us>600</max_voltage_us>
-							<max_voltage_eu>1000</max_voltage_eu>
-							<max_series_fuse_rating_us>20</max_series_fuse_rating_us>
-							<max_series_fuse_rating_eu>20</max_series_fuse_rating_eu>
+							<operating_temp_min_f>-40</operating_temp_min_f>
+							<operating_temp_max_f>85</operating_temp_max_f>
+							<us_dc_max_voltage>600</us_dc_max_voltage>
+							<eu_dc_max_voltage>1000</eu_dc_max_voltage>
+							<us_max_series_fuse_rating_amps>20</us_max_series_fuse_rating_amps>
+							<eu_max_series_fuse_rating_amps>20</eu_max_series_fuse_rating_amps>
+							<max_amps>32</max_amps>
 						</specifications>
 					</module>
 					<module>
@@ -128,22 +132,6 @@
 					</module>
 					<module>
 						<id>11</id>
-						<definition>6</definition>
-					</module>
-					<module>
-						<id>12</id>
-						<definition>6</definition>
-					</module>
-					<module>
-						<id>13</id>
-						<definition>6</definition>
-					</module>
-					<module>
-						<id>14</id>
-						<definition>6</definition>
-					</module>
-					<module>
-						<id>15</id>
 						<definition>6</definition>
 					</module>
 				</wire>
@@ -174,27 +162,11 @@
 						<id>22</id>
 						<definition>6</definition>
 					</module>
-					<module>
-						<id>23</id>
-						<definition>6</definition>
-					</module>
-					<module>
-						<id>24</id>
-						<definition>6</definition>
-					</module>
-					<module>
-						<id>25</id>
-						<definition>6</definition>
-					</module>
-					<module>
-						<id>26</id>
-						<definition>6</definition>
-					</module>
 				</wire>
 			</inverter>
 		</dc>
 		<ground>
-			<ground_rod>
+			<grounding_rod>
 				<id>27</id>
 				<specifications>
 					<diameter_inches>0.625</diameter_inches> <!-- typically 1/2", 5/8", or 3/4" -->
@@ -223,7 +195,7 @@
 								<wire>
 									<id>30</id>
 									<specifications>
-										<size_awg>10</size_awg>
+										<size_awg>6</size_awg>
 										<insulation>USE-2</insulation>
 										<material>Cu</material>
 										<linear_feet>60</linear_feet>
@@ -231,11 +203,12 @@
 									<ground_lug>
 										<id>31</id>
 										<specifications>
-											<max_voltage_dc>1000</max_voltage_dc>
+											<dc_max_voltage>1000</dc_max_voltage>
 											<weeb>false</weeb>
 										</specifications>
 										<racking>
 											<id>32</id>
+                                                                                        <specifications/>
 										</racking>
 									</ground_lug>
 									<ground_lug>
@@ -403,7 +376,7 @@
 						</wire>
 					</main_panel>
 				</wire>
-			</ground_rod>
+			</grounding_rod>
 		</ground>
 	</system>
 </request>

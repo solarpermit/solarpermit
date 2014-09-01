@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request>
+  <directives>
+    <jurisdiction_id>1</jurisdiction_id>
+    <api_username>db48x</api_username>
+    <api_key>42</api_key>
+    <override_code>sanity</override_code>
+    <override_tests>sanity_8</override_tests>
+  </directives>
+  <system>
+    <ac>
+      <main_panel>
+        <id>1</id>
+        <specifications>
+          <manufacturer>Zinsco</manufacturer>
+          <model>200A Main Service</model>
+          <max_amps><foo/></max_amps>
+          <nominal_voltage_ac>240</nominal_voltage_ac>
+          <main_breaker_size>200</main_breaker_size>
+          <supports_tap_on_line_side>true</supports_tap_on_line_side>
+          <conection_method>breaker</conection_method>
+        </specifications>
+      </main_panel>
+    </ac>
+  </system>
+</request>

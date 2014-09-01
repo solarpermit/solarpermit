@@ -1,4 +1,5 @@
 import lxml
+from collections import OrderedDict
 from units_support import *
 
 from website.views.api2 import checked_getter, optional_getter, ValidationError
@@ -61,7 +62,7 @@ def get_temperature_coefficient_of_voc(coeff):
 def get_voc_stc(voc):
     return volts(to_num(voc))
 
-@optional_getter('dc_voltage_max')
+@optional_getter('dc_max_voltage')
 def get_dc_voltage_max(voltage):
     return volts(to_num(voltage))
 
@@ -69,7 +70,7 @@ def get_dc_voltage_max(voltage):
 def get_integrated_dc_disconnect(disconnect):
     return bool(disconnect)
 
-@optional_getter('nominal_voltage_ac')
+@optional_getter('ac_nominal_voltage')
 def get_nominal_voltage_ac(voltage):
     return volts(to_num(voltage))
 
@@ -81,7 +82,7 @@ def get_ac_output_voltage(voltage):
 def get_ac_output_amps(amperage):
     return amps(to_num(amperage))
 
-@optional_getter('isc_atc')
+@optional_getter('isc_stc')
 def get_isc_stc(amperage):
     return amps(to_num(amperage))
 
@@ -101,47 +102,49 @@ def get_size_awg(awg):
 def get_insulation(insulation):
     return str(insulation)
 
+# these must all be in order from low to high
 wire_sizes = ["18", "16", "14", "12", "10", "8", "6", "4", "3", "2", "1",
               "1/0", "2/0", "3/0", "4/0", "250", "300", "350", "400", "500",
               "600", "700", "750", "800", "900", "1000", "1200"]
-ground_current_wire_sizes = { "Cu": { amps(15):   "14",
-                                      amps(20):   "12",
-                                      amps(60):   "10",
-                                      amps(100):  "8",
-                                      amps(200):  "6",
-                                      amps(300):  "4",
-                                      amps(400):  "3",
-                                      amps(500):  "2",
-                                      amps(600):  "1",
-                                      amps(800):  "1/0",
-                                      amps(1000): "2/0",
-                                      amps(1200): "3/0",
-                                      amps(1600): "4/0",
-                                      amps(2000): "250",
-                                      amps(2500): "350",
-                                      amps(3000): "400",
-                                      amps(4000): "500",
-                                      amps(5000): "700",
-                                      amps(6000): "800", },
-                              "Al": { amps(15):   "12",
-                                      amps(20):   "10",
-                                      amps(60):   "8",
-                                      amps(100):  "6",
-                                      amps(200):  "4",
-                                      amps(300):  "2",
-                                      amps(400):  "1",
-                                      amps(500):  "1/0",
-                                      amps(600):  "2/0",
-                                      amps(800):  "3/0",
-                                      amps(1000): "4/0",
-                                      amps(1200): "250",
-                                      amps(1600): "350",
-                                      amps(2000): "400",
-                                      amps(2500): "600",
-                                      amps(3000): "750",
-                                      amps(4000): "750",
-                                      amps(5000): "1200",
-                                      amps(6000): "1200", }, }
+ground_current_wire_sizes = { "Cu": OrderedDict(((amps(15),   "14"),
+                                                 (amps(20),   "12"),
+                                                 (amps(60),   "10"),
+                                                 (amps(100),  "8"),
+                                                 (amps(200),  "6"),
+                                                 (amps(300),  "4"),
+                                                 (amps(400),  "3"),
+                                                 (amps(500),  "2"),
+                                                 (amps(600),  "1"),
+                                                 (amps(800),  "1/0"),
+                                                 (amps(1000), "2/0"),
+                                                 (amps(1200), "3/0"),
+                                                 (amps(1600), "4/0"),
+                                                 (amps(2000), "250"),
+                                                 (amps(2500), "350"),
+                                                 (amps(3000), "400"),
+                                                 (amps(4000), "500"),
+                                                 (amps(5000), "700"),
+                                                 (amps(6000), "800"))),
+                              "Al": OrderedDict(((amps(15),   "12"),
+                                                 (amps(20),   "10"),
+                                                 (amps(60),   "8"),
+                                                 (amps(100),  "6"),
+                                                 (amps(200),  "4"),
+                                                 (amps(300),  "2"),
+                                                 (amps(400),  "1"),
+                                                 (amps(500),  "1/0"),
+                                                 (amps(600),  "2/0"),
+                                                 (amps(800),  "3/0"),
+                                                 (amps(1000), "4/0"),
+                                                 (amps(1200), "250"),
+                                                 (amps(1600), "350"),
+                                                 (amps(2000), "400"),
+                                                 (amps(2500), "600"),
+                                                 (amps(3000), "750"),
+                                                 (amps(4000), "750"),
+                                                 (amps(5000), "1200"),
+                                                 (amps(6000), "1200"))),
+                            }
 def to_num(element):
     if isinstance(element, lxml.objectify.IntElement):
         return int(element)
