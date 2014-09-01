@@ -60,28 +60,28 @@ def nec2014_690_8(directives=None, ac=None, dc=None, ground=None):
             recurse(child)
 
 def nec2014_690_6_1(directives=None, ac=None, dc=None, ground=None):
-    fail_msg = "NEC 2014 690.6: AC module with id of '%s' is downstream of an inverter."
+    fail_msg = "NEC 2014 690.6: %s with id of '%s' is downstream of an inverter in the AC tree."
     if eng.is_electrical(ac):
-        for module in ac.iterdescendants('module'):
-            if module.iterancestors('inverter'):
-                raise ValidationError(fail_msg % module.id)
+        for inverter in ac.itercomponents('inverter'):
+            for component in inverter.itercomponents():
+                raise ValidationError(fail_msg % (component.tag, component.id))
 
 def nec2014_690_6_2(directives=None, ac=None, dc=None, ground=None):
-    fail_msg = "NEC 2014 690.6: AC module with id of '%s' must not also appear in the DC tree."
+    fail_msg = "NEC 2014 690.6: %s with id of '%s' must not appear in both the AC and the DC tree."
     if eng.is_electrical(ac):
-        for module in ac.iterdescendants('module'):
-            if dc.findcomponent(module.id):
-                raise ValidationError(fail_msg % module.id)
+        for component in ac.itercomponents():
+            if dc.findcomponent(component.id):
+                raise ValidationError(fail_msg % (component.tag, component.id))
 
 def nec2014_690_6_3(directives=None, ac=None, dc=None, ground=None):
-    fail_msg = "NEC 2014 690.6: AC module with id of '%s' must have both output_ac_voltage and output_ac_amps specified."
+    fail_msg = "NEC 2014 690.6: %s with id of '%s' in the AC tree must have both output_ac_voltage and output_ac_amps specified."
     if eng.is_electrical(ac):
-        for module in ac.iterdescendants('module'):
-            specs = nec.get_specifications(module)
+        for component in ac.itercomponents():
+            specs = nec.get_specifications(component)
             voltage = nec.get_ac_output_voltage(specs)
             current = nec.get_ac_output_amps(specs)
             if voltage is None or current is None:
-                raise ValidationError(fail_msg % module.id)
+                raise ValidationError(fail_msg % (component.tag, component.id))
 
 def nec2014_690_9(directives=None, ac=None, dc=None, ground=None):
     fail_msg = "NEC 2014 690.43: No breaker or fused_disconnect found between %s with id '%s' and the %s with id '%s'"
