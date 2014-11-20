@@ -7,8 +7,11 @@ Please see the wiki for additional documentaiton - [https://github.com/solarperm
 
 Getting Involved
 ================
+
 [WIP]
+
 [intro comment]
+
 1. Data
     A. Web User Interface
     B. API
