@@ -8,19 +8,18 @@ Please see the wiki for additional documentaiton - [https://github.com/solarperm
 Getting Involved
 ================
 
-[WIP]
-
-[intro comment]
+There are various ways you can get involved at SolarPermit.org - from data to code updates, contribution drives the platform.
 
 1. Data
-  1. Web User Interface
-  2. API
-  3. Raw Data Dumps
+  1. Anyone can update jurisdictions right from their web browser.  This helps things stay up-to-date and is the basis of SolarPermit as an information platform.
+  2. If you have large amounts of data to submit, you can use our API to contribute while retaining all the benefits and recognition that is provided when using the web interface.  See our [https://github.com/solarpermit/solarpermit/wiki](wiki) for more information.
+  3. If you want to work with the complete dataset and would rather do so with an sql file instead of obtaining data via the API, please contact us at info@solarpermit.org and we can provide a recent database dump. 
 2. Source Code
-  1. Forks and Merge Requests
+  1. If you'd like to make modifications to SolarPermit, simple fork the code here at github.  Changes can always be merged back.
+  2. This is especially helpful for bug reports and fixes. We appreciate help improving SolarPermit.  Bug reports can be filed [https://github.com/solarpermit/solarpermit/issues](on github's issue tracker)
 3. Sharing Ideas and Feature Requests
-  1. Forums for Ideas
-  2. Github for feature requests
+  1. If you are looking to share general ideas, post to the [https://solarpermit.org/forum/](forums).
+  2. If you have specific feature requests, please feel free to create a ticket [https://github.com/solarpermit/solarpermit/issues](on github's issue tracker) 
 
 Initial Source Release
 ================
