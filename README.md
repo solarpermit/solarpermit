@@ -5,6 +5,21 @@ Web Based Tool for Tracking Solar Permitting Requirements in The United States
 
 Please see the wiki for additional documentaiton - [https://github.com/solarpermit/solarpermit/wiki](https://github.com/solarpermit/solarpermit/wiki)
 
+Getting Involved
+================
+[WIP]
+[intro comment]
+1. Data
+    A. Web User Interface
+    B. API
+    C. Raw Data Dumps
+2. Source Code
+    A. Forks and Merge Requests
+3. Sharing Ideas and Feature Requests
+    A. Forums for Ideas
+    B. Github for feature requests
+
+
 Initial Source Release
 ================
 We will be merging the previous development trunk here.  If you would like to participate in development, please join us on github or start a conversation in our forums.
