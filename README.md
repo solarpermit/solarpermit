@@ -15,7 +15,7 @@ There are various ways you can get involved at SolarPermit.org - from data to co
   2. If you have large amounts of data to submit, you can use our API to contribute while retaining all the benefits and recognition that is provided when using the web interface.  See our [https://github.com/solarpermit/solarpermit/wiki](wiki) for more information.
   3. If you want to work with the complete dataset and would rather do so with an sql file instead of obtaining data via the API, please contact us at info@solarpermit.org and we can provide a recent database dump. 
 2. Source Code
-  1. If you'd like to make modifications to SolarPermit, simply fork the code here at github.  Changes can always be merged back. 
+  1. If you'd like to make modifications to SolarPermit, simply fork the code here at github.  Once you've tested your changes, create a merge request and the code changes will be reviewed for inclusion.
   2. This is especially helpful for bug reports and fixes. We appreciate help improving SolarPermit.  Bug reports can be filed [https://github.com/solarpermit/solarpermit/issues](on github's issue tracker)
 3. Sharing Ideas and Feature Requests
   1. If you are looking to share general ideas, post to the [https://solarpermit.org/forum/](forums).
