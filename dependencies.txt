@@ -1,4 +1,4 @@
-# Server Dependencies
+# Server Dependencies (note that apache/mod_wsgi may be substituted for other wsgi capable web servers)
 #
 #  Python 2.7
 #  MySQL-server
